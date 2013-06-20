@@ -1,0 +1,61 @@
+# To generate Google language conversions from english language files
+# for missing strings in other languages
+# edit checklang.php to set $compare to the language to compare with
+# run  this script with parameter 1
+# paster the missing strings into google
+# place them in "tolang"
+# run this script with stage 2
+
+
+stage=$1
+
+if [ $stage = "1" ]; then
+rm -f tolang
+php checklang.php > missing
+
+if [ ! -f fromlang ]; then
+    echo "No fromlang file
+    exit
+fi
+
+if [ ! -f tolang ]; then
+    echo "No tolang file
+    exit
+fi
+echo "get translations from google"
+cat missing | sed "s/^.* => \"//" | sed "s/\",$//" > fromlang
+#cat missing | sed "s/^.* => \"//" > fromlang
+cat fromlang 
+fi
+
+if [ $stage = "2" ]; then
+paste fromlang tolang | sed "s/	/|/" > mergedlang
+outfile="unknown"
+cat missing | while read i
+do
+    
+    echo $i | grep "^\.\." > /dev/null
+    if [ $? -eq 0 ]; then
+        outfile=$i.new
+        echo $outfile
+        if [ -f $outfile ]; then
+            rm -f $outfile
+        fi
+    fi
+    echo $i | grep "T_" > /dev/null
+    if [ $? -ne 0 ]; then
+        #echo $i
+        continue;
+    fi
+    f1=`echo $i | cut -d "\"" -f2`
+    f2=`echo $i | cut -d "\"" -f4`
+    xlate=`grep "^$f2|" mergedlang | head -1 | cut -d"|" -f2`
+    #echo -n "\t\t"
+    #echo sed "s/=> \".*\"/=> \"$xlate\"/"
+    echo $i | sed "s~=> \".*\"~=> \"$xlate\"~" >> $outfile
+    if [ $? -eq 1 ]; then
+        echo "Error in $i "
+    fi
+done
+
+fi

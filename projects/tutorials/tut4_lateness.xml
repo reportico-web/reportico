@@ -1,0 +1,55 @@
+<?xml version="1.0"?><Report><ReportQuery><Format><ReportTitle>Late Returns Summary</ReportTitle><ReportDescription>The Late Returns Summary provides a summary of of often films are returned late to the DVD library. It provides counts of how many films were returned 2 days laet, 3 days late, 4 days late etc.
+&lt;p&gt;
+This tutorial demonstrates the following features :-
+&lt;p&gt;
+1. &lt;b&gt;Data manipulaton prior to reporting using Custom Code&lt;/b&gt;
+&lt;br&gt;
+2. &lt;b&gt; Addition of a pie chart and use of the REPORT_BODY grouping option&lt;b&gt;
+
+
+</ReportDescription><PageSize>A4</PageSize><PageOrientation>Portrait</PageOrientation><TopMargin></TopMargin><BottomMargin></BottomMargin><RightMargin></RightMargin><LeftMargin></LeftMargin><pdfFont></pdfFont><pdfFontSize></pdfFontSize><PreExecuteCode>    // Extract Users Date Range
+    $fromdate = $_criteria[&quot;date_range&quot;]-&gt;get_criteria_value(&quot;RANGE1&quot;);
+    $todate = $_criteria[&quot;date_range&quot;]-&gt;get_criteria_value(&quot;RANGE2&quot;);
+
+    // Create temporary table to hold number of days 
+    // late a film was returned
+    $sql =&quot;CREATE TEMPORARY TABLE t_lateness 
+          ( 
+              days_loaned INTEGER
+           ) &quot;;
+    $stat = $_pdo-&gt;query($sql); 
+
+    if ( !$stat ) 
+    {
+	$err = $_pdo-&gt;errorInfo();
+        trigger_error(&quot;Query Failed&lt;BR&gt;&quot;.$sql.&quot;&lt;br&gt;&quot; . 
+              &quot;Error &quot;.$_pdo-&gt;errorCode(). &quot; - &quot;. 
+              $err[2], E_USER_ERROR); 
+              return; 
+    } 
+
+    // Now populate table with number of days late each film was 
+    // returned
+    $sql = &quot;INSERT INTO t_lateness 
+            SELECT to_days(return_date) - to_days(loan_date)  
+              FROM reptut_loan 
+             WHERE return_date IS NOT NULL
+               AND return_date BETWEEN $fromdate AND $todate
+           &quot;;                                 
+    $stat = $_pdo-&gt;query($sql); 
+
+
+    if ( !$stat ) 
+    {
+	$err = $_pdo-&gt;errorInfo();
+        trigger_error(&quot;Query Failed&lt;BR&gt;&quot;.$sql.&quot;&lt;br&gt;&quot; . 
+              &quot;Error &quot;.$_pdo-&gt;errorCode(). &quot; - &quot;. 
+              $err[2], E_USER_ERROR); 
+              return; 
+    } 
+
+
+</PreExecuteCode><bodyDisplay>show</bodyDisplay><graphDisplay>show</graphDisplay></Format><Datasource><SourceType>database</SourceType><SourceConnection><DatabaseType></DatabaseType><DatabaseName></DatabaseName><HostName>localhost</HostName><ServiceName></ServiceName><UserName></UserName><Password></Password></SourceConnection></Datasource><EntryForm><Query><TableSql></TableSql><WhereSql></WhereSql><GroupSql></GroupSql><RowSelection>all</RowSelection><SQL><QuerySql></QuerySql><SQLRaw>SELECT days_loaned days_loaned, count(*) frequency 
+FROM t_lateness 
+WHERE 1 = 1    
+AND days_loaned &gt; 1 GROUP BY 1</SQLRaw></SQL><QueryColumns><QueryColumn><Name>days_loaned</Name><TableName></TableName><ColumnName>days_loaned</ColumnName><ColumnType>char</ColumnType><ColumnLength>30</ColumnLength><Format><column_display>show</column_display><content_type>plain</content_type><ColumnStartPDF></ColumnStartPDF><justify>left</justify><ColumnWidthPDF></ColumnWidthPDF><ColumnWidthHTML></ColumnWidthHTML><column_title></column_title><tooltip></tooltip><group_header_label></group_header_label><group_header_label_xpos></group_header_label_xpos><group_header_data_xpos></group_header_data_xpos><group_trailer_label></group_trailer_label></Format></QueryColumn><QueryColumn><Name>frequency</Name><TableName></TableName><ColumnName>count(*)</ColumnName><ColumnType>char</ColumnType><ColumnLength>30</ColumnLength><Format><column_display>show</column_display><content_type>plain</content_type><ColumnStartPDF></ColumnStartPDF><justify>left</justify><ColumnWidthPDF></ColumnWidthPDF><ColumnWidthHTML></ColumnWidthHTML><column_title></column_title><tooltip></tooltip><group_header_label></group_header_label><group_header_label_xpos></group_header_label_xpos><group_header_data_xpos></group_header_data_xpos><group_trailer_label></group_trailer_label></Format></QueryColumn></QueryColumns><OrderColumns></OrderColumns><PreSQLS></PreSQLS></Query><Assignments></Assignments><Criteria><CriteriaItem><Name>date_range</Name><Title>Date Range</Title><QueryTableName></QueryTableName><QueryColumnName></QueryColumnName><CriteriaType>DATERANGE</CriteriaType><CriteriaDisplay>MDYFIELD</CriteriaDisplay><ExpandDisplay>NOINPUT</ExpandDisplay><ReturnColumn></ReturnColumn><DisplayColumn></DisplayColumn><OverviewColumn></OverviewColumn><MatchColumn></MatchColumn><CriteriaDefaults>FIRSTOFLASTMONTH-LASTOFLASTMONTH</CriteriaDefaults><CriteriaList></CriteriaList><Query><TableSql></TableSql><WhereSql></WhereSql><GroupSql></GroupSql><RowSelection></RowSelection><SQLRaw></SQLRaw><SQL><QuerySql></QuerySql></SQL><QueryColumns></QueryColumns><OrderColumns></OrderColumns><Assignments></Assignments></Query><CriteriaLinks></CriteriaLinks></CriteriaItem></Criteria><Output><PageHeaders></PageHeaders><PageFooters></PageFooters><DisplayOrders><DisplayOrder><ColumnName>days_loaned</ColumnName><OrderNumber>1</OrderNumber></DisplayOrder><DisplayOrder><ColumnName>frequency</ColumnName><OrderNumber>2</OrderNumber></DisplayOrder></DisplayOrders><Groups><Group><GroupName>REPORT_BODY</GroupName><BeforeGroupHeader>blankline</BeforeGroupHeader><AfterGroupHeader>blankline</AfterGroupHeader><BeforeGroupTrailer>blankline</BeforeGroupTrailer><AfterGroupTrailer>blankline</AfterGroupTrailer><GroupHeaders></GroupHeaders><GroupTrailers></GroupTrailers></Group></Groups><Graphs><Graph><GraphColumn>REPORT_BODY</GraphColumn><GraphColor>white</GraphColor><Title>Late Returns Summary</Title><GraphWidth></GraphWidth><GraphHeight></GraphHeight><GraphWidthPDF></GraphWidthPDF><GraphHeightPDF></GraphHeightPDF><XTitle></XTitle><YTitle></YTitle><GridPosition>.DEFAULT</GridPosition><XGridDisplay>.DEFAULT</XGridDisplay><XGridColor>.DEFAULT</XGridColor><YGridDisplay>.DEFAULT</YGridDisplay><YGridColor>.DEFAULT</YGridColor><XLabelColumn>days_loaned</XLabelColumn><TitleFont>.DEFAULT</TitleFont><TitleFontStyle>.DEFAULT</TitleFontStyle><TitleFontSize>.DEFAULT</TitleFontSize><TitleColor>.DEFAULT</TitleColor><XTitleFont>.DEFAULT</XTitleFont><XTitleFontStyle>Normal</XTitleFontStyle><XTitleFontSize>12</XTitleFontSize><XTitleColor>black</XTitleColor><YTitleFont>.DEFAULT</YTitleFont><YTitleFontStyle>Normal</YTitleFontStyle><YTitleFontSize>12</YTitleFontSize><YTitleColor>black</YTitleColor><XAxisColor>black</XAxisColor><XAxisFont>Font 1</XAxisFont><XAxisFontStyle>Normal</XAxisFontStyle><XAxisFontSize>8</XAxisFontSize><XAxisFontColor>black</XAxisFontColor><YAxisColor>black</YAxisColor><YAxisFont>Font 1</YAxisFont><YAxisFontStyle>Normal</YAxisFontStyle><YAxisFontSize>8</YAxisFontSize><YAxisFontColor>black</YAxisFontColor><XTickInterval></XTickInterval><YTickInterval></YTickInterval><XTickLabelInterval></XTickLabelInterval><YTickLabelInterval></YTickLabelInterval><MarginColor>white</MarginColor><MarginLeft></MarginLeft><MarginRight></MarginRight><MarginTop></MarginTop><MarginBottom></MarginBottom><Plots><Plot><PlotColumn>frequency</PlotColumn><PlotType>PIE</PlotType><LineColor>black</LineColor><DataType>number</DataType><Legend></Legend><FillColor></FillColor></Plot></Plots></Graph></Graphs></Output></EntryForm></ReportQuery></Report>

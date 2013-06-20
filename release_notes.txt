@@ -1,0 +1,192 @@
+Reportico Open Source PHP Report Designer
+=========================================
+
+3.1 - 6th April 2013
+-----------------------
+Rename of adodb directory to repotico_adodb to stop conflict with PEAR
+Remove force of table cells to no border so borders can bet set in report designer
+HTML graphs were not obeying graph height parameter
+Improve throwing of new pages in group changes
+Ensure configure project picks up framework driver option
+Allow reportico to be accessed through symbolic link
+
+3.0 - 21st March 2013
+-----------------------
+Access mode control  - run reports in single report mode, single project mode etc.
+Restrict users to only view report output ( with no return button ), acess a single report etc
+Allow jqpery to be used by reportico when other jquery versions have already been loaded
+Improved ability to embed Reportico into pages
+Allow queries to be filtered by user by using the external_user property
+Ensure user criteria is displayed correctly on reports
+Refresh Button on Reports through show_refresh_button_property
+Allow reportico to be run solely on AJAX without need for full page commits
+Allow project menu.php to include drop down report option menus by providing dropdownmenu array in project menu.php
+Session Namespacing to allow multiple reports on a signle page to show
+
+2.8 - 8th February 2013
+-----------------------
+Improved ability to embed Reportico ready for Joomla, Drupal etc
+Ensure user criteria is displayed correctly on reports
+Refresh Button on Reports
+Allow reportico to be run solely on AJAX without need for full page commits
+Allow project menu.php to to include drop down report option menus
+
+
+2.7 - 1st January 2013
+----------------------
+Allow Image URL images to have a width specified
+Variable Length - Multiselect box
+Allow square brackets in queries for use in match strings
+Support Data Time handling in PHP version <= 5.2.17
+Prevent open_basedir issues by ignoring errors around searching thru invalid search paths
+Make SQL non case sensitive by allowing lower case FROM
+
+2.6 - 20th September 2012
+-------------------------
+#3570225 - Cell borders dont show in PDF output
+#3570224 - Critera Linking via "Main Query Column" does not work
+#3570221 - SQL requires FROM statement on separate line from column list
+
+2.5 - 30th August 2012
+----------------------
+#3531748 - Allow wider range of SQL syntax
+#3531750 - Show criteria shows criteria for prior queries
+#3559136 - CSV output doesnt handle special characters or double quotes
+#3559138 - Move to pChart 1.3 Graphing by default
+#3560495 - Support date handling in PHP verisons < 5.3
+#3561447 - Allow template plugins of project dropdown menus
+
+2.4 - 7th May 2012
+---------------------
+#3517008 - Add multilanguage and character set support - handles UTF-8
+           Ability to supply language pages for Reportico application
+           Ability to handle data from databases in different character sets
+           Ability to deliver data in different character sets to the browser
+           Ability to generate PDF using Unicode Fonts
+#3517009 - Add colour/border/text/padding (and any other) styles for page,headers, rows and columns
+#3517010 - Multiline Text Wrap for PDF column headers and body
+#3517011 - Experimental inclusion of header graphic in PDF output
+#3517012 - Lookup criteria do not show on left hand side of prepare panel - Fixed
+#3517013 - Allow hiding/showing of report detail/headers/trailers etc
+#3517014 - Default lookup entries and defaults not maintained across session properly - fixed
+#3517015 - MSSQL connection not handling mssql pdo type as well as dblib - fixed
+#3517017 - Remove confusing "Design Report" button from Configure Project Screen
+#3517019 - Wizard for embedding hyperlinks in PDF and HTML output
+#3517020 - Wizard for embedding Image URL in  output (HTML only at the moment)
+#3517022 - First/Limit and Skip/Offset Feature in SQL Entry
+#3517026 - Ability to produce criteria values in queries without quotes
+#3517027 - Allow specification of default date criteria in yyyy-mm-dd format
+#3517027 - Ability to delete projects and reports
+#3517572 - Ability to skip line output based on condition
+#3523315 - PDF Files named using the report title
+#3523317 - Ability to import and link criteria, assignments, pdf headers from other reports
+
+
+
+2.3.1 - 26th January 2012
+-------------------------
+- Improve connection error message when PDO support is not available
+- Ensure date_default_timezone_get() does not produce warning output
+
+
+2.3 - 14th January 2012
+-----------------------
+#3473769 - Support for PostgresQL
+#3473770 - Support for Oracle
+#3117889 - Allow use of truetype fonts in graphs
+#3460535 - Avoid double loading of jquery.js in Application Frameworks such as Yii
+#3423590 - Entering text criteria unknown in dropdown lookup ignores criteria entry
+#3473778 - Output buffering corrupts PDF,CSV output if report embedded
+#3473784 - Undefined PHP timezone cause DateTime functions crash report
+#3473788 - Pathing issues with Reportio embedded in Yii
+#3473793 - Modify stylesheets to allow better print output
+#3475103 - Selects with aliases beginning with capital S cause double duplication of column definition after parsing
+#3475104 - Drilldown wizard generates spurious quote in expression
+#3475105 - Allow integration with databases on non-standard ports
+
+2.2.0 - 11th November 2011
+--------------------------
+#3436689 - Support for IIS WAMP
+
+- PDF and CSV output sent with attachment HTTP header
+- Bug Fixes in production of PDF output
+- Inclusion of new stylesheets
+
+2.1.0 - 14th October 2011
+-------------------------
+#3423592 Support Output in JSON and XML format
+#3423587 Specification of date display format in Criteria Screen
+#3423586 Initial AJAX Functionality
+#3423590 Output ignores unknown lookup entry values
+
+- PDF and CSV output sent with attachment HTTP header
+- Bug Fixes in production of PDF output
+- Inclusion of new stylesheets
+
+
+2.0.1 - 5th October 2011
+-------------------------
+Minor release to fix for sites where submit buttons named "submit" dont work
+
+2.0 - 16th June 2011
+--------------------------
+
+Made following enhancements :-
+
+#3317563 Support for sqlite3
+#3317544 Admin Password and Project Password Support
+#3297686 Add locale handling for dates
+#3297683 Submit buttons named submit dont work
+#3117891 PDF output does not show last column
+
+1.0.4 - 10th March 2011
+--------------------------
+
+Made following enhancements :-
+
+#3197429 - Set Include Path to allow reportico to be included from remote directory
+#3191179 - SQL Errors in Tutorial Database Creation - remove MyISM type and single quotes
+#3205881 - CSV Output show group headers in report rows
+#3205878 - Show User Criteria in Report Output
+
+1.0.3 - 2nd Februrary 2011
+--------------------------
+
+Fixed following Bugs :-
+
+#3141240 - Date Dropdown only goes up to 2010
+#3141242 - Duplicate Lookup values unselectable in text field criteria
+
+Also :-
+Provided information on security in documentation and introduced Safe Mode Option
+
+1.0.2 - 27th November 2010
+--------------------------
+
+Fixed following Bugs :-
+
+#3120864 - Report Errors should not show duplicates
+#3117953 - Too much space in Criteria Summary box
+#3117886 - Easy entry of Assignment Columns
+
+Also :-
+Improved robustness of graph presentation
+Project creation was failing on web servers disallowing the <? notation
+
+1.0.1 - 31st October 2010
+-------------------------
+
+Tested on windows under Apache2. Was not operational due to permissions. Is now fixed in this release.
+Still requires testing under IIS.
+
+Fixed following Bugs :-
+
+#3099825 Include Reportico Version in Templates
+#3099797 Execute mode incorrect after execute/back/select criteria
+#3099793 Directory permissions stops operation under Windows
+
+1.0.0 - 26th Octover 2010
+-------------------------
+Initial Release of Reportico.
+Only tested running under Linux
+Still needs testing under PHP running on Windows (both Apache1.3/Apache2/IIS)

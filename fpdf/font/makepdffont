@@ -1,0 +1,2 @@
+../tools/ttf2pt1 -a -F $1.ttf
+php -q ../tools/makefontuni.php $1.ttf $1.ufm 

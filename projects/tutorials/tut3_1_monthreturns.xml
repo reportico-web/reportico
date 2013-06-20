@@ -1,0 +1,34 @@
+<?xml version="1.0"?><Report><ReportQuery><Format><ReportTitle>Monthly Film Returns</ReportTitle><ReportDescription>The Monthly Film Returns Report provides a count of the number of titles rented from the DVD library per month grouped by year. It also provides a monthly count of films returned late. The report includes a graph that represents this data.
+&lt;p&gt;
+This tutorial demonstrates the following features :-
+&lt;p&gt;
+1. &lt;b&gt;Generating a graph within the report body&lt;/b&gt;
+&lt;br&gt;2. &lt;b&gt;Using a criteria item within an SQL expression&lt;/b&gt;
+
+&lt;p&gt;Click &lt;a style=&quot;text-decoration: underline&quot; target=&quot;_blank&quot; href=&quot;doc/reportico/tutorial_reportico.tutorial3_1.pkg.html&quot;&gt;here &lt;/a&gt; for instructions on how to work through this tutorial
+</ReportDescription><PageSize>A4</PageSize><PageOrientation>Portrait</PageOrientation><TopMargin></TopMargin><BottomMargin></BottomMargin><RightMargin></RightMargin><LeftMargin></LeftMargin><pdfFont></pdfFont><pdfFontSize></pdfFontSize><PreExecuteCode>    // Create temporary table to hold count of each film category
+    $sql =&quot;CREATE TEMPORARY TABLE t_cattotal 
+          ( 
+              cat_code CHAR(5),
+              cat_total INTEGER 
+           ) &quot;;
+    $stat = $_connection-&gt;Execute($sql); 
+
+    if ( !$stat ) 
+    {
+        trigger_error(&quot;Query Failed&lt;BR&gt;&quot;.$sql.&quot;&lt;br&gt;&quot; . 
+              &quot;Error &quot;.$_connection-&gt;ErrorNo(). &quot; - &quot;. 
+              $_connection-&gt;ErrorMsg(), E_USER_ERROR); 
+              return; 
+    } 
+
+    // Now populate table with category counts
+    $sql = &quot;INSERT INTO t_cattotal 
+                SELECT cat_code, count(*)
+                  FROM film
+                  GROUP BY cat_code&quot;; 
+    $stat = $_connection-&gt;Execute($sql); 
+
+
+</PreExecuteCode><bodyDisplay>show</bodyDisplay><graphDisplay>show</graphDisplay></Format><Datasource><SourceType>database</SourceType><SourceConnection><DatabaseType></DatabaseType><DatabaseName></DatabaseName><HostName>localhost</HostName><ServiceName></ServiceName><UserName></UserName><Password></Password></SourceConnection></Datasource><EntryForm><Query><TableSql>reptut_film film INNER JOIN reptut_loan loan ON film.film_id = loan.film_id</TableSql><WhereSql>                                  
+AND film.film_id = loan.film_id</WhereSql><GroupSql>GROUP BY 1, 2, 3</GroupSql><RowSelection>all</RowSelection><SQL><QuerySql></QuerySql></SQL><QueryColumns><QueryColumn><Name>loaned_mthno</Name><TableName></TableName><ColumnName>DATE_FORMAT(loan_date, '%m')</ColumnName><ColumnType>char</ColumnType><ColumnLength>30</ColumnLength><Format><column_display>hide</column_display><content_type>plain</content_type><ColumnStartPDF></ColumnStartPDF><justify>left</justify><ColumnWidthPDF></ColumnWidthPDF><ColumnWidthHTML></ColumnWidthHTML><column_title></column_title><tooltip></tooltip><group_header_label></group_header_label><group_header_label_xpos></group_header_label_xpos><group_header_data_xpos></group_header_data_xpos><group_trailer_label></group_trailer_label></Format></QueryColumn><QueryColumn><Name>loaned_mth</Name><TableName></TableName><ColumnName>DATE_FORMAT(loan_date, '%M')</ColumnName><ColumnType>char</ColumnType><ColumnLength>30</ColumnLength><Format><column_display>show</column_display><content_type>plain</content_type><ColumnStartPDF></ColumnStartPDF><justify>left</justify><ColumnWidthPDF></ColumnWidthPDF><ColumnWidthHTML></ColumnWidthHTML><column_title></column_title><tooltip></tooltip><group_header_label></group_header_label><group_header_label_xpos></group_header_label_xpos><group_header_data_xpos></group_header_data_xpos><group_trailer_label></group_trailer_label></Format></QueryColumn><QueryColumn><Name>loaned_yr</Name><TableName></TableName><ColumnName>DATE_FORMAT(loan_date, '%Y')</ColumnName><ColumnType>char</ColumnType><ColumnLength>30</ColumnLength><Format><column_display>show</column_display><content_type>plain</content_type><ColumnStartPDF></ColumnStartPDF><justify>left</justify><ColumnWidthPDF></ColumnWidthPDF><ColumnWidthHTML></ColumnWidthHTML><column_title>Year</column_title><tooltip></tooltip><group_header_label></group_header_label><group_header_label_xpos></group_header_label_xpos><group_header_data_xpos></group_header_data_xpos><group_trailer_label></group_trailer_label></Format></QueryColumn><QueryColumn><Name>loan_count</Name><TableName></TableName><ColumnName>count(*)</ColumnName><ColumnType>char</ColumnType><ColumnLength>30</ColumnLength><Format><column_display>show</column_display><content_type>plain</content_type><ColumnStartPDF></ColumnStartPDF><justify>left</justify><ColumnWidthPDF></ColumnWidthPDF><ColumnWidthHTML></ColumnWidthHTML><column_title></column_title><tooltip></tooltip><group_header_label></group_header_label><group_header_label_xpos></group_header_label_xpos><group_header_data_xpos></group_header_data_xpos><group_trailer_label></group_trailer_label></Format></QueryColumn><QueryColumn><Name>overdue</Name><TableName></TableName><ColumnName>SUM(IF(to_days(return_date) - to_days(loan_date) &gt; 2 OR return_date IS NULL, 1,0))</ColumnName><ColumnType>char</ColumnType><ColumnLength>30</ColumnLength><Format><column_display>show</column_display><content_type>plain</content_type><ColumnStartPDF></ColumnStartPDF><justify>left</justify><ColumnWidthPDF></ColumnWidthPDF><ColumnWidthHTML></ColumnWidthHTML><column_title></column_title><tooltip></tooltip><group_header_label></group_header_label><group_header_label_xpos></group_header_label_xpos><group_header_data_xpos></group_header_data_xpos><group_trailer_label></group_trailer_label></Format></QueryColumn></QueryColumns><OrderColumns><OrderColumn><Name>loaned_yr</Name><OrderType>ASC</OrderType></OrderColumn><OrderColumn><Name>loaned_mthno</Name><OrderType>ASC</OrderType></OrderColumn></OrderColumns><PreSQLS></PreSQLS></Query><Assignments></Assignments><Criteria></Criteria><Output><PageHeaders><PageHeader><LineNumber>1</LineNumber><HeaderText>Rentals for {loaned_yr}</HeaderText><Format><ColumnStartPDF>5%</ColumnStartPDF><justify>center</justify><ColumnWidthPDF>90%</ColumnWidthPDF></Format></PageHeader></PageHeaders><PageFooters></PageFooters><DisplayOrders><DisplayOrder><ColumnName>loaned_yr</ColumnName><OrderNumber>1</OrderNumber></DisplayOrder><DisplayOrder><ColumnName>loaned_mth</ColumnName><OrderNumber>2</OrderNumber></DisplayOrder><DisplayOrder><ColumnName>loan_count</ColumnName><OrderNumber>3</OrderNumber></DisplayOrder><DisplayOrder><ColumnName>loaned_mthno</ColumnName><OrderNumber>4</OrderNumber></DisplayOrder><DisplayOrder><ColumnName>overdue</ColumnName><OrderNumber>5</OrderNumber></DisplayOrder></DisplayOrders><Groups></Groups><Graphs></Graphs></Output></EntryForm></ReportQuery></Report>

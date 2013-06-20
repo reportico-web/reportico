@@ -1,0 +1,123 @@
+<?xml version="1.0"?><Report><ReportQuery><Format><ReportTitle>Configure Tutorials</ReportTitle><ReportDescription>&lt;div style=&quot;font-size: 10pt&quot;&gt;Configures the Tutorials project by setting up the configuration details for the database you wish to run the tutorials against. The tutorial tables can only be created against a MySQL database. This screen does not create the tutorial tables so after running this you will need to create the tutorial data by selecting the tutorial project menu from the admin page and running &quot;Generate the Tutorial Database&quot;. 
+&lt;P&gt;
+&lt;b&gt;Project Name&lt;/b&gt;
+This must be set to 'tutorials' .. &lt;p&gt; 
+
+&lt;b&gt;Project Title&lt;/b&gt;
+You may as well leave this value&lt;p&gt; 
+
+&lt;b&gt;Database Type&lt;/b&gt;
+The type of database you wish to report against
+&lt;P&gt; 
+
+&lt;b&gt;Host Name&lt;/b&gt;&lt;br&gt;
+The IP address or the name of the host where the database resides. For a database on the same machine as the webserver use 127.0.0.1
+&lt;P&gt; 
+
+&lt;b&gt;Database Name&lt;/b&gt;
+The name of the database to report against
+&lt;P&gt; 
+
+&lt;b&gt;User Name&lt;/b&gt; and &lt;b&gt;Password&lt;/b&gt;&lt;br&gt;
+The logon name and password required to connect to the database
+&lt;P&gt; 
+
+&lt;b&gt;Base URL&lt;/b&gt;&lt;br&gt;
+This is the URL equivalent to the reportico installation directory. 
+This should be left as &quot;./&quot;. However this may need to be changed to a fully pathed value later if linking to reportico from other web pages. In such a case if you have placed your reportico installation under the web server root directory and called it &lt;b&gt;reportico&lt;/b&gt;, then you would use http://127.0.0.1/reportico/
+&lt;P&gt;
+
+&lt;b&gt;Server&lt;/b&gt; and &lt;b&gt;Protocol&lt;/b&gt;
+When reporting against Informix databases, specify the Informix server and the connection protocol e.g. olsoctcp.
+&lt;P&gt;
+&lt;b&gt;Stylesheet&lt;/b&gt;
+The style sheet file to use for controlling Reportico appearance.
+&lt;P&gt;
+&lt;b&gt;Project Password&lt;/b&gt;
+Choose a password which must users must enter to access the tutorial reports. Leave this blank to allow access to tutorials without a password.&lt;P&gt;  
+&lt;b&gt;Display Date Format&lt;/b&gt;
+Choose the date format that you would like to use for displaying and entering dates&lt;P&gt;  
+&lt;b&gt;Database Date Format&lt;/b&gt;
+Choose the date format that you use to store dates in your database. MySQL uses YYYYY-MM-DD&lt;P&gt;  
+&lt;/div&gt;</ReportDescription><PageSize>A4</PageSize><PageOrientation>Portrait</PageOrientation><TopMargin></TopMargin><BottomMargin></BottomMargin><RightMargin></RightMargin><LeftMargin></LeftMargin><pdfFont></pdfFont><pdfFontSize></pdfFontSize><PreExecuteCode>global $_configure_mode;
+
+$_configure_mode = &quot;MODIFY&quot;;
+
+include('projects/admin/configureproject.xml.php');</PreExecuteCode><bodyDisplay>show</bodyDisplay><graphDisplay>show</graphDisplay></Format><Datasource><SourceType>database</SourceType><SourceConnection><DatabaseType></DatabaseType><DatabaseName></DatabaseName><HostName>localhost</HostName><ServiceName></ServiceName><UserName></UserName><Password></Password></SourceConnection></Datasource><EntryForm><Query><TableSql></TableSql><WhereSql></WhereSql><GroupSql></GroupSql><RowSelection>all</RowSelection><SQL><QuerySql></QuerySql></SQL><QueryColumns></QueryColumns><OrderColumns></OrderColumns><PreSQLS></PreSQLS></Query><Assignments></Assignments><Criteria><CriteriaItem><Name>project</Name><Title>Project Name</Title><QueryTableName></QueryTableName><QueryColumnName></QueryColumnName><CriteriaType>TEXTFIELD</CriteriaType><CriteriaDisplay>NOINPUT</CriteriaDisplay><ExpandDisplay>NOINPUT</ExpandDisplay><ReturnColumn></ReturnColumn><DisplayColumn></DisplayColumn><OverviewColumn></OverviewColumn><MatchColumn></MatchColumn><CriteriaDefaults>tutorials</CriteriaDefaults><CriteriaList></CriteriaList><Query><TableSql></TableSql><WhereSql></WhereSql><GroupSql></GroupSql><RowSelection></RowSelection><SQL><QuerySql></QuerySql></SQL><QueryColumns></QueryColumns><OrderColumns></OrderColumns><Assignments></Assignments></Query><CriteriaLinks></CriteriaLinks></CriteriaItem><CriteriaItem><Name>projtitle</Name><Title>Project Title</Title><QueryTableName></QueryTableName><QueryColumnName></QueryColumnName><CriteriaType>TEXTFIELD</CriteriaType><CriteriaDisplay>NOINPUT</CriteriaDisplay><ExpandDisplay>NOINPUT</ExpandDisplay><ReturnColumn></ReturnColumn><DisplayColumn></DisplayColumn><OverviewColumn></OverviewColumn><MatchColumn></MatchColumn><CriteriaDefaults>Tutorials</CriteriaDefaults><CriteriaList></CriteriaList><Query><TableSql></TableSql><WhereSql></WhereSql><GroupSql></GroupSql><RowSelection></RowSelection><SQL><QuerySql></QuerySql></SQL><QueryColumns></QueryColumns><OrderColumns></OrderColumns><Assignments></Assignments></Query><CriteriaLinks></CriteriaLinks></CriteriaItem><CriteriaItem><Name>dbtype</Name><Title>Database Type</Title><QueryTableName></QueryTableName><QueryColumnName></QueryColumnName><CriteriaType>LIST</CriteriaType><CriteriaDisplay>RADIO</CriteriaDisplay><ExpandDisplay>NOINPUT</ExpandDisplay><ReturnColumn></ReturnColumn><DisplayColumn></DisplayColumn><OverviewColumn></OverviewColumn><MatchColumn></MatchColumn><CriteriaDefaults>pdo_mysql</CriteriaDefaults><CriteriaList>mysql=pdo_mysql</CriteriaList><Query><TableSql></TableSql><WhereSql></WhereSql><GroupSql></GroupSql><RowSelection></RowSelection><SQL><QuerySql></QuerySql></SQL><QueryColumns></QueryColumns><OrderColumns></OrderColumns><Assignments></Assignments></Query><CriteriaLinks></CriteriaLinks></CriteriaItem><CriteriaItem><Name>host</Name><Title>Host Name</Title><QueryTableName></QueryTableName><QueryColumnName></QueryColumnName><CriteriaType>TEXTFIELD</CriteriaType><CriteriaDisplay>NOINPUT</CriteriaDisplay><ExpandDisplay>NOINPUT</ExpandDisplay><ReturnColumn></ReturnColumn><DisplayColumn></DisplayColumn><OverviewColumn></OverviewColumn><MatchColumn></MatchColumn><CriteriaDefaults>{constant,SW_DB_HOST}</CriteriaDefaults><CriteriaList></CriteriaList><Query><TableSql></TableSql><WhereSql></WhereSql><GroupSql></GroupSql><RowSelection></RowSelection><SQL><QuerySql></QuerySql></SQL><QueryColumns></QueryColumns><OrderColumns></OrderColumns><Assignments></Assignments></Query><CriteriaLinks></CriteriaLinks></CriteriaItem><CriteriaItem><Name>database</Name><Title>Database Name</Title><QueryTableName></QueryTableName><QueryColumnName></QueryColumnName><CriteriaType>TEXTFIELD</CriteriaType><CriteriaDisplay>NOINPUT</CriteriaDisplay><ExpandDisplay>NOINPUT</ExpandDisplay><ReturnColumn></ReturnColumn><DisplayColumn></DisplayColumn><OverviewColumn></OverviewColumn><MatchColumn></MatchColumn><CriteriaDefaults>{constant,SW_DB_DATABASE}</CriteriaDefaults><CriteriaList></CriteriaList><Query><TableSql></TableSql><WhereSql></WhereSql><GroupSql></GroupSql><RowSelection></RowSelection><SQL><QuerySql></QuerySql></SQL><QueryColumns></QueryColumns><OrderColumns></OrderColumns><Assignments></Assignments></Query><CriteriaLinks></CriteriaLinks></CriteriaItem><CriteriaItem><Name>user</Name><Title>User Name</Title><QueryTableName></QueryTableName><QueryColumnName></QueryColumnName><CriteriaType>TEXTFIELD</CriteriaType><CriteriaDisplay>NOINPUT</CriteriaDisplay><ExpandDisplay>NOINPUT</ExpandDisplay><ReturnColumn></ReturnColumn><DisplayColumn></DisplayColumn><OverviewColumn></OverviewColumn><MatchColumn></MatchColumn><CriteriaDefaults>{constant,SW_DB_USER}</CriteriaDefaults><CriteriaList></CriteriaList><Query><TableSql></TableSql><WhereSql></WhereSql><GroupSql></GroupSql><RowSelection></RowSelection><SQL><QuerySql></QuerySql></SQL><QueryColumns></QueryColumns><OrderColumns></OrderColumns><Assignments></Assignments></Query><CriteriaLinks></CriteriaLinks></CriteriaItem><CriteriaItem><Name>password</Name><Title>Password</Title><QueryTableName></QueryTableName><QueryColumnName></QueryColumnName><CriteriaType>TEXTFIELD</CriteriaType><CriteriaDisplay>NOINPUT</CriteriaDisplay><ExpandDisplay>NOINPUT</ExpandDisplay><ReturnColumn></ReturnColumn><DisplayColumn></DisplayColumn><OverviewColumn></OverviewColumn><MatchColumn></MatchColumn><CriteriaDefaults>{constant,SW_DB_PASSWORD}</CriteriaDefaults><CriteriaList></CriteriaList><Query><TableSql></TableSql><WhereSql></WhereSql><GroupSql></GroupSql><RowSelection></RowSelection><SQL><QuerySql></QuerySql></SQL><QueryColumns></QueryColumns><OrderColumns></OrderColumns><Assignments></Assignments></Query><CriteriaLinks></CriteriaLinks></CriteriaItem><CriteriaItem><Name>baseurl</Name><Title>Base URL</Title><QueryTableName></QueryTableName><QueryColumnName></QueryColumnName><CriteriaType>TEXTFIELD</CriteriaType><CriteriaDisplay>NOINPUT</CriteriaDisplay><ExpandDisplay>NOINPUT</ExpandDisplay><ReturnColumn></ReturnColumn><DisplayColumn></DisplayColumn><OverviewColumn></OverviewColumn><MatchColumn></MatchColumn><CriteriaDefaults>./</CriteriaDefaults><CriteriaList></CriteriaList><Query><TableSql></TableSql><WhereSql></WhereSql><GroupSql></GroupSql><RowSelection></RowSelection><SQL><QuerySql></QuerySql></SQL><QueryColumns></QueryColumns><OrderColumns></OrderColumns><Assignments></Assignments></Query><CriteriaLinks></CriteriaLinks></CriteriaItem><CriteriaItem><Name>server</Name><Title>Server (Informix Only)</Title><QueryTableName></QueryTableName><QueryColumnName></QueryColumnName><CriteriaType>TEXTFIELD</CriteriaType><CriteriaDisplay>NOINPUT</CriteriaDisplay><ExpandDisplay>NOINPUT</ExpandDisplay><ReturnColumn></ReturnColumn><DisplayColumn></DisplayColumn><OverviewColumn></OverviewColumn><MatchColumn></MatchColumn><CriteriaDefaults>{constant,SW_DB_SERVER}</CriteriaDefaults><CriteriaList></CriteriaList><Query><TableSql></TableSql><WhereSql></WhereSql><GroupSql></GroupSql><RowSelection></RowSelection><SQL><QuerySql></QuerySql></SQL><QueryColumns></QueryColumns><OrderColumns></OrderColumns><Assignments></Assignments></Query><CriteriaLinks></CriteriaLinks></CriteriaItem><CriteriaItem><Name>protocol</Name><Title>Protocol (Informix Only)</Title><QueryTableName></QueryTableName><QueryColumnName></QueryColumnName><CriteriaType>TEXTFIELD</CriteriaType><CriteriaDisplay>NOINPUT</CriteriaDisplay><ExpandDisplay>NOINPUT</ExpandDisplay><ReturnColumn></ReturnColumn><DisplayColumn></DisplayColumn><OverviewColumn></OverviewColumn><MatchColumn></MatchColumn><CriteriaDefaults>{constant,SW_DB_PROTOCOL}</CriteriaDefaults><CriteriaList></CriteriaList><Query><TableSql></TableSql><WhereSql></WhereSql><GroupSql></GroupSql><RowSelection></RowSelection><SQL><QuerySql></QuerySql></SQL><QueryColumns></QueryColumns><OrderColumns></OrderColumns><Assignments></Assignments></Query><CriteriaLinks></CriteriaLinks></CriteriaItem><CriteriaItem><Name>dbencoding</Name><Title>Database Character &lt;br&gt;Encoding</Title><QueryTableName></QueryTableName><QueryColumnName></QueryColumnName><CriteriaType>LIST</CriteriaType><CriteriaDisplay>DROPDOWN</CriteriaDisplay><ExpandDisplay>NOINPUT</ExpandDisplay><ReturnColumn></ReturnColumn><DisplayColumn></DisplayColumn><OverviewColumn></OverviewColumn><MatchColumn></MatchColumn><CriteriaDefaults>{constant,SW_DB_ENCODING}</CriteriaDefaults>
+<CriteriaList>
+No Encoding=None,
+UTF8=UTF8,
+LATIN1/ISO-8859-1/Western European=LATIN1,
+LATIN2/ISO-8859-2/Central European=LATIN2,
+LATIN3/ISO-8859-3/South European=LATIN3,
+LATIN4/ISO-8859-4/Baltic=LATIN4,
+ISO-8859-5/Cyrillic=ISO-8859-5,
+ISO-8859-6/Arabic=ISO-8859-6,
+ISO-8859-7/Greek=ISO-8859-7,
+ISO-8859-8/Hebrew=ISO-8859-8,
+LATIN5/ISO-8859-9/Turkish=LATIN5,
+LATIN6/ISO-8859-10/Nordic=LATIN6,
+LATIN7/ISO-8859-13/Baltic=LATIN7,
+LATIN8/ISO-8859-14/Celtic=LATIN8,
+LATIN9/ISO-8859-15/Western=LATIN9,
+LATIN10/ISO-8859-16/Romanian=LATIN10,
+GB2312=GB2312,
+GBK=GBK,
+Shift JIS=SJIS,
+BIG5=BIG5,
+Central European (Windows 1250)=WIN1250,
+Cyrillic (Windows 1251)=WIN1251,
+Western (Windows 1252)=WIN1252,
+Greek (Windows 1253)=WIN1253,
+Turkish (Windows 1254)=WIN1254,
+Hebrew (Windows 1255)=WIN1255,
+Arabic (Windows 1256)=WIN1256,
+Baltic (Windows 1257)=WIN1257,
+Vietnamese (Windows 1258)=WIN1258,
+Windows 866=WIN866,
+Windows 874=WIN874,
+EUC_CN=EUC_CN,
+EUC_JP=EUC_JP,
+EUC_KR=EUC_KR,
+EUC_TW=EUC_TW,
+GB18030=GB18030,
+TIS620=TIS620
+</CriteriaList><Query><TableSql></TableSql><WhereSql></WhereSql><GroupSql></GroupSql><RowSelection></RowSelection><SQL><QuerySql></QuerySql></SQL><QueryColumns></QueryColumns><OrderColumns></OrderColumns><Assignments></Assignments></Query><CriteriaLinks></CriteriaLinks></CriteriaItem><CriteriaItem><Name>outputencoding</Name><Title>Output Character Encoding</Title><QueryTableName></QueryTableName><QueryColumnName></QueryColumnName><CriteriaType>LIST</CriteriaType><CriteriaDisplay>DROPDOWN</CriteriaDisplay><ExpandDisplay>NOINPUT</ExpandDisplay><ReturnColumn></ReturnColumn><DisplayColumn></DisplayColumn><OverviewColumn></OverviewColumn><MatchColumn></MatchColumn><CriteriaDefaults>{constant,SW_OUTPUT_ENCODING}</CriteriaDefaults><CriteriaList>
+No Encoding=None,
+UTF8=UTF8,
+Western European (ISO-8859-1)=ISO-8859-1,
+Central European (ISO-8859-2)=ISO-8859-2,
+Southern European (ISO-8859-3)=ISO-8859-3,
+Baltic (ISO-8859-4)=ISO-8859-4,
+Cyrillic (ISO-8859-5)=ISO-8859-5,
+Arabic (ISO-8859-6)=ISO-8859-6,
+Greek (ISO-8859-7) ISO-8859-7,
+Hebrew Visual (ISO-8859-8-I)=ISO-8859-8-I,
+Hebrew Logical (ISO-8859-8)=ISO-8859-8,
+Turkish (ISO-8859-9)=ISO-8859-9,
+Nordic (ISO-8859-10)=ISO-8859-10,
+Estonian (ISO-8859-11)=ISO-8859-11,
+Estonian (ISO-8859-12)=ISO-8859-12,
+Estonian (ISO-8859-13)=ISO-8859-13,
+Celtic (ISO-8859-14)=ISO-8859-14,
+Western (ISO-8859-15)=ISO-8859-15,
+Romanian (ISO-8859-16)=ISO-8859-16,
+Chinese Simplified (GB2312)=GB2312,
+GBK=GBK,
+Japanese (Shift-JIS)=Shift_JIS,
+Central European (Windows-1250)=Windows-1250,
+Cyrillic (Windows-1251)=Windows-1251,
+Western European (Windows-1252)=Windows-1252
+Greek (Windows-1253)=Windows-1253,
+Turkish (Windows-1254)=Windows-1254,
+Hebrew (Windows-1255)=Windows-1255,
+Arabic (Windows-1256)=Windows-1256,
+Baltic (Windows-1257)=Windows-1257,
+Vietnamese (Windows-1258)=Windows-1258,
+Chinese Traditional (Big5)=Big5,
+Chinese Simplified (GB18030)=GB18030,
+Chinese Simplified (HZ)=HZ,
+Japanese (EUC)=EUC-JP,
+Korean=EUC-KR,
+Thai (Windows TIS-620)=TIS-620
+</CriteriaList><Query><TableSql></TableSql><WhereSql></WhereSql><GroupSql></GroupSql><RowSelection></RowSelection><SQL><QuerySql></QuerySql></SQL><QueryColumns></QueryColumns><OrderColumns></OrderColumns><Assignments></Assignments></Query><CriteriaLinks></CriteriaLinks></CriteriaItem><CriteriaItem><Name>language</Name><Title>Project Language</Title><QueryTableName></QueryTableName><QueryColumnName></QueryColumnName><CriteriaType>LIST</CriteriaType><CriteriaDisplay>DROPDOWN</CriteriaDisplay><ExpandDisplay>NOINPUT</ExpandDisplay><ReturnColumn></ReturnColumn><DisplayColumn></DisplayColumn><OverviewColumn></OverviewColumn><MatchColumn></MatchColumn><CriteriaDefaults>{constant,SW_LANGUAGE}</CriteriaDefaults><CriteriaList>{languages}</CriteriaList><Query><TableSql></TableSql><WhereSql></WhereSql><GroupSql></GroupSql><RowSelection></RowSelection><SQL><QuerySql></QuerySql></SQL><QueryColumns></QueryColumns><OrderColumns></OrderColumns><Assignments></Assignments></Query><CriteriaLinks></CriteriaLinks></CriteriaItem><CriteriaItem><Name>stylesheet</Name><Title>Stylesheet</Title><QueryTableName></QueryTableName><QueryColumnName></QueryColumnName><CriteriaType>LIST</CriteriaType><CriteriaDisplay>RADIO</CriteriaDisplay><ExpandDisplay>NOINPUT</ExpandDisplay><ReturnColumn></ReturnColumn><DisplayColumn></DisplayColumn><OverviewColumn></OverviewColumn><MatchColumn></MatchColumn><CriteriaDefaults>{constant,SW_STYLESHEET}</CriteriaDefaults><CriteriaList>joomla.css=stylesheet/reportico_joomla.css</CriteriaList><Query><TableSql></TableSql><WhereSql></WhereSql><GroupSql></GroupSql><RowSelection></RowSelection><SQL><QuerySql></QuerySql></SQL><QueryColumns></QueryColumns><OrderColumns></OrderColumns><Assignments></Assignments></Query><CriteriaLinks></CriteriaLinks></CriteriaItem><CriteriaItem><Name>projectpassword</Name><Title>Project Password</Title><QueryTableName></QueryTableName><QueryColumnName></QueryColumnName><CriteriaType>TEXTFIELD</CriteriaType><CriteriaDisplay>NOINPUT</CriteriaDisplay><ExpandDisplay>NOINPUT</ExpandDisplay><ReturnColumn></ReturnColumn><DisplayColumn></DisplayColumn><OverviewColumn></OverviewColumn><MatchColumn></MatchColumn><CriteriaDefaults>{constant,SW_PROJECT_PASSWORD}</CriteriaDefaults><CriteriaList></CriteriaList><Query><TableSql></TableSql><WhereSql></WhereSql><GroupSql></GroupSql><RowSelection></RowSelection><SQL><QuerySql></QuerySql></SQL><QueryColumns></QueryColumns><OrderColumns></OrderColumns><Assignments></Assignments></Query><CriteriaLinks></CriteriaLinks></CriteriaItem><CriteriaItem><Name>displaydateformat</Name><Title>Display Date Format</Title><QueryTableName></QueryTableName><QueryColumnName></QueryColumnName><CriteriaType>LIST</CriteriaType><CriteriaDisplay>DROPDOWN</CriteriaDisplay><ExpandDisplay>NOINPUT</ExpandDisplay><ReturnColumn></ReturnColumn><DisplayColumn></DisplayColumn><OverviewColumn></OverviewColumn><MatchColumn></MatchColumn><CriteriaDefaults>{constant,SW_PREP_DATEFORMAT}</CriteriaDefaults><CriteriaList>DD/MM/YYYY=d/m/Y,DD-MM-YYYY=d-m-Y,MM/DD/YYYY=m/d/Y,MM-DD-YYYY=m-d-Y,YYYY/MM/DD=Y/m/d,YYYY-MM-DD=Y-m-d</CriteriaList><Query><TableSql></TableSql><WhereSql></WhereSql><GroupSql></GroupSql><RowSelection></RowSelection><SQL><QuerySql></QuerySql></SQL><QueryColumns></QueryColumns><OrderColumns></OrderColumns><Assignments></Assignments></Query><CriteriaLinks></CriteriaLinks></CriteriaItem><CriteriaItem><Name>dbdateformat</Name><Title>Database Date (for MySql leave as default YYYY-MM-DD)</Title><QueryTableName></QueryTableName><QueryColumnName></QueryColumnName><CriteriaType>LIST</CriteriaType><CriteriaDisplay>DROPDOWN</CriteriaDisplay><ExpandDisplay>NOINPUT</ExpandDisplay><ReturnColumn></ReturnColumn><DisplayColumn></DisplayColumn><OverviewColumn></OverviewColumn><MatchColumn></MatchColumn><CriteriaDefaults>{constant,SW_DB_DATEFORMAT}</CriteriaDefaults><CriteriaList>DD/MM/YYYY=d/m/Y,DD-MM-YYYY=d-m-Y,MM/DD/YYYY=m/d/Y,MM-DD-YYYY=m-d-Y,YYYY/MM/DD=Y/m/d,YYYY-MM-DD=Y-m-d</CriteriaList><Query><TableSql></TableSql><WhereSql></WhereSql><GroupSql></GroupSql><RowSelection></RowSelection><SQL><QuerySql></QuerySql></SQL><QueryColumns></QueryColumns><OrderColumns></OrderColumns><Assignments></Assignments></Query><CriteriaLinks></CriteriaLinks></CriteriaItem><CriteriaItem><Name>safemode</Name><Title>Safe Design Mode</Title><QueryTableName></QueryTableName><QueryColumnName></QueryColumnName><CriteriaType>LIST</CriteriaType><CriteriaDisplay>CHECKBOX</CriteriaDisplay><ExpandDisplay>NOINPUT</ExpandDisplay><ReturnColumn></ReturnColumn><DisplayColumn></DisplayColumn><OverviewColumn></OverviewColumn><MatchColumn></MatchColumn><CriteriaDefaults>{constant,SW_SAFE_DESIGN_MODE}</CriteriaDefaults><CriteriaList>=1</CriteriaList><Query><TableSql></TableSql><WhereSql></WhereSql><GroupSql></GroupSql><RowSelection></RowSelection><SQL><QuerySql></QuerySql></SQL><QueryColumns></QueryColumns><OrderColumns></OrderColumns><Assignments></Assignments></Query><CriteriaLinks></CriteriaLinks></CriteriaItem></Criteria><Output><PageHeaders></PageHeaders><PageFooters></PageFooters><DisplayOrders></DisplayOrders><Groups></Groups><Graphs></Graphs></Output></EntryForm></ReportQuery></Report>

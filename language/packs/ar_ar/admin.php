@@ -1,0 +1,31 @@
+<?php
+$locale_arr = array (
+    "language" => "English",
+    "template" => array (
+        "T_CHOOSE_LANGUAGE" => "اختيار اللغة",
+        "T_ADMINTITLE" => "Reportico الإدارة صفحة",
+        "T_LOGGED_IN_AS" => "مسجله في",
+        "T_LOGIN" => "تسجيل الدخول",
+        "T_LOGOFF" => "تسجيل الخروج",
+        "T_ENTER_PROJECT_PASSWORD" => "أدخل كلمة المرور المشروع.",
+        "T_ADMIN_INSTRUCTIONS" => "حدد مجموعة تقريرا من دون المنسدلة أو إدخال كلمة مرور المسؤول Reportico للبدء في استخدام Reportico والوصول إلى وظائف إدارية والقدرة على تصميم التقارير.",
+        "T_SET_ADMIN_PASSWORD_INFO" => "كلمة مرور المسؤول لم يحدد حاليا <BR> تحتاج إلى تعيين كلمة مرور لبدء استخدام Reportico ووظائف <BR> Reportico الوصول إلى الإدارة <BR> الرجاء إدخال كلمة المرور التي اخترتها.:",
+        "T_ADMIN_PASSWORD_NOT_SET" => "كلمة مرور المسؤول لم يحدد حاليا.",
+        "T_SET_ADMIN_PASSWORD_PROMPT" => "الإدارية كلمة السر",
+        "T_SET_ADMIN_PASSWORD_REENTER" => "أعد إدخال كلمة السر <BR> الإدارية",
+        "T_SET_ADMIN_PASSWORD" => "وضع كلمة سر",
+        "T_RUN_SUITE" => "تشغيل المشروع جناح التقرير:",
+        "T_CREATE_REPORT" => "إنشاء تقرير في المشروع:",
+        "T_CONFIG_PARAM" => "تكوين معلمات من أجل المشروع:",
+        "T_DELETE_PROJECT" => "حذف المشروع:",
+        "T_DOCUMENTATION" => "توثيق",
+        "T_GO" => "الذهاب",
+        "T_UNABLE_TO_CONTINUE" => "غير قادر على الاستمرار",
+        "T_ADMIN_PASSWORD_ERROR" => "غير صحيح كلمة السر. حاول مرة أخرى.",
+        "T_BLANKLINE" => "BLANKLINE",
+        "T_LINE" => "خط",
+        "T_Create A New Project" => "إنشاء مشروع جديد",
+        "T_Configure Tutorials" => "تشكيل نمط",
+        ),
+        );
+?>
