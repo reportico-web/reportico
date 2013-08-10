@@ -181,6 +181,7 @@ $locale_arr = array (
         "T_YAXISFONTSTYLE" => "Y Label Style",
         "T_XTITLEFONTSTYLE" => "X Title Font Style",
         "T_YTITLEFONTSTYLE" => "Y Title Font Style",
+        "T_FORMBETWEENROWS" => "Form Style Row Separator",
 
         // Form Dropdowns
         "T_.DEFAULT" => "Default",

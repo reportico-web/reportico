@@ -357,6 +357,12 @@ for details of how to embed Reportico.</p>
     // Indicates whether report output should include a refresh button
     //$q-&gt;show_refresh_button = false;
 
+    // Set default output style - TABLE = one row per record, FORM = one page per record
+    //$q-&gt;initial_output_style = &quot;TABLE&quot;;
+
+    // For passing external user parameters, can be referenced in SQL with {USER_PARAM,parameter_name}
+    // and can be referenced in custom SQL with $this-&gt;user_parameters
+    //$q-&gt;user_parameters[&quot;your_parameter_name&quot;] = &quot;your parameter value&quot;;
 
     // If you want to connect to a reporting database whose connection information is available in the calling
     // script, then you should configure your project connection type to &quot;framework&quot; and then you can pass your
@@ -517,7 +523,7 @@ for details of how to embed Reportico.</p>
     <code><pre>
             $q-&gt;initial_output_format = &quot;PDF&quot;;
 </pre></code></p>
-<p>To control whether output includes the grpah, report detail, group headers etc you can set any of the following to &quot;show&quot; or &quot;hide&quot;. The default is to show all except a criteria summary at the top of the page. For example the following will show only the graph to the user.
+<p>To control whether output includes the graph, report detail, group headers etc you can set any of the following to &quot;show&quot; or &quot;hide&quot;. The default is to show all except a criteria summary at the top of the page. For example the following will show only the graph to the user.
     <code><pre>
             $q-&gt;initial_show_detail = &quot;hide&quot;;
             $q-&gt;initial_show_graph = &quot;show&quot;;
@@ -525,6 +531,10 @@ for details of how to embed Reportico.</p>
             $q-&gt;initial_show_group_trailers = &quot;hide&quot;;
             $q-&gt;initial_show_column_headers = &quot;hide&quot;;
             $q-&gt;initial_show_criteria = &quot;hide&quot;;
+</pre></code></p>
+<p>To control whether reports are generated as a single line per report output in multi-column format or a page of data with one line per column value, set the initial_output_style to either TABLE or FORM, e.g.
+    <code><pre>
+            $q-&gt;initial_output_style = &quot;FORM&quot;;
 </pre></code></p>
 <p>To provide a refresh button set the following :-
     <code><pre>
@@ -614,7 +624,12 @@ Just biuld this array up with the key of the criteria name ( as specified in the
     $q-&gt;show_refresh_button = true;
     $q-&gt;execute();
 
-</pre></code></p><hr /></span>
+</pre></code></p><hr />
+    <a name="using.passingexternal"></a><h3 class="title">Using external parameters and variables within reports</h3><p>If you want to pick up external system parameters such session variables or constants in tour reports you can set them in  the main run.php or your own calling script. For example you might want to pass a user name,a user role or a site id. Just pass in</p>
+<p><code><pre>
+    $q-&gt;user_parameters[&quot;your_parameter_name&quot;] = &quot;your parameter value&quot;;
+</pre></code></p>
+<p>Then you can pick up in Reportico SQL queries using the construct {USER_PARAM,your_parameter_name}.</p><hr /></span>
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr>
 <td width="33%" align="left" valign="top"><a href="../reportico/tutorial_reportico.structure.pkg.html">Prev</a></td>
@@ -632,7 +647,7 @@ Just biuld this array up with the key of the criteria name ( as specified in the
 </table>
         <div class="credit">
 		    <hr />
-		    Documentation generated on Sat, 23 Mar 2013 11:24:46 +0000 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Fri, 26 Jul 2013 20:58:43 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

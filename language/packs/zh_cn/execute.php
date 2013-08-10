@@ -8,6 +8,7 @@ $locale_arr = array (
 		"T_UNABLE_TO_CONTINUE" => "无法继续",
 		"T_INFORMATION" => "信息",
         "T_GO_REFRESH" => "刷新",
+        "T_GO_PRINT" => "打印",
         )
 );
 ?>

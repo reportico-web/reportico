@@ -29,7 +29,7 @@
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- * @version $Id: swoutput.php,v 1.32 2013/06/20 20:58:47 peter Exp $
+ * @version $Id: swoutput.php,v 1.26 2013/08/08 18:20:39 peter Exp $
  */
 
 class reportico_report extends reportico_object
@@ -191,6 +191,8 @@ class reportico_report extends reportico_object
     {
         $this->query->output_allcell_styles = false;
         $this->query->output_row_styles = false;
+        $this->query->output_before_form_row_styles = false;
+        $this->query->output_after_form_row_styles = false;
         $this->query->output_page_styles = false;
         $this->query->output_header_styles = false;
         $this->query->output_reportbody_styles = false;
@@ -416,8 +418,6 @@ class reportico_report extends reportico_object
 
 	function each_line($val)
 	{
-
-		$this->debug("Base Each Line");
 		if ( $this->page_count == 0 )
 		{
 			$this->begin_page();
@@ -426,7 +426,10 @@ class reportico_report extends reportico_object
 			$this->format_criteria_selection_set();
 			//$this->page_headers();
 		}
+		$this->debug("Base Each Line");
 
+
+		$this->debug("Base Each Line");
 
 		if ( get_reportico_session_param("target_show_group_trailers") )
 		    $this->after_group_trailers();
@@ -459,7 +462,12 @@ class reportico_report extends reportico_object
 
 	function after_group_trailers()
 	{
+        // Dont apply trailers in FORM style
+        if ( session_request_item("target_style", "TABLE" ) == "FORM" )
+            return;
+
 		$trailer_first = true;
+        $group_changed = false;
 		if ( $this->line_count <= 0 )
 		{
 			// No group trailers as it's the first page
@@ -476,6 +484,7 @@ class reportico_report extends reportico_object
 				$group = current($this->query->groups);
 				if ( $this->query->changed($group->group_name) || $this->last_line) 
 				{
+                    $group_changed = true;
 					$lev = 0;
 					$tolev = 0;
 					while ( $lev <= $tolev )
@@ -536,15 +545,22 @@ class reportico_report extends reportico_object
                                 }
                             } // foreach
                         }
-						$this->format_group_trailer_end();
+                        if (  get_class($this) != "reportico_report_html_template" )
+						    $this->format_group_trailer_end();
 						if ( $trailer_first )
 							$trailer_first = false;
 						$lev++;
 						$this->end_line();
 					} // while
 				}
+
 			}
 			while( prev($this->query->groups) );
+
+            if ( $group_changed && get_class($this) == "reportico_report_html_template" )
+            {
+                $this->format_group_trailer_end();
+            }
 
 			// Plot After Group Graphs
             $graph_ct = 0;
@@ -616,9 +632,12 @@ class reportico_report extends reportico_object
 
 	function before_group_headers()
 	{
+        if ( session_request_item("target_style", "TABLE" ) == "FORM" )
+            return;
+
 		$changect = 0;
 		reset($this->query->groups);
-	    if ( get_reportico_session_param("target_show_group_headers") )
+	    //if ( get_reportico_session_param("target_show_group_headers") )
 		foreach ( $this->query->groups as $name => $group) 
 		{
 			if ( count($group->headers) > 0 && ( (  $group->group_name == "REPORT_BODY" && $this->line_count == 0 ) || $this->query->changed($group->group_name) )) 
@@ -627,20 +646,19 @@ class reportico_report extends reportico_object
 				{
 					$changect++;
 					$this->apply_format($group, "before_header");
-					$this->format_group_header_start();
+					$this->format_group_header_start($group->get_format("before_header") == "newpage");
 				}
 				else if ( $changect == 0 || 1)
 				{
-					$this->format_group_header_start();
+					$this->format_group_header_start($this->page_line_count > 0 && $group->get_format("before_header") == "newpage");
 				}
 
-
+ 
 				for ($i = 0; $i < count($group->headers); $i++ )
 				{
 					$col =& $group->headers[$i];
 					$this->format_group_header($col);
 				}
-				
 				if ( $graphs =& $this->query->get_graph_by_name($group->group_name) )
 				{
                     foreach ( $graphs as $graph )
@@ -655,7 +673,7 @@ class reportico_report extends reportico_object
 		}
 		
         // Show column headers for HTML/CSV on group change, or on first line of report, or on new page
-		if ( ( !$this->page_started && $this->query->target_format == "HTML" ) || 
+		if ( ( !$this->page_started && ( $this->query->target_format == "HTML" || $this->query->target_format == "HTMLPRINT" ) ) || 
                 ( $this->query->target_format != "CSV" && $changect > 0 ) || 
                 $this->page_line_count == 0 )
 		{	
@@ -937,6 +955,20 @@ class reportico_report_pdf extends reportico_report
         	$this->query->output_header_styles["border-color"] = array(0, 0, 0);
 		}
 
+        if ( !$this->query->output_before_form_row_styles )
+		{
+        	$this->query->output_before_form_row_styles["border-style"] = "solid";
+        	$this->query->output_before_form_row_styles["border-width"] = "0 0 0 0";
+        	$this->query->output_before_form_row_styles["border-color"] = array(0, 0, 0);
+		}
+
+        if ( !$this->query->output_after_form_row_styles )
+		{
+        	$this->query->output_after_form_row_styles["border-style"] = "solid";
+        	$this->query->output_after_form_row_styles["border-width"] = "1 0 0 0";
+        	$this->query->output_after_form_row_styles["border-color"] = array(0, 0, 0);
+		}
+
         if ( !$this->query->output_group_trailer_styles )
 		{
         	$this->query->output_group_trailer_styles["border-style"] = "solid";
@@ -1180,11 +1212,11 @@ class reportico_report_pdf extends reportico_report
 		reportico_report::finish();
 		$this->debug("Finish");
 
-		if ( $this->line_count < 1 )
-		{
-			$this->debug ("No Records Found" );
-			$this->document->Write(5, "No Records Found");
-		}
+		//if ( $this->line_count < 1 )
+		//{
+            //// No PDF data found just return
+            //return;
+		//}
 
 		$this->document->SetDisplayMode("real");
 		//$this->document->pdf_close($this->document);
@@ -1209,6 +1241,8 @@ class reportico_report_pdf extends reportico_report
             if ( $this->reporttitle )
                 $attachfile = preg_replace("/ /", "_", $this->reporttitle.".pdf");
 			header('Content-Disposition: attachment;filename='.$attachfile);
+
+
 			print($buf);
 			die;
 		}
@@ -1611,10 +1645,12 @@ class reportico_report_pdf extends reportico_report
 	{
 	}
 
-	function format_group_header_start()
+	function format_group_header_start() // PDF
 	{
-		$this->end_line();
+        if ( session_request_item("target_style", "TABLE" ) == "FORM" )
+            return;
 
+		$this->end_line();
 
 		// Throw new page if current position + number headers + line + headers > than bottom margin
 		$ln = 0;
@@ -1689,27 +1725,34 @@ class reportico_report_pdf extends reportico_report
 		    $this->yjump = 2;
 		    // Fetch Group Header Label Start Column + display
 		    $group_xpos = $col->get_attribute("group_header_label_xpos" );
+		    $group_data_xpos = $col->get_attribute("group_header_data_xpos" );
+
 		    if ( !$group_xpos )
 			    $group_xpos = $this->abs_left_margin;
+		    if ( !$group_data_xpos )
+			    $group_data_xpos = $group_xpos + 150;
+
 		    $group_xpos = $this->abs_paging_width($group_xpos);
+		    $group_data_xpos = $this->abs_paging_width($group_data_xpos);
+		    $group_label_width = $group_data_xpos - 5;
+		    $group_data_width = $this->abs_right_margin - $group_data_xpos;
 
-            $this->unapply_style_tags($this->query->output_page_styles);
+            if ( session_request_item("target_style", "TABLE" ) != "FORM" )
+                $this->unapply_style_tags($this->query->output_page_styles);
 
-	        $this->apply_style_tags($this->query->output_group_header_label_styles);
+            if ( session_request_item("target_style", "TABLE" ) != "FORM" )
+	            $this->apply_style_tags($this->query->output_group_header_label_styles);
 		    $this->set_position($group_xpos, $y);
 		    $padstring = $group_label;
-		    $this->draw_cell( 120, $this->vsize, "$padstring");
-	        $this->unapply_style_tags($this->query->output_group_header_label_styles);
-		    $this->set_position($group_xpos + 120, $y);
+		    $this->draw_cell( $group_label_width, $this->vsize, "$padstring");
+            if ( session_request_item("target_style", "TABLE" ) != "FORM" )
+	            $this->unapply_style_tags($this->query->output_group_header_label_styles);
+		    $this->set_position($group_data_xpos, $y);
     
-		    // Fetch Group Header Label End Column + display
-		    $group_xpos = $col->get_attribute("group_header_data_xpos" );
-		    if ( !$group_xpos )
-			    $group_xpos = $this->abs_paging_width($group_xpos) + 140;
-		    $group_xpos = $this->abs_paging_width($group_xpos);
-    
+            // Display group header value
 		    $contenttype = $col->derive_attribute( "content_type",  $col->query_name);
-	        $this->apply_style_tags($this->query->output_group_header_value_styles);
+            if ( session_request_item("target_style", "TABLE" ) != "FORM" )
+	            $this->apply_style_tags($this->query->output_group_header_value_styles);
 
 			$qn = get_query_column($col->query_name, $this->query->columns ) ;
 		    if ( $contenttype == "graphic"  || preg_match("/imagesql=/", $qn->column_value))
@@ -1741,9 +1784,9 @@ class reportico_report_pdf extends reportico_report
 				    {
 					    $x = $qn->abs_column_start;
 					    $y = $this->document->GetY();
-					    $this->set_position($group_xpos);
+					    $this->set_position($group_data_xpos);
 					    //$h = $this->document->ImageHeight($tmpnam.".png", $group_xpos, $y, $width );
-					    $h = $this->document->Image($tmpnam.".png", $group_xpos, $y, $width ) + 2;
+					    $h = $this->document->Image($tmpnam.".png", $group_data_xpos, $y, $width ) + 2;
                         if ( $h > $this->max_line_height )
                             $this->max_line_height = $h;
 					    $this->yjump =$h;
@@ -1753,19 +1796,21 @@ class reportico_report_pdf extends reportico_report
 		    }
 		    else
 		    {
-			    $this->set_position($group_xpos, $y);
+			    $this->set_position($group_data_xpos, $y);
 			    $padstring = $qn->column_value;
-			    $this->draw_cell(200, $this->vsize, "$padstring");
+			    $this->draw_cell($group_data_width, $this->vsize, "$padstring");
 		    }
-	        $this->unapply_style_tags($this->query->output_group_header_value_styles);
+            if ( session_request_item("target_style", "TABLE" ) != "FORM" )
+	            $this->unapply_style_tags($this->query->output_group_header_value_styles);
 		    $this->end_line();
-		    $this->draw_cell(200, $this->vsize, "");    // Blank cell to continue page breaking at this size
+		    $this->draw_cell($group_data_width, $this->vsize, "");    // Blank cell to continue page breaking at this size
 		    $y = $this->document->GetY();
 
 		    if ( $this->yjump )
 			    $this->set_position(false, $y + $this->yjump);
 
-	        $this->apply_style_tags($this->query->output_page_styles);
+            if ( session_request_item("target_style", "TABLE" ) != "FORM" )
+	            $this->apply_style_tags($this->query->output_page_styles);
         }
 	}
 
@@ -1853,8 +1898,11 @@ class reportico_report_pdf extends reportico_report
 		unlink($tmpnam.".png");
 	}
 
-	function format_headers()
+	function format_headers() // PDF
 	{
+        if ( session_request_item("target_style", "TABLE" ) == "FORM" )
+            return;
+
         // Handle multi line headers by processing all headers 
         // in "CALCULATE" mode and then print them on the appropriate line
         $this->draw_mode = "CALCULATE";
@@ -2200,6 +2248,74 @@ class reportico_report_pdf extends reportico_report
         
 		reportico_report::each_line($val);
 
+        if ( session_request_item("target_style", "TABLE" ) == "FORM" )
+        {
+		    $this->end_line();
+
+            // Throw new page if set to throw between rows
+	        $formpagethrow = $this->query->get_attribute("formBetweenRows");
+		    if ( $this->line_count > 1 && $formpagethrow == "newpage" )
+            {
+	            $this->finish_page();
+	            $this->begin_page();
+            }
+
+		    // Throw new page if current position + number headers + line + headers > than bottom margin
+		    $ln = 0;
+            $totheaderheight = 0;
+            $prevheight = $this->calculated_line_height;
+
+            $this->apply_style_tags($this->query->output_before_form_row_styles);
+		    $y = $this->document->GetY();
+		    $this->set_position($this->abs_left_margin, $y);
+		    $this->draw_cell(400, $this->vsize, "");    // Blank cell to continue page breaking at this size
+            $this->unapply_style_tags($this->query->output_before_form_row_styles);
+
+		    foreach ( $this->query->groups as $val )
+            {
+			    for ($i = 0; $i < count($val->headers); $i++ )
+			    {
+				    $col =& $val->headers[$i];
+				    $this->format_group_header($col);
+                    $totheaderheight += $this->calculated_line_height;
+			    }
+            }
+            foreach ( $this->query->display_order_set["column"] as $k => $w )
+		    {
+		        if ( $w->attributes["column_display"] != "show")
+					    continue;
+                $ct++;
+
+				$this->format_group_header($w);
+                $totheaderheight += $this->calculated_line_height;
+            }
+            $this->calculated_line_height = $totheaderheight;
+		    $y = $this->document->GetY();
+            $this->check_page_overflow();
+            $this->calculated_line_height = $prevheight;
+
+            // Between form solid line or blank line
+            if ( $formpagethrow == "blankline" )
+            {
+                $this->end_line();
+                $this->end_line();
+            }
+            else
+            {
+                $this->end_line();
+                $this->apply_style_tags($this->query->output_after_form_row_styles);
+		        $y = $this->document->GetY();
+		        $this->set_position($this->abs_left_margin, $y);
+		        $this->draw_cell($this->abs_right_margin - $this->abs_left_margin, $this->vsize, "");    // Blank cell to continue page breaking at this size
+                $this->unapply_style_tags($this->query->output_after_form_row_styles);
+                $this->end_line();
+
+            }
+
+            return;
+        }
+
+
 		$y = $this->document->GetY();
 		$this->check_graphic_fit();
 		
@@ -2445,8 +2561,8 @@ class reportico_report_pdf extends reportico_report
 
 			case "solidline" :
 				$y = $this->document->GetY();
-				$this->document->Line($this->abs_left_margin, $y, $this->abs_page_width - $this->abs_right_margin, $y);
-				$this->set_position($this->abs_right_margin, $y);
+				//$this->document->Line($this->abs_left_margin, $y, $this->abs_page_width - $this->abs_right_margin, $y);
+				//$this->set_position($this->abs_right_margin, $y);
 				$this->end_line();
 				break;
 
@@ -2598,13 +2714,21 @@ class reportico_report_html_template extends reportico_report
 			if ( $forward )
 				$forward .= "&";
 
-            // Show Go Back Button ( if user is not in "SINGLE REPORT RUN " )
-            if ( !$this->query->access_mode || ( $this->query->access_mode != "REPORTOUTPUT" )  )
+            // In printable html mode dont show back box
+		    if ( !get_request_item("printable_html") )
             {
-			    $this->text .= '<div class="swRepBackBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'execute_mode=PREPARE&session_name='.reportico_session_name().'">'.template_xlate("GO_BACK").'</a></div>';
+                // Show Go Back Button ( if user is not in "SINGLE REPORT RUN " )
+                if ( !$this->query->access_mode || ( $this->query->access_mode != "REPORTOUTPUT" )  )
+                {
+			        $this->text .= '<div class="swRepBackBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'execute_mode=PREPARE&session_name='.reportico_session_name().'" title="'.template_xlate("GO_BACK").'">&nbsp;</a></div>';
+                }
+		        if ( get_reportico_session_param("show_refresh_button") )
+			        $this->text .= '<div class="swRepRefreshBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'refreshReport=1&execute_mode=EXECUTE&session_name='.reportico_session_name().'" title="'.template_xlate("GO_REFRESH").'">&nbsp;</a></div>';
             }
-		    if ( get_reportico_session_param("show_refresh_button") )
-			    $this->text .= '<div class="swRepRefreshBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'refreshReport=1&execute_mode=EXECUTE&session_name='.reportico_session_name().'">'.template_xlate("GO_REFRESH").'</a></div>';
+            else
+            {
+		        $this->text .= '<div class="swRepPrintBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'printReport=1&execute_mode=EXECUTE&session_name='.reportico_session_name().'" title="'.template_xlate("GO_PRINT").'">'.template_xlate("GO_PRINT").'</a></div>';
+            }
 
 			$this->text .= '<div class="swRepNoRows">'.template_xlate("NO_DATA_FOUND").'</div>';
 		}
@@ -2808,6 +2932,9 @@ class reportico_report_html_template extends reportico_report
             $this->page_started = true;
         }
 
+        if ( session_request_item("target_style", "TABLE" ) == "FORM" )
+            return;
+
 		if ( $this->body_display != "show" )
 			return;
 		$this->text .="<thead><tr class='swRepColHdrRow'>";
@@ -2816,7 +2943,7 @@ class reportico_report_html_template extends reportico_report
 		$this->text .="</tr></thead><tbody>";
 	}
 
-	function format_group_header_start()
+	function format_group_header_start($throw_page = false)
 	{
         // Ensure group box spans to end of table
         $spanct = 0;
@@ -2826,10 +2953,13 @@ class reportico_report_html_template extends reportico_report
 
 		//$this->text .= "<TR class=swRepDatRow>";
 		//$this->text .= "<TD class=swRepDatVal colspan=\"".$spanct."\">";
-		$this->text .= '<TABLE class="swRepGrpHdrBox" cellspacing="0">';
+        if ( $throw_page )
+		    $this->text .= '<TABLE class="swRepGrpHdrBox swNewPage" cellspacing="0">';
+        else
+		    $this->text .= '<TABLE class="swRepGrpHdrBox" cellspacing="0">';
 	}
 
-	function format_group_header(&$col)
+	function format_group_header(&$col) // HTML
 	{
 		$this->text .= '<TR class="swRepGrpHdrRow">';
 		$this->text .= '<TD class="swRepGrpHdrLbl" '.$this->get_style_tags($this->query->output_group_header_label_styles).'>';
@@ -2885,10 +3015,16 @@ class reportico_report_html_template extends reportico_report
 			$this->text .= $url_string;
 		$this->text .= '</div>';
 	}
-	function format_column_trailer(&$trailer_col, &$value_col, $trailer_first=false)
+	function format_column_trailer(&$trailer_col, &$value_col, $trailer_first=false) // HTML
 	{
 		if ( !get_reportico_session_param("target_show_group_trailers") )
 			return;
+
+		$just = $trailer_col->derive_attribute( "justify", false);
+        if ( $just && $just != "left" ) 
+                $this->query->output_group_trailer_styles["text-align"] = $just;
+        else
+                $this->query->output_group_trailer_styles["text-align"] = "left";
 
 		if ( $value_col )
 		    if ( $trailer_first )
@@ -2935,7 +3071,9 @@ class reportico_report_html_template extends reportico_report
 	{
 
         if ( $this->page_started )
+        {
 		    $this->text .= "</TBODY></TABLE>";
+        }
         $this->page_started = false;
 		//$this->text .= "gte</TR>";
 	}
@@ -2948,10 +3086,55 @@ class reportico_report_html_template extends reportico_report
 		$this->text .= "</TR>";
 	}
 
-	function each_line($val)
+	function each_line($val) // HTML
 	{
 
 		reportico_report::each_line($val);
+
+        if ( session_request_item("target_style", "TABLE" ) == "FORM" )
+        {
+            if ( !$this->page_started )
+            {
+		        $formpagethrow = $this->query->get_attribute("formBetweenRows");
+                switch ( $formpagethrow )
+                {
+                    case "newpage":
+		                if ( $this->page_line_count > 0 ) 
+                            $formpagethrow = "swRepPageFormLine swNewPage";
+                        else
+                            $formpagethrow = "swRepPageFormLine";
+                        break;
+                    case "blankline":
+                        $formpagethrow = "swRepPageFormBlank";
+                        break;
+                    case "solidline":
+                        $formpagethrow = "swRepPageFormLine";
+                        break;
+                }
+
+	            $this->text .= '<TABLE class="swRepPage '.$formpagethrow.'" '.$this->get_style_tags($this->query->output_page_styles).'>';
+                $this->page_started = true;
+            }
+		    foreach ( $this->query->groups as $val )
+            {
+			    for ($i = 0; $i < count($val->headers); $i++ )
+			    {
+				    $col =& $val->headers[$i];
+				    $this->format_group_header($col);
+			    }
+            }
+            foreach ( $this->query->display_order_set["column"] as $k => $w )
+		    {
+		        if ( $w->attributes["column_display"] != "show")
+					    continue;
+					$this->format_group_header($w);
+            }
+		    $this->page_line_count++;
+		    $this->line_count++;
+            $this->text .= '</TABLE>';
+            $this->page_started = false;
+            return;
+        }
 
 		if ( $this->page_line_count == 1 )
 		{
@@ -2961,10 +3144,10 @@ class reportico_report_html_template extends reportico_report
 			//$this->text .="</tr>";
 		}
 
-		$this->begin_line();
 		//foreach ( $this->columns as $col )
 		if ( $this->body_display == "show" && get_reportico_session_param("target_show_detail") )
         {
+		    $this->begin_line();
             if ( !$this->page_started )
             {
 		        $this->text .= '<TABLE class="swRepPage" '.$this->get_style_tags($this->query->output_page_styles).'>';
@@ -2972,8 +3155,8 @@ class reportico_report_html_template extends reportico_report
             }
 			foreach ( $this->query->display_order_set["column"] as $col )
 				$this->format_column($col);
+		    $this->end_line();
         }
-		$this->end_line();
 
 		//if ( $y < $this->abs_bottom_margin )
 		//{
@@ -3002,12 +3185,19 @@ class reportico_report_html_template extends reportico_report
 		if ( $forward )
 			$forward .= "&";
 
-        if ( !$this->query->access_mode || ( $this->query->access_mode != "REPORTOUTPUT" )  )
+	    if ( !get_request_item("printable_html") )
         {
-		    $this->text .= '<div class="swRepBackBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'execute_mode=PREPARE&session_name='.reportico_session_name().'">'.template_xlate("GO_BACK").'</a></div>';
+            if ( !$this->query->access_mode || ( $this->query->access_mode != "REPORTOUTPUT" )  )
+            {
+			    $this->text .= '<div class="swRepBackBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'execute_mode=PREPARE&session_name='.reportico_session_name().'" title="'.template_xlate("GO_BACK").'">&nbsp;</a></div>';
+            }
+	        if ( get_reportico_session_param("show_refresh_button") )
+		        $this->text .= '<div class="swRepRefreshBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'refreshReport=1&execute_mode=EXECUTE&session_name='.reportico_session_name().'" title="'.template_xlate("GO_REFRESH").'">&nbsp;</a></div>';
         }
-	    if ( get_reportico_session_param("show_refresh_button") )
-		    $this->text .= '<div class="swRepRefreshBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'refreshReport=1&execute_mode=EXECUTE&session_name='.reportico_session_name().'">'.template_xlate("GO_REFRESH").'</a></div>';
+        else
+        {
+	        $this->text .= '<div class="swRepPrintBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'printReport=1&execute_mode=EXECUTE&session_name='.reportico_session_name().'" title="'.template_xlate("GO_PRINT").'">'.'&nbsp;'.'</a></div>';
+        }
 
 	}
 
@@ -3099,12 +3289,32 @@ class reportico_report_csv extends reportico_report
 		$this->page_line_count = 0;
 
 		// Start the web page
+		if ( ob_get_length() > 0 )
+		    ob_clean();	
+		header("Content-type: application/octet-stream");
+
+        $attachfile = "reportico.csv";
+        if ( $this->reporttitle )
+            $attachfile = preg_replace("/ /", "_", $this->reporttitle.".csv");
+		header('Content-Disposition: attachment; filename='.$attachfile);
+		header("Pragma: no-cache");
+		header("Expires: 0");
+
+		$this->debug("Excel Begin Page\n");
+
+		echo '"'."$this->reporttitle".'"';
+		echo "\n";
 	}
 
 	function finish ()
 	{
 		reportico_report::finish();
-		$this->debug("Excel End **");
+		//if ( $this->line_count < 1 )
+		//{
+            //// No CSV data found just return
+            //return;
+		//}
+
 		if ( $this->report_file )
 		{
 			$this->debug("Saved to $this->report_file");
@@ -3116,6 +3326,7 @@ class reportico_report_csv extends reportico_report
 			$len = strlen($buf) + 1;
 	
 			print($buf);
+            die;
 		}
 
 	}
@@ -3191,21 +3402,6 @@ class reportico_report_csv extends reportico_report
 	{
 		reportico_report::begin_page();
 
-		if ( ob_get_length() > 0 )
-		    ob_clean();	
-		header("Content-type: application/octet-stream");
-
-        $attachfile = "reportico.csv";
-        if ( $this->reporttitle )
-            $attachfile = preg_replace("/ /", "_", $this->reporttitle.".csv");
-		header('Content-Disposition: attachment; filename='.$attachfile);
-		header("Pragma: no-cache");
-		header("Expires: 0");
-
-		$this->debug("Excel Begin Page\n");
-
-		echo '"'."$this->reporttitle".'"';
-		echo "\n";
 	}
 
 	function format_criteria_selection($label, $value)
@@ -3250,7 +3446,7 @@ class reportico_report_csv extends reportico_report
 		echo "\n";
 	}
 
-	function format_group_header(&$col)
+	function format_group_header(&$col) // CSV
 	{
 		// Excel requires group headers are printed as the first columns in the spreadsheet against
 		// the detail. 

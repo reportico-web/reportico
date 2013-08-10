@@ -34,6 +34,16 @@ $locale_arr = array (
         "T_Create A New Project" => "Creare un nuovo progetto",
         "T_Configure Project" => "Configurazione del progetto",
         "T_Configure Tutorials" => "Configurare Tutorials",
+        "T_PRINTABLE" => "Stampabile HTML",
+        "T_PRINT_XML" => "Generare output XML",
+        "T_PRINT_HTML" => "Genera report HTML",
+        "T_PRINT_PDF" => "Genera rapporto PDF",
+        "T_PRINT_CSV" => "Genera CSV Rapporto",
+        "T_PRINT_JSON" => "Genera JSON Segnala",
+        "T_STYLE_FORM" => "Modulo di uscita",
+        "T_FORM" => "Modulo",
+        "T_TABLE" => "Tavolo",
+        "T_REPORT_STYLE" => "Stile",
         ),
         );
 ?>

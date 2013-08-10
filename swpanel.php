@@ -30,7 +30,7 @@
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- * @version $Id: swpanel.php,v 1.34 2013/04/24 22:03:23 peter Exp $
+ * @version $Id: swpanel.php,v 1.32 2013/07/28 12:04:54 peter Exp $
  */
 
 
@@ -371,7 +371,6 @@ class reportico_panel
 					$this->smarty->assign('SHOW_OUTPUT', false);
 
 				$op = session_request_item("target_format", "HTML");
-
 				$output_types = array (
 							"HTML" => "",
 							"PDF" => "",
@@ -384,6 +383,17 @@ class reportico_panel
 				foreach ( $output_types as $val )
 					$noutput_types[] = $val;
 				$this->smarty->assign('OUTPUT_TYPES', $noutput_types );
+
+				$op = session_request_item("target_style", "TABLE");
+				$output_styles = array (
+							"TABLE" => "",
+							"FORM" => ""
+							);
+				$output_styles[$op] = "checked";
+				$noutput_styles = array();
+				foreach ( $output_styles as $val )
+					$noutput_styles[] = $val;
+				$this->smarty->assign('OUTPUT_STYLES', $noutput_styles );
 
 				$attach = get_request_item("target_attachment", "1", $this->query->first_criteria_selection );
 				if ( $attach )
@@ -756,6 +766,8 @@ class reportico_xml_reader
 												"Values" => array("hide", "show") ),
 					"graphDisplay" => array ( "Title" => "GRAPHDISPLAY", "Type" => "DROPDOWN",  "XlateOptions" => true,
 												"Values" => array("hide", "show") ),
+					"formBetweenRows" => array ( "Title" => "FORMBETWEENROWS", "Type" => "DROPDOWN", "XlateOptions" => true,
+									"Values" => array("blankline", "solidline", "newpage") ),
 					"GroupHeaderColumn" => array ( "Title" => "GROUPHEADERCOLUMN", "Type" => "QUERYCOLUMNS" ),
 					"GroupTrailerDisplayColumn" => array ( "Title" => "GROUPTRAILERDISPLAYCOLUMN", "Type" => "QUERYCOLUMNS" ),
 					"GroupTrailerValueColumn" => array ( "Title" => "GROUPTRAILERVALUECOLUMN", "Type" => "QUERYCOLUMNS" ),
@@ -1990,7 +2002,12 @@ class reportico_xml_reader
 				if ( preg_match ( $match_key, $k, $matches ) )
 				{
 					if ( $k == "set_mainquerform_PreExecuteCode" )
-						$updates[$matches[1]] = ($v);
+                    {
+                        if ( get_magic_quotes_gpc() )
+                            $updates[$matches[1]] = stripslashes($v);
+                        else
+                            $updates[$matches[1]] = $v;
+                    }
 					else
 						$updates[$matches[1]] = stripslashes($v);
 				}
@@ -2016,7 +2033,7 @@ class reportico_xml_reader
                         {
 						    $p->import_into_query($qr);
 						    if ( $this->query->datasource->connect() )
-							    $p->test_query($this->query->datasource, $sql);
+							    $p->test_query($this->query, $sql);
                         }
 					}
 					$updateitem =& $anal["item"];
@@ -2534,7 +2551,7 @@ class reportico_xml_reader
                             {
 						        $p->import_into_query($qr);
 						        if ( $this->query->datasource->connect() )
-							        $p->test_query($this->query->datasource, $sql);
+							        $p->test_query($this->query, $sql);
                             }
 						}
 					}
@@ -2566,7 +2583,7 @@ class reportico_xml_reader
 				            $p = new reportico_sql_parser($sql);
 				            if ( $p->parse() )
                             {
-						        if ( $p->test_query($this->query->datasource, $sql) )
+						        if ( $p->test_query($this->query, $sql) )
 						        {
 							        $p->import_into_query($q);
 							        $this->query->set_criteria_lookup($ak[$lookup], $q, "WHAT", "NOW");
@@ -5508,7 +5525,7 @@ class reportico_xmlval
 
 	function unserialize ( )
 	{
-		$this->xmltext .= "<";
+		$this->xmltext = "<";
 		$this->xmltext .= $this->name;
 
 		if ( $this->attributes )

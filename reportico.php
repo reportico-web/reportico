@@ -30,7 +30,7 @@
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- * @version $Id: reportico.php,v 1.58 2013/04/24 22:03:22 peter Exp $
+ * @version $Id: reportico.php,v 1.48 2013/07/30 21:12:28 peter Exp $
  */
 
 // Include files
@@ -138,6 +138,27 @@ class reportico_object
         {
             if ( defined("SW_DB_TYPE") && SW_DB_TYPE == "framework" )
                 $parsed = "framework";
+            else
+            {
+                $parsed = preg_replace('/{constant,([^}]*)}/',
+                        	'\1',
+                        	$parsed);
+			    if ( defined ( $parsed ) )
+				    $parsed = constant($parsed);
+			    else
+				    $parsed = "";
+            }
+			return $parsed;
+        }
+		else
+        if ( 
+            preg_match ( "/{constant,SW_DB_PASSWORD}/", $parsed )  ||
+            preg_match ( "/{constant,SW_DB_USER}/", $parsed )  ||
+            preg_match ( "/{constant,SW_DB_DATABASE}/", $parsed ) 
+        )
+        {
+            if ( defined("SW_DB_TYPE") && SW_DB_TYPE == "framework" )
+                $parsed = "";
             else
             {
                 $parsed = preg_replace('/{constant,([^}]*)}/',
@@ -282,6 +303,7 @@ class reportico extends reportico_object
 	var $menuitems = array();
 	var $dropdown_menu = array();
 	var $projectitems = array();
+	var $target_style = false;
 	var $target_format = false;
 	var $lineno = 0;
 	var $groupvals = array();
@@ -320,6 +342,7 @@ class reportico extends reportico_object
 			"pdfFont" => "",
 			"pdfFontSize" => "",
 			"PreExecuteCode" =>  "NONE",
+			"formBetweenRows" => "solidline",
 			"bodyDisplay" => "show",
 			"graphDisplay" => "show"
 			);
@@ -369,6 +392,7 @@ class reportico extends reportico_object
     var $initial_report = false;
     var $initial_project_password = false;
     var $initial_output_format = false;
+    var $initial_output_style = false;
     var $initial_show_detail = false;
     var $initial_show_graph = false;
     var $initial_show_group_headers = false;
@@ -381,6 +405,9 @@ class reportico extends reportico_object
 
     // Whether to show refresh button on report output
     var $show_refresh_button = false;
+
+    // Whether to show print button on report output
+    var $show_print_button = true;
 
     // Session namespace to use
     var $session_namespace = false;
@@ -399,6 +426,10 @@ class reportico extends reportico_object
     // In standalone mode will be the reportico runner, otherwise the
     // script in which reportico is embedded
     var $url_path_to_calling_script = false;
+
+    // external user parameters as specified in sql as {USER_PARAM,your_parameter_name}
+    // set with $q->user_parameters["your_parameter_name"] = "value";
+	var $user_parameters = array();
 
 	function reportico()
 	{ 	
@@ -1192,7 +1223,11 @@ class reportico extends reportico_object
 
         // Set up show option check box settings
 
+        // If initial form style specified use it
+        if ( $this->initial_output_style ) set_reportico_session_param("target_style", $this->initial_output_style );
+
         // If default starting "show" setting provided by calling framework then use them
+        if ( $this->show_print_button ) set_reportico_session_param("show_print_button", ( $this->show_print_button == "show" ));
         if ( $this->show_refresh_button ) set_reportico_session_param("show_refresh_button", ( $this->show_refresh_button == "show" ));
         if ( $this->initial_show_detail ) set_reportico_session_param("target_show_detail",( $this->initial_show_detail == "show" ));
         if ( $this->initial_show_graph ) set_reportico_session_param("target_show_graph",( $this->initial_show_graph == "show" ));
@@ -1208,7 +1243,7 @@ class reportico extends reportico_object
 	    $this->target_show_column_headers = session_request_item("target_show_column_headers", true, !isset_reportico_session_param("target_show_column_headers"));
 	    $this->target_show_criteria = session_request_item("target_show_criteria", true, !isset_reportico_session_param("target_show_criteria"));
 
-		if ( get_reportico_session_param("firstTimeIn") && !$this->initial_output_format 
+		if ( get_reportico_session_param("firstTimeIn") 
                 && !$this->initial_show_detail && !$this->initial_show_graph && !$this->initial_show_group_headers 
                 && !$this->initial_show_group_trailers && !$this->initial_show_column_headers && !$this->initial_show_criteria 
         )
@@ -1551,9 +1586,16 @@ class reportico extends reportico_object
 					$_REQUEST["EXPANDED_".$col->query_name];
 		}
 
+
         // If external page has supplied an initial output format then use it
         if ( $this->initial_output_format )
             $_REQUEST["target_format"] = $this->initial_output_format;
+
+        // If printable HTML requested force output type to HTML
+        if ( get_request_item("printable_html") )
+        {
+            $_REQUEST["target_format"] = "HTML";
+        }
 
 		// Prompt user for report destination if target not already set - default to HTML if not set
 		if ( !array_key_exists("target_format", $_REQUEST) && $execute_mode == "EXECUTE" )
@@ -2704,6 +2746,11 @@ class reportico extends reportico_object
 		$this->reportico_ajax_preloaded = get_request_item("reportico_ajax_called", $this->reportico_ajax_preloaded);
 		if ( get_reportico_session_param("reportico_ajax_called" ) )
             $this->reportico_ajax_mode = true;
+
+        if ( $this->reportico_ajax_mode )
+        {
+            $this->embedded_report = true;
+        }
     }
 
 	// -----------------------------------------------------------------------------
@@ -2731,6 +2778,14 @@ class reportico extends reportico_object
 
 		$smarty->assign('REPORTICO_VERSION', $version);
 
+        // Assign user parameters to template
+        if ( $this->user_parameters && is_array($this->user_parameters) )
+	        foreach ( $this->user_parameters as $k => $v )
+            {
+                $param = preg_replace("/ /", "_", $k);
+                $smarty->assign('USER_'.$param, $v);
+            }
+
 		// Smarty needs to include Javascript if AJAX enabled
 		if ( !defined ('AJAX_ENABLED') )
 			define('AJAX_ENABLED', true);
@@ -2756,7 +2811,19 @@ class reportico extends reportico_object
 		$smarty->assign('REPORTICO_URL_DIR',  $this->reportico_url_path);
 
 		$smarty->assign('REPORTICO_AJAX_RUNNER',  $this->reportico_ajax_script_url);
+
+		$smarty->assign('PRINTABLE_HTML', false);
+        if ( get_request_item("printable_html") )
+        {
+		    $smarty->assign('PRINTABLE_HTML', true);
+        }
+
+        // In frameworks we dont want to load jquery when its intalled once when the module load
+        // so flag this unless specified in new_reportico_window
 		$smarty->assign('REPORTICO_AJAX_PRELOADED',  $this->reportico_ajax_preloaded);
+        if ( get_request_item("new_reportico_window",  false ) )
+		    $smarty->assign('REPORTICO_AJAX_PRELOADED',  false);
+    
 		$smarty->assign('SHOW_LOGOUT', false);
 		$smarty->assign('SHOW_LOGIN', false);
 		$smarty->assign('SHOW_REPORT_MENU', false);
@@ -2805,6 +2872,7 @@ class reportico extends reportico_object
 		$smarty->assign('AJAX_PARTIAL_RUNNER', $this->reportico_url_path.$partialajaxpath );
 
         $csspath = $this->reportico_url_path."/".find_best_url_in_include_path( SW_STYLESHEET );
+
 		$smarty->assign('STYLESHEET', $csspath);
 
         $jspath = find_best_url_in_include_path( "js/reportico.js" );
@@ -3075,6 +3143,7 @@ class reportico extends reportico_object
             $this->initial_execute_mode = false;
             $this->initial_report = false;
             $this->initial_project_password = false;
+            $this->initial_output_style = false;
             $this->initial_output_format = false;
             $this->initial_show_detail = false;
             $this->initial_show_graph = false;
@@ -3303,7 +3372,9 @@ class reportico extends reportico_object
 
         // We are in AJAX mode if it is passed throuh
         if ( isset($_REQUEST["reportico_ajax_called"]) )
-            set_reportico_session_param("reportico_ajax_called", $_REQUEST["reportico_ajax_called"] );
+            $this->reportico_ajax_called = $_REQUEST["reportico_ajax_called"];
+
+        //set_reportico_session_param("reportico_ajax_called", $_REQUEST["reportico_ajax_called"] );
 
         // Store whether in framework
         set_reportico_session_param("framework_parent",$this->framework_parent);
@@ -3376,6 +3447,14 @@ class reportico extends reportico_object
                         set_reportico_session_param("target_format","HTML");
                     }
                         
+                    // Default style to TABLE in PREPARE mode first time in
+                    //if ( get_reportico_session_param("firstTimeIn") && !isset($_REQUEST["target_style"]))
+                    //{
+                        //$this->target_format = "TABLE";
+                        //set_reportico_session_param("target_style","TABLE");
+//echo "set table ";
+                    //}
+                        
 					break;
 
 				case "EXECUTE":
@@ -3417,7 +3496,8 @@ class reportico extends reportico_object
             // is a refresh of the report in which case we want to keep the ones already there
             $runfromcriteriascreen = get_request_item("user_criteria_entered", false);
             $refreshmode = get_request_item("refreshReport", false);
-            if ( $runfromcriteriascreen || ( !isset_reportico_session_param('latestRequest') || !get_reportico_session_param('latestRequest')) )
+
+            if ( !get_request_item("printable_html") && ( $runfromcriteriascreen || ( !isset_reportico_session_param('latestRequest') || !get_reportico_session_param('latestRequest'))  ) )
             {
 			    set_reportico_session_param('latestRequest',$_REQUEST);
             }
@@ -3436,7 +3516,12 @@ class reportico extends reportico_object
 				if ( get_reportico_session_param('latestRequest') )
 				{
 					$OLD_REQUEST = $_REQUEST;
-					$_REQUEST = get_reportico_session_param('latestRequest');
+
+                    // If a new report is being run dont bother trying to restore previous
+                    // run crtieria
+                    if ( !get_request_item("xmlin") )
+					    $_REQUEST = get_reportico_session_param('latestRequest');
+
 					foreach ( $OLD_REQUEST as $k => $v )
 					{
 						if ( $k == 'partial_template' ) $_REQUEST[$k] = $v;
@@ -3571,8 +3656,22 @@ class reportico extends reportico_object
 					return;
 				}
 
+                // Situtations where we dont want to swithc results page - no data found, debug mode, not logged in
 				if ( ( count($g_system_errors) > 0 || $g_debug_mode || count($g_system_debug) > 0 || !get_reportico_session_param("loggedin") ) )
 				{
+                    // If errors and this is an ajax request return json ajax response for first message
+                    $runfromcriteriascreen = get_request_item("user_criteria_entered", false);
+                    global $g_no_data;
+                    if ( $g_no_data && get_request_item("new_reportico_window",  false ) && !$g_debug_mode && $this->target_format == "HTML" && $runfromcriteriascreen && $this->reportico_ajax_mode && count($g_system_errors) == 1 )
+                        
+                    {
+                        header("HTTP/1.0 404 Not Found", true);
+                        $response_array = array();
+                        $response_array["errno"] = $g_system_errors[0]["errno"];
+                        $response_array["errmsg"] = $g_system_errors[0]["errstr"];
+                        echo json_encode($response_array);
+                        die;
+                    }
 					$this->initialize_panels("PREPARE");
 					$this->set_request_columns();
 					$text = $this->panels["BODY"]->draw_smarty();
@@ -3614,6 +3713,11 @@ class reportico extends reportico_object
 						$this->panels["MAIN"]->smarty->assign('CONTENT', $text);
 
 						$this->panels["MAIN"]->smarty->assign('EMBEDDED_REPORT', $this->embedded_report);
+
+                        // When printing in separate html window make sure we dont treat report as embedded
+                        if ( get_request_item("new_reportico_window",  false ) )
+		                    $this->panels["MAIN"]->smarty->assign('EMBEDDED_REPORT',  false);
+
 						if ( $this->email_recipients )
 						{
 
@@ -3952,9 +4056,22 @@ class reportico extends reportico_object
 			$g_code_area = "";
 		}
 
-		// Execute Any Pre Execute Code
+		// Execute Any Pre Execute Code, if not specified then
+        // attempt to pick up code automatically from a file "projects/project/report.xml.php"
 		$code = $this->get_attribute("PreExecuteCode");
-		if ( $code && $code != "NONE" && $code != "XX" )
+		if ( !$code || $code == "NONE" || $code == "XX" )
+        {
+		    global $g_project;
+	        $source_path = find_best_location_in_include_path( "projects/".$g_project."/".$this->xmloutfile.".php" );
+            if ( is_file($source_path) )
+            {
+                $code = file_get_contents($source_path);
+            }
+            else
+                $code = false;
+        }
+
+		if ( $code )
 		{
 			$g_code_area = "";
 			$code = "\$lk =& \$this->lookup_queries;". $code;
@@ -4067,8 +4184,11 @@ class reportico extends reportico_object
 		}
 		$g_code_area = "";
 
+        global $g_no_data;
+        $g_no_data = false;
 		if ( $this->query_count == 0 && !$in_criteria_name && ( !$this->access_mode || $this->access_mode != "REPORTOUTPUT" ) )
 		{
+            $g_no_data = true;
 			handle_error ( template_xlate("NO_DATA_FOUND"), E_USER_WARNING );
 		}
 
@@ -5582,8 +5702,9 @@ class reportico_criteria_column extends reportico_query_column
 						$multisize = 4;
 						if ( $res && count($res[$k]) > 4 )
 							$multisize = count($res[$k]);
-						if ( count($res[$k]) >= 10 )
-							$multisize = 10;
+                        if ( isset ( $res[$k] ) )
+						    if ( count($res[$k]) >= 10 )
+							    $multisize = 10;
  						$text .= '<SELECT class="swPrpDropSelect" name="'.$tag_pref.$this->query_name.'[]" size="'.$multisize.'" multiple>';
 						break;
 
@@ -5820,8 +5941,9 @@ class reportico_criteria_column extends reportico_query_column
 						$multisize = 4;
 						if ( $res && count($res[$k]) > 4 )
 							$multisize = count($res[$k]);
-						if ( count($res[$k]) >= 10 )
-							$multisize = 10;
+                        if ( isset ( $res[$k] ) )
+						    if ( count($res[$k]) >= 10 )
+							    $multisize = 10;
 						if ( $in_is_expanding )
 							$multisize = 12;
 						$text .= '<SELECT class="swPrpDropSelect" name="'.$tag_pref.$this->query_name.'[]" size="'.$multisize.'" multiple>';
@@ -6588,6 +6710,24 @@ class reportico_assignment extends reportico_object
         if ( $g_external_param2 ) $in_string = preg_replace ("/{EXTERNAL_PARAM2}/", "'".$g_external_param2."'", $in_string);
         if ( $g_external_param3 ) $in_string = preg_replace ("/{EXTERNAL_PARAM3}/", "'".$g_external_param3."'", $in_string);
         if ( $g_external_user ) $in_string = preg_replace ("/{FRAMEWORK_USER}/", "'".$g_external_param3."'", $in_string);
+        if ( $g_external_param1 ) $in_string = preg_replace ("/{USER_PARAM,[^}*]}/", "'".$g_external_param1."'", $in_string);
+
+        // Replace External parameters specified by {USER_PARAM,xxxxx}
+		if ( preg_match_all ( "/{USER_PARAM,([^}]*)}/", $in_string, $matches ) )
+        {
+            foreach ( $matches[0] as $k => $v )
+            {
+                $param = $matches[1][$k];
+                if ( isset($in_query->user_parameters[$param] ) )
+                {
+                    $in_string = preg_replace("/{USER_PARAM,$param}/", $in_query->user_parameters[$param], $in_string);
+                }
+                else
+                {
+		            trigger_error("User parameter $param, specified but not provided to reportico", E_USER_ERROR);
+                }
+            }
+        }
 
 		$looping = true;
 		$out_string = $in_string;
@@ -6720,6 +6860,10 @@ class reportico_assignment extends reportico_object
 	{
 		// first change '(colval)' parameters
 		$out_string = $in_string;
+
+		$out_string = preg_replace('/{TARGET_STYLE}/', 
+			'$this->target_style', 
+			$out_string);
 
 		$out_string = preg_replace('/{TARGET_FORMAT}/', 
 			'$this->target_format', 

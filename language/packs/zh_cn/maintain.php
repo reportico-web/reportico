@@ -321,6 +321,7 @@ $locale_arr = array (
         "T_DELETEOKACT" => "成功删除。报告的定义是仍然活跃。如果你并不意味着删除报告，您可以按“保存”按钮来创建它",
         "T_INVALIDENTRY" => "无效的项目 -",
         "T_FORFIELD" => "字段 - ",
+        "T_FORMBETWEENROWS" => "表格样式的行分隔符",
 
 )
 );

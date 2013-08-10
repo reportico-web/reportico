@@ -13,6 +13,18 @@ form,table,input,a,div
     background-color: #ffffff;
 }
 
+.swPrpToolbarPane input
+{
+    float: right;
+    font-weight: 700;
+    margin: 10px 5px 0px 0px;
+    border: 1px solid #888888;
+    text-decoration: none;
+    background-color: #ffffff;
+    height: 32px;
+    cursor: pointer;
+}
+
 #swPrpSubmitPane input
 {
     float: right;
@@ -491,6 +503,9 @@ a:visited
     border-collapse: collapse;
 }
 
+.swRepPageFormPage { border-bottom: solid thin #AAAAAA; }
+.swRepPageFormLine { border-bottom: solid thin #AAAAAA; }
+.swRepPageFormBlank { margin-bottom: 20px; }
 
 /* No Rows Information Message */
 .swRepNoRows
@@ -632,29 +647,49 @@ a:visited
 {
 }
 
-.swRepRefreshBox,
-.swRepBackBox
+.swCSVBox, .swHTMLBox, .swPDFBox, .swPrintBox, .swXMLBox, .swJSONBox
 {
+    width: 30px;
     text-align: left;
-    font-size: 14pt ;
-    padding: 5px 5px 5px 5px;
-    margin: 5px 0px 5px 0px;
+    padding: 0px;
+    margin: 0px 0px 0px 0px;
+    background-repeat: no-repeat;
     text-decoration: none;
     float: left;
 }
 
-.swRepBackButton 
-{ 
-    border: solid;
-    border-width: 1px;
-    border-color : #000000;
-    background-color : #FFFFFF;
-    text-align: left;
-    font-size: 12pt ;
-    font-weight: bold;
-    padding: 5px 5px 5px 5px;
-    text-decoration: none;
+.swHTMLBox { background-image: url(../images/printhtml.png); }
+.swCSVBox { background-image: url(../images/printcsv.png); }
+.swPDFBox { background-image: url(../images/printpdf.png); }
+.swJSONBox { background-image: url(../images/printjson.png); }
+.swXMLBox { background-image: url(../images/printxml.png); }
+.swPrintBox { background-image: url(../images/printablehtml.png); }
+
+.swRepRefreshBox,
+.swRepPrintBox,
+.swRepBackBox
+{
+    width: 38px;
+    height: 38px;
+    margin: 0px 0px 0px 0px;
+    float: left;
 }
+
+.swRepPrintBox .swLinkMenu,
+.swRepRefreshBox .swLinkMenu,
+.swRepBackBox .swLinkMenu
+{
+    width: 32px;
+    text-align: left;
+    padding: 0px;
+    margin: 2px 5px 2px 5px;
+    text-decoration: none;
+    float: left;
+}
+
+.swRepPrintBox .swLinkMenu { background-image: url(../images/printer.png); }
+.swRepRefreshBox .swLinkMenu { background-image: url(../images/refreshbutton.png); }
+.swRepBackBox .swLinkMenu { background-image: url(../images/backbutton.png); }
 
 .swRepBackButton:hover 
 {
@@ -1009,7 +1044,8 @@ a:visited
         color : #000000;
     }
 
+    .swNewPage { page-break-before: always; }
+
     .swRepTitle { font-size: 18pt; text-align: center; margin-top: 0px; border: none;}
     .swMntForm { text-align: left; margin-left: 0%; background-color: #ffffff; border: none; }
-    @page { margin-top: 200; padding-top : 100px; }
 }

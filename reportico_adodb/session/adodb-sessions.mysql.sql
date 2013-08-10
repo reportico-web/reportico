@@ -1,4 +1,4 @@
--- $CVSHeader: reportico/reportico_adodb/session/adodb-sessions.mysql.sql,v 1.1.1.1 2010/10/26 21:13:51 peter Exp $
+-- $CVSHeader: reportico/reportico_adodb/session/adodb-sessions.mysql.sql,v 1.3 2013/08/08 18:20:42 peter Exp $
 
 CREATE DATABASE /*! IF NOT EXISTS */ adodb_sessions;
 

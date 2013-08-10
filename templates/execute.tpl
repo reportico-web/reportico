@@ -25,12 +25,51 @@
 {/if}
 {literal}
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/ui/i18n/jquery.ui.datepicker-{/literal}{$AJAX_DATEPICKER_LANGUAGE}{literal}.js"></script>
-<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/ui/i18n/jquery.ui.datepicker-{/literal}{$AJAX_DATEPICKER_LANGUAGE}{literal}.js"></script>
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/jquery.jdMenu.js"></script>
 <script type="text/javascript">var reportico_datepicker_language = "{/literal}{$AJAX_DATEPICKER_FORMAT}{literal}";</script>
 <script type="text/javascript">var reportico_this_script = "{/literal}{$SCRIPT_SELF}{literal}";</script>
 <script type="text/javascript">var reportico_ajax_script = "{/literal}{$REPORTICO_AJAX_RUNNER}{literal}";</script>
 <script type="text/javascript">var reportico_ajax_mode = "{/literal}{$REPORTICO_AJAX_MODE}{literal}";</script>
+<script type="text/javascript">var reportico_report_title = "{/literal}{$TITLE}{literal}";</script>
+<script type="text/javascript">var reportico_css_path = "{/literal}{$STYLESHEET}{literal}";</script>
+{/literal}
+{/else}
+<LINK id="PRP_StyleSheet" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEET}">
+{/if}
+{if $PRINTABLE_HTML}
+{literal}
+<script type="text/javascript">
+/*
+* Where multiple data tables exist due to graphs
+* resize the columns of all tables to match the first
+*/
+function resizeOutputTables(window)
+{
+  var tableArr = reportico_jquery(".swRepPage");
+  var tableDataRow = reportico_jquery('.swRepResultLine:first');
+
+  var cellWidths = new Array();
+  reportico_jquery(tableDataRow).each(function() {
+    for(j = 0; j < reportico_jquery(this)[0].cells.length; j++){
+       var cell = reportico_jquery(this)[0].cells[j];
+       if(!cellWidths[j] || cellWidths[j] < cell.clientWidth) cellWidths[j] = cell.clientWidth;
+    }
+  });
+
+  var tablect = 0;
+  reportico_jquery(tableArr).each(function() {
+    tablect++;
+    if ( tablect == 1 )
+        return;
+
+    reportico_jquery(this).find(".swRepResultLine:first").each(function() {
+      for(j = 0; j < reportico_jquery(this)[0].cells.length; j++){
+        reportico_jquery(this)[0].cells[j].style.width = cellWidths[j]+'px';
+      }
+   });
+ });
+}
+</script>
 {/literal}
 {/if}
 <div id="reportico_container">
@@ -58,9 +97,6 @@
 				Enter the report project password. <br><input type="password" name="project_password" value=""></div>
 				<input class="swLinkMenu" type="submit" name="login" value="Login">
 			</TD>
-{/if}
-{if $EMBEDDED_REPORT}
-<LINK id="PRP_StyleSheet" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEET}">
 {/if}
 {$CONTENT}
 </div>

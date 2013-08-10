@@ -26,7 +26,7 @@
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- * @version $Id: dyngraph_pchart3.php,v 1.6 2013/04/24 22:03:22 peter Exp $
+ * @version $Id: dyngraph_pchart3.php,v 1.7 2013/08/08 18:20:38 peter Exp $
  */
 
  /* pChart library inclusions */

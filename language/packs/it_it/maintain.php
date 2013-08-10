@@ -306,6 +306,7 @@ $locale_arr = array (
         "T_CSS1SIZE" => "Tale valore deve essere un valore di dimensione CSS, sia un numero seguito da 'px' o '%'",
         "T_CSS4SIZE" => "Dimensione deve essere di 4 delimitati da spazi numeri (ad alto, a sinistra, in basso, a destra) ciascuno un numero seguito da 'px' o '%'",
         "T_NUMBER" => "Il valore deve essere il numero",
+        "T_FORMBETWEENROWS" => "Stile forma Row separatore",
         )
         );
 ?>

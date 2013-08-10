@@ -26,7 +26,7 @@
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- * @version $Id: index.php,v 1.6 2013/04/24 22:03:22 peter Exp $
+ * @version $Id: index.php,v 1.7 2013/08/08 18:20:39 peter Exp $
  */
 
 header("Location: run.php?project=admin&execute_mode=ADMIN&clear_session=1");

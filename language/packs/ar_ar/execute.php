@@ -7,6 +7,7 @@ $locale_arr = array (
         "T_UNABLE_TO_CONTINUE" => "غير قادر على الاستمرار",
         "T_INFORMATION" => "معلومات",
         "T_GO_REFRESH" => "تحديث",
+        "T_GO_PRINT" => "طباعة",
         )
 );
 ?>

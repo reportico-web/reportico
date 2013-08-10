@@ -72,11 +72,7 @@
 {if $SHOW_TOPMENU}
 	<TABLE class="swPrpTopMenu">
 		<TR>
-{if ($DB_LOGGEDON)} 
-			<TD style="width: 10px" class="swPrpTopMenuCell">
-			</TD>
-{/if}
-			<TD style="text-align:left">
+			<TD style="width: 50%; text-align:left">
 {if $SHOW_ADMIN_BUTTON}
 {if strlen($ADMIN_MENU_URL)>0} 
                 <a class="swLinkMenu" href="{$ADMIN_MENU_URL}">{$T_ADMIN_MENU}</a>
@@ -88,6 +84,19 @@
 {/if}
 {if $SHOW_DESIGN_BUTTON}
                                 &nbsp;<input class="swLinkMenu" type="submit" name="submit_design_mode" value="{$T_DESIGN_REPORT}">
+{/if}
+{if $OUTPUT_SHOW_DEBUG}
+{if $SHOW_DESIGN_BUTTON}
+			<TD style="width:15%; text-align: right; padding-right: 10px;" class="swPrpTopMenuCell">
+				{$T_DEBUG_LEVEL}
+				<SELECT name="debug_mode">';
+					<OPTION {$DEBUG_NONE} label="None" value="0">{$T_DEBUG_NONE}</OPTION>
+					<OPTION {$DEBUG_LOW} label="Low" value="1">{$T_DEBUG_LOW}</OPTION>
+					<OPTION {$DEBUG_MEDIUM} label="Medium" value="2">{$T_DEBUG_MEDIUM}</OPTION>
+					<OPTION {$DEBUG_HIGH} label="High" value="3">{$T_DEBUG_HIGH}</OPTION>
+				</SELECT>
+			</TD>
+{/if}
 {/if}
 
 {/if}
@@ -111,51 +120,51 @@
 	</TABLE>
 {/if}
 {if $SHOW_CRITERIA}
-	<TABLE class="swPrpCritBox" id="critbody" cellpadding="0">
-{if $SHOW_OUTPUT}
-								<TR>
-									<td width="10%">
-										&nbsp;
-									</TD>
-									<TD width="40%">
+    <div style="display: none">
 										&nbsp;
 										{$T_OUTPUT}
-											<INPUT type="radio" name="target_format" value="HTML" {$OUTPUT_TYPES[0]}>HTML
-											<INPUT type="radio" name="target_format" value="PDF" {$OUTPUT_TYPES[1]}>PDF
-											<INPUT type="radio" name="target_format" value="CSV" {$OUTPUT_TYPES[2]}>CSV
+											<INPUT type="radio" id="rpt_format_html" name="target_format" value="HTML" {$OUTPUT_TYPES[0]}>HTML
+											<INPUT type="radio" id="rpt_format_pdf" name="target_format" value="PDF" {$OUTPUT_TYPES[1]}>PDF
+											<INPUT type="radio" id="rpt_format_csv" name="target_format" value="CSV" {$OUTPUT_TYPES[2]}>CSV
 {if $SHOW_DESIGN_BUTTON}
-											<INPUT type="radio" name="target_format" value="XML" {$OUTPUT_TYPES[3]}>XML
-											<INPUT type="radio" name="target_format" value="JSON" {$OUTPUT_TYPES[4]}>JSON
+											<INPUT type="radio" id="rpt_format_xml" name="target_format" value="XML" {$OUTPUT_TYPES[3]}>XML
+											<INPUT type="radio" id="rpt_format_json" name="target_format" value="JSON" {$OUTPUT_TYPES[4]}>JSON
 {/if}
-									<td width="30%" style="vertical-align: top">
-                                        {$T_SHOW}<BR>
-										<INPUT type="checkbox" style="display:none" name="user_criteria_entered" value="1" checked="1">
-										<INPUT type="checkbox" name="target_show_criteria" value="1" {$OUTPUT_SHOWCRITERIA}>{$T_SHOW_CRITERIA}
-										<INPUT type="checkbox" name="target_show_group_headers" value="1" {$OUTPUT_SHOWGROUPHEADERS}>{$T_SHOW_GRPHEADERS}
-										<INPUT type="checkbox" name="target_show_detail" value="1" {$OUTPUT_SHOWDETAIL}>{$T_SHOW_DETAIL}
-                                        <BR>
-										<INPUT type="checkbox" name="target_show_group_trailers" value="1" {$OUTPUT_SHOWGROUPTRAILERS}>{$T_SHOW_GRPTRAILERS}
-										<INPUT type="checkbox" name="target_show_column_headers" value="1" {$OUTPUT_SHOWCOLHEADERS}>{$T_SHOW_COLHEADERS}
+   
+    </div>
+	<TABLE class="swPrpCritBox" id="critbody">
+{if $SHOW_OUTPUT}
+        <TR>
+            <td>
+			<div style="width: 15%; padding-top: 15px;float: left;vertical-align: bottom;text-align: center">
+                <b>{$T_REPORT_STYLE}</b>
+                <INPUT type="radio" id="rpt_style_detail" name="target_style" value="TABLE" {$OUTPUT_STYLES[0]}>{$T_TABLE}
+                <INPUT type="radio" id="rpt_style_form" name="target_style" value="FORM" {$OUTPUT_STYLES[1]}>{$T_FORM}
+			</div>
+			<div class="swPrpToolbarPane" style="width: 35%; float: left; vertical-align: bottom;text-align: right">
+{if $SHOW_DESIGN_BUTTON}
+    				<input type="submit" class="prepareAjaxExecute swJSONBox" title="{$T_PRINT_JSON}" id="prepareAjaxExecute" name="submitPrepare" value="">
+    				<input type="submit" class="prepareAjaxExecute swXMLBox" style="margin-left: 20px" title="{$T_PRINT_XML}" id="prepareAjaxExecute" name="submitPrepare" value="">
+{/if}
+    				<input type="submit" class="prepareAjaxExecute swCSVBox" title="{$T_PRINT_CSV}" id="prepareAjaxExecute" name="submitPrepare" value="">
+    				<input type="submit" class="prepareAjaxExecute swPDFBox" title="{$T_PRINT_PDF}" id="prepareAjaxExecute" name="submitPrepare" value="">
+    				<input type="submit" class="prepareAjaxExecute swHTMLBox" title="{$T_PRINT_HTML}" id="prepareAjaxExecute" name="submitPrepare" value="">
+    				<input type="submit" class="prepareAjaxExecute swPrintBox" style="margin-right: 30px" title="{$T_PRINTABLE}" id="prepareAjaxExecute" name="submitPrepare" value="">
+			</div>
+			<div style="width: 50%; padding-top: 15px;float: left;vertical-align: bottom;text-align: center">
+                                  <b>{$T_SHOW}</b>
+				<INPUT type="checkbox" style="display:none" name="user_criteria_entered" value="1" checked="1">
+				<INPUT type="checkbox" name="target_show_criteria" value="1" {$OUTPUT_SHOWCRITERIA}>{$T_SHOW_CRITERIA}
+				<INPUT type="checkbox" name="target_show_group_headers" value="1" {$OUTPUT_SHOWGROUPHEADERS}>{$T_SHOW_GRPHEADERS}
+				<INPUT type="checkbox" name="target_show_detail" value="1" {$OUTPUT_SHOWDETAIL}>{$T_SHOW_DETAIL}
+				<INPUT type="checkbox" name="target_show_group_trailers" value="1" {$OUTPUT_SHOWGROUPTRAILERS}>{$T_SHOW_GRPTRAILERS}
+				<INPUT type="checkbox" name="target_show_column_headers" value="1" {$OUTPUT_SHOWCOLHEADERS}>{$T_SHOW_COLHEADERS}
 {if $OUTPUT_SHOW_SHOWGRAPH}
-										<INPUT type="checkbox" name="target_show_graph" value="1" {$OUTPUT_SHOWGRAPH}>{$T_SHOW_GRAPH}<BR>
+				<INPUT type="checkbox" name="target_show_graph" value="1" {$OUTPUT_SHOWGRAPH}>{$T_SHOW_GRAPH}<BR>
 {/if}
-									</td>
-{if $OUTPUT_SHOW_DEBUG}
-									<td width="20%" style="vertical-align: top">
-{if $SHOW_DESIGN_BUTTON}
-
-										{$T_DEBUG_LEVEL}
-										<SELECT class="swRunMode" name="debug_mode">';
-											<OPTION {$DEBUG_NONE} label="None" value="0">{$T_DEBUG_NONE}</OPTION>
-											<OPTION {$DEBUG_LOW} label="Low" value="1">{$T_DEBUG_LOW}</OPTION>
-											<OPTION {$DEBUG_MEDIUM} label="Medium" value="2">{$T_DEBUG_MEDIUM}</OPTION>
-											<OPTION {$DEBUG_HIGH} label="High" value="3">{$T_DEBUG_HIGH}</OPTION>
-										</SELECT>
-{/if}
-										<BR>
-									</td>
-{/if}
-								</TR>
+			</div>
+            </td>
+		</TR>
 {else}
 {/if}
 	</TABLE>
@@ -165,8 +174,9 @@
 		<TR id="swPrpCriteriaBody">
 			<TD class="swPrpCritEntry">
 			<div id="swPrpSubmitPane">
-    				<input type="submit" id="prepareAjaxExecute" name="submitPrepare" value="{$T_GO}">
+    				<input type="submit" class="prepareAjaxExecute swHTMLGoBox" id="prepareAjaxExecute" name="submitPrepare" value="{$T_GO}">
     				<input type="submit" class="reporticoSubmit" name="clearform" value="{$T_RESET}">
+                    &nbsp;
 			</div>
 
                 <TABLE class="swPrpCritEntryBox">
@@ -195,8 +205,8 @@
 {if isset($CRITERIA_ITEMS)}
 {if count($CRITERIA_ITEMS) > 1}
 <div id="swPrpSubmitPane">
-    <input type="submit" id="prepareAjaxExecute" name="submitPrepare" value="{$T_GO}">
-    <input type="submit" class="reporticoSubmit" name="clearform" value="{$T_RESET}">
+	<input type="submit" class="prepareAjaxExecute swHTMLGoBox" id="prepareAjaxExecute" name="submitPrepare" value="{$T_GO}">
+    <!--input type="submit" class="reporticoSubmit" name="clearform" value="{$T_RESET}"-->
 </div>
 {/if}
 {/if}

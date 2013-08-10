@@ -26,7 +26,7 @@
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- * @version $Id: swutil.php,v 1.38 2013/06/20 20:58:47 peter Exp $
+ * @version $Id: swutil.php,v 1.32 2013/08/08 18:20:39 peter Exp $
  */
 global $g_error_status;
 

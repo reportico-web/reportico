@@ -37,6 +37,16 @@ $locale_arr = array (
 		"T_SHOW_COLHEADERS" => "列标题",
 		"T_SHOW_DETAIL" => "细节",
 		"T_Configure Tutorials" => "配置教程",
+        "T_PRINTABLE" => "打印HTML",
+        "T_PRINT_XML" => "生成XML输出",
+        "T_PRINT_HTML" => "生成HTML报告",
+        "T_PRINT_PDF" => "生成PDF报告书“",
+        "T_PRINT_CSV" => "生成CSV报告书“",
+        "T_PRINT_JSON" => "生成JSON报告“",
+        "T_STYLE_FORM" => "表格输出",
+        "T_FORM" => "形式",
+        "T_TABLE" => "表",
+        "T_REPORT_STYLE" => "风格",
 
 ),
 );

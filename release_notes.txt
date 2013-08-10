@@ -1,6 +1,20 @@
 Reportico Open Source PHP Report Designer
 =========================================
 
+3.2.Beta - 24th July 2013
+-------------------------
+Printable HTML button
+Form Report
+New button icons for output format selection and report control
+Report group sections now in tables separate div instead of one big table
+Support for external user parameters n SQLs passed in user_parameters array
+Various Bug fixes :-
+    - Avoid empty rows in "No Detail" mode
+    - Problem displaying multiple group graphs
+    - Group Trailers pick up justify style from column definition
+    - Slashes added to quotes in custom code when magic quotes is on
+    - Save of XML causes report to save but screen to go white
+
 3.1 - 6th April 2013
 -----------------------
 Rename of adodb directory to repotico_adodb to stop conflict with PEAR

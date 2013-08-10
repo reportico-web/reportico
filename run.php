@@ -29,7 +29,7 @@
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- * @version $Id: run.php,v 1.13 2013/04/24 22:03:22 peter Exp $
+ * @version $Id: run.php,v 1.14 2013/08/08 18:20:39 peter Exp $
  */
 
     // set error reporting level
@@ -64,7 +64,7 @@
 
     // Reportico Ajax mode. If set to true will run all reportico requests from buttons and links
     // through AJAX, meaning reportico will refresh in its own window and not refresh the whole page
-    //$q->reportico_ajax_mode = true;
+    //$q->reportico_ajax_mode = false;
 
     /*
     ** Initial execution states .. allows you to start user and limit user to specfic
@@ -98,6 +98,9 @@
     //$q->initial_show_group_trailers = "show";
     //$q->initial_show_column_headers = "show";
     //$q->initial_show_criteria = "show";
+
+    // Set default output style - TABLE = one row per record, FORM = one page per record
+    //$q->initial_output_style = "TABLE";
 
     // Specify access mode to limit what user can do, one of :-
     // FULL - the default, allows user to log in under admin/design mode and design reports
@@ -135,6 +138,10 @@
     //define('SW_FRAMEWORK_DB_PASSWORD','PASSWORD');
     //define('SW_FRAMEWORK_DB_HOST', '127.0.0.1'); // Use ip:port to specifiy a non standard port
     //define('SW_FRAMEWORK_DB_DATABASE', '<DATABASENAME>');
+
+    // For passing external user parameters, can be referenced in SQL with {USER_PARAM,parameter_name}
+    // and can be referenced in custom SQL with $this->user_parameters
+    //$q->user_parameters["your_parameter_name"] = "your parameter value";
 
     // Run the report
 	$q->execute();

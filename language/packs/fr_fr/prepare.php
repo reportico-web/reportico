@@ -38,7 +38,16 @@ $locale_arr = array (
         "T_SHOW_GRPTRAILERS" => "Group Trailers",
         "T_SHOW_COLHEADERS" => "Column Headers",
         "T_SHOW_DETAIL" => "Detail",
-
+        "T_PRINTABLE" => "HTML imprimable",
+        "T_PRINT_XML" => "Générer une sortie XML",
+        "T_PRINT_HTML" => "Générer un rapport HTML",
+        "T_PRINT_PDF" => "Générer un rapport PDF",
+        "T_PRINT_CSV" => "Générer CSV rapport",
+        "T_PRINT_JSON" => "Générer JSON rapport",
+        "T_STYLE_FORM" => "Formulaire de sortie",
+        "T_FORM" => "Formulaire",
+        "T_TABLE" => "Tableau",
+        "T_REPORT_STYLE" => "Style",
 ),
 );
 ?>

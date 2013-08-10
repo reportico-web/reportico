@@ -28,7 +28,7 @@
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- * @version $Id: swsql.php,v 1.14 2013/04/24 22:03:23 peter Exp $
+ * @version $Id: swsql.php,v 1.15 2013/08/08 18:20:39 peter Exp $
  */
 
 
@@ -582,11 +582,10 @@ class reportico_sql_parser
     // avoid long execution times, the WHERE clause is modified to include a 1 = 0
     // test so that no rows are returned and therefore execution time is quick
 	// -----------------------------------------------------------------------------
-	function test_query($ds, $sql)
+	function test_query($in_query, $sql)
 	{
-		$conn =& $ds->ado_connection;
-
-		//$this->debug($sql);
+        
+		$conn =& $in_query->datasource->ado_connection;
 
         if ( $this->haswhere )
         {
@@ -610,6 +609,24 @@ class reportico_sql_parser
 		// Remove any meta_sql criteria links between "[" and "]"
 		$sql = preg_replace("/WHERE 1 = 1/i", "WHERE 1 = 0", $sql);
 		$sql = preg_replace("/\[.*\]/U", '',  $sql);
+
+        // Replace External parameters specified by {USER_PARAM,xxxxx}
+		if ( preg_match_all ( "/{USER_PARAM,([^}]*)}/", $sql, $matches ) )
+        {
+            foreach ( $matches[0] as $k => $v )
+            {
+                $param = $matches[1][$k];
+                if ( isset($in_query->user_parameters[$param] ) )
+                {
+                    $sql = preg_replace("/{USER_PARAM,$param}/", $in_query->user_parameters[$param], $sql);
+                }
+                else
+                {
+		            trigger_error("User parameter $param, specified but not provided to reportico", E_USER_ERROR);
+                }
+            }
+        }
+
 
 		$recordSet = $conn->Execute($sql) ;
 
