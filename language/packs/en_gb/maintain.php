@@ -215,6 +215,7 @@ $locale_arr = array (
         "T_LOOKUP" => "Database Lookup",
         "T_DATE" => "Date",
         "T_DATERANGE" => "Date Range",
+        "T_SQLCOMMAND" => "SQL Command",
         "T_LIST" => "Custom List",
         "T_NOINPUT" => "No Entry",
         "T_DROPDOWN" => "Drop Down List",

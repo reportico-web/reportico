@@ -1018,6 +1018,7 @@ function Image($file,$x,$y,$w=0,$h=0,$type='',$link='')
 		$w=$h*$info['w']/$info['h'];
 	if($h==0)
 		$h=$w*$info['h']/$info['w'];
+
 	$this->_out(sprintf('q %.2f 0 0 %.2f %.2f %.2f cm /I%d Do Q',$w*$this->k,$h*$this->k,$x*$this->k,($this->h-($y+$h))*$this->k,$info['i']));
 	if($link)
 		$this->Link($x,$y,$w,$h,$link);

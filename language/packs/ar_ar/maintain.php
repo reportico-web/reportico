@@ -204,6 +204,7 @@ $locale_arr = array (
         "T_LOOKUP" => "قاعدة بيانات بحث",
         "T_DATE" => "تاريخ",
         "T_DATERANGE" => "تاريخ المدى",
+        "T_SQLCOMMAND" => "أمر SQL",
         "T_LIST" => "عرف قائمة",
         "T_NOINPUT" => "أي إدخال",
         "T_DROPDOWN" => "القائمة المنسدلة",

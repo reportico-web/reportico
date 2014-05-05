@@ -36,8 +36,6 @@ define('SW_SAFE_DESIGN_MODE', true);
 // If false prevents any designing of reports
 define('SW_ALLOW_MAINTAIN', true);
 
-//  Stylesheets
-define('SW_STYLESHEET', 'stylesheet/reportico_joomla.css');
 // DB connection details for ADODB
 define('SW_DB_DRIVER', 'none');
 define('SW_DB_USER', '');

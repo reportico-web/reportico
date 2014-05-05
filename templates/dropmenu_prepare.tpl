@@ -137,7 +137,7 @@
 <!---->
 		<TR id="swPrpCriteriaBody">
 			<TD class="swPrpCritEntry">
-			<div id="swPrpSubmitPane">
+			<div id="btn btn-sm btn-default swPrpSubmitPane">
     				<input type="submit" id="prepareAjaxExecute" name="submitPrepare" value="{$T_GO}">
     				<input type="submit" class="reporticoSubmit" name="clearform" value="{$T_RESET}">
 			</div>
@@ -167,7 +167,7 @@
                 </TABLE>
 {if isset($CRITERIA_ITEMS)}
 {if count($CRITERIA_ITEMS) > 1}
-<div id="swPrpSubmitPane">
+<div id="btn btn-sm btn-default swPrpSubmitPane">
     <input type="submit" id="prepareAjaxExecute" name="submitPrepare" value="{$T_GO}">
     <input type="submit" class="reporticoSubmit" name="clearform" value="{$T_RESET}">
 </div>
@@ -201,13 +201,13 @@
 <p>
 {if $SHOW_EXPANDED}
 							{$T_SEARCH} {$EXPANDED_TITLE} :<br><input  type="text" name="expand_value" size="30" value="{$EXPANDED_SEARCH_VALUE}">
-									<input id="reporticoPerformExpand" class="swPrpSubmit" type="submit" name="EXPANDSEARCH_{$EXPANDED_ITEM}" value="Search"><br>
+									<input id="reporticoPerformExpand" class="btn btn-sm btn-default swPrpSubmit" type="submit" name="EXPANDSEARCH_{$EXPANDED_ITEM}" value="Search"><br>
 
 {$CONTENT}
 							<br>
-							<input class="swPrpSubmit" type="submit" name="EXPANDCLEAR_{$EXPANDED_ITEM}" value="Clear">
-							<input class="swPrpSubmit" type="submit" name="EXPANDSELECTALL_{$EXPANDED_ITEM}" value="Select All">
-							<input class="swPrpSubmit" type="submit" name="EXPANDOK_{$EXPANDED_ITEM}" value="OK">
+							<input class="btn btn-sm btn-default swPrpSubmit" type="submit" name="EXPANDCLEAR_{$EXPANDED_ITEM}" value="Clear">
+							<input class="btn btn-sm btn-default swPrpSubmit" type="submit" name="EXPANDSELECTALL_{$EXPANDED_ITEM}" value="Select All">
+							<input class="btn btn-sm btn-default swPrpSubmit" type="submit" name="EXPANDOK_{$EXPANDED_ITEM}" value="OK">
 {/if}
 {if !$SHOW_EXPANDED}
 {if !$REPORT_DESCRIPTION}

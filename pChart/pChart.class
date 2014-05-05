@@ -1,6 +1,6 @@
 <?php
  /*
-     pChart - a PHP class to build charts!
+     pChart - a PHP class to build charts!jjjjjjjjjjjjjjjjjjjj
      Copyright (C) 2008 Jean-Damien POGOLOTTI
      Version  1.27d last updated on 09/30/08
 
@@ -196,8 +196,9 @@
    /* This function create the background picture */
    function pChart($XSize,$YSize)
     {
-     $this->XSize   = $XSize;
-     $this->YSize   = $YSize;
+     $this->XSize   = $XSize * 2;
+     $this->YSize   = $YSize * 2;
+
      $this->Picture = imagecreatetruecolor($XSize,$YSize);
 
      $C_White =$this->AllocateColor($this->Picture,255,255,255);

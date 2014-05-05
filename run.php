@@ -29,7 +29,7 @@
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- * @version $Id: run.php,v 1.14 2013/08/08 18:20:39 peter Exp $
+ * @version $Id: run.php,v 1.18 2014/05/05 20:04:59 peter Exp $
  */
 
     // set error reporting level
@@ -64,7 +64,7 @@
 
     // Reportico Ajax mode. If set to true will run all reportico requests from buttons and links
     // through AJAX, meaning reportico will refresh in its own window and not refresh the whole page
-    //$q->reportico_ajax_mode = false;
+    $q->reportico_ajax_mode = true;
 
     /*
     ** Initial execution states .. allows you to start user and limit user to specfic
@@ -102,6 +102,9 @@
     // Set default output style - TABLE = one row per record, FORM = one page per record
     //$q->initial_output_style = "TABLE";
 
+    // Set source SQL to generate report from 
+    //$q->initial_sql = "SELECT column1 AS columntitle1, column2 AS columntitle2 FROM table";
+
     // Specify access mode to limit what user can do, one of :-
     // FULL - the default, allows user to log in under admin/design mode and design reports
     // ALLPROJECTS - allows entry to admin page to select project  but no ability to logon in admin/designer mode
@@ -127,7 +130,10 @@
     //$q->show_refresh_button = false;
 
     // Set to true if you are embedding in another report
-    //$q->embedded_report = false;
+    $q->embedded_report = false;
+
+    // Specify an alternative AJAX runner from the stanfdard run.php
+    //$q=>reportico_ajax_script_url = $_SERVER["SCRIPT_NAME"];
 
 
     // If you want to connect to a reporting database whose connection information is available in the calling
@@ -142,6 +148,32 @@
     // For passing external user parameters, can be referenced in SQL with {USER_PARAM,parameter_name}
     // and can be referenced in custom SQL with $this->user_parameters
     //$q->user_parameters["your_parameter_name"] = "your parameter value";
+
+    // Jquery already included?
+    $q->jquery_preloaded = false;
+
+    // Bootstrap Features
+    $q->bootstrap_styles = true;
+    $q->path_to_bootstrap = "DEFAULT";
+    $q->bootstrap_preloaded = false;
+
+    // Engine to use for charts .. 
+    // HTML reports can use javascript charting
+    $q->charting_engine = "PCHART";
+    $q->charting_engine_html = "NVD3";
+
+    // Whether to turn on dynamic grids
+    $q->dynamic_grids = true;
+    $q->dynamic_grids_sortable = true;
+    $q->dynamic_grids_max_page_size = 99999;
+    $q->dynamic_grids_searchable = 99999;
+    // Generate report definition from SQL  and set some column / report attributes
+    // Also the full report definition can be built up programmatically
+    // which requires further doicumentation
+    //$q->importSQL(""SELECT column1 AS columntitle1, column2 AS columntitle2 FROM table";
+    $q->get_column("column1")->set_attribute("column_display","hide");
+    $q->get_column("column1")->set_attribute("column_title","Custom Title");
+    $q->set_attribute("ReportTitle","New Report Title");
 
     // Run the report
 	$q->execute();

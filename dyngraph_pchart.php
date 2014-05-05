@@ -26,7 +26,7 @@
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- * @version $Id: dyngraph_pchart.php,v 1.13 2013/08/08 18:20:38 peter Exp $
+ * @version $Id: dyngraph_pchart.php,v 1.15 2014/05/05 20:04:59 peter Exp $
  */
 
  /* pChart library inclusions */
@@ -37,7 +37,7 @@
  include("pChart/pChart.class");
  include("pChart/pData.class");
  include("pChart/pCache.class"); 
- include("swutil.php"); 
+ include_once("swutil.php"); 
 
 ini_set("memory_limit","100M");
 error_reporting(E_ALL);
@@ -303,6 +303,7 @@ if ( $gridpos == "front" )
 
 $graphImage = new pChart($width,$height); 
 
+
 /* Turn of Antialiasing */
 $graphImage->Antialias = TRUE;
 
@@ -341,8 +342,10 @@ foreach ( $plot as $k => $v )
 		$stackedexists = true;
 	if ( $v["type"] == "STACKEDBAR" || $v["type"] == "BAR") 
 		$barexists = true;
-}
 
+    if ( $v["linecolor"] )
+        $graphImage->Palette[$k] = htmltorgb_pchart($v["linecolor"]);
+}
 
 $scale_drawing_mode = SCALE_NORMAL;
 $scale_drawing_mode = SCALE_START0;

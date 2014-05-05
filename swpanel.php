@@ -30,7 +30,7 @@
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- * @version $Id: swpanel.php,v 1.32 2013/07/28 12:04:54 peter Exp $
+ * @version $Id: swpanel.php,v 1.36 2014/05/05 20:04:59 peter Exp $
  */
 
 
@@ -376,7 +376,8 @@ class reportico_panel
 							"PDF" => "",
 							"CSV" => "",
 							"XML" => "",
-							"JSON" => ""
+							"JSON" => "",
+							"GRID" => ""
 							);
 				$output_types[$op] = "checked";
 				$noutput_types = array();
@@ -797,7 +798,7 @@ class reportico_xml_reader
 					"CriteriaDefaults" => array ( "Title" => "CRITERIADEFAULTS", "HelpPage" => "criteria" ),
 					"CriteriaList" => array ( "Title" => "CRITERIALIST", "HelpPage" => "criteria" ),
 					"CriteriaType" => array ( "Title" => "CRITERIATYPE", "HelpPage" => "criteria", "Type" => "DROPDOWN", 
-					"Values" => array("TEXTFIELD", "LOOKUP", "DATE", "DATERANGE", "LIST" ), "XlateOptions" => true ),
+					    "Values" => array("TEXTFIELD", "LOOKUP", "DATE", "DATERANGE", "LIST", "SQLCOMMAND" ), "XlateOptions" => true ),
 					"CriteriaHelp" => array ( "Type" => "HIDE", "Title" => "CRITERIAHELP" ),
 					"Use" => array ( "Title" => "USE", "HelpPage" => "criteria", "Type" => "DROPDOWN", 
                                         "Values" => array("DATA-FILTER","SHOW/HIDE", "SHOW/HIDE-and-GROUPBY") ),
@@ -806,7 +807,7 @@ class reportico_xml_reader
 					"CriteriaDisplay" => array ( "Title" => "CRITERIADISPLAY", "Type" => "DROPDOWN", "HelpPage" => "criteria", "XlateOptions" => true, 
 												"Values" => array("NOINPUT", "TEXTFIELD", "DROPDOWN", "MULTI", "CHECKBOX", "RADIO", "DMYFIELD", "MDYFIELD", "YMDFIELD" ) ),
 					"ExpandDisplay" => array ( "Title" => "EXPANDDISPLAY", "Type" => "DROPDOWN", "HelpPage" => "criteria", "XlateOptions" => true, 
-												"Values" => array("NOINPUT", "TEXTFIELD", "DROPDOWN", "MULTI", "CHECKBOX", "RADIO", "DMYFIELD", "MDYFIELD", "YMDFIELD" ) ),
+												"Values" => array("NOINPUT", "TEXTFIELD", "TEXTBOX", "DROPDOWN", "MULTI", "CHECKBOX", "RADIO", "DMYFIELD", "MDYFIELD", "YMDFIELD" ) ),
 					"DatabaseType" => array ( "Title" => "DATABASETYPE", "Type" => "DROPDOWN", 
 												"Values" => array("informix", "mysql", "sqlite-2", "sqlite-3", "none" ) ),
 					"justify" => array ( "Title" => "JUSTIFY", "Type" => "DROPDOWN",  "XlateOptions" => true,
@@ -837,16 +838,17 @@ class reportico_xml_reader
 
         // If using pchart engine, then certain graph options are not available
         // and should therefore be hidden from design pane
+		//$this->field_display["LineColor"]["Type"] = "HIDE";
+
         if ( !defined("SW_GRAPH_ENGINE") || SW_GRAPH_ENGINE == "PCHART" )
         {
     	    $this->field_display["GraphColor"]["Type"] = "HIDE";
 		    $this->field_display["XGridColor"]["Type"] = "HIDE";
 			$this->field_display["YGridColor"]["Type"] = "HIDE";
-			$this->field_display["XGridDisplay"]["Type"] = "HIDE";
-			$this->field_display["YGridDisplay"]["Type"] = "HIDE";
+			//$this->field_display["XGridDisplay"]["Type"] = "HIDE";
+			//$this->field_display["YGridDisplay"]["Type"] = "HIDE";
 			$this->field_display["GridPosition"]["Type"] = "HIDE";
-			$this->field_display["LineColor"]["Type"] = "HIDE";
-			$this->field_display["FillColor"]["Type"] = "HIDE";
+		    $this->field_display["FillColor"]["Type"] = "HIDE";
 		    $this->field_display["TitleColor"]["Type"] = "HIDE";
 		    $this->field_display["TitleFont"]["Type"] = "HIDE";
 		    $this->field_display["XTitleFont"]["Type"] = "HIDE";
@@ -2339,11 +2341,10 @@ class reportico_xml_reader
 					$pl =& $graph->plot[$anal["number"]];
 					$pl["name"] = $updates["PlotColumn"];
 					$pl["type"] = $updates["PlotType"];
-
+				    $pl["linecolor"] = $updates["LineColor"];
                     if ( defined("SW_GRAPH_ENGINE") && SW_GRAPH_ENGINE != "PCHART" )
                     {
 					    $pl["fillcolor"] = $updates["FillColor"];
-					    $pl["linecolor"] = $updates["LineColor"];
                     }
 					$pl["legend"] = $updates["Legend"];
 					break;
@@ -2363,11 +2364,12 @@ class reportico_xml_reader
                     if ( defined("SW_GRAPH_ENGINE") && SW_GRAPH_ENGINE != "PCHART" )
                     {
 					    $graph->set_graph_color($updates["GraphColor"]);
-					    $graph->set_grid($updates["GridPosition"],
-							$updates["XGridDisplay"],$updates["XGridColor"],
-							$updates["YGridDisplay"],$updates["YGridColor"]
+					    $graph->set_grid(".DEFAULT",
+							$updates["XGridDisplay"],".DEFAULT",
+							$updates["YGridDisplay"],".DEFAULT"
 							);
                     }
+                    
 
 					$graph->set_title($updates["Title"]);
 					$graph->set_xtitle($updates["XTitle"]);
@@ -2676,7 +2678,7 @@ class reportico_xml_reader
 	{
 		$text = "";
 		$text .= '<TD>';
-		$text .= '<input class="swMntButton reporticoSubmit" type="submit" name="submit_'.$in_tag.'_ADD" value="'.template_xlate("ADD").'">';
+		$text .= '<input class="'.$this->query->getBootstrapStyle('design_ok').'swMntButton reporticoSubmit" type="submit" name="submit_'.$in_tag.'_ADD" value="'.template_xlate("ADD").'">';
 		$text .= '</TD>';
 
         // Show Import/Link options 
@@ -2703,9 +2705,9 @@ class reportico_xml_reader
 	function & draw_movedown_button ($in_tag, $in_value = false) 
 	{
 		$text = "";
-		$text .= '<TD class="swMntUpDownButtonCell">';
+		//$text .= '<TD class="swMntUpDownButtonCell">';
 		$text .= '<input class="swMntMoveDownButton reporticoSubmit" type="submit" name="submit_'.$in_tag.'_MOVEDOWN" value="">';
-		$text .= '</TD>';
+		//$text .= '</TD>';
 		return $text;
 	}
 
@@ -2748,27 +2750,38 @@ class reportico_xml_reader
 		$helppage = "importlink";
 		if ( $helppage )
 		{
-			$docpath = find_best_url_in_include_path( "doc/reportico/tutorial_reportico.".$helppage.".pkg.html" );
-			$helpimg = find_best_url_in_include_path( "images/help.png" );
-            $dr = get_reportico_url_path();
-			$text .= '<a target="_blank" href="'.$dr.$docpath.'">';
-			$text .= '<img class="swMntHelpImage" alt="tab" src="'.$dr.$helpimg.'">';
-			$text .= '</a>&nbsp;';
+            if ( $this->query->url_path_to_assets )
+            {
+			    $docpath = $this->query->url_path_to_assets."/doc/reportico/tutorial_reportico.".$helppage.".pkg.html";
+			    $helpimg = $this->query->url_path_to_assets."/images/help.png";
+			    $text .= '<a target="_blank" href="'.$docpath.'#'.$helppage.'.'.$striptag.'">';
+			    $text .= '<img class="swMntHelpImage" alt="tab" src="'.$helpimg.'">';
+			    $text .= '</a>&nbsp;';
+            }
+            else
+            {
+			    $docpath = find_best_url_in_include_path( "doc/reportico/tutorial_reportico.".$helppage.".pkg.html" );
+			    $helpimg = find_best_url_in_include_path( "images/help.png" );
+                $dr = get_reportico_url_path();
+			    $text .= '<a target="_blank" href="'.$dr.$docpath.'">';
+			    $text .= '<img class="swMntHelpImage" alt="tab" src="'.$dr.$helpimg.'">';
+			    $text .= '</a>&nbsp;';
+            }
 		}
 
         // Show options options to import or link
         $listarr = array();
-        if ( $link_or_import == "LINK" || $link_or_import == "LINKANDIMPORT" )
-            $listarr["linkto"] = template_xlate("MAKELINKTOREPORT");
         if ( $link_or_import == "IMPORT" || $link_or_import == "LINKANDIMPORT" )
             $listarr["import"] = template_xlate("IMPORTREPORT");
+        if ( $link_or_import == "LINK" || $link_or_import == "LINKANDIMPORT" )
+            $listarr["linkto"] = template_xlate("MAKELINKTOREPORT");
         $text .= $this->draw_array_dropdown("linkorimport_".$this->id, $listarr, $this->query->reportlink_or_import, false, false, true);
 
 		$text .= '</a>&nbsp;&nbsp;';
 
         // Draw report names we can link to
         $text .= $this->draw_select_file_list ($this->query->reports_path, "/.*\.xml/", false, $preselectedvalue, true, false, "reportlink" );
-        $text .= '<input class="swMntButton reporticoSubmit" style="margin-right: 20px" type="submit" name="submit_'.$this->id.'_REPORTLINK" value="'.template_xlate("OK").'">';
+        $text .= '<input class="'.$this->query->getBootstrapStyle('design_ok').'swMntButton reporticoSubmit" style="margin-right: 20px" type="submit" name="submit_'.$this->id.'_REPORTLINK" value="'.template_xlate("OK").'">';
 
         if ( $this->query->reportlink_report )
         {
@@ -2828,7 +2841,7 @@ class reportico_xml_reader
                 }
     
                 $text .= $this->draw_array_dropdown("reportlinkitem_".$this->id, $listarr, false, false, false, true);
-                $text .= '<input class="swMntButton reporticoSubmit" style="margin-right: 20px" type="submit" name="submit_'.$this->id.'_REPORTLINKITEM" value="'.template_xlate("OK").'">';
+                $text .= '<input class="'.$this->query->getBootstrapStyle('design_ok').'swMntButton reporticoSubmit" style="margin-right: 20px" type="submit" name="submit_'.$this->id.'_REPORTLINKITEM" value="'.template_xlate("OK").'">';
             }
         }
 
@@ -2873,9 +2886,9 @@ class reportico_xml_reader
 	function & draw_moveup_button ($in_tag, $in_value = false) 
 	{
 		$text = "";
-		$text .= '<TD class="swMntUpDownButtonCell">';
+		//$text .= '<TD class="swMntUpDownButtonCell">';
 		$text .= '<input class="swMntMoveUpButton reporticoSubmit" type="submit" name="submit_'.$in_tag.'_MOVEUP" value="">';
-		$text .= '</TD>';
+		//$text .= '</TD>';
 		return $text;
 	}
 
@@ -2884,9 +2897,9 @@ class reportico_xml_reader
 	function & draw_delete_button ($in_tag, $in_value = false) 
 	{
 		$text = "";
-		$text .= '<TD class="swMntUpDownButtonCell">';
+		//$text .= '<TD class="swMntUpDownButtonCell">';
 		$text .= '<input class="swMntDeleteButton reporticoSubmit" type="submit" name="submit_'.$in_tag.'_DELETE" value="">';
-		$text .= '</TD>';
+		//$text .= '</TD>';
 		return $text;
 	}
 
@@ -2895,7 +2908,7 @@ class reportico_xml_reader
 	function & draw_select_box ($in_tag, $in_array, $in_value = false) 
 	{
 		$text = "";
-		$text .= '<select class="swPrpDropSelect" name="execute_mode">';
+		$text .= '<select class="'.$this->query->getBootstrapStyle('design_dropdown').'swPrpDropSelect" name="execute_mode">';
 		$text .= '<OPTION selected label="MAINTAIN" value="MAINTAIN">Maintain</OPTION>';
 		$text .= '<OPTION label="PREPARE" value="PREPARE">Prepare</OPTION>';
 		$text .= '</SELECT>';
@@ -2909,31 +2922,31 @@ class reportico_xml_reader
 		$text = "";
 		if ( !$this->is_showing($in_tag ) )
 		{
-			$text .= "<TR>";
-			$text .= '<TD class="swMntVertTabMenuCellUnsel">';
+			$text .= '<LI  class="swMntVertTabMenuCellUnsel">';
+			$text .= '<a class="" name="submit_'.$in_tag."_SHOW".'" >';
 			$text .= '<input class="swMntVertTabMenuButUnsel reporticoSubmit" type="submit" name="submit_'.$in_tag."_SHOW".'" value="'.$in_value.'">';
-			$text .= '</TD>';
 			if ( $in_delete )
 				$text .= $this->draw_delete_button ($in_tag) ;
 			if ( $in_moveup )
 				$text .= $this->draw_moveup_button ($in_tag) ;
 			if ( $in_movedown )
 				$text .= $this->draw_movedown_button ($in_tag) ;
-			$text .= "</TR>";
+			$text .= '</a>';
+			$text .= '</LI>';
 		}
 		else
 		{
-			$text .= "<TR>";
-			$text .= '<TD  class="swMntVertTabMenuCellSel">';
+			$text .= '<LI  class="active swMntVertTabMenuCellSel">';
+			$text .= '<a class="" name="submit_'.$in_tag."_SHOW".'" >';
 			$text .= '<input class="swMntVertTabMenuButSel reporticoSubmit" type="submit" name="submit_'.$in_tag."_SHOW".'" value="'.$in_value.'">';
-			$text .= '</TD>';
 			if ( $in_delete )
 				$text .= $this->draw_delete_button ($in_tag) ;
 			if ( $in_moveup )
 				$text .= $this->draw_moveup_button ($in_tag) ;
 			if ( $in_movedown )
 				$text .= $this->draw_movedown_button ($in_tag) ;
-			$text .= "</TR>";
+			$text .= '</a>';
+			$text .= '</LI>';
 		}
 		return $text;
 		
@@ -2946,15 +2959,21 @@ class reportico_xml_reader
         $in_value = template_xlate($in_value);
 		if ( !$this->is_showing($in_tag ) )
 		{
-			$text .= '<TD class="swMntTabMenuCellUnsel">';
+            
+			$text .= '<LI class="swMntTabMenuCellUnsel">';
+			//$text .= '<input class="swMntTabMenuBu1tUnsel reporticoSubmit" type="submit" name="submit_'.$in_tag."_SHOW".'" value="'.$in_value.'">';
+			$text .= '<a class="swMntTabMenuBu1tUnsel reporticoSubmit" name="submit_'.$in_tag."_SHOW".'" >';
 			$text .= '<input class="swMntTabMenuButUnsel reporticoSubmit" type="submit" name="submit_'.$in_tag."_SHOW".'" value="'.$in_value.'">';
-			$text .= '</TD>';
+			$text .= '</a>';
+			$text .= '</LI>';
 		}
 		else
 		{
-			$text .= '<TD  class="swMntTabMenuCellSel">';
+			$text .= '<LI  class="active swMntTabMenuCellSel">';
+			$text .= '<a class="swMntTabMenuBu1tUnsel reporticoSubmit" name="submit_'.$in_tag."_SHOW".'" >';
 			$text .= '<input class="swMntTabMenuButSel reporticoSubmit" type="submit" name="submit_'.$in_tag."_SHOW".'" value="'.$in_value.'">';
-			$text .= '</TD>';
+			$text .= '</a>';
+			$text .= '</LI>';
 		}
 		return $text;
 		
@@ -3092,9 +3111,9 @@ class reportico_xml_reader
 						$text .= '<TD colspan="2">';
 						$text .= '&nbsp;&nbsp;'.template_xlate('PROJECT').$g_project.'&nbsp;&nbsp;&nbsp;&nbsp;';
 						$text .= template_xlate('REPORT_FILE').' <input type="text" name="xmlout" value="'.$this->query->xmloutfile.'">';
-						$text .= '&nbsp;&nbsp;<input class="swLinkMenu reporticoSubmit" type="submit" name="submit_xxx_SAVE" value="'.template_xlate("SAVE").'">';
-						$text .= '&nbsp;&nbsp;<input class="swLinkMenu reporticoSubmit" type="submit" name="submit_maintain_NEW" value="'.template_xlate("NEW_REPORT").'">';
-						$text .= '<input class="swLinkMenu reporticoSubmit" style="background-color: #ffcccc; margin-left: 80px" type="submit" name="submit_xxx_DELETEREPORT" value="'.template_xlate("DELETE_REPORT").'">';
+						$text .= '&nbsp;&nbsp;<input class="'.$this->query->getBootstrapStyle('button_admin').'swLinkMenu reporticoSubmit" type="submit" name="submit_xxx_SAVE" value="'.template_xlate("SAVE").'">';
+						$text .= '&nbsp;&nbsp;<input class="'.$this->query->getBootstrapStyle('button_admin').'swLinkMenu reporticoSubmit" type="submit" name="submit_maintain_NEW" value="'.template_xlate("NEW_REPORT").'">';
+						$text .= '<input class="'.$this->query->getBootstrapStyle('button_delete').'swLinkMenu reporticoSubmit" style="margin-left: 80px" type="submit" name="submit_xxx_DELETEREPORT" value="'.template_xlate("DELETE_REPORT").'">';
 						$text .= '</TD>';
 						$text .= '</TR>';
 						//$text .= '<TR>';
@@ -3105,8 +3124,7 @@ class reportico_xml_reader
 						$this->id .= "quer";
 						//$text .= '</TR>';
 						$text .= '</TABLE>';
-						$text .= '<TABLE cellspacing="0" cellpadding="0" class="swMntMainBox">';
-						$text .= '<TR>';
+						$text .= '<UL style="width:100%" class="'.$this->query->getBootstrapStyle('htabs').'swMntMainBox">';
 						
 						// Force format Screen if none chosen
 						$match = "/quer$/";
@@ -3117,8 +3135,7 @@ class reportico_xml_reader
 						$text .= $this->draw_show_hide_tab_button ($this->id."assg", "ASSIGNMENTS") ;
 						$text .= $this->draw_show_hide_tab_button ($this->id."crit", "CRITERIA") ;
 						$text .= $this->draw_show_hide_tab_button ($this->id."outp", "OUTPUT") ;
-						$text .= '</TR>';
-						$text .= '</TABLE>';
+						$text .= '</UL>';
 						$text .= '<TABLE cellspacing="0" cellpadding="0" class="swMntInnerBox">';
 						break;
 
@@ -3341,15 +3358,13 @@ class reportico_xml_reader
 
 							$text .= '<TR class="swMntRowBlock">';
 							$text .= '<TD style="width: 100%;">';
-							$text .= '<TABLE cellspacing="0" cellpadding="0" class="swMntMainBox">';
-							$text .= '<TR>';
+						    $text .= '<UL style="width:100%" class="'.$this->query->getBootstrapStyle('htabs').'swMntMainBox">';
 							$text .= $this->draw_show_hide_tab_button ($this->id."pghd", "PAGE_HEADERS") ;
 							$text .= $this->draw_show_hide_tab_button ($this->id."pgft", "PAGE_FOOTERS") ;
 							$text .= $this->draw_show_hide_tab_button ($this->id."dord", "DISPLAY_ORDER") ;
 							$text .= $this->draw_show_hide_tab_button ($this->id."grps", "GROUPS") ;
 							$text .= $this->draw_show_hide_tab_button ($this->id."grph", "GRAPHS") ;
-							$text .= '</TR>';
-							$text .= '</TABLE>';
+							$text .= '</UL>';
 							$text .= '</TD>';
 							$text .= '</TR>';
 							$text .= '<TR class="swMntRowBlock">';
@@ -3397,14 +3412,12 @@ class reportico_xml_reader
 
 							$text .= '<TR class="swMntRowBlock">';
 							$text .= '<TD style="width: 100%;">';
-							$text .= '<TABLE cellspacing="0" cellpadding="0" class="swMntMainBox">';
-							$text .= '<TR>';
+						    $text .= '<UL style="width:100%" class="'.$this->query->getBootstrapStyle('htabs').'swMntMainBox">';
 							$text .= $this->draw_show_hide_tab_button ($this->id."sqlt", "SQL") ;
 							$text .= $this->draw_show_hide_tab_button ($this->id."qcol", "QUERY_COLUMNS") ;
 							//$text .= $this->draw_show_hide_tab_button ($this->id."ords", "ORDER_BY") ;
 							$text .= $this->draw_show_hide_tab_button ($this->id."psql", "PRESQLS") ;
-							$text .= '</TR>';
-							$text .= '</TABLE>';
+							$text .= '</UL>';
 							$text .= '<TABLE cellspacing="0" cellpadding="0" class="swMntInnerBox">';
 						}
 							$text .= '<!--End Query-->';
@@ -3748,12 +3761,10 @@ class reportico_xml_reader
 
 					$text .= "\n".'<TR class="swMntRowBlock">'."\n";
 					$text .= '	<TD style="width: 100%;" colspan="4">'."\n";
-					$text .= '		<TABLE cellspacing="0" cellpadding="0" class="swMntMainBox">'."\n";
-					$text .= '			<TR>'."\n";
+					$text .= '<UL style="width:100%" class="'.$this->query->getBootstrapStyle('htabs').'swMntMainBox">';
 					$text .= $this->draw_show_hide_tab_button ($this->id."detl", "DETAILS") ;
 					$text .= $this->draw_show_hide_tab_button ($this->id."plot", "PLOTS") ;
-					$text .= '			</TR>'."\n";
-					$text .= '		</TABLE>'."\n";
+					$text .= '		</UL>'."\n";
 					$text .= '		<TABLE cellspacing="0" cellpadding="0" class="swMntInnerBox">'."\n";
 				}
 
@@ -3768,13 +3779,11 @@ class reportico_xml_reader
 
 					$text .= "\n".'<TR class="swMntRowBlock">'."\n";
 					$text .= '	<TD style="width: 100%;" colspan="4">'."\n";
-					$text .= '		<TABLE cellspacing="0" cellpadding="0" class="swMntMainBox">'."\n";
-					$text .= '			<TR>'."\n";
+					$text .= '<UL style="width:100%" class="'.$this->query->getBootstrapStyle('htabs').'swMntMainBox">';
 					$text .= $this->draw_show_hide_tab_button ($this->id."detl", "DETAILS") ;
 					$text .= $this->draw_show_hide_tab_button ($this->id."ghdr", "HEADERS") ;
 					$text .= $this->draw_show_hide_tab_button ($this->id."gtrl", "TRAILERS") ;
-					$text .= '			</TR>'."\n";
-					$text .= '		</TABLE>'."\n";
+					$text .= '		</UL>'."\n";
 					$text .= '		<TABLE cellspacing="0" cellpadding="0" class="swMntInnerBox">'."\n";
 				}
 
@@ -3790,8 +3799,7 @@ class reportico_xml_reader
 					$text .= "\n<!--startcrit bit ".$this->id."-->";
 					$text .= '<TR class="swMntRowBlock">'."\n";
 					$text .= '	<TD style="width: 100%;" colspan="4">'."\n";
-					$text .= '		<TABLE cellspacing="0" cellpadding="0" class="swMntMainBox">'."\n";
-					$text .= '			<TR>'."\n";
+					$text .= '<UL style="width:100%" class="'.$this->query->getBootstrapStyle('htabs').'swMntMainBox">';
 					$text .= $this->draw_show_hide_tab_button ($this->id."detl", "DETAILS") ;
                     if ( !isset ( $ar["LinkToReport"] ) || !$ar["LinkToReport"] )
                     {
@@ -3801,8 +3809,7 @@ class reportico_xml_reader
 					    $text .= $this->draw_show_hide_tab_button ($this->id."quryassg", "ASSIGNMENTS") ;
                     }
 
-					$text .= '			</TR>'."\n";
-					$text .= '		</TABLE>'."\n";
+					$text .= '		</UL>'."\n";
 					$text .= '		<TABLE cellspacing="0" cellpadding="0" class="swMntInnerBox">'."\n";
 				}
 				
@@ -3930,12 +3937,23 @@ class reportico_xml_reader
 		$text .= '<TD class="swMntSetField">';
 		if ( $helppage )
 		{
-			$docpath = find_best_url_in_include_path( "doc/reportico/tutorial_reportico.".$helppage.".pkg.html" );
-			$helpimg = find_best_url_in_include_path( "images/help.png" );
-            $dr = get_reportico_url_path();
-			$text .= '<a target="_blank" href="'.$dr.$docpath.'#'.$helppage.'.'.$striptag.'">';
-			$text .= '<img class="swMntHelpImage" alt="tab" src="'.$dr.$helpimg.'">';
-			$text .= '</a>&nbsp;';
+            if ( $this->query->url_path_to_assets )
+            {
+			    $docpath = $this->query->url_path_to_assets."/doc/reportico/tutorial_reportico.".$helppage.".pkg.html";
+			    $helpimg = $this->query->url_path_to_assets."/images/help.png";
+			    $text .= '<a target="_blank" href="'.$docpath.'#'.$helppage.'.'.$striptag.'">';
+			    $text .= '<img class="swMntHelpImage" alt="tab" src="'.$helpimg.'">';
+			    $text .= '</a>&nbsp;';
+            }
+            else
+            {
+			    $docpath = find_best_url_in_include_path( "doc/reportico/tutorial_reportico.".$helppage.".pkg.html" );
+			    $helpimg = find_best_url_in_include_path( "images/help.png" );
+                $dr = get_reportico_url_path();
+			    $text .= '<a target="_blank" href="'.$dr.$docpath.'#'.$helppage.'.'.$striptag.'">';
+			    $text .= '<img class="swMntHelpImage" alt="tab" src="'.$dr.$helpimg.'">';
+			    $text .= '</a>&nbsp;';
+            }
 		}
         if ( $translate ) 
 		    $text .= template_xlate($title);
@@ -3953,12 +3971,12 @@ class reportico_xml_reader
 		switch ( $type )
 		{
 			case "PASSWORD":
-				$text .= '<input type="password" size="40%" name="set_'.$this->id."_".$showtag.'" value="'.htmlspecialchars($val).'"><br>';
+				$text .= '<input class="'.$this->query->getBootstrapStyle('textfield').'" type="password" size="40%" name="set_'.$this->id."_".$showtag.'" value="'.htmlspecialchars($val).'"><br>';
 				break;
 
 			case "TEXTFIELDREADONLY":
 				$readonly = "readonly";
-				$text .= '<input type="text" size="40%" '.$readonly.' name="set_'.$this->id."_".$showtag.'" value="'.htmlspecialchars($val).'">';
+				$text .= '<input class="'.$this->query->getBootstrapStyle('textfield').'" type="text" size="40%" '.$readonly.' name="set_'.$this->id."_".$showtag.'" value="'.htmlspecialchars($val).'">';
 				break;
 
 			case "TEXTFIELD":
@@ -3966,14 +3984,14 @@ class reportico_xml_reader
 				$readonly = "";
 				if ( $edit_mode == "SAFE" && ( $this->query->allow_maintain == "SAFE" || $this->query->allow_maintain == "DEMO" || SW_SAFE_DESIGN_MODE ) )
 					$readonly = "readonly";
-				$text .= '<input type="text" size="40%" '.$readonly.' name="set_'.$this->id."_".$showtag.'" value="'.htmlspecialchars($val).'">';
+				$text .= '<input class="'.$this->query->getBootstrapStyle('textfield').'" type="text" size="40%" '.$readonly.' name="set_'.$this->id."_".$showtag.'" value="'.htmlspecialchars($val).'">';
 				break;
 
 			case "TEXTBOX":
 				$readonly = "";
 				if ( $edit_mode == "SAFE" && ( $this->query->allow_maintain == "SAFE" || $this->query->allow_maintain == "DEMO" || SW_SAFE_DESIGN_MODE ) )
 					$readonly = "readonly";
-				$text .= '<textarea '.$readonly.' cols="70" rows="20" name="set_'.$this->id."_".$showtag.'" >';
+				$text .= '<textarea class="'.$this->query->getBootstrapStyle('textfield').'" '.$readonly.' cols="70" rows="20" name="set_'.$this->id."_".$showtag.'" >';
 				$text .= htmlspecialchars($val);
 				$text .= '</textarea>';
 				break;
@@ -4153,7 +4171,7 @@ class reportico_xml_reader
 			$text .= "\n<!-- TAG 1-->";
 			$text .= '<TD colspan="1">';
 			if ( $type != "TEXTFIELDNOOK" )	
-				$text .= '<input class="swMntButton reporticoSubmit" type="submit" name="submit_'.$this->id.'_SET" value="'.template_xlate("OK").'">';
+				$text .= '<input class="'.$this->query->getBootstrapStyle('design_ok').'swMntButton reporticoSubmit" type="submit" name="submit_'.$this->id.'_SET" value="'.template_xlate("OK").'">';
 			else
 				$text .= "&nbsp;";
 			$text .= '</TD>';
@@ -4174,7 +4192,7 @@ class reportico_xml_reader
 			return;
 		}
 
-		$text .= '<SELECT class="swPrpDropSelectRegular" name="'.$name.'">';
+		$text .= '<SELECT class="'.$this->query->getBootstrapStyle('design_dropdown').'swPrpDropSelectRegular" name="'.$name.'">';
 
 		if ( $addblank )
 			if ( !$val )
@@ -4323,7 +4341,8 @@ class reportico_xml_reader
 	{
 		$text = "";
 		$text .= '<TD valign="top" class="swMntMidSection">';
-		$text .= '<TABLE class="swMntMidSectionTable">';
+        $text .= '<DIV class="side-nav-container affix-top">';
+		$text .= '<UL class="'.$this->query->getBootstrapStyle('vtabs').'swMntMidSectionTable">';
 
         $defaulttext = template_xlate($paneltype);
 		$ct = 0;
@@ -4376,8 +4395,9 @@ class reportico_xml_reader
 			$text .= $this->draw_show_hide_vtab_button ($padstring, $labtext, $drawup, $drawdown, $draw_delete_button) ;
 			$ct++;
 		}
-		$text .= '<TR><TD>&nbsp;</TD></TR>';
-		$text .= '</TABLE>';
+		//$text .= '<TR><TD>&nbsp;</TD></TR>';
+		$text .= '</UL>';
+		$text .= '</DIV>';
 		$text .= '</TD>';
 
 

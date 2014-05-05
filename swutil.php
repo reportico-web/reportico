@@ -26,7 +26,7 @@
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- * @version $Id: swutil.php,v 1.32 2013/08/08 18:20:39 peter Exp $
+ * @version $Id: swutil.php,v 1.36 2014/05/05 20:04:59 peter Exp $
  */
 global $g_error_status;
 
@@ -54,7 +54,7 @@ function set_up_reportico_session()
 	$session_name = session_id();
 
 	// Check for Posted Session Name and use that if specified
-	if (isset($_REQUEST['session_name'])) 
+    if (isset($_REQUEST['session_name'])) 
     {
     		$session_name = $_REQUEST['session_name'];
             if ( preg_match("/_/", $session_name ) )
@@ -79,9 +79,17 @@ function set_up_reportico_session()
     // will be stored in a namspaces specific session array
     if ( strlen($session_name) >= 3 && substr($session_name, 0, 3) == "NS_" )
     {
+        if ( !$session_name || !isset($_SESSION))
+			session_start();
         global $g_session_namespace;
         global $g_session_namespace_key;
         $g_session_namespace = substr($session_name, 3);
+
+        // IF NS_NEW passed then autogenerate session namespace from current time
+        if ( $g_session_namespace == "NEW" )
+        {
+            $g_session_namespace =  date("YmdHis");
+        }
         if ( $g_session_namespace )
             $g_session_namespace_key = "reportico_".$g_session_namespace;
 		if (isset($_REQUEST['clear_session']) && isset($_SESSION)) 
@@ -99,12 +107,15 @@ function set_up_reportico_session()
         if ( !$session_name || !isset($_SESSION))
         {
 		    session_start();
-		    session_regenerate_id(false);
         }
+
+        if ( isset($_REQUEST['new_session']) && $_REQUEST['new_session'])
+            session_regenerate_id(false);
 
 		//unset_reportico_session_param("template");
 		//session_regenerate_id(false);
 		$session_name = session_id();
+
 		if (isset($_REQUEST['clear_session'])) 
 		{
             initialize_reportico_namespace(reportico_namespace());
@@ -1045,8 +1056,8 @@ function get_locale_date_format( $in_format ) {
 function get_reportico_url_path()
 {
         $newpath = "reportico.php";
-		$found = find_file_to_include($newpath, $newpath, $reltoinclude);
-		$newpath = get_relative_path(str_replace ("/", "\\", realpath($newpath)), dirname(realpath($_SERVER["SCRIPT_FILENAME"])));
+        $found = find_file_to_include($newpath, $newpath, $reltoinclude);
+        $newpath = get_relative_path(str_replace ("/", "\\", realpath($newpath)), dirname(realpath($_SERVER["SCRIPT_FILENAME"])));
         $above = dirname($_SERVER["SCRIPT_NAME"]);
         if ( $above == "/" )
             $above = "";
@@ -1296,6 +1307,32 @@ function get_relative_path( $path, $compareTo ) {
 }
 
 //
+// Converts a string in HTML color format #rrggbb to an RGB array for use in pChart
+function htmltorgb_pchart($color)
+{
+    if ( is_array($color) )
+    {
+        return $color;
+    }
+
+    if ($color[0] == '#')
+        $color = substr($color, 1);
+
+    if (strlen($color) == 6)
+        list($r, $g, $b) = array($color[0].$color[1],
+                                 $color[2].$color[3],
+                                 $color[4].$color[5]);
+    elseif (strlen($color) == 3)
+        list($r, $g, $b) = array($color[0].$color[0], $color[1].$color[1], $color[2].$color[2]);
+    else
+        return array("R" => 0,"G" => 0,"B" => 0);
+
+    $r = hexdec($r); $g = hexdec($g); $b = hexdec($b);
+
+    return array("R" => $r, "G" => $g, "B" => $b);
+}
+
+//
 // Converts a string in HTML color format #rrggbb to an RGB array
 function htmltorgb($color)
 {
@@ -1443,6 +1480,19 @@ function unset_reportico_session_param($param)
 }
 
 /*
+**
+** Register a session variable which will remain persistent throughout session
+*/
+function register_session_param($param, $value)
+{
+        if ( $value && !isset_reportico_session_param($param) )
+            set_reportico_session_param($param, $value );
+
+        return get_reportico_session_param($param);
+}
+
+
+/*
 ** Returns the current session name.
 ** Session variables exist
 ** using current session namespace
@@ -1456,6 +1506,7 @@ function reportico_session_name()
     else
         return session_id()."_".$g_session_namespace;
 }
+
 
 /*
 ** Returns the current namespace

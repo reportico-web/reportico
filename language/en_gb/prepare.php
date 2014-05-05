@@ -45,6 +45,7 @@ $locale_arr = array (
         "T_PRINT_PDF" => "Generate PDF Report",
         "T_PRINT_CSV" => "Generate CSV Report",
         "T_PRINT_JSON" => "Generate JSON Report",
+        "T_PRINT_GRID" => "Generate Grid Report",
         "T_STYLE_FORM" => "Form Output",
         "T_FORM" => "Form",
         "T_TABLE" => "Table",

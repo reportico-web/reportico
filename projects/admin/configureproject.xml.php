@@ -23,7 +23,6 @@ if ( $_configure_mode != "DELETE" )
     $configparams["SW_HTTP_BASEDIR"] = $_criteria["baseurl"]->get_criteria_value("VALUE", false);
     $configparams["SW_PROJECT"] = $_criteria["project"]->get_criteria_value("VALUE", false);
     $configparams["SW_PROJECT_TITLE"] = $_criteria["projtitle"]->get_criteria_value("VALUE", false);
-    $configparams["SW_STYLESHEET"] = $_criteria["stylesheet"]->get_criteria_value("VALUE", false);
     if ( $_configure_mode == "CREATE" )
         $configparams["SW_SAFE_DESIGN_MODE"] = true;
     else

@@ -30,7 +30,7 @@
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- * @version $Id: reportico.php,v 1.48 2013/07/30 21:12:28 peter Exp $
+ * @version $Id: reportico.php,v 1.63 2014/05/05 20:04:59 peter Exp $
  */
 
 // Include files
@@ -254,6 +254,14 @@ class reportico_object
  */
 class reportico extends reportico_object
 {
+	var $class = "reportico";
+	var $prepare_url;
+	var $menu_url;
+	var $admin_menu_url;
+	var $configure_project_url;
+	var $delete_project_url;
+	var $create_report_url;
+
 	var $name;
 	var $rowselection="all";
 	var $parent_query=false;
@@ -266,6 +274,7 @@ class reportico extends reportico_object
 	var $xmloutfile=false;
 	var $xmlintext=false;
 	var $xmlinput=false;
+	var $sqlinput=false;
 	var $datasource;
 	var $progress_text = "Ready";
 	var $progress_status = "Ready"; // One of READY, WORKING, FINISHED, ERROR
@@ -310,10 +319,13 @@ class reportico extends reportico_object
 	var $email_recipients = false;
 	var $drilldown_report = false;
 	var $forward_url_get_parameters="";
+	var $forward_url_get_parameters_graph="";
+	var $forward_url_get_parameters_dbimage="";
     var $reportico_ajax_script_url=false;
     var $reportico_ajax_called=false;
     var $reportico_ajax_mode=false;
     var $reportico_ajax_preloaded=false;
+    var $clear_reportico_session=false;
 
 	var $target_show_graph = false;
 	var $target_show_detail = false;
@@ -329,6 +341,9 @@ class reportico extends reportico_object
 
 	var $framework_parent = false;
 	var $framework_type = false;
+
+	var $charting_engine = "PCHART";
+	var $charting_engine_html = "NVD3";
 
 	var $attributes = array (
 			"ReportTitle" => "Set Report Title",
@@ -360,6 +375,8 @@ class reportico extends reportico_object
     var $output_images = false;
     var $output_row_styles = false;
     var $output_page_styles = false;
+    var $output_before_form_row_styles = false;
+    var $output_after_form_row_styles = false;
     var $output_group_header_label_styles = false;
     var $output_group_header_value_styles = false;
     var $output_group_trailer_styles = false;
@@ -400,6 +417,8 @@ class reportico extends reportico_object
     var $initial_show_column_headers = false;
     var $initial_show_criteria = false;
     var $initial_execution_parameters = false;
+    var $initial_sql = false;
+
     // Access mode - one of FULL, ALLPROJECTS, ONEPROJECT, REPORTOUTPUT
     var $access_mode = "FULL";
 
@@ -422,6 +441,9 @@ class reportico extends reportico_object
     // Path to Reportico runner for AJAX use or standalone mode
     var $url_path_to_reportico_runner = false;
 
+    // Path to frameworks assets folder
+    var $url_path_to_assets = false;
+
     // Path to calling script for form actions
     // In standalone mode will be the reportico runner, otherwise the
     // script in which reportico is embedded
@@ -431,6 +453,36 @@ class reportico extends reportico_object
     // set with $q->user_parameters["your_parameter_name"] = "value";
 	var $user_parameters = array();
 
+    // Specify a pdo connection fexternally
+	var $external_connection = false;
+
+	var $bootstrap_styles = true;
+	var $jquery_preloaded = false;
+	var $bootstrap_preloaded = false;
+	var $bootstrap_styling_page = "table table-striped table-condensed";
+	var $bootstrap_styling_button_go = "btn btn-success";
+	var $bootstrap_styling_button_reset = "btn btn-default";
+	var $bootstrap_styling_button_admin = "btn";
+	var $bootstrap_styling_button_delete = "btn btn-danger";
+	var $bootstrap_styling_dropdown = "form-control";
+	//var $bootstrap_styling_checkbox_button = "btn btn-default btn-xs";
+	var $bootstrap_styling_checkbox_button = "checkbox-inline";
+	var $bootstrap_styling_checkbox = "checkbox";
+	var $bootstrap_styling_toolbar_button = "btn";
+	var $bootstrap_styling_htabs = "nav nav-justified nav-tabs nav-tabs-justified ";
+	var $bootstrap_styling_vtabs = "nav nav-tabs nav-stacked";
+	var $bootstrap_styling_design_dropdown = "form-control";
+	var $bootstrap_styling_textfield = "form-control";
+	var $bootstrap_styling_design_ok = "btn btn-success";
+	var $bootstrap_styling_menu_table = "table";
+	var $bootstrap_styling_small_button = "btn btn-sm btn-default";
+
+    // Dynamic grids
+    var $dynamic_grids = false;
+    var $dynamic_grids_sortable = true;
+    var $dynamic_grids_searchable = true;
+    var $dynamic_grids_max_page_size = 999999;
+
 	function reportico()
 	{ 	
 		reportico_object::reportico_object();
@@ -438,15 +490,43 @@ class reportico extends reportico_object
 		$this->parent_query =& $this;
 	}
 
+    // Dummy functions for yii to work with Reportico
+    function init()
+    {
+    }
+
+    function getIsInitialized()
+    {
+        return true;
+    }
+    // End Yii functions
+
 	function &create_graph()
 	{
-        if ( defined("SW_GRAPH_ENGINE") && SW_GRAPH_ENGINE == "PCHART" )
+        $engine = $this->charting_engine;
+        if ( $this->target_format = "HTML" )
+            $engine = $this->charting_engine_html;
+        if ( get_request_item("target_format", "HTML") == "PDF" )
+            $engine = $this->charting_engine;
+
+        switch ( $engine )
         {
-		    require_once('swgraph_pchart.php');
-        }
-        else
-        {
-		    require_once('swgraph.php');
+            case "NVD3":
+		        require_once('swgraph_nvd3.php');
+                break;
+
+            case "FLOT":
+		        require_once('swgraph_flot.php');
+                break;
+
+            case "JPGRAPH":
+		        require_once('swgraph.php');
+                break;
+
+            case "PCHART":
+            default:
+		        require_once('swgraph_pchart.php');
+                break;
         }
         
 		$graph = new reportico_graph($this, "internal");
@@ -1627,7 +1707,17 @@ class reportico extends reportico_object
 
 				case "html" :
 				case "HTML" :
+					//$rep = new reportico_report_html_template();
+			        require_once("swoutput.php");
 					$rep = new reportico_report_html_template();
+					$this->add_target($rep);
+					$rep->set_query($this);
+					break;
+
+				case "htmlgrid" :
+				case "HTMLGRID" :
+			        require_once("swoutput_grid.php");
+					$rep = new reportico_report_html_grid_template();
 					$this->add_target($rep);
 					$rep->set_query($this);
 					break;
@@ -2125,6 +2215,17 @@ class reportico extends reportico_object
         // Use raw user query in >= Version 2.5
         if ( $this->sql_raw )
         {
+            // Now if any of the criteria is an SQLCOMMAND then that should be used for the report data so
+            // parse the users command and execute it
+            if ( !$in_is_expanding && !$criteria_name && !$in_design_mode )
+            {
+                foreach ( $this->lookup_queries as $key => $col )
+                {
+                    if (  $col->criteria_type == "SQLCOMMAND" )
+                        $this->importSQL($col->column_value);
+                }
+            }
+        
 		    $this->query_statement = $this->sql_raw;
 
             // Build in criteria items
@@ -2737,7 +2838,9 @@ class reportico extends reportico_object
             $this->url_path_to_reportico_runner = $this->reportico_url_path."run.php";
 
         // If full ajax mode is requested but no ajax url is passed then defalt the ajax url to the default reportico runner
-        if ( $this->reportico_ajax_script_url )
+        register_session_param("reportico_ajax_script_url", $this->reportico_ajax_script_url);
+        $this->reportico_ajax_script_url = get_reportico_session_param("reportico_ajax_script_url");
+        if ( $this->reportico_ajax_script_url && !$this->reportico_ajax_mode)
             $this->reportico_ajax_mode = true;
         if ( !$this->reportico_ajax_script_url )
             $this->reportico_ajax_script_url = $this->url_path_to_reportico_runner;
@@ -2747,10 +2850,10 @@ class reportico extends reportico_object
 		if ( get_reportico_session_param("reportico_ajax_called" ) )
             $this->reportico_ajax_mode = true;
 
-        if ( $this->reportico_ajax_mode )
-        {
-            $this->embedded_report = true;
-        }
+        //if ( $this->reportico_ajax_mode )
+        //{
+            //$this->embedded_report = true;
+        //}
     }
 
 	// -----------------------------------------------------------------------------
@@ -2769,12 +2872,14 @@ class reportico extends reportico_object
 		$smarty->compile_dir = find_best_location_in_include_path( "templates_c" );
 
 		$dummy="";
-		$version = "\$Name: reportico-3_2 $";
+		$version = "\$Name:  $";
 		$version = preg_replace("/.*reportico-/", "", $version);
 		$version = preg_replace("/ \\$/", "", $version);
 		$version = preg_replace("/_/", ".", $version);
 
 		$forward_url_params = session_request_item('forward_url_get_parameters', $this->forward_url_get_parameters);
+		$forward_url_params_graph = session_request_item('forward_url_get_parameters_graph', $this->forward_url_get_parameters_graph);
+		$forward_url_params_dbimage = session_request_item('forward_url_get_parameters_dbimage', $this->forward_url_get_parameters_dbimage);
 
 		$smarty->assign('REPORTICO_VERSION', $version);
 
@@ -2808,7 +2913,11 @@ class reportico extends reportico_object
 
 		$smarty->assign('REPORTICO_AJAX_MODE',  $this->reportico_ajax_mode);
 		$smarty->assign('REPORTICO_AJAX_CALLED',  $this->reportico_ajax_called);
-		$smarty->assign('REPORTICO_URL_DIR',  $this->reportico_url_path);
+
+        if ( $this->url_path_to_assets )
+		    $smarty->assign('REPORTICO_URL_DIR',  $this->url_path_to_assets);
+        else
+		    $smarty->assign('REPORTICO_URL_DIR',  $this->reportico_url_path);
 
 		$smarty->assign('REPORTICO_AJAX_RUNNER',  $this->reportico_ajax_script_url);
 
@@ -2867,18 +2976,70 @@ class reportico extends reportico_object
             $smarty->assign('SHOW_ADMIN_BUTTON', false);
         }
 
-		
+	    	
         $partialajaxpath = find_best_location_in_include_path( "partial.php" );
 		$smarty->assign('AJAX_PARTIAL_RUNNER', $this->reportico_url_path.$partialajaxpath );
 
-        $csspath = $this->reportico_url_path."/".find_best_url_in_include_path( SW_STYLESHEET );
+        // Use alternative location for js/css/images if specified.
+        // Set stylesheet to the reportico bootstrap if bootstrap styles in place
+        $this->bootstrap_styles = register_session_param("bootstrap_styles", $this->bootstrap_styles);
 
+        $this->url_path_to_assets = register_session_param("url_path_to_assets", $this->url_path_to_assets);
+        $this->jquery_preloaded = register_session_param("jquery_preloaded", $this->jquery_preloaded);
+        $this->bootstrap_preloaded = register_session_param("bootstrap_preloaded", $this->bootstrap_preloaded);
+        
+        if ( !$this->bootstrap_styles )
+        {
+            $csspath = $this->url_path_to_assets."/css/reportico.css";
+            if ( $this->url_path_to_assets )
+                $csspath = $this->url_path_to_assets."/css/reportico.css";
+            else
+                $csspath = $this->reportico_url_path."/".find_best_url_in_include_path( "/css/reportico.css" );
+        }
+        else
+        {
+            if ( $this->url_path_to_assets )
+                $csspath = $this->url_path_to_assets."/css/reportico_bootstrap.css";
+            else
+                $csspath = $this->reportico_url_path."/".find_best_url_in_include_path( "css/reportico_bootstrap.css" );
+        }
 		$smarty->assign('STYLESHEET', $csspath);
+		$smarty->assign('STYLESHEETDIR', dirname($csspath));
 
-        $jspath = find_best_url_in_include_path( "js/reportico.js" );
-		if ( $jspath ) $jspath = dirname($jspath);
+		$smarty->assign('REPORTICO_JQUERY_PRELOADED', $this->jquery_preloaded);
+		$smarty->assign('BOOTSTRAP_STYLES', $this->bootstrap_styles);
+		$smarty->assign('REPORTICO_BOOTSTRAP_PRELOADED', $this->bootstrap_preloaded);
+		$smarty->assign('BOOTSTRAP_STYLE_GO_BUTTON', $this->getBootstrapStyle('button_go'));
+		$smarty->assign('BOOTSTRAP_STYLE_RESET_BUTTON', $this->getBootstrapStyle('button_reset'));
+		$smarty->assign('BOOTSTRAP_STYLE_ADMIN_BUTTON', $this->getBootstrapStyle('button_admin'));
+		$smarty->assign('BOOTSTRAP_STYLE_DROPDOWN', $this->getBootstrapStyle('dropdown'));
+		$smarty->assign('BOOTSTRAP_STYLE_CHECKBOX_BUTTON', $this->getBootstrapStyle('checkbox_button'));
+		$smarty->assign('BOOTSTRAP_STYLE_CHECKBOX', $this->getBootstrapStyle('checkbox'));
+		$smarty->assign('BOOTSTRAP_STYLE_TOOLBAR_BUTTON', $this->getBootstrapStyle('toolbar_button'));
+		$smarty->assign('BOOTSTRAP_STYLE_MENU_TABLE', $this->getBootstrapStyle('menu_table'));
+		$smarty->assign('BOOTSTRAP_STYLE_TEXTFIELD', $this->getBootstrapStyle('textfield'));
+		$smarty->assign('BOOTSTRAP_STYLE_SMALL_BUTTON', $this->getBootstrapStyle('small_button'));
 
-		$smarty->assign('JSPATH', $this->reportico_url_path.$jspath);
+        // Set charting engine 
+        $smarty->assign('REPORTICO_CHARTING_ENGINE', $this->charting_engine_html);
+
+        // Set grid mode
+        $smarty->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
+        $smarty->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
+        $smarty->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
+        $smarty->assign('REPORTICO_DYNAMIC_GRIDS_MAX_PAGE_SIZE', $this->dynamic_grids_max_page_size);
+
+        if ( $this->url_path_to_assets )
+        {
+            $jspath = $this->url_path_to_assets."/js";
+		    $smarty->assign('JSPATH', $jspath);
+        }
+        else
+        {
+            $jspath = find_best_url_in_include_path( "js/reportico.js" );
+		    if ( $jspath ) $jspath = dirname($jspath);
+		    $smarty->assign('JSPATH', $this->reportico_url_path.$jspath);
+        }
 
 		$this->panels["MAIN"] = new reportico_panel($this, "MAIN");
 		$this->panels["MAIN"]->set_smarty($smarty);
@@ -3140,6 +3301,7 @@ class reportico extends reportico_object
 		if ( !$this->framework_parent && !get_reportico_session_param("awaiting_initial_defaults") )
         {
             $this->initial_project = false;
+            $this->initial_sql = false;
             $this->initial_execute_mode = false;
             $this->initial_report = false;
             $this->initial_project_password = false;
@@ -3196,11 +3358,17 @@ class reportico extends reportico_object
 
 		// See if XML needs to be read in
 		$this->xmlinput = false;
+		$this->sqlinout = false;
 
 		if ( array_key_exists("xmlin", $_SESSION[reportico_namespace()]) )
 		{
 			$this->xmlinput = get_reportico_session_param("xmlin");
 			set_reportico_session_param("xmlout",$this->xmlinput);
+		}
+
+		if ( array_key_exists("sqlin", $_SESSION[reportico_namespace()]) )
+		{
+			$this->sqlinput = get_reportico_session_param("sqlin");
 		}
 
 		if ( array_key_exists("xmlin", $_REQUEST) )
@@ -3218,6 +3386,16 @@ class reportico extends reportico_object
             $this->xmlinput = $this->initial_report;
 			set_reportico_session_param("xmlin",$this->xmlinput);
 			set_reportico_session_param("xmlout",$this->xmlinput);
+        }
+
+        if ( $this->initial_sql )
+        {
+            $this->sqlinput = false;
+            if ( !get_reportico_session_param("sqlin") )
+			    set_reportico_session_param("sqlin",$this->initial_sql);
+            $this->sqlinput = get_reportico_session_param("sqlin", $this->initial_sql);
+			set_reportico_session_param("xmlin",false);
+			set_reportico_session_param("xmlout",false);
         }
 
 		if ( $this->user_template == "_DEFAULT" )
@@ -3264,7 +3442,6 @@ class reportico extends reportico_object
 			$this->xmloutfile =  $_REQUEST["xmlout"];
 			set_reportico_session_param("xmlout",$this->xmloutfile);
 		}
-			
 		$this->xmlintext =  false;
 		if ( $this->top_level_query && array_key_exists("xmlintext", $_SESSION[reportico_namespace()]) )
 		{
@@ -3286,7 +3463,11 @@ class reportico extends reportico_object
 			set_reportico_session_param("xmlout",$this->xmlinput);
 		}
 
-		if ( $this->xmlinput || $this->xmlintext )
+		if ( $this->sqlinput )
+        {
+            $this->importSQL($this->sqlinput);
+        }
+		else if ( $this->xmlinput || $this->xmlintext )
 		{
 			$this->xmlin = new reportico_xml_reader($this, $this->xmlinput, $this->xmlintext);
 			$this->xmlin->xml2query();
@@ -3296,7 +3477,6 @@ class reportico extends reportico_object
 			$this->xmlin = new reportico_xml_reader($this, false, "");
 			$this->xmlin->xml2query();
 		}
-
 
 	}
 
@@ -3325,6 +3505,22 @@ class reportico extends reportico_object
 	// -----------------------------------------------------------------------------
 	// Function : execute
 	// -----------------------------------------------------------------------------
+	function importSQL($sql)
+	{
+		set_project_environment($this->initial_project);
+        $p = new reportico_sql_parser($sql);
+        if ( $p->parse(false) )
+        {
+                $p->import_into_query($this);
+        }
+        //$this->sqlinput = $sql;
+        //if ( !get_reportico_session_param("sqlin") )
+		    //set_reportico_session_param("sqlin",$this->initial_sql);
+    }
+
+	// -----------------------------------------------------------------------------
+	// Function : execute
+	// -----------------------------------------------------------------------------
 	function execute($mode=false, $draw=true)
 	{
 		global $g_system_errors;
@@ -3344,7 +3540,7 @@ class reportico extends reportico_object
             $g_session_namespace_key = "reportico_".$g_session_namespace;
 
         // If a session namespace doesnt exist create one
-        if ( !isset($_SESSION[$g_session_namespace_key]) || isset($_REQUEST['clear_session']) )
+        if ( !isset($_SESSION[$g_session_namespace_key]) || isset($_REQUEST['clear_session']) || $this->clear_reportico_session)
             initialize_reportico_namespace($g_session_namespace_key);
 
         // Work out the mode (ADMIN, PREPARE, MENU, EXECUTE, MAINTAIN based on all parameters )
@@ -3360,15 +3556,12 @@ class reportico extends reportico_object
         // Fetch project config
 		set_project_environment($this->initial_project);
 
-        // Set globally parameters set from application framework
-        global $g_external_param1;
-        global $g_external_param2;
-        global $g_external_param3;
-        global $g_external_user;
-        $g_external_param1 = $this->external_param1;
-        $g_external_param2 = $this->external_param2;
-        $g_external_param3 = $this->external_param3;
-        $g_external_user = $this->external_user;
+        register_session_param("external_user", $this->external_user);
+        register_session_param("external_param1", $this->external_param1);
+        register_session_param("external_param2", $this->external_param2);
+        register_session_param("external_param3", $this->external_param3);
+        register_session_param("charting_engine", $this->charting_engine);
+        register_session_param("dynamic_grids", $this->dynamic_grids);
 
         // We are in AJAX mode if it is passed throuh
         if ( isset($_REQUEST["reportico_ajax_called"]) )
@@ -3534,7 +3727,7 @@ class reportico extends reportico_object
 		}
         // Derive URL call of the calling script so it can be recalled in form actions when not running in AJAX mode
         if ( !$this->url_path_to_calling_script )
-            $this->url_path_to_calling_script = $_SERVER["PHP_SELF"];
+            $this->url_path_to_calling_script = $_SERVER["SCRIPT_NAME"];
 
 
         // Work out we are in AJAX mode
@@ -3997,6 +4190,12 @@ class reportico extends reportico_object
 		global $g_code_source;
 		global $g_error_status;
 
+        // If external pdo connection is specified then use this
+        if ( !$in_criteria_name && $this->external_connection )
+        {
+		    $this->datasource->ado_connection->_connectionID = $this->external_connection;
+        }
+
 		$text = "";
 		$g_error_status = false;
 
@@ -4145,6 +4344,7 @@ class reportico extends reportico_object
 		{
 			return;
 		}
+
 
         // Main Query Result Fetching
 		$this->query_count = 0;
@@ -4831,9 +5031,13 @@ class reportico extends reportico_object
         if ( $this->framework_parent )
         {
             $imagegetpath = "";
+            if ( $this->reportico_ajax_mode == "2" )
+                $imagegetpath = preg_replace("/ajax/", "dbimage", $this->reportico_ajax_script_url);
         }
 
-		$forward_url_params = session_request_item('forward_url_get_parameters', $this->forward_url_get_parameters);
+        $forward_url_params = session_request_item('forward_url_get_parameters_dbimage' );
+        if ( !$forward_url_params )
+        	$forward_url_params = session_request_item('forward_url_get_parameters', $this->forward_url_get_parameters);
         if ( $forward_url_params )
             $params .= "&".$forward_url_params;
         $params .= "&session_name=".reportico_session_name();
@@ -4876,6 +5080,17 @@ class reportico extends reportico_object
         }
     }
 
+    function getBootstrapStyle($type)
+    {
+        if ( !$this->bootstrap_styles )
+            return "";
+
+        $x = $this->{"bootstrap_styling_".$type};
+        if ( $x )
+        {
+            return $x." ";
+        }
+    }
 
 }
 // -----------------------------------------------------------------------------
@@ -4990,6 +5205,7 @@ class reportico_criteria_column extends reportico_query_column
 	var $criteria_display;
 	var $criteria_help;
 	var $expand_display;
+	var $order_type;
 	var $list_values = array();
 	var	$first_criteria_selection = true;
     
@@ -5008,6 +5224,7 @@ class reportico_criteria_column extends reportico_query_column
 						"NOINPUT",
 						"ANYCHAR",
 						"TEXTFIELD",
+						"SQLCOMMAND",
 						"ANYINT",
 						"LOOKUP",
 						"DATERANGE",
@@ -5526,7 +5743,7 @@ class reportico_criteria_column extends reportico_query_column
 
        			if ( preg_match ( "/TODATE/", $in_tag ) )
               			$tag .= "";
-			$tag .= '<input  class="swDateField" id="swDateField_'.$in_tag.'" type="text" name="MANUAL_'.$in_tag.'"';
+			$tag .= '<input  class="'.$this->lookup_query->getBootstrapStyle('textfield').'swDateField" id="swDateField_'.$in_tag.'" style="z-index: 1000" type="text" name="MANUAL_'.$in_tag.'"';
 			$tag .= ' size="20"';
 			$tag .= ' maxlength="20"';
 			$tag .= ' value="'.$in_value.'">';
@@ -5705,7 +5922,7 @@ class reportico_criteria_column extends reportico_query_column
                         if ( isset ( $res[$k] ) )
 						    if ( count($res[$k]) >= 10 )
 							    $multisize = 10;
- 						$text .= '<SELECT class="swPrpDropSelect" name="'.$tag_pref.$this->query_name.'[]" size="'.$multisize.'" multiple>';
+ 						$text .= '<SELECT class="'.$this->lookup_query->getBootstrapStyle('design_dropdown').'swPrpDropSelect" name="'.$tag_pref.$this->query_name.'[]" size="'.$multisize.'" multiple>';
 						break;
 
 				case "CHECKBOX":
@@ -5713,7 +5930,7 @@ class reportico_criteria_column extends reportico_query_column
 						break;
 
 				default:
- 						$text .= '<SELECT class="swPrpDropSelectRegular" name="'.$tag_pref.$this->query_name.'">';
+ 						$text .= '<SELECT class="'.$this->lookup_query->getBootstrapStyle('design_dropdown').'swPrpDropSelectRegular" name="'.$tag_pref.$this->query_name.'">';
 						break;
 		}
 
@@ -5836,11 +6053,18 @@ class reportico_criteria_column extends reportico_query_column
 			else if ( $this->criteria_display == "ANYCHAR" || $this->criteria_display == "TEXTFIELD" )
 			{
 				$tag = "";
-				$tag .= '<br><input  class="swPrpTextField" type="text" name="MANUAL_'.$this->query_name.'"';
+				$tag .= '<br><input  class="'.$this->lookup_query->getBootstrapStyle('textfield').'swPrpTextField" type="text" name="MANUAL_'.$this->query_name.'"';
 				$tag .= ' size="50%"';
 				$tag .= ' value="'.$value_string.'">';
 				$tag .= '<br>';
 				$text .= $tag;
+			}
+			else if ( $this->criteria_display == "SQLCOMMAND" )
+			{
+				$tag = "";
+				$tag .= '<br><textarea  cols="70" rows="20" class="'.$this->lookup_query->getBootstrapStyle('textfield').'swPrpTextField" type="text" name="MANUAL_'.$this->query_name.'">';
+				$tag .= $value_string;
+				$tag .= "</textarea>";
 			}
 		}
 
@@ -5946,7 +6170,7 @@ class reportico_criteria_column extends reportico_query_column
 							    $multisize = 10;
 						if ( $in_is_expanding )
 							$multisize = 12;
-						$text .= '<SELECT class="swPrpDropSelect" name="'.$tag_pref.$this->query_name.'[]" size="'.$multisize.'" multiple>';
+						$text .= '<SELECT class="'.$this->lookup_query->getBootstrapStyle('design_dropdown').'swPrpDropSelect" name="'.$tag_pref.$this->query_name.'[]" size="'.$multisize.'" multiple>';
 						break;
 
 				case "CHECKBOX":
@@ -5954,7 +6178,7 @@ class reportico_criteria_column extends reportico_query_column
 						break;
 
 				default:
- 						$text .= '<SELECT class="swPrpDropSelectRegular" name="'.$tag_pref.$this->query_name.'">';
+ 						$text .= '<SELECT class="'.$this->lookup_query->getBootstrapStyle('design_dropdown').'swPrpDropSelectRegular" name="'.$tag_pref.$this->query_name.'">';
 						break;
 		}
 
@@ -6108,7 +6332,7 @@ class reportico_criteria_column extends reportico_query_column
                 }
 
 				$tag = "";
-				$tag .= '<input  type="text" class="swPrpTextField" name="MANUAL_'.$this->query_name.'"';
+				$tag .= '<input  type="text" class="'.$this->lookup_query->getBootstrapStyle('textfield').'swPrpTextField" name="MANUAL_'.$this->query_name.'"';
 				$tag .= ' value="'.$value_string.'">';
 				$text .= $tag;
 			}
@@ -6523,7 +6747,7 @@ class reportico_criteria_column extends reportico_query_column
 		$text .= " :<br>";
 
 		$tag = "";
-		$tag .= '<input  type="text" name="expand_value"';
+		$tag .= '<input  class="'.$this->lookup_query->getBootstrapStyle('textfield').'" type="text" name="expand_value"';
 		$tag .= ' size="30"';
 
 		if ( $this->submitted('EXPANDSEARCH_'.$this->query_name) ) 
@@ -6537,7 +6761,7 @@ class reportico_criteria_column extends reportico_query_column
 
 		$tag .= ' value="'.$expval.'">';
 		$text .= $tag;
-		$text .= '<input class="swPrpSubmit" type="submit" name="EXPANDSEARCH_'.$this->query_name.'" value="'.template_xlate("Search").'">';
+		$text .= '<input class="btn btn-sm btn-default swPrpSubmit" type="submit" name="EXPANDSEARCH_'.$this->query_name.'" value="'.template_xlate("Search").'">';
 		$text .= "<br>";
 
 
@@ -6584,9 +6808,9 @@ class reportico_criteria_column extends reportico_query_column
 				break;
 		}
 
-		$text .= '<br><input class="swPrpSubmit" type="submit" name="EXPANDCLEAR_'.$this->query_name.'" value="Clear">';
-		$text .= '<input class="swPrpSubmit" type="submit" name="EXPANDSELECTALL_'.$this->query_name.'" value="Select All">';
-		$text .= '<input class="swPrpSubmit" type="submit" name="EXPANDOK_'.$this->query_name.'" value="OK">';
+		$text .= '<br><input class="btn btn-sm btn-default swPrpSubmit" type="submit" name="EXPANDCLEAR_'.$this->query_name.'" value="Clear">';
+		$text .= '<input class="btn btn-sm btn-default swPrpSubmit" type="submit" name="EXPANDSELECTALL_'.$this->query_name.'" value="Select All">';
+		$text .= '<input class="btn btn-sm btn-default swPrpSubmit" type="submit" name="EXPANDOK_'.$this->query_name.'" value="OK">';
 
 		return $text;
 	}
@@ -6635,12 +6859,20 @@ class reportico_criteria_column extends reportico_query_column
 				//$text .= '<SELECT style="visibility:hidden" name="'."HIDDEN_".$this->query_name.'[]" size="1" multiple>';
 				//$text .= '<SELECT name="'."HIDDEN_".$this->query_name.'[]" size="1" multiple>';
 				$tag = "";
-				$tag .= '<input  type="text" class="swPrpTextField" name="MANUAL_'.$this->query_name.'"';
+				$tag .= '<input  type="text" class="'.$this->lookup_query->getBootstrapStyle('textfield').'swPrpTextField" name="MANUAL_'.$this->query_name.'"';
 				$tag .= ' size="50%"';
 				$tag .= ' value="'.$this->column_value.'">';
 				$text .= $tag;
 
 				break;
+
+			case "SQLCOMMAND":
+				$tag = "";
+				$tag .= '<br><textarea  cols="70" rows="20" class="'.$this->lookup_query->getBootstrapStyle('textfield').'swPrpTextField" type="text" name="MANUAL_'.$this->query_name.'">';
+				$tag .= $this->column_value;
+				$tag .= "</textarea>";
+                $text .= $tag;
+                break;
 				
 			default:
 				break;
@@ -6658,7 +6890,7 @@ class reportico_criteria_column extends reportico_query_column
  */
 class reportico_assignment extends reportico_object
 {
-	VAR $QUERY_NAME;
+	var $query_name;
 	var $expression;
 	var $criteria;
 	var $raw_expression;
@@ -6697,20 +6929,17 @@ class reportico_assignment extends reportico_object
 	// -----------------------------------------------------------------------------
 	static function reportico_meta_sql_criteria(&$in_query, $in_string, $prev_col_value = false)
 	{
-        // To allow reports to return data related to user, the
-        // reportico_user session variable maintains
-        // a current user id which can be used as part of select
-        // statement. Just include {SESSION["reportico"]_USER} in queries and it will be
-        // replaced by a quote encased user.
-        global $g_external_param1;
-        global $g_external_param2;
-        global $g_external_param3;
-        global $g_external_user;
-        if ( $g_external_param1 ) $in_string = preg_replace ("/{EXTERNAL_PARAM1}/", "'".$g_external_param1."'", $in_string);
-        if ( $g_external_param2 ) $in_string = preg_replace ("/{EXTERNAL_PARAM2}/", "'".$g_external_param2."'", $in_string);
-        if ( $g_external_param3 ) $in_string = preg_replace ("/{EXTERNAL_PARAM3}/", "'".$g_external_param3."'", $in_string);
-        if ( $g_external_user ) $in_string = preg_replace ("/{FRAMEWORK_USER}/", "'".$g_external_param3."'", $in_string);
-        if ( $g_external_param1 ) $in_string = preg_replace ("/{USER_PARAM,[^}*]}/", "'".$g_external_param1."'", $in_string);
+        // Replace user parameters with values
+
+        $external_param1 = get_reportico_session_param("external_param1");
+        $external_param2 = get_reportico_session_param("external_param2");
+        $external_param3 = get_reportico_session_param("external_param3");
+        $external_user = get_reportico_session_param("external_user");
+
+        if ( $external_param1 ) $in_string = preg_replace ("/{EXTERNAL_PARAM1}/", "'".$external_param1."'", $in_string);
+        if ( $external_param2 ) $in_string = preg_replace ("/{EXTERNAL_PARAM2}/", "'".$external_param2."'", $in_string);
+        if ( $external_param3 ) $in_string = preg_replace ("/{EXTERNAL_PARAM3}/", "'".$external_param3."'", $in_string);
+        if ( $external_user ) $in_string = preg_replace ("/{FRAMEWORK_USER}/", "'".$external_user."'", $in_string);
 
         // Replace External parameters specified by {USER_PARAM,xxxxx}
 		if ( preg_match_all ( "/{USER_PARAM,([^}]*)}/", $in_string, $matches ) )

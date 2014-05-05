@@ -145,6 +145,10 @@ td.loading *, div.loading * {
 {
 }
 
+.swPrpTopMenuCell input { 
+    width: auto;
+}
+
 /* Table Container for Menu Selections */
 .swMenuBody 
 { 
@@ -310,7 +314,7 @@ a:visited
     padding-bottom: 10px;
     padding-top: 20px;
     padding-left: 20px;
-    background-image: url('bggray.png');
+    /*background-image: url('bggray.png');*/
     background-repeat: repeat-x;
     background-position: top left;
 }
@@ -436,6 +440,8 @@ a:visited
     text-align: left;
     background-color: #FFFFFF;
     font-size: 10pt;
+    width: auto !important;
+    display: inline !important;
 }
 
 /* Style for Criteria Entry Screen Buttons */
@@ -538,6 +544,7 @@ a:visited
     border-bottom: dotted;
     border-width: 1px;
     border-color : #000000;
+    background-color : inherit;
 }
 
 /* Container for Group Headers  */

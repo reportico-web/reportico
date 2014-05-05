@@ -54,7 +54,13 @@ function resizeTables()
 }
 
 
-reportico_jquery('ul.jd_menu li a, ul.jd_menu li ul li a').live('click', function(event) 
+reportico_jquery(document).on('click', 'ul.dropdown-menu li a, ul.dropdown-menu li ul li a, ul.jd_menu li a, ul.jd_menu li ul li a', function(event) 
+{
+    event.preventDefault();
+    return false;
+});
+
+reportico_jquery(document).on('click', 'a.reportico-dropdown-item, ul li.r1eportico-dropdown a, ul li ul.reportico-dropdown li a, ul.jd_menu li a, ul.jd_menu li ul li a', function(event) 
 {
     if (  reportico_jquery.type(reportico_ajax_mode) === 'undefined' || !reportico_ajax_mode)
     {
@@ -63,6 +69,7 @@ reportico_jquery('ul.jd_menu li a, ul.jd_menu li ul li a').live('click', functio
 
     var url = reportico_jquery(this).attr('href');
     runreport(url, this);
+    event.preventDefault();
     return false;
 });
 
@@ -80,7 +87,7 @@ reportico_jquery(document).ready(function()
 ** AJAX mode is in place when reportico session ("reportico_ajax_script") is set
 ** will generate full reportico output to replace the reportico_container tag
 */
-reportico_jquery('.swMenuItemLink, .swPrpSubmit, .swLinkMenu, .reporticoSubmit').live('click', function(event) 
+reportico_jquery(document).on('click', '.swAdminButton, .swMenuItemLink, .swPrpSubmit, .swLinkMenu, .reporticoSubmit', function(event) 
 {
     if ( reportico_jquery(this).parent().hasClass("swRepPrintBox" )  )
     {
@@ -178,7 +185,7 @@ reportico_jquery('.swMenuItemLink, .swPrpSubmit, .swLinkMenu, .reporticoSubmit')
 ** refresh middle prepare mode section with non expand mode 
 ** text
 */
-reportico_jquery('#returnFromExpand').live('click', function() {
+reportico_jquery(document).on('click', '#returnFromExpand', function() {
 
 	var critform = reportico_jquery(this).closest('#criteriaform');
 	var expandpanel = reportico_jquery(this).closest('#criteriaform').find('#swPrpExpandCell');
@@ -215,7 +222,7 @@ reportico_jquery('#returnFromExpand').live('click', function() {
     return false;
 	});
 
-  reportico_jquery('#reporticoPerformExpand').live('click', function() {
+  reportico_jquery(document).on('click', '#reporticoPerformExpand', function() {
 
 	forms = reportico_jquery(this).closest('.swMntForm,.swPrpForm,form');
 	var ajaxaction = reportico_jquery(forms).attr("action");
@@ -254,7 +261,7 @@ reportico_jquery('#returnFromExpand').live('click', function() {
 ** In pdf/csv mode this needs to trigger opening of a new browser window
 ** with output in rather that directing to screen
 */
-reportico_jquery('.swPrintBox,.prepareAjaxExecute,#prepareAjaxExecute').live('click', function() {
+reportico_jquery(document).on('click', '.swPrintBox,.prepareAjaxExecute,#prepareAjaxExecute', function() {
 
     if (  reportico_jquery(this).hasClass("swPDFBox") ) reportico_jquery("#rpt_format_pdf").attr("checked", "checked");
     if (  reportico_jquery(this).hasClass("swCSVBox") ) reportico_jquery("#rpt_format_csv").attr("checked", "checked");
@@ -279,7 +286,7 @@ reportico_jquery('.swPrintBox,.prepareAjaxExecute,#prepareAjaxExecute').live('cl
     params = reportico_jquery(critform).serialize();
     params += "&execute_mode=EXECUTE";
     params += "&" + reportico_jquery(this).attr("name") + "=1";
-    params += "&reportico_ajax_called=1";
+    //params += "&reportico_ajax_called=1";
     params += "&option=com_reportico";
     params += "&format=raw";
 

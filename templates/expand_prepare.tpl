@@ -20,13 +20,13 @@
 </div>
 {if $SHOW_EXPANDED}
 							{$T_SEARCH} {$EXPANDED_TITLE} :<br>
-                             <input  type="text" style="width: 50%" name="expand_value" value="{$EXPANDED_SEARCH_VALUE}">
-									<input id="reporticoPerformExpand" class="swPrpSubmit" type="button" name="EXPANDSEARCH_{$EXPANDED_ITEM}" value="{$T_SEARCH}"><br>
+                             <input  type="text" style="width: 50%; display: inline" class="{$BOOTSTRAP_STYLE_TEXTFIELD}" name="expand_value" value="{$EXPANDED_SEARCH_VALUE}">
+									<input id="reporticoPerformExpand" class="{$BOOTSTRAP_STYLE_SMALL_BUTTON}swPrpSubmit" style="margin-bottom: 2px" type="button" name="EXPANDSEARCH_{$EXPANDED_ITEM}" value="{$T_SEARCH}"><br>
 {$CONTENT}
 							<br>
-							<input class="swPrpSubmit" type="button" id="reporticoPerformExpand" name="EXPANDCLEAR_{$EXPANDED_ITEM}" value="{$T_CLEAR}">
-							<input class="swPrpSubmit" type="button" id="reporticoPerformExpand" name="EXPANDSELECTALL_{$EXPANDED_ITEM}" value="{$T_SELECTALL}">
-							<input class="swPrpSubmit" type="button" id="returnFromExpand" name="EXPANDOK_{$EXPANDED_ITEM}" value="{$T_OK}">
+							<input class="{$BOOTSTRAP_STYLE_SMALL_BUTTON}swPrpSubmit" type="button" id="reporticoPerformExpand" name="EXPANDCLEAR_{$EXPANDED_ITEM}" value="{$T_CLEAR}">
+							<input class="{$BOOTSTRAP_STYLE_SMALL_BUTTON}swPrpSubmit" type="button" id="reporticoPerformExpand" name="EXPANDSELECTALL_{$EXPANDED_ITEM}" value="{$T_SELECTALL}">
+							<input class="{$BOOTSTRAP_STYLE_SMALL_BUTTON}swPrpSubmit" type="button" id="returnFromExpand" name="EXPANDOK_{$EXPANDED_ITEM}" value="{$T_OK}">
 {/if}
 {if !$SHOW_EXPANDED}
 {if !$REPORT_DESCRIPTION}

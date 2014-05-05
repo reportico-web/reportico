@@ -50,9 +50,6 @@ The encoding format used to store characters in your database. UTF8 will work fo
 <b>Output Character Encoding</b><br>
 Default is UTF8. When outputting data, output will be converted to this format before rendering the browser, PDF viewer etc.
 <P>
-<b>Stylesheet</b><br>
-The style sheet file to use for controlling Reportico appearance.
-<P>
 <b>Project Password</b><br>
 Choose a password which must users must enter to access the project reports. Leave this blank to allow access to project without a password.
 <P> 

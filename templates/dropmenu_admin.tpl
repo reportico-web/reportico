@@ -37,7 +37,7 @@
 {/if}
 {if $SHOW_LOGOUT}
 			<TD width="15%" align="right" class="swPrpTopMenuCell">
-				<input class="swPrpSubmit" type="submit" name="adminlogout" value="{$T_LOGOFF}">
+				<input class="btn btn-sm btn-default swPrpSubmit" type="submit" name="adminlogout" value="{$T_LOGOFF}">
 			</TD>
 {/if}
 {if $SHOW_LOGIN}
@@ -46,7 +46,7 @@
 {if !$EMBEDDED_REPORT} 
 {$T_ADMIN_INSTRUCTIONS}
 				<br><input type="password" name="admin_password" value="">
-				<input class="swPrpSubmit" type="submit" name="login" value="{$T_LOGIN}">
+				<input class="btn btn-sm btn-default swPrpSubmit" type="submit" name="login" value="{$T_LOGIN}">
 {if strlen($ADMIN_PASSWORD_ERROR) > 0}
 				<div style="color: #ff0000;">{$T_ADMIN_PASSWORD_ERROR}</div>
 {/if}
@@ -93,7 +93,7 @@
 {/if}
 <br>
 				<br>
-				<input class="swPrpSubmit" type="submit" name="submit_admin_password" value="{$T_SET_ADMIN_PASSWORD}">
+				<input class="btn btn-sm btn-default swPrpSubmit" type="submit" name="submit_admin_password" value="{$T_SET_ADMIN_PASSWORD}">
 				<br>
 				
 </div>

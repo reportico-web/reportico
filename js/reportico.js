@@ -4,6 +4,20 @@ var reportico_ajax_script = "index.php";
 /*
 ** Reportico Javascript functions
 */
+function setupDynamicGrids()
+{
+    reportico_jquery(".swRepPage").each(function(){
+        reportico_jquery(this).dataTable(
+                {
+                "retrieve" : true,
+                "searching" : false,
+                "ordering" : true,
+                "paging" : false
+                }
+                );
+    })
+}
+
 function setupDatePickers()
 {
     reportico_jquery(".swDateField").each(function(){
@@ -54,14 +68,14 @@ function resizeTables()
 }
 
 
-reportico_jquery('ul.jd_menu li a, ul.jd_menu li ul li a').live('click', function(event) 
+reportico_jquery(document).on('click', 'ul.dropdown-menu li a, ul.dropdown-menu li ul li a, ul.jd_menu li a, ul.jd_menu li ul li a', function(event) 
 {
     if (  reportico_jquery.type(reportico_ajax_mode) === 'undefined' || !reportico_ajax_mode)
     {
         return true;
     }
 
-    var url = reportico_jquery(this).attr('href');
+    var url = reportico_jquery(this).prop('href');
     runreport(url, this);
     return false;
 });
@@ -72,6 +86,7 @@ reportico_jquery(document).ready(function()
     setupDatePickers();
     setupDropMenu();
     resizeTables();
+    setupDynamicGrids();
 });
 
 
@@ -80,7 +95,7 @@ reportico_jquery(document).ready(function()
 ** AJAX mode is in place when reportico session ("reportico_ajax_script") is set
 ** will generate full reportico output to replace the reportico_container tag
 */
-reportico_jquery('.swMenuItemLink, .swPrpSubmit, .swLinkMenu, .reporticoSubmit').live('click', function(event) 
+reportico_jquery(document).on('click', '.swMenuItemLink, .swPrpSubmit, .swLinkMenu, .reporticoSubmit', function(event) 
 {
     if ( reportico_jquery(this).parent().hasClass("swRepPrintBox" )  )
     {
@@ -98,7 +113,7 @@ reportico_jquery('.swMenuItemLink, .swPrpSubmit, .swLinkMenu, .reporticoSubmit')
 	var expandpanel = reportico_jquery(this).closest('#criteriaform').find('#swPrpExpandCell');
     var reportico_container = reportico_jquery(this).closest("#reportico_container");
 
-    if ( !reportico_jquery(this).attr("href") )
+    if ( !reportico_jquery(this).prop("href") )
     {
             reportico_jquery(expandpanel).addClass("loading");
             reportico_jquery(reportico_container).addClass("loading");
@@ -106,7 +121,7 @@ reportico_jquery('.swMenuItemLink, .swPrpSubmit, .swLinkMenu, .reporticoSubmit')
             forms = reportico_jquery(this).closest('.swMntForm,.swPrpForm,form');
             if (    reportico_jquery.type(reportico_ajax_script) === 'undefined' )
             {
-                var ajaxaction = reportico_jquery(forms).attr("action");
+                var ajaxaction = reportico_jquery(forms).prop("action");
             }
             else
             {
@@ -115,14 +130,14 @@ reportico_jquery('.swMenuItemLink, .swPrpSubmit, .swLinkMenu, .reporticoSubmit')
 
 
 			params = forms.serialize();
-            params += "&" + reportico_jquery(this).attr("name") + "=1";
+            params += "&" + reportico_jquery(this).prop("name") + "=1";
             params += "&reportico_ajax_called=1";
 
             csvpdfoutput = false;
             reportico_jquery(reportico_container).find("input:radio").each(function() { 
                 d = 0;
-                nm = reportico_jquery(this).attr("value");
-                chk = reportico_jquery(this).attr("checked");
+                nm = reportico_jquery(this).prop("value");
+                chk = reportico_jquery(this).prop("checked");
                 if ( chk && ( nm == "PDF" || nm == "CSV"  ) )
                     csvpdfoutput = true;
             });
@@ -133,8 +148,8 @@ reportico_jquery('.swMenuItemLink, .swPrpSubmit, .swLinkMenu, .reporticoSubmit')
                           "width=300,height=400,scrollbars=yes" ];
 
                 var url = ajaxaction +"?" + params;
-                var windowName = "popUp";//reportico_jquery(this).attr("name");
-                var windowSize = windowSizeArray[reportico_jquery(this).attr("rel")];
+                var windowName = "popUp";//reportico_jquery(this).prop("name");
+                var windowSize = windowSizeArray[reportico_jquery(this).prop("rel")];
                 window.open(url, windowName, "width=200,height=200");
                 reportico_jquery(expandpanel).removeClass("loading");
                 reportico_jquery(reportico_container).removeClass("loading");
@@ -157,14 +172,14 @@ reportico_jquery('.swMenuItemLink, .swPrpSubmit, .swLinkMenu, .reporticoSubmit')
                 error: function(xhr, desc, err) {
                   reportico_jquery(expandpanel).removeClass("loading");
                   reportico_jquery(reportico_container).removeClass("loading");
-                  reportico_jquery(expandpanel).attr('innerHTML',"Ajax Error: " + xhr + "\nTextStatus: " + desc + "\nErrorThrown: " + err);
+                  reportico_jquery(expandpanel).prop('innerHTML',"Ajax Error: " + xhr + "\nTextStatus: " + desc + "\nErrorThrown: " + err);
                 }
               });
               return false;
     }
     else
     {
-        url = reportico_jquery(this).attr("href");
+        url = reportico_jquery(this).prop("href");
         params = false;
         runreport(url, this);
     }
@@ -176,7 +191,7 @@ reportico_jquery('.swMenuItemLink, .swPrpSubmit, .swLinkMenu, .reporticoSubmit')
 ** refresh middle prepare mode section with non expand mode 
 ** text
 */
-reportico_jquery('#returnFromExpand').live('click', function() {
+reportico_jquery(document).on('click', '#returnFromExpand', function() {
 
 	var critform = reportico_jquery(this).closest('#criteriaform');
 	var expandpanel = reportico_jquery(this).closest('#criteriaform').find('#swPrpExpandCell');
@@ -185,7 +200,7 @@ reportico_jquery('#returnFromExpand').live('click', function() {
     var params = reportico_jquery(critform).serialize();
     params += "&execute_mode=PREPARE";
     params += "&partial_template=critbody";
-    params += "&" + reportico_jquery(this).attr("name") + "=1";
+    params += "&" + reportico_jquery(this).prop("name") + "=1";
 
 	forms = reportico_jquery(this).closest('.swMntForm,.swPrpForm,form');
     ajaxaction = reportico_ajax_script;
@@ -205,23 +220,23 @@ reportico_jquery('#returnFromExpand').live('click', function() {
         },
         error: function(xhr, desc, err) {
         reportico_jquery(expandpanel).removeClass("loading");
-        reportico_jquery(fillPoint).attr('innerHTML',"Ajax Error: " + xhr + "\nTextStatus: " + desc + "\nErrorThrown: " + err);
+        reportico_jquery(fillPoint).prop('innerHTML',"Ajax Error: " + xhr + "\nTextStatus: " + desc + "\nErrorThrown: " + err);
       }
     });
     return false;
 	});
 
-  reportico_jquery('#reporticoPerformExpand').live('click', function() {
+  reportico_jquery(document).on('click', '#reporticoPerformExpand', function() {
 
 	forms = reportico_jquery(this).closest('.swMntForm,.swPrpForm,form');
-	var ajaxaction = reportico_jquery(forms).attr("action");
+	var ajaxaction = reportico_jquery(forms).prop("action");
 	var critform = reportico_jquery(this).closest('#criteriaform');
     ajaxaction = reportico_ajax_script;
 
     var params = reportico_jquery(critform).serialize();
     params += "&execute_mode=PREPARE";
     params += "&partial_template=expand";
-    params += "&" + reportico_jquery(this).attr("name") + "=1";
+    params += "&" + reportico_jquery(this).prop("name") + "=1";
 
 	var fillPoint = reportico_jquery(this).closest('#criteriaform').find('#swPrpExpandCell');
     reportico_jquery(fillPoint).addClass("loading");
@@ -237,7 +252,7 @@ reportico_jquery('#returnFromExpand').live('click', function() {
         },
         error: function(xhr, desc, err) {
           reportico_jquery(fillPoint).removeClass("loading");
-          reportico_jquery(fillPoint).attr('innerHTML',"Ajax Error: " + xhr + "\nTextStatus: " + desc + "\nErrorThrown: " + err);
+          reportico_jquery(fillPoint).prop('innerHTML',"Ajax Error: " + xhr + "\nTextStatus: " + desc + "\nErrorThrown: " + err);
         }
       });
       return false;
@@ -249,15 +264,27 @@ reportico_jquery('#returnFromExpand').live('click', function() {
 ** In pdf/csv mode this needs to trigger opening of a new browser window
 ** with output in rather that directing to screen
 */
-reportico_jquery('.swPrintBox,.prepareAjaxExecute,#prepareAjaxExecute').live('click', function() {
+reportico_jquery(document).on('click', '.swPrintBox,.prepareAjaxExecute,#prepareAjaxExecute', function() {
 
-    if (  reportico_jquery(this).hasClass("swPDFBox") ) reportico_jquery("#rpt_format_pdf").attr("checked", "checked");
-    if (  reportico_jquery(this).hasClass("swCSVBox") ) reportico_jquery("#rpt_format_csv").attr("checked", "checked");
-    if (  reportico_jquery(this).hasClass("swHTMLBox") ) reportico_jquery("#rpt_format_html").attr("checked", "checked");
-    if (  reportico_jquery(this).hasClass("swHTMLGoBox") ) reportico_jquery("#rpt_format_html").attr("checked", "checked");
-    if (  reportico_jquery(this).hasClass("swXMLBox") ) reportico_jquery("#rpt_format_xml").attr("checked", "checked");
-    if (  reportico_jquery(this).hasClass("swJSONBox") ) reportico_jquery("#rpt_format_json").attr("checked", "checked");
-    if (  reportico_jquery(this).hasClass("swPrintBox") ) reportico_jquery("#rpt_format_html").attr("checked", "checked");
+    reportico_jquery("#rpt_format_pdf").prop("checked", false );
+    reportico_jquery("#rpt_format_csv").prop("checked", false );
+    reportico_jquery("#rpt_format_html").prop("checked", false );
+    reportico_jquery("#rpt_format_json").prop("checked", false );
+    reportico_jquery("#rpt_format_xml").prop("checked", false );
+    if (  reportico_jquery(this).hasClass("swPDFBox") ) 
+        reportico_jquery("#rpt_format_pdf").prop("checked", "checked");
+    if (  reportico_jquery(this).hasClass("swCSVBox") ) 
+        reportico_jquery("#rpt_format_csv").prop("checked", "checked");
+    if (  reportico_jquery(this).hasClass("swHTMLBox") ) 
+        reportico_jquery("#rpt_format_html").prop("checked", "checked");
+    if (  reportico_jquery(this).hasClass("swHTMLGoBox") ) 
+        reportico_jquery("#rpt_format_html").prop("checked", "checked");
+    if (  reportico_jquery(this).hasClass("swXMLBox") ) 
+        reportico_jquery("#rpt_format_xml").prop("checked", "checked");
+    if (  reportico_jquery(this).hasClass("swJSONBox") ) 
+        reportico_jquery("#rpt_format_json").prop("checked", "checked");
+    if (  reportico_jquery(this).hasClass("swPrintBox") ) 
+        reportico_jquery("#rpt_format_html").prop("checked", "checked");
 
     if (  !reportico_jquery(this).hasClass("swPrintBox") )
     if (  reportico_jquery.type(reportico_ajax_mode) === 'undefined' || !reportico_ajax_mode)
@@ -273,12 +300,12 @@ reportico_jquery('.swPrintBox,.prepareAjaxExecute,#prepareAjaxExecute').live('cl
 
     params = reportico_jquery(critform).serialize();
     params += "&execute_mode=EXECUTE";
-    params += "&" + reportico_jquery(this).attr("name") + "=1";
+    params += "&" + reportico_jquery(this).prop("name") + "=1";
 
     forms = reportico_jquery(this).closest('.swMntForm,.swPrpForm,form');
     if ( jQuery.type(reportico_ajax_script) === 'undefined' || !reportico_ajax_script )
     {
-        var ajaxaction = reportico_jquery(forms).attr("action");
+        var ajaxaction = reportico_jquery(forms).prop("action");
     }
     else
     {
@@ -294,8 +321,8 @@ reportico_jquery('.swPrintBox,.prepareAjaxExecute,#prepareAjaxExecute').live('cl
     {
         reportico_jquery(reportico_container).find("input:radio").each(function() { 
             d = 0;
-            nm = reportico_jquery(this).attr("value");
-            chk = reportico_jquery(this).attr("checked");
+            nm = reportico_jquery(this).prop("value");
+            chk = reportico_jquery(this).prop("checked");
             if ( chk && ( nm == "PDF" || nm == "CSV"  ) )
                 csvpdfoutput = true;
             //if ( chk && ( nm == "HTML" ) )
@@ -310,8 +337,8 @@ reportico_jquery('.swPrintBox,.prepareAjaxExecute,#prepareAjaxExecute').live('cl
                   "width=300,height=400,scrollbars=yes" ];
 
         var url = ajaxaction +"?" + params;
-        var windowName = "popUp";//reportico_jquery(this).attr("name");
-        var windowSize = windowSizeArray[reportico_jquery(this).attr("rel")];
+        var windowName = "popUp";//reportico_jquery(this).prop("name");
+        var windowSize = windowSizeArray[reportico_jquery(this).prop("rel")];
         window.open(url, windowName, "width=200,height=200");
         reportico_jquery(expandpanel).removeClass("loading");
         return false;
@@ -351,10 +378,10 @@ reportico_jquery('.swPrintBox,.prepareAjaxExecute,#prepareAjaxExecute').live('cl
             // a JSON response from the server
             var errstatus = reportico_jquery.parseJSON(xhr.responseText);
             var msg = errstatus.errmsg;
-            //reportico_jquery(expandpanel).attr('innerHTML', msg);
+            //reportico_jquery(expandpanel).prop('innerHTML', msg);
             alert(msg);
         } catch(e) { 
-            reportico_jquery(expandpanel).attr('innerHTML',"Error occurred in data request. Error " + xhr.status + ": " + xhr.statusText);
+            reportico_jquery(expandpanel).prop('innerHTML',"Error occurred in data request. Error " + xhr.status + ": " + xhr.statusText);
         }
        }
      });
@@ -389,6 +416,7 @@ function fillDialog(results, cont) {
   reportico_jquery(cont).closest("#reportico_container").replaceWith(results);
   setupDatePickers();
   setupDropMenu();
+  setupDynamicGrids();
   resizeTables();
 }
 

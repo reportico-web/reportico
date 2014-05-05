@@ -190,6 +190,7 @@ $locale_arr = array (
 		"T_LOOKUP" => "数据库查询",
 		"T_DATE" => "日期",
 		"T_DATERANGE" => "日期范围",
+        "T_SQLCOMMAND" => "sql命令",
 		"T_LIST" => "自定义列表",
 		"T_NOINPUT" => "没有项目",
 		"T_DROPDOWN" => "下拉列表",

@@ -1,105 +1,128 @@
 {if !$REPORTICO_AJAX_CALLED}
-{if !$EMBEDDED_REPORT} 
+{if !$EMBEDDED_REPORT}
 <!DOCTYPE html>
 <HTML>
 <HEAD>
 <TITLE>{$TITLE}</TITLE>
+<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEET}">
+{if $BOOTSTRAP_STYLES}
+<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/bootstrap.min.css">
+{/if}
 {$OUTPUT_ENCODING}
 </HEAD>
-<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEET}">
 <BODY class="swMenuBody">
 {else}
 <LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEET}">
+{if $BOOTSTRAP_STYLES}
+{if !$REPORTICO_BOOTSTRAP_PRELOADED}
+<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/bootstrap.min.css">
 {/if}
-{if $AJAX_ENABLED} 
+{/if}
+{/if}
+
+{if $AJAX_ENABLED}
 {if !$REPORTICO_AJAX_PRELOADED}
+{if !$REPORTICO_JQUERY_PRELOADED}
 {literal}
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/jquery.js"></script>
-<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/ui/jquery.ui.core.js"></script>
-<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/ui/jquery.ui.datepicker.js"></script>
-<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/reportico.js"></script>
 {/literal}
 {/if}
 {literal}
+<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/ui/jquery.ui.core.js"></script>
+<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/ui/jquery.ui.datepicker.js"></script>
+{/literal}
+{literal}
+<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/reportico.js"></script>
+{/literal}
+{/if}
+{if $BOOTSTRAP_STYLES}
+{if !$REPORTICO_BOOTSTRAP_PRELOADED}
+{literal}
+<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/bootstrap.min.js"></script>
+{/literal}
+{/if}
+{/if}
+{/if}
+{literal}<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/ui/i18n/jquery.ui.datepicker-{/literal}{$AJAX_DATEPICKER_LANGUAGE}{literal}.js"></script>{/literal}
+{if !$BOOTSTRAP_STYLES}
+{literal}
+<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/jquery.jdMenu.js"></script>
+<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{/literal}{$JSPATH}{literal}/jquery.jdMenu.css">
+{/literal}
+{/if}
+{literal}
+<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{/literal}{$JSPATH}{literal}/ui/themes/base/jquery.ui.core.css">
+<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{/literal}{$JSPATH}{literal}/ui/themes/base/jquery.ui.theme.css">
+<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{/literal}{$JSPATH}{literal}/ui/themes/base/jquery.ui.datepicker.css">
 <script type="text/javascript">var reportico_datepicker_language = "{/literal}{$AJAX_DATEPICKER_FORMAT}{literal}";</script>
 <script type="text/javascript">var reportico_this_script = "{/literal}{$SCRIPT_SELF}{literal}";</script>
 <script type="text/javascript">var reportico_ajax_script = "{/literal}{$REPORTICO_AJAX_RUNNER}{literal}";</script>
 <script type="text/javascript">var reportico_ajax_mode = "{/literal}{$REPORTICO_AJAX_MODE}{literal}";</script>
 {/literal}
-<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{$JSPATH}/ui/themes/base/jquery.ui.all.css">
-{/if}
 {/if}
 <div id="reportico_container">
-{literal}<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/ui/i18n/jquery.ui.datepicker-{/literal}{$AJAX_DATEPICKER_LANGUAGE}{literal}.js"></script>{/literal}
-{literal}<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/jquery.jdMenu.js"></script>{/literal}
-{literal}<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{/literal}{$JSPATH}{literal}/jquery.jdMenu.css">{/literal}
 <FORM class="swMenuForm" name="topmenu" method="POST" action="{$SCRIPT_SELF}">
-<H1 class="swTitle">{$TITLE}</H1>
 <input type="hidden" name="session_name" value="{$SESSION_ID}" /> 
+
+{if $SHOW_REPORT_MENU}
+{if $BOOTSTRAP_STYLES}
+
+    <div class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="container" style="width: 100%">
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav" style="width: 100%">
+{if $DROPDOWN_MENU_ITEMS}
+{section name=menu loop=$DROPDOWN_MENU_ITEMS}
+            <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">{$DROPDOWN_MENU_ITEMS[menu].title}<span class="caret"></span></a>
+              <ul class="dropdown-menu reportico-dropdown">
+{section name=menuitem loop=$DROPDOWN_MENU_ITEMS[menu].items}
+{if isset($DROPDOWN_MENU_ITEMS[menu].items[menuitem].reportname)}
+<li ><a class="reportico-dropdown-item" href="{$RUN_REPORT_URL}&project={$DROPDOWN_MENU_ITEMS[menu].project}&xmlin={$DROPDOWN_MENU_ITEMS[menu].items[menuitem].reportfile}">{$DROPDOWN_MENU_ITEMS[menu].items[menuitem].reportname}</a></li>
+{/if}
+{/section}
+
+              </ul>
+            </li>
+{/section}
+{/if}
 {if $SHOW_TOPMENU}
-	<TABLE class="swPrpTopMenu">
-		<TR>
-                        <TD class="swPrpTopMenuCell" style="width: 40%">
-{if ($SHOW_ADMIN_BUTTON)}
-			<a class="swLinkMenu" href="{$ADMIN_MENU_URL}">{$T_ADMIN_HOME}</a>
-{/if}
-{if ($SHOW_DESIGN_BUTTON)}
-{if !$DEMO_MODE}
-			<a class="swLinkMenu" href="{$CONFIGURE_PROJECT_URL}">{$T_CONFIG_PROJECT}</a>
-			<a class="swLinkMenu" href="{$CREATE_REPORT_URL}">{$T_CREATE_REPORT}</a>
-{/if}
-{/if}
-			</TD>
-{if strlen($DBUSER)>0} 
-			<TD class="swPrpTopMenuCell">{$T_LOGGED_IN_AS} {$DBUSER}</TD>
-{/if}
-{if strlen($DBUSER)==0} 
-{/if}
-{if strlen($MAIN_MENU_URL)>0} 
+{if $SHOW_LOGOUT}
+            <li style="float:right">
+                <input class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swAdminButton2" type="submit" name="logout" value="{$T_LOGOFF}">
+            </li>
 {/if}
 {if $SHOW_LOGIN}
-			<TD align="left" class="swPrpTopMenuCell">
-<br><br><br><br>
 {if strlen($PROJ_PASSWORD_ERROR) > 0}
                                 <div style="color: #ff0000;">{$T_PASSWORD_ERROR}</div>
 {/if}
-{if $DEMO_MODE}
-{$T_ENTER_PROJECT_PASSWORD_DEMO}
-{else}
-{$T_ENTER_PROJECT_PASSWORD}
+				<div>{$T_ENTER_PROJECT_PASSWORD}<br><input type="password" name="project_password" value=""></div>
+				<input class="swAdminButton" type="submit" name="login" value="{$T_LOGIN}">
+			</li>
 {/if}
-<BR><input type="password" name="project_password" value=""></div>
-				<input class="swLinkMenu reporticoSubmit" type="submit" name="login" value="{$T_LOGIN}"><br><br><br><br><br>
-			</TD>
 {/if}
-			<TD style="text-align: center">
-{if count($LANGUAGES) > 1 || ($SHOW_DESIGN_BUTTON)}
-&nbsp; &nbsp; &nbsp; &nbsp;
-                {$T_CHOOSE_LANGUAGE}<BR>
-                <select class="swPrpDropSelectRegular" name="jump_to_language">
-{section name=menuitem loop=$LANGUAGES}
-{strip}
-{if $LANGUAGES[menuitem].active }
-                <OPTION label="{$LANGUAGES[menuitem].label}" selected value="{$LANGUAGES[menuitem].value}">{$LANGUAGES[menuitem].label}</OPTION>
-{else}
-                <OPTION label="{$LANGUAGES[menuitem].label}" value="{$LANGUAGES[menuitem].value}">{$LANGUAGES[menuitem].label}</OPTION>
+{if strlen($ADMIN_MENU_URL)>0} 
+              <li style="float:right">
+                    <a class="swAdminButton2" href="{$ADMIN_MENU_URL}">{$T_ADMIN_HOME}</a>
+              </li>
 {/if}
-{/strip}
-{/section}
-                </select>
-                <input class="swMntButton reporticoSubmit" type="submit" name="submit_language" value="{$T_GO}">
+{if ($SHOW_DESIGN_BUTTON)}
+{if !$DEMO_MODE}
+            <li style="float:right">
+			    <a class="swLinkMenu2" href="{$CONFIGURE_PROJECT_URL}">{$T_CONFIG_PROJECT}</a>
+            </li>
+            <li style="float:right">
+			    <a class="swLinkMenu2" href="{$CREATE_REPORT_URL}">{$T_CREATE_REPORT}</a>
+            </li>
 {/if}
-			</TD>
-{if $SHOW_LOGOUT}
-			<TD width="15%" style="padding-left: 10px; text-align: right;" class="swPrpTopMenuCell">
-				<input class="swLinkMenu reporticoSubmit" type="submit" name="logout" value="{$T_LOGOFF}">
-			</TD>
 {/if}
-		</TR>
-	</TABLE>
-{/if}
+</ul>
 
-{if $SHOW_REPORT_MENU}
+        </div>
+        </div>
+        <div class="clr"></div>
+</div>
+
+{else}
 {if $DROPDOWN_MENU_ITEMS}
 <ul id="dropmenu" class="jd_menu" style="clear: none;float: left;width: 100%; ">
 {section name=menu loop=$DROPDOWN_MENU_ITEMS}
@@ -107,13 +130,17 @@
 <a href="{$MAIN_MENU_URL}&project={$DROPDOWN_MENU_ITEMS[menu].project}">{$DROPDOWN_MENU_ITEMS[menu].title}</a>
 <ul style="padding: 0px; margin: 0px">
 {section name=menuitem loop=$DROPDOWN_MENU_ITEMS[menu].items}
+{if isset($DROPDOWN_MENU_ITEMS[menu].items[menuitem].reportname)}
 <li ><a href="{$RUN_REPORT_URL}&project={$DROPDOWN_MENU_ITEMS[menu].project}&xmlin={$DROPDOWN_MENU_ITEMS[menu].items[menuitem].reportfile}">{$DROPDOWN_MENU_ITEMS[menu].items[menuitem].reportname}</a></li>
+{/if}
 {/section}
 </ul>
 </li>
 {/section}
 </ul>
 {/if}
+{/if}
+<H1 class="swTitle">{$TITLE}</H1>
 	<TABLE class="swMenu">
 		<TR> <TD>&nbsp;</TD> </TR>
 {section name=menuitem loop=$MENU_ITEMS}
@@ -147,7 +174,7 @@
 {/if}
 </FORM>
 <div class="smallbanner">Powered by <a href="http://www.reportico.org/" target="_blank">reportico {$REPORTICO_VERSION}</a></div>
-</DIV>
+</div>
 {if !$REPORTICO_AJAX_CALLED}
 {if !$EMBEDDED_REPORT} 
 </BODY>

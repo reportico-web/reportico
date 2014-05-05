@@ -715,9 +715,9 @@ a:visited
     float: left;
 }
 
-.swRepPrintBox .swLinkMenu { background-image: url(../images/printer.png); }
-.swRepRefreshBox .swLinkMenu { background-image: url(../images/refreshbutton.png); }
-.swRepBackBox .swLinkMenu { background-image: url(../images/backbutton.png); }
+.swRepPrintBox .swLinkMenu { background-image: url(../images/printer.png) !important; }
+.swRepRefreshBox .swLinkMenu { background-image: url(../images/refreshbutton.png) !important; }
+.swRepBackBox .swLinkMenu { background-image: url(../images/backbutton.png) !important; }
 
 .swRepBackButton:hover 
 {

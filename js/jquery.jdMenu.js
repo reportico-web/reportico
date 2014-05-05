@@ -25,7 +25,9 @@
     
     // Settings
     var DELAY   = 150;
-    var IFRAME  = $.browser.msie;
+    var IFRAME  = false;
+    if ( $.browser != undefined )
+        IFRAME  = $.browser.msie;
     var CSSR    = 'jd_menu_flag_root';
     var CSSB    = 'jd_menu_hover_toolbar';
     var CSSH    = 'jd_menu_hover';

@@ -1,3 +1,4 @@
+{if !$REPORTICO_AJAX_CALLED}
 {if !$EMBEDDED_REPORT}
 <!DOCTYPE html>
 <HTML>
@@ -7,25 +8,57 @@
 </HEAD>
 {if $REPORT_PAGE_STYLE}
 <BODY class="swRepBody" {$REPORT_PAGE_STYLE};">
-<LINK id="PRP_StyleSheet" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEET}">
+<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEET}">
+{if $BOOTSTRAP_STYLES}
+<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/bootstrap.min.css">
+{/if}
 {else}
 <BODY class="swRepBody">
 <LINK id="PRP_StyleSheet" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEET}">
 {/if}
+{if $BOOTSTRAP_STYLES}
+<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/bootstrap.min.css">
+{/if}
+{else}
+<LINK id="PRP_StyleSheet" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEET}">
+{if !$REPORTICO_BOOTSTRAP_PRELOADED}
+<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/bootstrap.min.css">
+{/if}
 {/if}
 {if $AJAX_ENABLED}
 {if !$REPORTICO_AJAX_PRELOADED}
+{if !$REPORTICO_JQUERY_PRELOADED}
 {literal}
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/jquery.js"></script>
+{/literal}
+{/if}
+<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/bootstrap.min.js"></script>
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/ui/jquery.ui.core.js"></script>
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/ui/jquery.ui.datepicker.js"></script>
-<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/reportico.js"></script>
-<!--LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{$JSPATH}/ui/themes/base/jquery.ui.all.css"-->
 {/literal}
+{literal}
+<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/reportico.js"></script>
+{/literal}
+{/if}
+{if !$REPORTICO_BOOTSTRAP_PRELOADED}
+{literal}
+<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/bootstrap.min.js"></script>
+{/literal}
+{/if}
 {/if}
 {literal}
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/ui/i18n/jquery.ui.datepicker-{/literal}{$AJAX_DATEPICKER_LANGUAGE}{literal}.js"></script>
+{/literal}
+{if !$BOOTSTRAP_STYLES}
+{literal}
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/jquery.jdMenu.js"></script>
+<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{/literal}{$JSPATH}{literal}/jquery.jdMenu.css">
+{/literal}
+{/if}
+{literal}
+<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{/literal}{$JSPATH}{literal}/ui/themes/base/jquery.ui.base.css">
+<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{/literal}{$JSPATH}{literal}/ui/themes/base/jquery.ui.theme.css">
+<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{/literal}{$JSPATH}{literal}/ui/themes/base/jquery.ui.datepicker.css">
 <script type="text/javascript">var reportico_datepicker_language = "{/literal}{$AJAX_DATEPICKER_FORMAT}{literal}";</script>
 <script type="text/javascript">var reportico_this_script = "{/literal}{$SCRIPT_SELF}{literal}";</script>
 <script type="text/javascript">var reportico_ajax_script = "{/literal}{$REPORTICO_AJAX_RUNNER}{literal}";</script>
@@ -33,11 +66,40 @@
 <script type="text/javascript">var reportico_report_title = "{/literal}{$TITLE}{literal}";</script>
 <script type="text/javascript">var reportico_css_path = "{/literal}{$STYLESHEET}{literal}";</script>
 {/literal}
-{/else}
-<LINK id="PRP_StyleSheet" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEET}">
+{if $REPORTICO_DYNAMIC_GRIDS}
+{literal}
+<script type="text/javascript">var reportico_dynamic_grids = "{/literal}true{literal}";</script>
+{/literal}
+{else}
+{literal}
+<script type="text/javascript">var reportico_dynamic_grids = "{/literal}false{literal}";</script>
+{/literal}
+{/if}
+{/if}
+{if $REPORTICO_CHARTING_ENGINE == "FLOT" }
+{literal}
+<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/flot/jquery.flot.js"></script>
+<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/flot/jquery.flot.axislabels.js"></script>
+{/literal}
+{/if}
+{if $REPORTICO_CHARTING_ENGINE == "NVD3" }
+{literal}
+<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/nvd3/d3.min.js"></script>
+<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/nvd3/nv.d3.js"></script>
+<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{/literal}{$JSPATH}{literal}/nvd3/nv.d3.css">
+{/literal}
+{/if}
+{if $REPORTICO_DYNAMIC_GRIDS}
+{literal}
+<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/jquery.dataTables.js"></script>
+{/literal}
+{/if}
+{if $REPORTICO_DYNAMIC_GRIDS}
+<LINK id="PRP_StyleSheet" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/jquery.dataTables.css">
 {/if}
 {if $PRINTABLE_HTML}
 {literal}
+<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/reportico.js"></script>
 <script type="text/javascript">
 /*
 * Where multiple data tables exist due to graphs
@@ -101,11 +163,10 @@ function resizeOutputTables(window)
 {$CONTENT}
 </div>
 </div>
-{if !$EMBEDDED_REPORT}
 {if !$REPORTICO_AJAX_CALLED}
 {if !$EMBEDDED_REPORT}
 </BODY>
 </HTML>
 {/if}
 {/if}
-{/if}
+

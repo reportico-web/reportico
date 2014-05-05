@@ -29,7 +29,7 @@
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- * @version $Id: swoutput.php,v 1.26 2013/08/08 18:20:39 peter Exp $
+ * @version $Id: swoutput.php,v 1.31 2014/05/05 20:04:59 peter Exp $
  */
 
 class reportico_report extends reportico_object
@@ -670,6 +670,16 @@ class reportico_report extends reportico_object
 				$this->format_group_header_end();
 				$this->apply_format($group, "after_header");
 			}
+            else if ( (  $group->group_name == "REPORT_BODY" && $this->line_count == 0 ) || $this->query->changed($group->group_name) )
+            {
+				    if ( $graphs =& $this->query->get_graph_by_name($group->group_name) )
+				    {
+                        foreach ( $graphs as $graph )
+                        {
+				            $graph->clear_data();
+				    }
+                }
+            }
 		}
 		
         // Show column headers for HTML/CSV on group change, or on first line of report, or on new page
@@ -705,6 +715,7 @@ class reportico_report extends reportico_object
 class reportico_report_array extends reportico_report
 {
 	var	$record_template;
+	var	$column_spacing;
 	var	$results = array();
 	
 	function reportico_report_array ()
@@ -937,6 +948,9 @@ class reportico_report_pdf extends reportico_report
     // on knowing how wide things are
     var $draw_mode = "DRAW";
 	
+    // Factor to apply to image pixel size to get them to show at correct size in PDF document
+	var	$pdfImageDPIScale = 0.72;
+
 	function reportico_report_pdf ()
 	{
 		$this->column_spacing = 0;
@@ -1588,7 +1602,7 @@ class reportico_report_pdf extends reportico_report
             if ( defined("PDF_HEADER_YPOS") ) $y = PDF_HEADER_YPOS;
             if ( defined("PDF_HEADER_WIDTH") ) $w = PDF_HEADER_WIDTH;
 
-            $h = $this->document->Image(PDF_HEADER_IMAGE, $x, $y, $w );
+            $h = $this->document->Image(PDF_HEADER_IMAGE, $x, $y, $w *  $this->pdfImageDPIScale);
         }
 
         //$this->set_default_styles();
@@ -1786,7 +1800,7 @@ class reportico_report_pdf extends reportico_report
 					    $y = $this->document->GetY();
 					    $this->set_position($group_data_xpos);
 					    //$h = $this->document->ImageHeight($tmpnam.".png", $group_xpos, $y, $width );
-					    $h = $this->document->Image($tmpnam.".png", $group_data_xpos, $y, $width ) + 2;
+					    $h = $this->document->Image($tmpnam.".png", $group_data_xpos, $y, $width  * $this->pdfImageDPIScale ) + 2;
                         if ( $h > $this->max_line_height )
                             $this->max_line_height = $h;
 					    $this->yjump =$h;
@@ -1882,8 +1896,7 @@ class reportico_report_pdf extends reportico_report
 				//$height = $height * (  ($this->abs_right_margin - $this->abs_left_margin) / $width );
 				////$width = ($this->abs_right_margin - $this->abs_left_margin);
 			//}
-			$xaddon = ( $this->abs_right_margin - $this->abs_left_margin - $width ) / 2 ;
-	
+			$xaddon = ( $this->abs_right_margin - $this->abs_left_margin - ($width * $this->pdfImageDPIScale) ) / 2 ;
 			if ( $y + $height >= $this->abs_bottom_margin )
 			{
 				$this->finish_page();
@@ -1891,7 +1904,8 @@ class reportico_report_pdf extends reportico_report
 				$x = $this->document->GetX();
 				$y = $this->document->GetY();
 			}
-			$this->document->Image($tmpnam.".png", $this->abs_left_margin + $xaddon, $y, $width, $height );
+
+			$this->document->Image($tmpnam.".png", $this->abs_left_margin + $xaddon, $y, $width * $this->pdfImageDPIScale, $height * $this->pdfImageDPIScale );
 			$y = $this->set_position(false, $y + $height);
 			$this->end_line();
 		}
@@ -1994,7 +2008,7 @@ class reportico_report_pdf extends reportico_report
 					$x = $column_item->abs_column_start;
 					$y = $this->document->GetY();
 					$this->set_position($x, false);
-					$h = $this->document->Image($tmpnam.".png", $x, $y, $width ) + 2;
+					$h = $this->document->Image($tmpnam.".png", $x, $y, $width * $this->pdfImageDPIScale ) + 2;
 					if ( $h > $this->yjump )
 						$this->yjump =$h;
                     if ( $h > $this->max_line_height )
@@ -2378,6 +2392,8 @@ class reportico_report_pdf extends reportico_report
             $prev_max_line_height = $this->max_line_height;
 			$this->finish_page();
 			$this->begin_page();
+			$this->before_group_headers();
+			$this->page_line_count++;
             $this->calculated_line_height = $prev_calculated_line_height;
             $this->max_line_height = $prev_max_line_height;
 		}
@@ -2431,6 +2447,7 @@ class reportico_report_pdf extends reportico_report
 		{
 			$this->finish_page();
 			$this->begin_page();
+
 			$this->before_group_headers();
 			$this->page_line_count++;
 		}
@@ -2529,7 +2546,7 @@ class reportico_report_pdf extends reportico_report
 		$startcol = $footer->get_attribute("ColumnStartPDF");
 		$tw = $this->abs_paging_width($startcol);
 		if ( !$tw )
-			$tw = $this->abs_right_margin;
+			$tw = $this->abs_left_margin;
 
 		$wd = $footer->get_attribute("ColumnWidthPDF");
 		if ( !$wd )
@@ -2541,7 +2558,7 @@ class reportico_report_pdf extends reportico_report
 
 		$just = $this->justifys[$footer->derive_attribute( "justify",  "left")];
 
-		$y = $this->abs_bottom_margin + ( $this->vsize * $footer->line );
+		$y = $this->abs_bottom_margin - ( $this->vsize * $footer->line );
 		$this->set_position($tw, $y);
 		//$tx = $this->reportico_string_to_php($footer->text);
 		$tx = $this->reportico_string_to_php(reportico_assignment::reportico_meta_sql_criteria($this->query, $footer->text));
@@ -2809,7 +2826,9 @@ class reportico_report_html_template extends reportico_report
 			return;
 
 		if ( !$this->show_column_header($column_item) )
+        {
 				return;
+        }
 
 		$padstring =& $column_item->column_value;
 
@@ -2913,7 +2932,7 @@ class reportico_report_html_template extends reportico_report
 				break;
 
 			case "newpage" :
-		        $this->text .= '<TABLE class="swRepPage" '.$this->get_style_tags($this->query->output_page_styles).'>';
+		        //$this->text .= '<TABLE class="'.$this->query->getBootstrapStyle("page").'swRepPage" '.$this->get_style_tags($this->query->output_page_styles).'>';
                 $this->page_started = true;
 				break;
 
@@ -2928,7 +2947,7 @@ class reportico_report_html_template extends reportico_report
 	{
         if ( !$this->page_started )
         {
-		    $this->text .= '<TABLE class="swRepPage" '.$this->get_style_tags($this->query->output_page_styles).'>';
+		    $this->text .= '<TABLE class="'.$this->query->getBootstrapStyle("page").'swRepPage" '.$this->get_style_tags($this->query->output_page_styles).'>';
             $this->page_started = true;
         }
 
@@ -3049,6 +3068,9 @@ class reportico_report_html_template extends reportico_report
 			}
 			$group_label = sw_translate($group_label);
 			$padstring = $value_col->old_column_value;
+            if ( $value_col->output_images )
+                        $padstring = $this->format_images ($value_col->output_images);
+
 			if ( $group_label == "BLANK" )
 				$this->text .= $padstring;
 			else
@@ -3061,6 +3083,7 @@ class reportico_report_html_template extends reportico_report
 
 	function format_group_trailer_start($first=false)
 	{
+        $this->text .= "</TBODY><TFOOT>";
 		if ( $first )
 			$this->text .= '<TR class="swRepGrpTlrRow1st">';
 		else
@@ -3072,7 +3095,7 @@ class reportico_report_html_template extends reportico_report
 
         if ( $this->page_started )
         {
-		    $this->text .= "</TBODY></TABLE>";
+		    $this->text .= "</TFOOT></TABLE>";
         }
         $this->page_started = false;
 		//$this->text .= "gte</TR>";
@@ -3112,7 +3135,7 @@ class reportico_report_html_template extends reportico_report
                         break;
                 }
 
-	            $this->text .= '<TABLE class="swRepPage '.$formpagethrow.'" '.$this->get_style_tags($this->query->output_page_styles).'>';
+	            $this->text .= '<TABLE class="'.$this->query->getBootstrapStyle("page").'swRepPage '.$formpagethrow.'" '.$this->get_style_tags($this->query->output_page_styles).'>';
                 $this->page_started = true;
             }
 		    foreach ( $this->query->groups as $val )
@@ -3150,7 +3173,7 @@ class reportico_report_html_template extends reportico_report
 		    $this->begin_line();
             if ( !$this->page_started )
             {
-		        $this->text .= '<TABLE class="swRepPage" '.$this->get_style_tags($this->query->output_page_styles).'>';
+		        $this->text .= '<TABLE class="'.$this->query->getBootstrapStyle("page").'swRepPage" '.$this->get_style_tags($this->query->output_page_styles).'>';
                 $this->page_started = true;
             }
 			foreach ( $this->query->display_order_set["column"] as $col )

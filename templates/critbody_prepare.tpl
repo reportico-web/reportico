@@ -2,7 +2,7 @@
 <!---->
 		<TR id="swPrpCriteriaBody">
 			<TD class="swPrpCritEntry">
-			<div id="swPrpSubmitPane">
+			<div id="btn btn-sm btn-default swPrpSubmitPane">
     				<input type="submit" id="prepareAjaxExecute" name="submitPrepare" value="{$T_GO}">
     				<input type="submit" name="clearform" value="{$T_RESET}">
 			</div>
@@ -28,7 +28,7 @@
                 </TABLE>
 {if isset($CRITERIA_ITEMS)}
 {if count($CRITERIA_ITEMS) > 1}
-<div id="swPrpSubmitPane" style="float:right; margin-bottom:50px">
+<div id="btn btn-sm btn-default swPrpSubmitPane" style="float:right; margin-bottom:50px">
     <input type="submit" id="prepareAjaxExecute" name="submitPrepare" value="Go">
     <input type="submit" name="clearform" value="Reset">
 </div>
@@ -62,13 +62,13 @@
 <p>
 {if $SHOW_EXPANDED}
 							Search {$EXPANDED_TITLE} :<br><input  type="text" name="expand_value" size="30" value="{$EXPANDED_SEARCH_VALUE}">
-									<input id="reporticoPerformExpand" class="swPrpSubmit" type="button" name="EXPANDSEARCH_{$EXPANDED_ITEM}" value="Search"><br>
+									<input id="reporticoPerformExpand" class="btn btn-sm btn-default swPrpSubmit" type="button" name="EXPANDSEARCH_{$EXPANDED_ITEM}" value="Search"><br>
 
 {$CONTENT}
 							<br>
-							<input class="swPrpSubmit" type="button" id="reporticoPerformExpand" name="EXPANDCLEAR_{$EXPANDED_ITEM}" value="Clear">
-							<input class="swPrpSubmit" type="button" id="reporticoPerformExpand" name="EXPANDSELECTALL_{$EXPANDED_ITEM}" value="Select All">
-							<input class="swPrpSubmit" type="button" id="returnFromExpand" name="EXPANDOK_{$EXPANDED_ITEM}" value="OK">
+							<input class="btn btn-sm btn-default swPrpSubmit" type="button" id="reporticoPerformExpand" name="EXPANDCLEAR_{$EXPANDED_ITEM}" value="Clear">
+							<input class="btn btn-sm btn-default swPrpSubmit" type="button" id="reporticoPerformExpand" name="EXPANDSELECTALL_{$EXPANDED_ITEM}" value="Select All">
+							<input class="btn btn-sm btn-default swPrpSubmit" type="button" id="returnFromExpand" name="EXPANDOK_{$EXPANDED_ITEM}" value="OK">
 {/if}
 {if !$SHOW_EXPANDED}
 {if !$REPORT_DESCRIPTION}

@@ -35,9 +35,6 @@ define('SW_SAFE_DESIGN_MODE', true);
 // If false prevents any designing of reports
 define('SW_ALLOW_MAINTAIN', true);
 
-//  Stylesheets
-define('SW_STYLESHEET', 'stylesheet/cleanandsimple.css');
-
 // Identify whether to use AJAX handling. Enabling with enable Data Pickers,
 // loading of partial form elements and quicker-ti-use design mode
 define('AJAX_ENABLED',true);
@@ -140,7 +137,7 @@ define('SW_DEFAULT_YTickInterval', "1");
 define('SW_DEFAULT_GridPosition', "back");
 define('SW_DEFAULT_XGridDisplay', "none");
 define('SW_DEFAULT_XGridColor', "gray");
-define('SW_DEFAULT_YGridDisplay', "major");
+define('SW_DEFAULT_YGridDisplay', "none");
 define('SW_DEFAULT_YGridColor', "gray");
 define('SW_DEFAULT_TitleFont', SW_DEFAULT_Font);
 define('SW_DEFAULT_TitleFontStyle', "Normal");
@@ -197,9 +194,9 @@ define('SW_DEFAULT_YTickLabelInterval', "2");
 define('SW_DEFAULT_XTickInterval', "1");
 define('SW_DEFAULT_YTickInterval', "1");
 define('SW_DEFAULT_GridPosition', "back");
-define('SW_DEFAULT_XGridDisplay', "major");
+define('SW_DEFAULT_XGridDisplay', "none");
 define('SW_DEFAULT_XGridColor', SW_DEFAULT_LineColor);
-define('SW_DEFAULT_YGridDisplay', "major");
+define('SW_DEFAULT_YGridDisplay', "none");
 define('SW_DEFAULT_YGridColor', SW_DEFAULT_LineColor);
 define('SW_DEFAULT_TitleFont', SW_DEFAULT_Font);
 define('SW_DEFAULT_TitleFontStyle', SW_DEFAULT_FontStyle);

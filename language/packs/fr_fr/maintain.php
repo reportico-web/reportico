@@ -206,6 +206,7 @@ $locale_arr = array (
 		"T_LOOKUP" => "Base de données Recherche",
 		"T_DATE" => "Date de",
 		"T_DATERANGE" => "Date de Gamme",
+        "T_SQLCOMMAND" => "Commande SQL",
 		"T_LIST" => "Liste personnalisée",
 		"T_NOINPUT" => "No Entry",
 		"T_DROPDOWN" => "La liste déroulante",
