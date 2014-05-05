@@ -1,0 +1,1051 @@
+/* ------------------------------------------------------------------------------------*/
+/* ----------------------         Styles for Reportico         ------------------------*/
+/* ------------------------------------------------------------------------------------*/
+
+form,table,input,a,div	
+{ 
+    font: 10pt Ariel,Arial,Verdana;
+}
+
+
+#reportico_container
+{
+    background-color: #ffffff;
+}
+
+.swPrpToolbarPane input
+{
+    float: right;
+    font-weight: 700;
+    margin: 10px 5px 0px 0px;
+    border: 1px solid #888888;
+    text-decoration: none;
+    background-color: #ffffff;
+    height: 32px;
+    cursor: pointer;
+}
+
+#swPrpSubmitPane input
+{
+    float: right;
+    font-weight: 700;
+    margin: 10px 5px 10px 0px;
+    border: 1px solid #225522;
+    text-decoration: none;
+    background-color: #ffffff;
+    padding: 5px 10px 5px 10px;
+}
+
+.icon-48-reportico
+{
+    background: url('../images/icon-reportico-48.png') no-repeat left;`I   
+}
+
+.swPrpCritSel select
+{
+    margin: 0px;
+    padding: 2px 2px 2px 2px;
+    background-color: #ffffff;
+    border: 1px solid #d0ccc9;
+    border-width: 1px 1px 1px 1px;
+    position: relative;
+    color: #505050;
+    cursor: pointer;
+}
+
+.swPrpCritExpandSel input
+{
+    float: left;
+    margin: 0px 2px 0px 20px;
+    padding: 2px 2px 2px 2px;
+    background: #ffffff;
+    border: 1px solid #d0ccc9;
+    border-width: 1px 1px 1px 1px;
+    position: relative;
+    color: #505050;
+    cursor: pointer;
+}
+
+.swDateField { width: 100px; }
+
+.swPrpCritSel input[type=text]
+{
+    margin: 0px 0px 0px 0px;
+    padding: 2px 2px 2px 2px;
+    background: #ffffff;
+    border: 1px solid #d0ccc9;
+    border-width: 1px 1px 1px 1px;
+    position: relative;
+    color: #505050;
+    background-color: #ffffff;
+    cursor: pointer;
+}
+.swDateField { width: 100px; }
+
+.swPrpTextField { width: 100%; }
+{
+    margin: 0px 0px 0px 0px;
+    padding: 2px 2px 2px 2px;
+    border: 1px solid #d0ccc9;
+    border-width: 1px 1px 1px 1px;
+    position: relative;
+    color: #505050;
+    cursor: pointer;
+    width: 20px;
+}
+
+.swPrpCritSel input[type=radio]
+{
+    margin: 0px 0px 0px 0px;
+    padding: 2px 2px 2px 2px;
+    color: #505050;
+    width: 20px;
+}
+
+
+.swPrpCritSel input[type=hidden]
+{
+    display: none;
+}
+
+
+.swPrpCritSel input[type=checkbox]
+{
+    margin: 0px 0px 0px 0px;
+    padding: 2px 2px 2px 2px;
+    background: #ffffff;
+    border: 1px solid #d0ccc9;
+    border-width: 1px 1px 1px 1px;
+    position: relative;
+    color: #505050;
+    cursor: pointer;
+    width: 1em;
+}
+
+#prepareAjaxExecute
+{
+}
+
+
+td.loading, div.loading {
+    background-image: url('../images/loading.gif');
+    background-position:  top center;
+    background-repeat: no-repeat;
+    opacity: 1;
+}
+
+td.loading *, div.loading * {
+    opacity: .8;
+}
+
+
+
+.swAdminBanner
+{
+}
+
+/* Table Container for Menu Selections */
+.swMenuBody 
+{ 
+    background-color: #ffffff;
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 0px;
+}
+
+.swMenuForm
+{
+/*	background-color: #e6f4ca; */
+    background-color: #ffffff;
+    border: solid 1px #333333;
+}
+
+.swMenu
+{
+    width: 80%;
+    text-align: center;
+    font-weight: normal;
+    color: #222244;
+    border: none;
+    border-width: 1px;
+    padding: 5px 5px 5px 5px;
+    border-color : #DDFFDD;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 10%;
+}
+
+a:link {
+    color: #101010;
+    text-decoration: none;
+}
+
+a:visited
+{
+    color: #303030;
+}
+
+/* Style for Menu Header */
+.swMenuItemHeader
+{
+    border: solid 1px;
+    background-color: #DDEEFF;
+    border-color: #000000;
+    font-size: 14pt;
+    padding: 0;
+    text-align: center;
+    color: #000000;
+}
+
+/* Style for Menu Items Header */
+.swMenuItem
+{
+    text-align: center;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    border: none;
+}
+
+/* Style for Menu Header */
+.swMenuItemLink
+{
+    color: #000000 !important;
+    color: inherit;
+    font-size: 10pt;
+    border: none;
+    text-decoration: none;
+}
+
+.swMenuItemLink:hover 
+{
+    background-color: inherit !important;
+    color: #7070CC !important;
+}
+
+.swToggle, .swToggle:link, .swToggle:visited
+{ 
+    padding-right: 5px;
+    padding-left: 5px;
+    margin-right: 5px;
+    text-align: center;
+    background-color: #000000;
+    color: #ffffff;
+    font-size: larger;
+    font-weight: bold;
+    border: none;
+    text-decoration: none;
+}
+
+.swLinkMenu 
+{ 
+    padding-right: 10px;
+    padding-left: 10px;
+    text-align: center;
+    height:  30px;
+    color: #000000;
+    text-decoration: none;
+    border: 1px solid #D0CCC9;
+    background-color: #EFEFEF;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.swLinkMenu:hover
+{
+    border: solid thin #000000;	
+    color: #000000 !important;
+    background-color: #F2F2f2 !important;
+}
+
+/* ------------------------------------------------------------------------------------*/
+/* -----------------------------Styles for Prepare Execute Mode -----------------------*/
+/* Table container for whole Report */
+.swPrpBody 
+{ 
+    margin: 0;
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+    background-color: #ffffff;
+}
+
+/* ------------------ Main Screen Form Box --------------*/
+.swPrpForm 
+{ 
+    text-align: left;
+    margin-left: 0%;
+    width: 100%;
+    border: solid 1px #AAAAAA;
+}
+
+.swPrpTopMenu
+{
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.swPrpTopMenuCell
+{
+}
+
+/* Report/Module Title Header */
+.swDescTitle 
+{ 
+    font-size: 16pt;
+    text-align: left;
+    width: 100%;
+    margin-top: 0px;
+    padding-top: 5px;
+    padding-left: 0px;
+}
+
+.swTitle 
+{ 
+    font-size: 18pt;
+    text-align: center;
+    border-bottom: 1px solid #d0ccc9;
+    margin: 0px !important;
+    padding-bottom: 10px;
+    padding-top: 20px;
+    padding-left: 20px;
+    background-image: url('bggreen.png');
+    background-repeat: repeat-x;
+    background-position: bottom left;
+}
+
+.swPrpCritBox
+{
+    width: 100%;
+    border: none;
+    border-width: 0px;
+    border-color : #DDFFDD;
+}
+
+.swPrpCritEntry
+{
+    background-color: #f8f8f8;
+    width: 50%;
+    vertical-align: top;
+    padding: 5px 5px 5px 5px;
+    border: solid 1px;
+    border: 1px solid #d0ccc9;
+    background-image: url('edgebotgreen.png');
+    background-position: bottom left;
+    background-repeat: no-repeat;
+}
+
+.swPrpCritEntryBox
+{
+    width: 100%;
+}
+
+.swPrpCritLine
+{
+    text-align: left;
+    border: groove thin;
+    border-color : #DDFFDD;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.swPrpCritTitle
+{
+    border: none;
+    font-weight: bold;
+    padding: 0;
+    margin: 5px 5px 5px 5px;
+    padding: 2px 2px 2px 2px;
+    width: 25%;
+}
+
+.swPrpCritSel
+{
+    font-weight: bold;
+    width: 65%;
+}
+
+.swPrpCritExpandSel
+{
+    border: none;
+    border-color : #DDFFDD;
+    text-align : right;
+    padding: 0;
+    margin-top: 0;
+    width: 10%;
+}
+
+.swPrpCritExpandButton
+{
+}
+
+.swPrpExpand
+{
+    width: 50%;
+    vertical-align: top;
+    padding: 5px 5px 5px 5px;
+/*	background-color: #E6F4CA;*/
+    background-color: #f8f8f8;
+    border-top: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: #d0ccc9;
+    background-image: url('edgegreen.png');
+    background-repeat: no-repeat;
+    background-position: right bottom;
+
+}
+
+.swPrpExpandBox
+{
+    width:          100%;
+}
+
+.swPrpExpandRow
+{
+}
+
+.swPrpExpandCell
+{
+    border: none;
+    border-color : #DDFFDD;
+    text-align : left;
+    padding: 0;
+    margin-top: 0;
+}
+
+.swRunMode
+{ 
+    background-color: #EEEEEE;
+    border-color: #56A6E4;
+    width: 50%;
+}
+
+.swPrpDropSelect
+{ 
+    width: 100%;
+    text-align: left;
+    background-color: #FFFFFF;
+    font-size: 10pt;
+}
+
+.swPrpDropSelectRegular
+{
+    text-align: left;
+    background-color: #FFFFFF;
+    font-size: 10pt;
+}
+
+/* Style for Criteria Entry Screen Buttons */
+.swPrpSubmit
+{ 
+    background-color: #EFEFEF;
+    border: 1px solid #d0ccc9;
+    color: #000000;
+    border-size: 0;
+    text-align: center;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.swPrpOutputBox
+{
+    text-align: left;
+    border: none;
+    border-width: 1px;
+    vertical-align: top;
+    border-color : #DDFFDD;
+}
+
+/* ------------------------------------------------------------------------------------*/
+/* -----------------------------Styles for EXECUTE Execute Mode -----------------------*/
+/* ----------------------------- i.e for the HTML Report Output -----------------------*/
+/* Report Title Header */
+.swRepTitle 
+{ 
+    font-size: 18pt;
+    text-align: center;
+    margin: 0px !important;
+    padding-bottom: 10px;
+    padding-top: 20px;
+    border-bottom: 1px solid #d0ccc9;
+    padding-left: 20px;
+    background-image: url('bggreen.png');
+    background-repeat: repeat-x;
+    background-position: bottom left;
+}
+
+
+/* Table container for whole Report */
+.swRepBody 
+{ 
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+    /*background: #e5e9fc;*/
+    border-right: solid thin #333333;
+    border-left: solid thin #333333;
+    margin-top: 0px;
+    border-bottom: solid thin #333333;
+}
+
+/* ------------------ Report Output Main Box --------------*/
+.swRepForm
+{
+}  
+
+/* Table container for each Page of Output */
+.swRepPage
+{
+    width:          99%;
+    background-color: #FFFFFF;
+    font-size: 10pt;
+    margin-left: 0%;
+    margin-top: 5px;
+    margin-left: 0.5%;
+    margin-right: 0.5%;
+    border-collapse: collapse;
+}
+
+.swRepPageFormPage { border-bottom: solid thin #AAAAAA; }
+.swRepPageFormLine { border-bottom: solid thin #AAAAAA; }
+.swRepPageFormBlank { margin-bottom: 20px; }
+
+/* No Rows Information Message */
+.swRepNoRows
+{
+    width:          96%;
+    border: groove thin;
+    background-color : #FFFFBB;
+    margin-top: 60px;
+    margin-left: 2%;
+    font-size: 14pt ;
+}
+
+/* Row of Column Header Labels  */
+.swRepColHdrRow
+{
+    font-weight: bold;
+    font-style: italic;
+}
+
+/* Column Header Label  */
+.swRepColHdrRow td,
+.swRepColHdrRow th
+{
+    border-bottom: dotted;
+    border-width: 1px;
+    border-color : #000000;
+}
+
+/* Container for Group Headers  */
+.swRepResultLine td
+{
+    padding: 2px 2px 1px 2px;
+}
+
+.swRepResultLine:nth-child(even) { background-color: inherit; }
+.swRepResultLine:nth-child(odd) { background-color: inherit; }
+
+.swRepResultLine td a
+{
+    text-decoration: underline;
+}
+
+/* Container for Group Headers  */
+.swRepGrpHdrBox
+{
+    font-weight: bold;
+    font-size: 10pt;
+    width: 99%;
+    padding-top: 5px;
+    padding-left: 1px;
+    margin-left: 0.5%;
+    margin-right: 0.5%;
+    padding-bottom: 5px;
+}
+.swRepCriteria
+{
+    border-top: solid 1px #ddddff;
+    font-weight: bold;
+    font-size: 10pt;
+    width: 99%;
+    padding-top: 5px;
+    padding-left: 1px;
+    margin-left: 0.5%;
+    margin-right: 0.5%;
+    padding-bottom: 5px;
+    background-color: #eeeeee;
+    margin-bottom: 5px;
+}
+
+/* Line for Group Header Data  */
+.swRepGraph
+{
+    display: block;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.swRepResultGraph
+{
+}
+
+/* Line for Group Header Data  */
+.swRepGrpHdrRow
+{
+}
+
+/* Group Header Label  */
+.swRepGrpHdrLbl
+{
+    text-align: left;
+    width: 150px;
+    padding-right: 20px;
+}
+
+/* Group Header Value  */
+.swRepGrpHdrDat
+{
+    text-align: left;
+    border: none;
+    border-color : #FFFFFF;
+    padding-left: 5px;
+}
+
+
+/* Style for First Line of Group Trailer/Summary Values  */
+.swRepGrpTlrRow1st
+{
+}
+
+/* Style for Subsequent Lines of Group Trailer/Summary Values  */
+.swRepGrpTlrRow
+{
+}
+
+/* Style for Group Trailer/Summary Labels  */
+.swRepGrpTlrLbl
+{
+    border-color: #FFC71B;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Style for Group Summary Values on First Line of Group Trailer/Summary  */
+.swRepGrpTlrDat1st
+{
+    border-top: dotted;
+    border-width: 1px;
+    border-color : #000000;
+}
+
+/* Style for Group Summary Values on subsequent Lines of Group Trailer/Summary  */
+.swRepGrpTlrDat
+{
+}
+
+.swCSVBox, .swHTMLBox, .swPDFBox, .swPrintBox, .swXMLBox, .swJSONBox
+{
+    width: 30px;
+    text-align: left;
+    padding: 0px;
+    margin: 0px 0px 0px 0px;
+    background-repeat: no-repeat;
+    text-decoration: none;
+    float: left;
+}
+
+.swHTMLBox { background-image: url(../images/printhtml.png); }
+.swCSVBox { background-image: url(../images/printcsv.png); }
+.swPDFBox { background-image: url(../images/printpdf.png); }
+.swJSONBox { background-image: url(../images/printjson.png); }
+.swXMLBox { background-image: url(../images/printxml.png); }
+.swPrintBox { background-image: url(../images/printablehtml.png); }
+
+.swRepRefreshBox,
+.swRepPrintBox,
+.swRepBackBox
+{
+    width: 38px;
+    height: 38px;
+    margin: 0px 0px 0px 0px;
+    float: left;
+}
+
+.swRepPrintBox .swLinkMenu,
+.swRepRefreshBox .swLinkMenu,
+.swRepBackBox .swLinkMenu
+{
+    width: 32px;
+    text-align: left;
+    padding: 0px;
+    margin: 2px 5px 2px 5px;
+    text-decoration: none;
+    float: left;
+}
+
+.swRepPrintBox .swLinkMenu { background-image: url(../images/printer.png); }
+.swRepRefreshBox .swLinkMenu { background-image: url(../images/refreshbutton.png); }
+.swRepBackBox .swLinkMenu { background-image: url(../images/backbutton.png); }
+
+.swRepBackButton:hover 
+{
+    background: #e5ecf9;
+}
+
+
+.swRepDatRow
+{
+}
+
+.swRepDatVal
+{
+}
+
+/* ------------------------------------------------------------------------------------*/
+/* -----------------------------Styles for MAINTAIN Execute Mode ----------------------*/
+/* ----------------------------- i.e for the HTML Report Output -----------------------*/
+.swMntBody 
+{ 
+    background-color: #efefef;
+    /*width: 100%;*/
+    margin-top: 0px;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+/* ------------------ Main Screen Form Box --------------*/
+.swMntForm 
+{ 
+    text-align: left;
+    margin-left: 0%;
+    background-color: #ffffff;
+    width: 100%;
+    border: solid 1px #AAAAAA;
+}
+
+/* ------------------ Top Menu Box with Main Menu, Admin Menu options  --------------*/
+.swMntTopMenu
+{
+    width: 100%;
+    margin-top: 2px;
+    padding-bottom: 6px;
+    border-bottom: solid 1px #d0ccc9;
+}
+
+/* ------------------ 2nd Menu with Report Name, Project Name etc  --------------*/
+.swMntMainBox
+{
+    width: 100%;
+    border: solid;
+    border-color : #BBCCFF;
+    border-width : 0px;
+    background-color: #EEEEFF;
+    color: #121212;
+}
+
+.swMntInnerRightBox
+{
+    width: 100%;
+}
+
+.swMntInnerMainBox
+{
+    width: 100%;
+    border: solid;
+    background-color : #BBCCFF;
+    border-color : #BBCCFF;
+    border-width : 0px;
+    color: #000000;
+}
+
+.swMntButton
+{ 
+    background-color: #EFEFEF;
+    border-style: ridge;
+    border-color: #666666;
+    border-width: 1px;
+    font-size: 10pt;
+    color: #000000;
+    border-size: 0;
+    text-align: center;
+}
+
+.swMntButton:hover
+{
+    border: solid thin #000000;	
+}
+
+.swMntMidSection
+{
+    width: 280px;
+}
+
+.swMntUpDownButtonCell
+{ 
+    padding: 0px;
+    margin: 0px;
+}
+
+.swMntMoveUpButton
+{ 
+    background-image: url(../images/moveup.gif);
+    background-repeat: no-repeat;
+    border: none;
+    width: 14px;
+    height: 22px;
+    border-width: 1px;
+    border-size: 0;
+    font-size: 8pt;
+    text-align: center;
+    margin-left: 1px;
+    margin-right: 1px;
+}
+
+.swMntMoveDownButton
+{ 
+    background-image: url(../images/movedown.gif);
+    background-repeat: no-repeat;
+    border: none;
+    width: 14px;
+    height: 22px;
+    border-width: 1px;
+    border-size: 0;
+    font-size: 8pt;
+    text-align: center;
+    margin-left: 1px;
+    margin-right: 1px;
+}
+
+.swMntDeleteButton
+{ 
+    background-image: url(../images/delete.gif);
+    background-repeat: no-repeat;
+    border: none;
+    width: 14px;
+    height: 22px;
+    border-width: 1px;
+    border-size: 0;
+    font-size: 8pt;
+    text-align: center;
+    margin-left: 1px;
+    margin-right: 1px;
+}
+
+/* ----------------------------- Horizontal Menu Box ---------------*/
+.swMntInnerBox
+{
+    width: 100%;
+    border: 2px solid #BEEFC2;
+    background-color : #000000;
+    padding: 5px 5px 5px 5px;
+    margin: 0px 0px 0px 0px;
+}
+
+/* -------------- Horizontal Menu Buttons ---------------------- */
+.swMntTabMenuButSel
+{ 
+    background-color: #BEEFE2;
+    border-style: none;
+    font-size: 10pt;
+    width: 100%;
+    color: #111111;
+    font-weight: bold;
+    text-align: center;
+    background-image: url('butgreen.png');
+    background-repeat: no-repeat;
+    padding: 5px;
+}
+
+.swMntTabMenuButUnsel
+{ 
+    background-color: #F5F5F5;
+    border-style: none;
+    font-size: 10pt;
+    width: 100%;
+    color: #111111;
+    text-align: center;
+    background-image: url('butgreen.png');
+    background-repeat: no-repeat;
+    padding: 5px;
+}
+
+.swMntTabMenuCellSel
+{ 
+    border-top: none 1px #AAAAAA;
+    border-left: outset 1px #AAAAAA;
+    border-right: outset 1px #AAAAAA;
+}
+
+.swMntTabMenuCellUnsel
+{ 
+    border-top: groove 1px #CCCCCC;
+    border-left: groove 1px #CCCCCC;
+    border-right: groove 1px #CCCCCC;
+}
+/* -------------- End Horizontal Menu Buttons ---------------------- */
+
+/* -------------- Verical Menu Buttons ---------------------- */
+.swMntVertTabMenuButSel
+{ 
+    background-color: #BEEFE2;
+    width: 100%;
+    color: #111111;
+    font-weight: bold;
+    text-align: center;
+    background-image: url('butgreen.png');
+    background-repeat: no-repeat;
+    padding: 5px 0px 5px 0px;
+}
+
+.swMntVertTabMenuButUnsel
+{ 
+    background-color: #F5F5F5;
+    width: 100%;
+    color: #111111;
+    text-align: center;
+    background-image: url('butgreen.png');
+    background-repeat: no-repeat;
+    padding: 5px 0px 5px 0px;
+}
+
+.swMntVertTabMenuCellSel
+{ 
+}
+
+.swMntVertTabMenuCellUnsel
+{ 
+}
+/* -------------- End Verical Menu Buttons ---------------------- */
+
+.swMntExpandTextButton
+{ 
+    background-color: #9DE6F4;
+    background-repeat: no-repeat;
+    border-style: groove;
+    border-color: #4BBA5E;
+    border-width: 0px;
+    border-size: 0;
+    padding-right: 10;
+    padding-left: 10;
+    font-size: 8pt;
+    text-align: center;
+    vertical-align=text-bottom;
+}
+
+.swMntUnexpandTextButton
+{ 
+    background-color: #FDF6DF;
+    border-style: groove;
+    border-color: #4BBA5E;
+    border-width: 1px;
+    border-size: 0;
+    padding-right: 10;
+    padding-left: 10;
+    font-size: 8pt;
+    text-align: center;
+}
+
+.swMntRowBlock
+{
+    border: groove thin;
+    border-width: 2px;
+    vertical-align=text-top;
+    border-color : #DDFFDD;
+    font-style: bold;
+    font-size: 10pt;
+    margin-left: 2%
+}
+
+.swMntSetField
+{
+    background-color : #f4f4f4;
+    border-color : #BBCCFF;
+    padding: 1px 1px 1px 1px;
+    font-size: 10pt;
+}
+
+.swMntSetField textarea
+{
+    font-size: 10pt;
+}
+
+.swMntHelpLink
+{ 
+    color: #0000FF;
+    text-decoration: none;
+    border-style: none;
+    padding: 0px 0px 0px 0px;
+}
+
+.swMntHelpImage
+{ 
+    border-style: none;
+}
+
+.swMntHelp
+{ 
+    background-color : #DDFFDD;
+    padding: 0px 0px 0px 0px;
+    font-size: 10pt;
+    width: 14px;
+}
+
+#deltripbtn
+{
+    background-image: url(../images/delete.png);
+    background-repeat: no-repeat;
+}
+
+/* ----------------------------- Other Styles -----------------------------------------*/
+.swStatus
+{
+    width:          98%;
+    border: groove thin;
+    border-color : #DDFFDD;
+    font-style:	    bold;
+    margin-left: 1%;
+}
+
+.swError
+{
+    width:          100%;
+    background-color : inherit;
+    color : #BB0000;
+    border-color : #DDFFDD;
+    font-style:	    bold;
+}
+
+.smallbanner {
+    color:#888888;
+    font-weight:normal;
+    font-size: 8pt;
+    text-align: center;
+}
+
+/* -------------------------- Printed Output Styles ----------------------------------*/
+@media print {
+
+    body { font-size: 10pt }
+    .swLinkMenu { display: none; }
+    .swRepForm { border: none; }
+    .swRepBody { width: 100%; margin: 0; border: none; }
+/* Column Header Label  */
+    .swRepColHdrRow td,
+    .swRepColHdrRow th
+    {
+        padding-left: 2px;
+        border-bottom: solid;
+        border-width: 1px;
+        border-color : #000000;
+        color : #000000;
+    }
+
+    .swNewPage { page-break-before: always; }
+
+    .swRepTitle { font-size: 18pt; text-align: center; margin-top: 0px; border: none;}
+    .swMntForm { text-align: left; margin-left: 0%; background-color: #ffffff; border: none; }
+}
