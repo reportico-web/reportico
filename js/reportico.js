@@ -6,16 +6,21 @@ var reportico_ajax_script = "index.php";
 */
 function setupDynamicGrids()
 {
-    reportico_jquery(".swRepPage").each(function(){
-        reportico_jquery(this).dataTable(
+    if (  reportico_jquery.type(reportico_dynamic_grids) != 'undefined' )
+    if ( reportico_dynamic_grids )
+    {
+        reportico_jquery(".swRepPage").each(function(){
+            reportico_jquery(this).dataTable(
                 {
                 "retrieve" : true,
-                "searching" : false,
-                "ordering" : true,
-                "paging" : false
+                "searching" : reportico_dynamic_grids_searchable,
+                "ordering" : reportico_dynamic_grids_sortable,
+                "paging" : reportico_dynamic_grids_paging,
+                "iDisplayLength": reportico_dynamic_grids_page_size
                 }
                 );
-    })
+        });
+    }
 }
 
 function setupDatePickers()
@@ -70,6 +75,12 @@ function resizeTables()
 
 reportico_jquery(document).on('click', 'ul.dropdown-menu li a, ul.dropdown-menu li ul li a, ul.jd_menu li a, ul.jd_menu li ul li a', function(event) 
 {
+    event.preventDefault();
+    return false;
+});
+
+reportico_jquery(document).on('click', 'a.reportico-dropdown-item, ul li.r1eportico-dropdown a, ul li ul.reportico-dropdown li a, ul.jd_menu li a, ul.jd_menu li ul li a', function(event) 
+{
     if (  reportico_jquery.type(reportico_ajax_mode) === 'undefined' || !reportico_ajax_mode)
     {
         return true;
@@ -77,6 +88,7 @@ reportico_jquery(document).on('click', 'ul.dropdown-menu li a, ul.dropdown-menu 
 
     var url = reportico_jquery(this).prop('href');
     runreport(url, this);
+    event.preventDefault();
     return false;
 });
 
@@ -95,7 +107,7 @@ reportico_jquery(document).ready(function()
 ** AJAX mode is in place when reportico session ("reportico_ajax_script") is set
 ** will generate full reportico output to replace the reportico_container tag
 */
-reportico_jquery(document).on('click', '.swMenuItemLink, .swPrpSubmit, .swLinkMenu, .reporticoSubmit', function(event) 
+reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenuItemLink, .swPrpSubmit, .swLinkMenu, .reporticoSubmit', function(event) 
 {
     if ( reportico_jquery(this).parent().hasClass("swRepPrintBox" )  )
     {

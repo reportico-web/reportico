@@ -32,7 +32,6 @@
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/jquery.js"></script>
 {/literal}
 {/if}
-<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/bootstrap.min.js"></script>
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/ui/jquery.ui.core.js"></script>
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/ui/jquery.ui.datepicker.js"></script>
 {/literal}
@@ -40,10 +39,12 @@
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/reportico.js"></script>
 {/literal}
 {/if}
+{if $BOOTSTRAP_STYLES}
 {if !$REPORTICO_BOOTSTRAP_PRELOADED}
 {literal}
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/bootstrap.min.js"></script>
 {/literal}
+{/if}
 {/if}
 {/if}
 {literal}
@@ -56,7 +57,7 @@
 {/literal}
 {/if}
 {literal}
-<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{/literal}{$JSPATH}{literal}/ui/themes/base/jquery.ui.base.css">
+<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{/literal}{$JSPATH}{literal}/ui/themes/base/jquery.ui.core.css">
 <LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{/literal}{$JSPATH}{literal}/ui/themes/base/jquery.ui.theme.css">
 <LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{/literal}{$JSPATH}{literal}/ui/themes/base/jquery.ui.datepicker.css">
 <script type="text/javascript">var reportico_datepicker_language = "{/literal}{$AJAX_DATEPICKER_FORMAT}{literal}";</script>
@@ -67,13 +68,25 @@
 <script type="text/javascript">var reportico_css_path = "{/literal}{$STYLESHEET}{literal}";</script>
 {/literal}
 {if $REPORTICO_DYNAMIC_GRIDS}
-{literal}
-<script type="text/javascript">var reportico_dynamic_grids = "{/literal}true{literal}";</script>
-{/literal}
+<script type="text/javascript">var reportico_dynamic_grids = true;</script>
+{if $REPORTICO_DYNAMIC_GRIDS_SORTABLE}
+<script type="text/javascript">var reportico_dynamic_grids_sortable = true;</script>
 {else}
-{literal}
-<script type="text/javascript">var reportico_dynamic_grids = "{/literal}false{literal}";</script>
-{/literal}
+<script type="text/javascript">var reportico_dynamic_grids_sortable = false;</script>
+{/if}
+{if $REPORTICO_DYNAMIC_GRIDS_SEARCHABLE}
+<script type="text/javascript">var reportico_dynamic_grids_searchable = true;</script>
+{else}
+<script type="text/javascript">var reportico_dynamic_grids_searchable = false;</script>
+{/if}
+{if $REPORTICO_DYNAMIC_GRIDS_PAGING}
+<script type="text/javascript">var reportico_dynamic_grids_paging = true;</script>
+{else}
+<script type="text/javascript">var reportico_dynamic_grids_paging = false;</script>
+{/if}
+<script type="text/javascript">var reportico_dynamic_grids_page_size = {$REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE};</script>
+{else}
+<script type="text/javascript">var reportico_dynamic_grids = false;</script>
 {/if}
 {/if}
 {if $REPORTICO_CHARTING_ENGINE == "FLOT" }

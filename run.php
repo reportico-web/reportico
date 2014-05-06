@@ -29,7 +29,7 @@
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- * @version $Id: run.php,v 1.18 2014/05/05 20:04:59 peter Exp $
+ * @version $Id: run.php,v 1.19 2014/05/06 19:57:19 peter Exp $
  */
 
     // set error reporting level
@@ -158,22 +158,24 @@
     $q->bootstrap_preloaded = false;
 
     // Engine to use for charts .. 
-    // HTML reports can use javascript charting
+    // HTML reports can use javascript charting, PDF reports must use PCHART
     $q->charting_engine = "PCHART";
     $q->charting_engine_html = "NVD3";
 
-    // Whether to turn on dynamic grids
-    $q->dynamic_grids = true;
-    $q->dynamic_grids_sortable = true;
-    $q->dynamic_grids_max_page_size = 99999;
-    $q->dynamic_grids_searchable = 99999;
+    // Whether to turn on dynamic grids to provide searchable/sortable reports
+    //$q->dynamic_grids = true;
+    //$q->dynamic_grids_sortable = true;
+    //$q->dynamic_grids_searchable = true;
+    //$q->dynamic_grids_paging = true;
+    //$q->dynamic_grids_page_size = 10;
+
     // Generate report definition from SQL  and set some column / report attributes
     // Also the full report definition can be built up programmatically
     // which requires further doicumentation
     //$q->importSQL(""SELECT column1 AS columntitle1, column2 AS columntitle2 FROM table";
-    $q->get_column("column1")->set_attribute("column_display","hide");
-    $q->get_column("column1")->set_attribute("column_title","Custom Title");
-    $q->set_attribute("ReportTitle","New Report Title");
+    //$q->get_column("column1")->set_attribute("column_display","hide");
+    //$q->get_column("column1")->set_attribute("column_title","Custom Title");
+    //$q->set_attribute("ReportTitle","New Report Title");
 
     // Run the report
 	$q->execute();

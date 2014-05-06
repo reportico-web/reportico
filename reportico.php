@@ -30,7 +30,7 @@
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- * @version $Id: reportico.php,v 1.63 2014/05/05 20:04:59 peter Exp $
+ * @version $Id: reportico.php,v 1.64 2014/05/06 19:57:19 peter Exp $
  */
 
 // Include files
@@ -481,7 +481,8 @@ class reportico extends reportico_object
     var $dynamic_grids = false;
     var $dynamic_grids_sortable = true;
     var $dynamic_grids_searchable = true;
-    var $dynamic_grids_max_page_size = 999999;
+    var $dynamic_grids_paging = true;
+    var $dynamic_grids_page_size = 10;
 
 	function reportico()
 	{ 	
@@ -3027,7 +3028,8 @@ class reportico extends reportico_object
         $smarty->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
         $smarty->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
         $smarty->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
-        $smarty->assign('REPORTICO_DYNAMIC_GRIDS_MAX_PAGE_SIZE', $this->dynamic_grids_max_page_size);
+        $smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
+        $smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
 
         if ( $this->url_path_to_assets )
         {

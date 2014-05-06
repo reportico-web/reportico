@@ -1,15 +1,23 @@
-{if !$REPORTICO_AJAX_CALLED} 
-{if !$EMBEDDED_REPORT} 
+{if !$REPORTICO_AJAX_CALLED}
+{if !$EMBEDDED_REPORT}
 <!DOCTYPE html>
 <HTML>
 <HEAD>
 <TITLE>{$TITLE}</TITLE>
 <LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEET}">
+{if $BOOTSTRAP_STYLES}
+<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/bootstrap.css">
+{/if}
 {$OUTPUT_ENCODING}
 </HEAD>
 <BODY class="swPrpBody">
 {else}
 <LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEET}">
+{if $BOOTSTRAP_STYLES}
+{if !$REPORTICO_BOOTSTRAP_PRELOADED}
+<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/bootstrap.css">
+{/if}
+{/if}
 {/if}
 
 {literal}
@@ -23,35 +31,123 @@
 <![endif]-->
 {/literal}
 
-{if $AJAX_ENABLED} 
+{if $AJAX_ENABLED}
 {if !$REPORTICO_AJAX_PRELOADED}
+{if !$REPORTICO_JQUERY_PRELOADED}
 {literal}
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/jquery.js"></script>
+{/literal}
+{/if}
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/ui/jquery.ui.core.js"></script>
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/ui/jquery.ui.datepicker.js"></script>
-<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/reportico.js"></script>
-<!--LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{$JSPATH}/ui/themes/base/jquery.ui.all.css"-->
 {/literal}
+{literal}
+<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/reportico.js"></script>
+{/literal}
+{/if}
+{if $BOOTSTRAP_STYLES}
+{if !$REPORTICO_BOOTSTRAP_PRELOADED}
+{literal}
+<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/bootstrap.min.js"></script>
+{/literal}
+{/if}
+{/if}
 {/if}
 {literal}
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/ui/i18n/jquery.ui.datepicker-{/literal}{$AJAX_DATEPICKER_LANGUAGE}{literal}.js"></script>
+{/literal}
+{if !$BOOTSTRAP_STYLES}
+{literal}
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/jquery.jdMenu.js"></script>
 <LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{/literal}{$JSPATH}{literal}/jquery.jdMenu.css">
+{/literal}
+{/if}
+{literal}
+<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{/literal}{$JSPATH}{literal}/ui/themes/base/jquery.ui.core.css">
+<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{/literal}{$JSPATH}{literal}/ui/themes/base/jquery.ui.theme.css">
+<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{/literal}{$JSPATH}{literal}/ui/themes/base/jquery.ui.datepicker.css">
 <script type="text/javascript">var reportico_datepicker_language = "{/literal}{$AJAX_DATEPICKER_FORMAT}{literal}";</script>
 <script type="text/javascript">var reportico_this_script = "{/literal}{$SCRIPT_SELF}{literal}";</script>
 <script type="text/javascript">var reportico_ajax_script = "{/literal}{$REPORTICO_AJAX_RUNNER}{literal}";</script>
 <script type="text/javascript">var reportico_ajax_mode = "{/literal}{$REPORTICO_AJAX_MODE}{literal}";</script>
 {/literal}
-<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{$JSPATH}/ui/themes/base/jquery.ui.all.css">
-{/if}
 {/if}
 <div id="reportico_container">
-{literal}<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/ui/i18n/jquery.ui.datepicker-{/literal}{$AJAX_DATEPICKER_LANGUAGE}{literal}.js"></script>{/literal}
-{literal}<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/jquery.jdMenu.js"></script>{/literal}
-<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{/literal}{$JSPATH}{literal}/jquery.jdMenu.css">
 <FORM class="swPrpForm" id="criteriaform" name="topmenu" method="POST" action="{$SCRIPT_SELF}">
-<h1 class="swTitle">{$TITLE}</h1>
 <input type="hidden" name="session_name" value="{$SESSION_ID}" />
+{if $BOOTSTRAP_STYLES}
+    <div class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="container" style="width: 100%">
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav" style="width: 100%">
+{if $DROPDOWN_MENU_ITEMS}
+{section name=menu loop=$DROPDOWN_MENU_ITEMS}
+            <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">{$DROPDOWN_MENU_ITEMS[menu].title}<span class="caret"></span></a>
+              <ul class="dropdown-menu reportico-dropdown">
+{section name=menuitem loop=$DROPDOWN_MENU_ITEMS[menu].items}
+{if isset($DROPDOWN_MENU_ITEMS[menu].items[menuitem].reportname)}
+<li ><a class="reportico-dropdown-item" href="{$RUN_REPORT_URL}&project={$DROPDOWN_MENU_ITEMS[menu].project}&xmlin={$DROPDOWN_MENU_ITEMS[menu].items[menuitem].reportfile}">{$DROPDOWN_MENU_ITEMS[menu].items[menuitem].reportname}</a></li>
+{/if}
+{/section}
+
+              </ul>
+            </li>
+{/section}
+{/if}
+{if $SHOW_TOPMENU}
+{if $SHOW_LOGOUT}
+            <li style="float:right">
+				<input class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swAdminButton2" type="submit" name="logout" value="{$T_LOGOFF}">
+			</li>
+{/if}
+{if ($SHOW_DESIGN_BUTTON)}
+            <li style="float:right">
+                                <input class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swAdminButton2" type="submit" name="submit_design_mode" value="{$T_DESIGN_REPORT}">
+            </li>
+{/if}
+{if $OUTPUT_SHOW_DEBUG}
+{if $SHOW_DESIGN_BUTTON}
+            <li style="float:right">
+                <div style="margin: 8px 8px 0px 8px">
+                {$T_DEBUG_LEVEL}
+                <SELECT class="{$BOOTSTRAP_STYLE_DROPDOWN}" style="display:inline; width: auto" name="debug_mode">';
+                    <OPTION {$DEBUG_NONE} label="None" value="0">{$T_DEBUG_NONE}</OPTION>
+                    <OPTION {$DEBUG_LOW} label="Low" value="1">{$T_DEBUG_LOW}</OPTION>
+                    <OPTION {$DEBUG_MEDIUM} label="Medium" value="2">{$T_DEBUG_MEDIUM}</OPTION>
+                    <OPTION {$DEBUG_HIGH} label="High" value="3">{$T_DEBUG_HIGH}</OPTION>
+                </SELECT>
+                </div>
+            </li>
+{/if}
+{/if}
+{if $SHOW_LOGIN}
+            <li>
+{if strlen($PROJ_PASSWORD_ERROR) > 0}
+                                <div style="color: #ff0000;">{$T_PASSWORD_ERROR}</div>
+{/if}
+				{$T_ENTER_PROJECT_PASSWORD}<br><input type="password" name="project_password" value=""></div>
+				<input class="swAdminButton" type="submit" name="login" value="{$T_LOGIN}">
+			</li>
+{/if}
+{/if}
+{if strlen($ADMIN_MENU_URL)>0} 
+              <li style="float:right">
+                    <a class="swAdminButton2" href="{$ADMIN_MENU_URL}">{$T_ADMIN_MENU}</a>
+              </li>
+{/if}
+{if $SHOW_PROJECT_MENU_BUTTON}
+              <li style="float:right">
+                    <a class="swAdminButton2" href="{$MAIN_MENU_URL}">{$T_PROJECT_MENU}</a>
+              </li>
+{/if}
+</ul>
+
+        </div>
+        </div>
+        <div class="clr"></div>
+</div>
+
+{else}
 {if $DROPDOWN_MENU_ITEMS}
 <ul id="dropmenu" class="jd_menu" style="clear: none;float: left;width: 100%; ">
 {section name=menu loop=$DROPDOWN_MENU_ITEMS}
@@ -68,28 +164,30 @@
 {/section}
 </ul>
 {/if}
+{/if}
 
+{if !$BOOTSTRAP_STYLES}
 {if $SHOW_TOPMENU}
 	<TABLE class="swPrpTopMenu">
 		<TR>
 			<TD style="width: 50%; text-align:left">
-{if $SHOW_ADMIN_BUTTON}
+{if ($SHOW_ADMIN_BUTTON)}
 {if strlen($ADMIN_MENU_URL)>0} 
-                <a class="swLinkMenu" href="{$ADMIN_MENU_URL}">{$T_ADMIN_MENU}</a>
+                <a class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swLinkMenu" href="{$ADMIN_MENU_URL}">{$T_ADMIN_MENU}</a>
 {/if}
 {/if}
 {if strlen($MAIN_MENU_URL)>0} 
 {if $SHOW_PROJECT_MENU_BUTTON}
-				<a class="swLinkMenu" href="{$MAIN_MENU_URL}">{$T_PROJECT_MENU}</a>
+				<a class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swLinkMenu" href="{$MAIN_MENU_URL}">{$T_PROJECT_MENU}</a>
 {/if}
 {if $SHOW_DESIGN_BUTTON}
-                                &nbsp;<input class="swLinkMenu" type="submit" name="submit_design_mode" value="{$T_DESIGN_REPORT}">
+                                &nbsp;<input class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swLinkMenu" type="submit" name="submit_design_mode" value="{$T_DESIGN_REPORT}">
 {/if}
 {if $OUTPUT_SHOW_DEBUG}
 {if $SHOW_DESIGN_BUTTON}
 			<TD style="width:15%; text-align: right; padding-right: 10px;" class="swPrpTopMenuCell">
 				{$T_DEBUG_LEVEL}
-				<SELECT name="debug_mode">';
+				<SELECT class="{$BOOTSTRAP_STYLE_DROPDOWN}" style="display:inline; width: auto" name="debug_mode">';
 					<OPTION {$DEBUG_NONE} label="None" value="0">{$T_DEBUG_NONE}</OPTION>
 					<OPTION {$DEBUG_LOW} label="Low" value="1">{$T_DEBUG_LOW}</OPTION>
 					<OPTION {$DEBUG_MEDIUM} label="Medium" value="2">{$T_DEBUG_MEDIUM}</OPTION>
@@ -103,7 +201,7 @@
 			</TD>
 {if $SHOW_LOGOUT}
 			<TD style="width:15%; text-align: right; padding-right: 10px;" class="swPrpTopMenuCell">
-				<input class="swLinkMenu" type="submit" name="logout" value="{$T_LOGOFF}">
+				<input class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swLinkMenu" type="submit" name="logout" value="{$T_LOGOFF}">
 			</TD>
 {/if}
 {if $SHOW_LOGIN}
@@ -119,6 +217,8 @@
 		</TR>
 	</TABLE>
 {/if}
+{/if}
+<h1 class="swTitle">{$TITLE}</h1>
 {if $SHOW_CRITERIA}
     <div style="display: none">
 										&nbsp;
@@ -135,25 +235,35 @@
 	<TABLE class="swPrpCritBox" id="critbody">
 {if $SHOW_OUTPUT}
         <TR>
-            <td>
-			<div style="width: 15%; padding-top: 15px;float: left;vertical-align: bottom;text-align: center">
+            <td>  
+			<div style="width: 20%; padding-top: 15px;float: left;vertical-align: bottom;text-align: center">
                 <b>{$T_REPORT_STYLE}</b>
                 <INPUT type="radio" id="rpt_style_detail" name="target_style" value="TABLE" {$OUTPUT_STYLES[0]}>{$T_TABLE}
                 <INPUT type="radio" id="rpt_style_form" name="target_style" value="FORM" {$OUTPUT_STYLES[1]}>{$T_FORM}
 			</div>
-			<div class="swPrpToolbarPane" style="width: 35%; float: left; vertical-align: bottom;text-align: right">
+			<div class="swPrpToolbarPane" style="width: 30%; float: left; vertical-align: bottom;text-align: right">
 {if $SHOW_DESIGN_BUTTON}
-    				<input type="submit" class="prepareAjaxExecute swJSONBox" title="{$T_PRINT_JSON}" id="prepareAjaxExecute" name="submitPrepare" value="">
-    				<input type="submit" class="prepareAjaxExecute swXMLBox" style="margin-left: 20px" title="{$T_PRINT_XML}" id="prepareAjaxExecute" name="submitPrepare" value="">
+    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareAjaxExecute swJSONBox" title="{$T_PRINT_JSON}" id="prepareAjaxExecute" name="submitPrepare" value="">
+    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareAjaxExecute swXMLBox" style="margin-left: 20px" title="{$T_PRINT_XML}" id="prepareAjaxExecute" name="submitPrepare" value="">
 {/if}
-    				<input type="submit" class="prepareAjaxExecute swCSVBox" title="{$T_PRINT_CSV}" id="prepareAjaxExecute" name="submitPrepare" value="">
-    				<input type="submit" class="prepareAjaxExecute swPDFBox" title="{$T_PRINT_PDF}" id="prepareAjaxExecute" name="submitPrepare" value="">
-    				<input type="submit" class="prepareAjaxExecute swHTMLBox" title="{$T_PRINT_HTML}" id="prepareAjaxExecute" name="submitPrepare" value="">
-    				<input type="submit" class="prepareAjaxExecute swPrintBox" style="margin-right: 30px" title="{$T_PRINTABLE}" id="prepareAjaxExecute" name="submitPrepare" value="">
+    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareAjaxExecute swCSVBox" title="{$T_PRINT_CSV}" id="prepareAjaxExecute" name="submitPrepare" value="">
+    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareAjaxExecute swPDFBox" title="{$T_PRINT_PDF}" id="prepareAjaxExecute" name="submitPrepare" value="">
+    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareAjaxExecute swHTMLBox" title="{$T_PRINT_HTML}" id="prepareAjaxExecute" name="submitPrepare" value="">
+    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareAjaxExecute swPrintBox" style="margin-right: 30px" title="{$T_PRINTABLE}" id="prepareAjaxExecute" name="submitPrepare" value="">
 			</div>
 			<div style="width: 50%; padding-top: 15px;float: left;vertical-align: bottom;text-align: center">
                                   <b>{$T_SHOW}</b>
 				<INPUT type="checkbox" style="display:none" name="user_criteria_entered" value="1" checked="1">
+{if $BOOTSTRAP_STYLES}
+				<label class="{$BOOTSTRAP_STYLE_CHECKBOX_BUTTON}"><INPUT type="checkbox" name="target_show_criteria" value="1" {$OUTPUT_SHOWCRITERIA}>{$T_SHOW_CRITERIA}</label>
+				<label class="{$BOOTSTRAP_STYLE_CHECKBOX_BUTTON}"><INPUT type="checkbox" name="target_show_group_headers" value="1" {$OUTPUT_SHOWGROUPHEADERS}>{$T_SHOW_GRPHEADERS}</label>
+				<label class="{$BOOTSTRAP_STYLE_CHECKBOX_BUTTON}"><INPUT type="checkbox" name="target_show_detail" value="1" {$OUTPUT_SHOWDETAIL}>{$T_SHOW_DETAIL}</label>
+				<label class="{$BOOTSTRAP_STYLE_CHECKBOX_BUTTON}"><INPUT type="checkbox" name="target_show_group_trailers" value="1" {$OUTPUT_SHOWGROUPTRAILERS}>{$T_SHOW_GRPTRAILERS}</label>
+				<label class="{$BOOTSTRAP_STYLE_CHECKBOX_BUTTON}"><INPUT type="checkbox" name="target_show_column_headers" value="1" {$OUTPUT_SHOWCOLHEADERS}>{$T_SHOW_COLHEADERS}</label>
+{if $OUTPUT_SHOW_SHOWGRAPH}
+				<INPUT type="checkbox" name="target_show_graph" value="1" {$OUTPUT_SHOWGRAPH}>{$T_SHOW_GRAPH}<BR>
+{/if}
+{else}
 				<INPUT type="checkbox" name="target_show_criteria" value="1" {$OUTPUT_SHOWCRITERIA}>{$T_SHOW_CRITERIA}
 				<INPUT type="checkbox" name="target_show_group_headers" value="1" {$OUTPUT_SHOWGROUPHEADERS}>{$T_SHOW_GRPHEADERS}
 				<INPUT type="checkbox" name="target_show_detail" value="1" {$OUTPUT_SHOWDETAIL}>{$T_SHOW_DETAIL}
@@ -161,6 +271,7 @@
 				<INPUT type="checkbox" name="target_show_column_headers" value="1" {$OUTPUT_SHOWCOLHEADERS}>{$T_SHOW_COLHEADERS}
 {if $OUTPUT_SHOW_SHOWGRAPH}
 				<INPUT type="checkbox" name="target_show_graph" value="1" {$OUTPUT_SHOWGRAPH}>{$T_SHOW_GRAPH}<BR>
+{/if}
 {/if}
 			</div>
             </td>
@@ -174,8 +285,8 @@
 		<TR id="swPrpCriteriaBody">
 			<TD class="swPrpCritEntry">
 			<div id="swPrpSubmitPane">
-    				<input type="submit" class="prepareAjaxExecute swHTMLGoBox" id="prepareAjaxExecute" name="submitPrepare" value="{$T_GO}">
-    				<input type="submit" class="reporticoSubmit" name="clearform" value="{$T_RESET}">
+    				<input type="submit" class="{$BOOTSTRAP_STYLE_GO_BUTTON}prepareAjaxExecute swHTMLGoBox" id="prepareAjaxExecute" name="submitPrepare" value="{$T_GO}">
+    				<input type="submit" class="{$BOOTSTRAP_STYLE_RESET_BUTTON}reporticoSubmit" name="clearform" value="{$T_RESET}">
                     &nbsp;
 			</div>
 
@@ -204,8 +315,8 @@
                 </TABLE>
 {if isset($CRITERIA_ITEMS)}
 {if count($CRITERIA_ITEMS) > 1}
-<div id="swPrpSubmitPane">
-	<input type="submit" class="prepareAjaxExecute swHTMLGoBox" id="prepareAjaxExecute" name="submitPrepare" value="{$T_GO}">
+<div id="{$BOOTSTRAP_STYLE_SMALL_BUTTON}swPrpSubmitPane">
+	<input type="submit" class="{$BOOTSTRAP_STYLE_GO_BUTTON}prepareAjaxExecute swHTMLGoBox" id="prepareAjaxExecute" name="submitPrepare" value="{$T_GO}">
     <!--input type="submit" class="reporticoSubmit" name="clearform" value="{$T_RESET}"-->
 </div>
 {/if}
@@ -232,19 +343,19 @@
 {if strlen($STATUSMSG)==0 && strlen($ERRORMSG)==0}
 <div style="float:right; ">
 {if strlen($MAIN_MENU_URL)>0}
-<!--a class="swLinkMenu" style="float:left;" href="{$MAIN_MENU_URL}">&lt;&lt; Menu</a-->
+<!--a class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swLinkMenu" style="float:left;" href="{$MAIN_MENU_URL}">&lt;&lt; Menu</a-->
 {/if}
 </div>
 <p>
 {if $SHOW_EXPANDED}
-							{$T_SEARCH} {$EXPANDED_TITLE} :<br><input  type="text" name="expand_value" style="width: 50%" size="30" value="{$EXPANDED_SEARCH_VALUE}"</input>
-									<input id="reporticoPerformExpand" class="swPrpSubmit" type="submit" name="EXPANDSEARCH_{$EXPANDED_ITEM}" value="Search"><br>
+							{$T_SEARCH} {$EXPANDED_TITLE} :<br><input  type="text" class="{$BOOTSTRAP_STYLE_TEXTFIELD}" name="expand_value" style="width: 50%;display: inline" size="30" value="{$EXPANDED_SEARCH_VALUE}"</input>
+									<input id="reporticoPerformExpand" class="{$BOOTSTRAP_STYLE_SMALL_BUTTON}swPrpSubmit" style="margin-bottom: 2px" type="submit" name="EXPANDSEARCH_{$EXPANDED_ITEM}" value="Search"><br>
 
 {$CONTENT}
 							<br>
-							<input class="swPrpSubmit" type="submit" name="EXPANDCLEAR_{$EXPANDED_ITEM}" value="Clear">
-							<input class="swPrpSubmit" type="submit" name="EXPANDSELECTALL_{$EXPANDED_ITEM}" value="Select All">
-							<input class="swPrpSubmit" type="submit" name="EXPANDOK_{$EXPANDED_ITEM}" value="OK">
+							<input class="{$BOOTSTRAP_STYLE_SMALL_BUTTON}swPrpSubmit" type="submit" name="EXPANDCLEAR_{$EXPANDED_ITEM}" value="Clear">
+							<input class="{$BOOTSTRAP_STYLE_SMALL_BUTTON}swPrpSubmit" type="submit" name="EXPANDSELECTALL_{$EXPANDED_ITEM}" value="Select All">
+							<input class="{$BOOTSTRAP_STYLE_SMALL_BUTTON}swPrpSubmit" type="submit" name="EXPANDOK_{$EXPANDED_ITEM}" value="OK">
 {/if}
 {if !$SHOW_EXPANDED}
 {if !$REPORT_DESCRIPTION}
@@ -269,9 +380,7 @@
 </FORM>
 <div class="smallbanner">Powered by <a href="http://www.reportico.org/" target="_blank">reportico {$REPORTICO_VERSION}</a></div>
 </div>
-{if !$REPORTICO_AJAX_CALLED} 
 {if !$EMBEDDED_REPORT} 
 </BODY>
 </HTML>
-{/if}
 {/if}

@@ -30,7 +30,7 @@
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- * @version $Id: swgraph_pchart.php,v 1.13 2013/08/08 18:20:39 peter Exp $
+ * @version $Id: swgraph_pchart.php,v 1.16 2014/05/05 20:04:59 peter Exp $
  */
 
 
@@ -324,8 +324,13 @@ class reportico_graph
         if ( $this->reportico->framework_parent )
         {
             $dyngraph = "";
+            if ( $this->reportico->reportico_ajax_mode == "2" )
+                $dyngraph = preg_replace("/ajax/", "graph", $this->reportico->reportico_ajax_script_url);
         }
-        $forward_url_params = session_request_item('forward_url_get_parameters', $this->reportico->forward_url_get_parameters);
+        $forward_url_params = session_request_item('forward_url_get_parameters_graph' );
+	if ( !$forward_url_params )
+        	$forward_url_params = session_request_item('forward_url_get_parameters', $this->reportico->forward_url_get_parameters);
+
         if ( $forward_url_params )
             $url .= "&".$forward_url_params;
         $url .= "&reportico_call_mode=graph_pchart";
@@ -684,6 +689,12 @@ foreach ( $this->plot as $k => $v )
 		$stackedexists = true;
 	if ( $v["type"] == "STACKEDBAR" || $v["type"] == "BAR") 
 		$barexists = true;
+
+    // Set plot colors
+    if ( $v["linecolor"] )
+        $graphImage->Palette[$k] = htmltorgb_pchart($v["linecolor"]);
+
+	$url .= "&plotlinecolor$k=".$v["linecolor"];
 }
 
 
