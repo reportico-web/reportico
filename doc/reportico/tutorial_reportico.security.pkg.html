@@ -74,7 +74,10 @@
 	<li type="square"><a href="../reportico/tutorial_reportico.structure.pkg.html">Reportico Installation Structure</a>
 </ul>
 <ul>
-	<li type="square"><a href="../reportico/tutorial_reportico.using.pkg.html">Running Reportico - Options</a>
+	<li type="square"><a href="../reportico/tutorial_reportico.using.pkg.html">Configuring Reportico - System Parameters</a>
+</ul>
+<ul>
+	<li type="square"><a href="../reportico/tutorial_reportico.embedding.pkg.html">Embedding Reportico</a>
 </ul>
 <ul>
 	<li type="square"><a href="../reportico/tutorial_reportico.security.pkg.html">Reportico Security</a>
@@ -155,11 +158,11 @@
 </li></ul>
 
 							<ul>
-	<li type="square"><a href="../reportico/tutorial_reportico.appendix2.pkg.html">Appendix 2 - Reportico URL request parameters</a>
+	<li type="square"><a href="../reportico/tutorial_reportico.appendix1.pkg.html">Appendix 1 - Reportico Project Configuration parameters</a>
 </ul>
 
 							<ul>
-	<li type="square"><a href="../reportico/tutorial_reportico.appendix1.pkg.html">Appendix 1 - Reportico Project Configuration parameters</a>
+	<li type="square"><a href="../reportico/tutorial_reportico.appendix2.pkg.html">Appendix 2 - Reportico URL request parameters</a>
 </ul>
 
 									                        <b>Files:</b><br />
@@ -175,13 +178,13 @@
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr>
 <td width="10%" align="left" valign="bottom"><a href=
-"../reportico/tutorial_reportico.using.pkg.html">Prev</a></td>
+"../reportico/tutorial_reportico.embedding.pkg.html">Prev</a></td>
 <td width="80%" align="center" valign="bottom"></td>
 <td width="10%" align="right" valign="bottom"><a href=
 "../reportico/tutorial_reportico.language.pkg.html">Next</a></td>
 </tr>
 </table>
-<span><a name="assign.security"></a><h2 class="title">Reportico Security</h2><a name="security.secintroduction"></a><h3 class="title">Safe Mode Operation</h3><p>Some of the more powerful features of Reportico include the ability for report designers to include SQL statements and custom source code within the report definition. While this allows manipulation of data prioir to reporting and the ability to write reports which perform SQL updates, this raises a number of security issues. Depending on the security configuration of the Web Server and the database permissions of the connecting user, this has the potential to allow anyone with access to the report design mode to remove data or files. This is of particular importance where Reportico is installed on a public website with no access control. The designer has the ability to run in Safe mode which prevents use of the report assignments, pre-execution queries and custom source code features.</p>
+<span><a name="menu.security"></a><h2 class="title">Reportico Security</h2><a name="security.secintroduction"></a><h3 class="title">Safe Mode Operation</h3><p>Some of the more powerful features of Reportico include the ability for report designers to include SQL statements and custom source code within the report definition. While this allows manipulation of data prioir to reporting and the ability to write reports which perform SQL updates, this raises a number of security issues. Depending on the security configuration of the Web Server and the database permissions of the connecting user, this has the potential to allow anyone with access to the report design mode to remove data or files. This is of particular importance where Reportico is installed on a public website with no access control. The designer has the ability to run in Safe mode which prevents use of the report assignments, pre-execution queries and custom source code features.</p>
    <p>By default, the report designer does not run in safe mode so if you are working in an insecure area then you should consider turning this on. Safe mode is configured on a report project basis. Each project created by the Administration page will have Safe mode off, so you will need to turn this feature on if so desired each time you create a project.</p>
    <p>In order to turn on this feature for a project, you will need to enter the <strong>Configure Project</strong> option and unclick the <strong>Safe Mode</strong> check box. Alternatively modify the project config.php found below the main Reportico installation area under the <strong>projects</strong> folder and set the parameter SW_SAFE_DESIGN_MODE to false. Now you will able to change the Custom Source Code, Column Assignments and Pre-Execute SQLs for reports in the relevant project. You may like to temporarily change this value while designing reports or you could maintain two copies of reportico, one for designing  and one for public use in safe mode. The designed report project folders may then be copied over to the safe area.</p><hr />
   <a name="security.secgeneral"></a><h3 class="title">General Security Guidelines</h3><p>Like all other PHP database applications, especially where Reportico is publicly available, appropriate security measures should be adopted as follows :-</p>
@@ -191,7 +194,7 @@
    <p></p><hr /></span>
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr>
-<td width="33%" align="left" valign="top"><a href="../reportico/tutorial_reportico.using.pkg.html">Prev</a></td>
+<td width="33%" align="left" valign="top"><a href="../reportico/tutorial_reportico.embedding.pkg.html">Prev</a></td>
 <td width="34%" align="center" valign="top"><a href=
 "../reportico/tutorial_reportico.manual.pkg.html">Up</a></td>
 <td width="33%" align="right" valign="top"><a href=
@@ -199,14 +202,14 @@
 </tr>
 
 <tr>
-<td width="33%" align="left" valign="top">Running Reportico - Options</td>
+<td width="33%" align="left" valign="top">Embedding Reportico</td>
 <td width="34%" align="center" valign="top">Reportico User Manual</td>
 <td width="33%" align="right" valign="top">Language Support</td>
 </tr>
 </table>
         <div class="credit">
 		    <hr />
-		    Documentation generated on Fri, 26 Jul 2013 20:58:43 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Sat, 17 May 2014 16:10:55 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

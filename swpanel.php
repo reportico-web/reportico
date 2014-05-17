@@ -1,7 +1,7 @@
 <?php
 /*
  Reportico - PHP Reporting Tool
- Copyright (C) 2010-2013 Peter Deed
+ Copyright (C) 2010-2014 Peter Deed
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -26,11 +26,11 @@
  * EXECUTE
  *
  * @link http://www.reportico.org/
- * @copyright 2010-2013 Peter Deed
+ * @copyright 2010-2014 Peter Deed
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- * @version $Id: swpanel.php,v 1.36 2014/05/05 20:04:59 peter Exp $
+ * @version $Id: swpanel.php,v 1.40 2014/05/17 15:12:32 peter Exp $
  */
 
 
@@ -627,8 +627,8 @@ class reportico_xml_reader
 
   	function reportico_xml_reader (&$query, $filename, $xmlstring = false, $search_tag = false ) 
 	{
-
     	$this->query =& $query;
+
     	$this->parser = xml_parser_create();
         $this->search_tag = $search_tag;
         $this->current_element =& $this->data; 
@@ -933,11 +933,11 @@ class reportico_xml_reader
 		{
 			if ( $filename )
 			{
-				global $g_project;
+                global $g_project;
                 if ( $this->query )
                 {
-			        $readfile = $this->query->reports_path."/".$filename;
-			        $adminfile = $this->query->admin_path."/".$filename;
+                    $readfile = $this->query->reports_path."/".$filename;
+                    $adminfile = $this->query->admin_path."/".$filename;
                 }
                 else
                 {
@@ -945,13 +945,22 @@ class reportico_xml_reader
                     $adminfile = false;
                 }
 
-				if ( !is_file($readfile) )
-				{
-					find_file_to_include($readfile, $readfile);
-				}
-				if ( is_file ( $readfile )  )
+                if ( $query )
+                if ( $query->login_type != "ADMIN" && $query->login_type != "DESIGN" )
                 {
-					$readfile = $readfile;
+                    if ( $g_project == "admin" )
+                        $readfile = false;
+                    $adminfile = false;
+                }
+
+                if ( $readfile && !is_file($readfile) )
+                {
+                    find_file_to_include($readfile, $readfile);
+                }
+
+                if ( $readfile && is_file ( $readfile )  )
+                {
+                    $readfile = $readfile;
                 }
 				else 
 				{
@@ -4434,23 +4443,12 @@ class reportico_xml_reader
 			// Set DataSource
 			foreach ( $cogquery["Datasource"] as $att => $val )
 			{
-				if ( $att == "SourceType" )
-					$this->query->source_type = $val;
+				//if ( $att == "SourceType" )
+					//$this->query->source_type = $val;
 
 				if ( $att == "SourceConnection" )
 				{
-					$ar =& $val;
-					$dt = $val["DatabaseType"];
-					$dt = "";
-					// Is this correct?
-					$dn = $val["DatabaseName"];
-					$hn = $val["HostName"];
-					$sn = $val["ServiceName"];
-					$un = $val["UserName"];
-					$pw = $val["Password"];
-					$ds = new reportico_datasource($dt, $hn, $sn );
-					$ds->set_database($dn);
-					$this->query->set_datasource($ds);
+                    // No longer relevant - connections are not supplied in xml files
 				}
 			}
 

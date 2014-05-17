@@ -74,7 +74,10 @@
 	<li type="square"><a href="../reportico/tutorial_reportico.structure.pkg.html">Reportico Installation Structure</a>
 </ul>
 <ul>
-	<li type="square"><a href="../reportico/tutorial_reportico.using.pkg.html">Running Reportico - Options</a>
+	<li type="square"><a href="../reportico/tutorial_reportico.using.pkg.html">Configuring Reportico - System Parameters</a>
+</ul>
+<ul>
+	<li type="square"><a href="../reportico/tutorial_reportico.embedding.pkg.html">Embedding Reportico</a>
 </ul>
 <ul>
 	<li type="square"><a href="../reportico/tutorial_reportico.security.pkg.html">Reportico Security</a>
@@ -155,11 +158,11 @@
 </li></ul>
 
 							<ul>
-	<li type="square"><a href="../reportico/tutorial_reportico.appendix2.pkg.html">Appendix 2 - Reportico URL request parameters</a>
+	<li type="square"><a href="../reportico/tutorial_reportico.appendix1.pkg.html">Appendix 1 - Reportico Project Configuration parameters</a>
 </ul>
 
 							<ul>
-	<li type="square"><a href="../reportico/tutorial_reportico.appendix1.pkg.html">Appendix 1 - Reportico Project Configuration parameters</a>
+	<li type="square"><a href="../reportico/tutorial_reportico.appendix2.pkg.html">Appendix 2 - Reportico URL request parameters</a>
 </ul>
 
 									                        <b>Files:</b><br />
@@ -181,7 +184,7 @@
 "../reportico/tutorial_reportico.assign.pkg.html">Next</a></td>
 </tr>
 </table>
-<span><a name="qrydet"></a><h2 class="title">The Query Details Menu</h2><a name="qrydet.overview"></a><h3 class="title">Query Details Menu Overview</h3><hr />
+<span><a name="appendix1 config.php.qrydet"></a><h2 class="title">The Query Details Menu</h2><a name="qrydet.overview"></a><h3 class="title">Query Details Menu Overview</h3><hr />
 
   <a name="qrydet."></a><h3 class="title">Query Details =&gt; SQL Tab</h3><a name="qrydet.QuerySql"></a><h4 class="title">SQL Query</h4><p>The SQL query text that retrieves the main report data. There is
       nothing to stop you entering statements that comprise outer joins,
@@ -207,7 +210,7 @@
       <p>For example, the query</p>
 
       <p><code><pre>
-    SELECT customer_id id,
+    SELECT customer_id,
     customer_name, count(*) order_count FROM order WHERE 1 = 1 ORDER BY
     customer_id GROUP BY 1, 2
 </pre></code></p>
@@ -218,14 +221,14 @@
       which can be referred to elsewhere in the report. Note also that the
       ORDER BY CLAUSE gets expanded to the appropriate order type.</p>
 
-      <p>If you are providing a user from outside of reportico using the <strong>external_user</strong> then
-      you can use this in your queries to filter by user by writing something like :-
-<code><pre>
-    SELECT col1, col2
+      <p>If you are providing a user from outside of reportico using the <strong>external_user</strong> then you can use this in your queries to filter by user by writing something like :-</p>
+
+      <p><code><pre>
+SELECT col1, col2
     FROM table1 
     WHERE user = {FRAMEWORK_USER}
-</pre></code>
-when you try to do this you will get a syntax error, but ignore the error and it will be replaced by the user id at report run time.</p><br />
+</pre></code></p>
+      <p>when you try to do this you will get a syntax error, but ignore the error and it will be replaced by the user id at report run time.</p><br />
 
     <a name="qrydet.SQLLimitFirst"></a><h4 class="title">Limit/First</h4><p>Causes the report to only output the specified number of rows</p><br />
     <a name="qrydet.SQLSkipOffset"></a><h4 class="title">Skip/Offset</h4><p>Causes report output to start from the record number specified here</p><br />
@@ -430,7 +433,7 @@ WHERE customer_id NOT IN
 </table>
         <div class="credit">
 		    <hr />
-		    Documentation generated on Fri, 26 Jul 2013 20:58:43 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Sat, 17 May 2014 16:10:55 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

@@ -1,7 +1,7 @@
 <?php
 /*
  Reportico - PHP Reporting Tool
- Copyright (C) 2010-2013 Peter Deed
+ Copyright (C) 2010-2014 Peter Deed
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -24,11 +24,11 @@
  * Reportico engine
  *
  * @link http://www.reportico.org/
- * @copyright 2010-2013 Peter Deed
+ * @copyright 2010-2014 Peter Deed
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- * @version $Id: swsql.php,v 1.16 2014/02/17 22:33:58 peter Exp $
+ * @version $Id: swsql.php,v 1.17 2014/05/17 15:12:32 peter Exp $
  */
 
 

@@ -74,7 +74,10 @@
 	<li type="square"><a href="../reportico/tutorial_reportico.structure.pkg.html">Reportico Installation Structure</a>
 </ul>
 <ul>
-	<li type="square"><a href="../reportico/tutorial_reportico.using.pkg.html">Running Reportico - Options</a>
+	<li type="square"><a href="../reportico/tutorial_reportico.using.pkg.html">Configuring Reportico - System Parameters</a>
+</ul>
+<ul>
+	<li type="square"><a href="../reportico/tutorial_reportico.embedding.pkg.html">Embedding Reportico</a>
 </ul>
 <ul>
 	<li type="square"><a href="../reportico/tutorial_reportico.security.pkg.html">Reportico Security</a>
@@ -155,11 +158,11 @@
 </li></ul>
 
 							<ul>
-	<li type="square"><a href="../reportico/tutorial_reportico.appendix2.pkg.html">Appendix 2 - Reportico URL request parameters</a>
+	<li type="square"><a href="../reportico/tutorial_reportico.appendix1.pkg.html">Appendix 1 - Reportico Project Configuration parameters</a>
 </ul>
 
 							<ul>
-	<li type="square"><a href="../reportico/tutorial_reportico.appendix1.pkg.html">Appendix 1 - Reportico Project Configuration parameters</a>
+	<li type="square"><a href="../reportico/tutorial_reportico.appendix2.pkg.html">Appendix 2 - Reportico URL request parameters</a>
 </ul>
 
 									                        <b>Files:</b><br />
@@ -181,7 +184,7 @@
 "../reportico/tutorial_reportico.tutorial1_1.pkg.html">Next</a></td>
 </tr>
 </table>
-<span><a name="tutorial1"></a><h2 class="title">Tutorial No.1 - The Film Listing Report</h2><p>This report is a fairly simple listing of films but it will takes you through quite a few features of Reportico. The tutorial is split into 5 stages and the finished reports are already available in the tutorials directory as files <strong>tut1_1_films.xml</strong>,<strong>tut1_2_films.xml</strong>,<strong>tut1_3_films.xml</strong>, <strong>tut1_4_films.xml</strong> and <strong>tut1_5_films.xml</strong>.</p>
+<span><a name="importlink.tutorial1"></a><h2 class="title">Tutorial No.1 - The Film Listing Report</h2><p>This report is a fairly simple listing of films but it will takes you through quite a few features of Reportico. The tutorial is split into 5 stages and the finished reports are already available in the tutorials directory as files <strong>tut1_1_films.xml</strong>,<strong>tut1_2_films.xml</strong>,<strong>tut1_3_films.xml</strong>, <strong>tut1_4_films.xml</strong> and <strong>tut1_5_films.xml</strong>.</p>
    <a name="tutorial1.tut1_run"></a><h3 class="title">Running the Tutorial 1 Report</h3><p>Before you try to work through this tutorial, try running the final report first. Select <strong>Film Listing</strong> from the tutorials menu (Alternatively you can point your browser at the URL <strong>http://{SERVER_ADDRESS}/{REPORTICO_INSTALL_DIRECTORY}/run.php?project=tutorials&amp;execute_mode=PREPARE&amp;xmlin=tut1_films.xml</strong>). You should see the criteria entry screen for the <strong>Film List</strong> report. As it indicates, this is a simple report listing films in the DVD library database. Try a test run by pressing the <strong>Execute</strong> button. A list of all the films in the database will appear with country flags indicating where the film was made - you will learn how to include database graphics into the report in Part 5 of this tutorial. Notice that the Film Id column is padded with zeroes - this is achieved by reformatting the column using an <strong>Assignment</strong> that is covered in stage 3 of this tutorial. Finally notice the way that the report groups data by category with a group header of category title and group trailers containing a count and latest and earliest film year within category - groups are covered in stage 4.</p>
 <p>Now experiment with PDF and CSV formats. Press the <strong>Back</strong> to return to the criteria entry screen, and re-run the report with the different Output formats selected.</p>
 <p>Also run the report with the <strong>Debug Mode</strong> list box set to &quot;Low&quot;. When you run the report, you will see the SQL statement used to fetch the data rather than the report output. This is a useful report debugging tool that provides more information about the report execution as you add more complexity. The debug option can be hidden from this screen for live deployment.</p>
@@ -214,7 +217,7 @@
 </table>
         <div class="credit">
 		    <hr />
-		    Documentation generated on Fri, 26 Jul 2013 20:58:43 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Sat, 17 May 2014 16:10:55 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

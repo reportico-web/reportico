@@ -1,7 +1,7 @@
 <?php
 /*
  Reportico - PHP Reporting Tool
- Copyright (C) 2010-2013 Peter Deed
+ Copyright (C) 2010-2014 Peter Deed
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -22,11 +22,11 @@
  * Generates a chart image from axes, data parameters
  *
  * @link http://www.reportico.org/
- * @copyright 2010-2013 Peter Deed
+ * @copyright 2010-2014 Peter Deed
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- * @version $Id: dyngraph_pchart3.php,v 1.7 2013/08/08 18:20:38 peter Exp $
+ * @version $Id: dyngraph_pchart3.php,v 1.8 2014/05/17 15:12:31 peter Exp $
  */
 
  /* pChart library inclusions */

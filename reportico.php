@@ -1,7 +1,7 @@
 <?php
 /*
  Reportico - PHP Reporting Tool
- Copyright (C) 2010-2013 Peter Deed
+ Copyright (C) 2010-2014 Peter Deed
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -26,11 +26,11 @@
  * handling.
  *
  * @link http://www.reportico.co.uk/
- * @copyright 2010-2013 Peter Deed
+ * @copyright 2010-2014 Peter Deed
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- * @version $Id: reportico.php,v 1.64 2014/05/06 19:57:19 peter Exp $
+ * @version $Id: reportico.php,v 1.68 2014/05/17 15:12:31 peter Exp $
  */
 
 // Include files
@@ -267,7 +267,7 @@ class reportico extends reportico_object
 	var $parent_query=false;
 	var $allow_maintain = "FULL";
 	var $embedded_report = false;
-	var $allow_debug = false;
+	var $allow_debug = true;
 	var $user_template=false;
 	var $xmlin=false;
 	var $xmlout=false;
@@ -310,7 +310,8 @@ class reportico extends reportico_object
 	var $clearform = false;
 	var $first_criteria_selection = true;
 	var $menuitems = array();
-	var $dropdown_menu = array();
+	var $dropdown_menu = false;
+	var $static_menu = false;
 	var $projectitems = array();
 	var $target_style = false;
 	var $target_format = false;
@@ -323,7 +324,7 @@ class reportico extends reportico_object
 	var $forward_url_get_parameters_dbimage="";
     var $reportico_ajax_script_url=false;
     var $reportico_ajax_called=false;
-    var $reportico_ajax_mode=false;
+    var $reportico_ajax_mode=true;
     var $reportico_ajax_preloaded=false;
     var $clear_reportico_session=false;
 
@@ -367,6 +368,9 @@ class reportico extends reportico_object
 	var $assignment = array();
 	var $criteria_links = array();
 
+    // Admin or normal login
+    var $login_type = "NORMAL";
+
     // Output control 
     var $output_skipline = false;
     var $output_allcell_styles = false;
@@ -382,6 +386,20 @@ class reportico extends reportico_object
     var $output_group_trailer_styles = false;
     var $output_reportbody_styles = false;
 	var $admin_accessible = true;
+
+    // Template Parameters
+    var $output_template_parameters = array(
+        "show_hide_navigation_menu" => "show",
+        "show_hide_dropdown_menu" => "show",
+        "show_hide_report_output_title" => "show",
+        "show_hide_prepare_section_boxes" => "show",
+        "show_hide_prepare_pdf_button" => "show",
+        "show_hide_prepare_html_button" => "show",
+        "show_hide_prepare_print_html_button" => "show",
+        "show_hide_prepare_csv_button" => "show",
+        "show_hide_prepare_page_style" => "show",
+        );
+        // Template Parameters
 
     // Charsets for in and output
     var $db_charset = false;
@@ -456,7 +474,7 @@ class reportico extends reportico_object
     // Specify a pdo connection fexternally
 	var $external_connection = false;
 
-	var $bootstrap_styles = true;
+	var $bootstrap_styles = "3";
 	var $jquery_preloaded = false;
 	var $bootstrap_preloaded = false;
 	var $bootstrap_styling_page = "table table-striped table-condensed";
@@ -481,7 +499,7 @@ class reportico extends reportico_object
     var $dynamic_grids = false;
     var $dynamic_grids_sortable = true;
     var $dynamic_grids_searchable = true;
-    var $dynamic_grids_paging = true;
+    var $dynamic_grids_paging = false;
     var $dynamic_grids_page_size = 10;
 
 	function reportico()
@@ -489,6 +507,7 @@ class reportico extends reportico_object
 		reportico_object::reportico_object();
 
 		$this->parent_query =& $this;
+
 	}
 
     // Dummy functions for yii to work with Reportico
@@ -1830,6 +1849,9 @@ class reportico extends reportico_object
 				set_reportico_session_param('admin_password',"1");
 				$loggedon = true;
 			}
+            $this->login_type = $loggedon;
+            if ( !$this->login_type )
+                $this->login_type = "NORMAL";
 			return $loggedon;
 		}
 
@@ -1897,6 +1919,9 @@ class reportico extends reportico_object
 			}
 		}
 
+        $this->login_type = $loggedon;
+        if ( !$this->login_type )
+            $this->login_type = "NORMAL";
 		return $loggedon;
 	}
 
@@ -2941,6 +2966,7 @@ class reportico extends reportico_object
 		$smarty->assign('SHOW_OUTPUT', false);
 		$smarty->assign('SHOW_DESIGN_BUTTON', false);
 		$smarty->assign('SHOW_ADMIN_BUTTON', true);
+	    $smarty->assign('PROJ_PASSWORD_ERROR', "");
         $smarty->assign('SHOW_PROJECT_MENU_BUTTON', true);
         if ( $this->access_mode && ( $this->access_mode != "DEMO" && $this->access_mode != "FULL" && $this->access_mode != "ALLPROJECTS" && $this->access_mode != "ONEPROJECT" )  )
         {
@@ -2988,7 +3014,7 @@ class reportico extends reportico_object
         $this->url_path_to_assets = register_session_param("url_path_to_assets", $this->url_path_to_assets);
         $this->jquery_preloaded = register_session_param("jquery_preloaded", $this->jquery_preloaded);
         $this->bootstrap_preloaded = register_session_param("bootstrap_preloaded", $this->bootstrap_preloaded);
-        
+
         if ( !$this->bootstrap_styles )
         {
             $csspath = $this->url_path_to_assets."/css/reportico.css";
@@ -3030,6 +3056,12 @@ class reportico extends reportico_object
         $smarty->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
         $smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
         $smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
+
+        // Set on/off template elements
+        foreach ( $this->output_template_parameters as $k => $v )
+        {
+            $smarty->assign(strtoupper($k), $v);
+        }
 
         if ( $this->url_path_to_assets )
         {
@@ -3123,14 +3155,18 @@ class reportico extends reportico_object
 		// ***MENUURL ***}
 
         // Generate dropdown menu strip in menu or prepare mode
-        if ( $g_dropdown_menu )
+        if ( $g_dropdown_menu && !$this->dropdown_menu)
+        {
             $this->dropdown_menu = $g_dropdown_menu;
+        }
 
 		if ( $this->dropdown_menu && ( $mode == "MENU" || $mode == "PREPARE" ) )
         {
 		    $this->generate_dropdown_menu ( $this->dropdown_menu );
 		    $smarty->assign('DROPDOWN_MENU_ITEMS', $this->dropdown_menu);
         }
+        global $g_menu_title;
+		$smarty->assign('MENU_TITLE', $g_menu_title);
 
 		if ( $mode == "MENU" )
 		{
@@ -3204,7 +3240,7 @@ class reportico extends reportico_object
 
 		{
 			set_reportico_session_param("loggedin",true);
-			if ( $login_type = $this->login_check($smarty) )
+			if ( $this->login_check($smarty) )
 			{
 				// User has supplied details ( user and password ), so assume that login box should
 				// not occur ( user details
@@ -3215,7 +3251,7 @@ class reportico extends reportico_object
 				$this->panels["USERINFO"]->set_visibility(true);
 				$this->panels["FORM"]->set_visibility(true);
 
-				if ( $login_type == "DESIGN" )
+				if ( $this->login_type == "DESIGN" )
 				{
 					$this->panels["RUNMODE"]->set_visibility(true);
 				}
@@ -3224,7 +3260,7 @@ class reportico extends reportico_object
 				$smarty->assign('SHOW_REPORT_MENU', true);
 
 				// Only show a logout button if a password is in effect
-				if ( $login_type == "DESIGN" || $login_type == "ADMIN" || ( defined ('SW_PROJECT_PASSWORD') && SW_PROJECT_PASSWORD != '' ) )
+				if ( $this->login_type == "DESIGN" || $this->login_type == "ADMIN" || ( defined ('SW_PROJECT_PASSWORD') && SW_PROJECT_PASSWORD != '' ) )
 					$smarty->assign('SHOW_LOGOUT', true);
 
                 // Dont show logout button in ALLPROJECTS, ONE PROJECT
@@ -3290,8 +3326,6 @@ class reportico extends reportico_object
 
 			}
 		}
-
-		
 	}
 
 	// -----------------------------------------------------------------------------
@@ -3427,6 +3461,32 @@ class reportico extends reportico_object
 			//set_reportico_session_param("template",$this->user_template);
 		//}
 
+        if ( $this->xmlinput && !preg_match ("/\.xml$/", $this->xmlinput) )
+        {
+            $this->xmlinput .= ".xml";
+        }
+
+        if ( ( $this->xmlinput && $mode == "PREPARE" || $mode == "EXECUTE" ) && ( $this->login_type == "NORMAL" ) && ( $this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml" || $this->xmlinput == "createproject.xml") )
+        {
+			unset_reportico_session_param("xmlin");
+            $this->xmlinput = "unknown.xml";
+            $this->xmlin = "unknown.xml";
+            $_REQUEST["xmlin"] = "unknown.xml";
+            trigger_error( "Can't find report" );
+            return;
+        }
+
+        if ( $this->xmlinput && !preg_match ("/^[A-Za-z0-9]/", $this->xmlinput) )
+        {
+			unset_reportico_session_param("xmlin");
+            $this->xmlinput = "unknown.xml";
+            $this->xmlin = "unknown.xml";
+            $_REQUEST["xmlin"] = "unknown.xml";
+            trigger_error( "Unknown report format" );
+            return;
+        }
+
+
 
 		// Now work out out file...
 		if ( !$this->xmloutfile )
@@ -3464,6 +3524,7 @@ class reportico extends reportico_object
 			set_reportico_session_param("xmlin",$this->xmlinput);
 			set_reportico_session_param("xmlout",$this->xmlinput);
 		}
+
 
 		if ( $this->sqlinput )
         {
@@ -3562,8 +3623,13 @@ class reportico extends reportico_object
         register_session_param("external_param1", $this->external_param1);
         register_session_param("external_param2", $this->external_param2);
         register_session_param("external_param3", $this->external_param3);
-        register_session_param("charting_engine", $this->charting_engine);
-        register_session_param("dynamic_grids", $this->dynamic_grids);
+        $this->charting_engine = register_session_param("charting_engine", $this->charting_engine);
+
+        $this->dynamic_grids = register_session_param("dynamic_grids", $this->dynamic_grids);
+        $this->dynamic_grids_sortable = register_session_param("dynamic_grids_sortable", $this->dynamic_grids_sortable);
+        $this->dynamic_grids_searchable = register_session_param("dynamic_grids_searchable", $this->dynamic_grids_searchable);
+        $this->dynamic_grids_paging = register_session_param("dynamic_grids_paging", $this->dynamic_grids_paging);
+        $this->dynamic_grids_page_size = register_session_param("dynamic_grids_page_size", $this->dynamic_grids_page_size);
 
         // We are in AJAX mode if it is passed throuh
         if ( isset($_REQUEST["reportico_ajax_called"]) )
@@ -3788,8 +3854,8 @@ class reportico extends reportico_object
 
 			case "PREPARE":
 				load_mode_language_pack("languages", $this->output_charset);
-				$this->handle_xml_query_input($mode);
 				$this->initialize_panels($mode);
+				$this->handle_xml_query_input($mode);
 				$this->set_request_columns();
 
                 global $g_translations;
@@ -3825,8 +3891,8 @@ class reportico extends reportico_object
 			
 			case "EXECUTE":
 				load_mode_language_pack("languages", $this->output_charset);
-				$this->handle_xml_query_input($mode);
 				$this->initialize_panels($mode);
+				$this->handle_xml_query_input($mode);
 				$g_code_area = "Main Query";
 				$this->build_query(false, "");
 				$g_code_area = false;
@@ -4031,6 +4097,7 @@ class reportico extends reportico_object
 		global $g_menu_title;
 		global $g_dropdown_menu;
 		global $g_language;
+		global $g_project;
 
 		$p = new reportico_panel($this, "ADMIN");
 		$this->initialize_panels("ADMIN");
@@ -4038,8 +4105,12 @@ class reportico extends reportico_object
 	    load_mode_language_pack("languages", $this->output_charset);
 	    load_mode_language_pack("admin", $this->output_charset);
         localise_template_strings($this->panels["MAIN"]->smarty);
-		
+
 		global $g_projpath;
+
+        if ( $g_project != "admin" )
+            return;
+
 		if ( $g_menu && is_array($g_menu) )
 		{
 			$ct = 0;
@@ -4110,16 +4181,21 @@ class reportico extends reportico_object
 		global $g_menu_title;
 		global $g_dropdown_menu;
 		global $g_language;
+		global $g_projpath;
+
+        if ( !$this->static_menu && !is_array($this->static_menu ))
+        {
+            $this->static_menu = $g_menu;
+        }
 
 		$p = new reportico_panel($this, "MENU");
 		$this->initialize_panels("MENU");
 		$this->set_attribute("ReportTitle", $g_menu_title);
-		
-		global $g_projpath;
-		if ( $g_menu && is_array($g_menu) )
+
+		if ( $this->static_menu && is_array($this->static_menu) )
 		{
 			$ct = 0;
-			foreach  ( $g_menu as $menuitem )
+			foreach  ( $this->static_menu as $menuitem )
 			{
 				if ( $menuitem["title"] == "<AUTO>" )
 				{
@@ -5071,6 +5147,7 @@ class reportico extends reportico_object
                     global $g_projpath;
                     $proj_parent = find_best_location_in_include_path( "projects" );
                     $filename = $proj_parent."/".$project."/".$menuitem["reportfile"];
+                    if ( !preg_match("/\.xml/", $filename ) ) $filename .= ".xml";
                     if (is_file($filename)) 
                     {
                         $query = false;

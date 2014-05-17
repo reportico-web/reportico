@@ -1,7 +1,7 @@
 <?php
 /*
  Reportico - PHP Reporting Tool
- Copyright (C) 2010-2013 Peter Deed
+ Copyright (C) 2010-2014 Peter Deed
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -26,11 +26,11 @@
  * classes.
  *
  * @link http://www.reportico.org/
- * @copyright 2010-2013 Peter Deed
+ * @copyright 2010-2014 Peter Deed
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- * @version $Id: swgraph_nvd3.php,v 1.15 2013/09/26 19:23:06 peter Exp $
+ * @version $Id: swgraph_nvd3.php,v 1.3 2014/05/17 15:12:31 peter Exp $
  */
 
 
@@ -433,7 +433,7 @@ class reportico_graph
                     console.log(\"d = \" + d +  \" i = \" + i + \" j = \" + j );
                     if ( reportico_datasets". $session_placeholder."[0].values[d] )
                     {
-                        console.log(  'go ' + reportico_datasets". $session_placeholder."[0].values[d].label);
+                        //console.log(  'go ' + reportico_datasets". $session_placeholder."[0].values[d].label);
                         return reportico_datasets". $session_placeholder."[0].values[d].label;
                     }
                     else

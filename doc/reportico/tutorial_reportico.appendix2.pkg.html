@@ -74,7 +74,10 @@
 	<li type="square"><a href="../reportico/tutorial_reportico.structure.pkg.html">Reportico Installation Structure</a>
 </ul>
 <ul>
-	<li type="square"><a href="../reportico/tutorial_reportico.using.pkg.html">Running Reportico - Options</a>
+	<li type="square"><a href="../reportico/tutorial_reportico.using.pkg.html">Configuring Reportico - System Parameters</a>
+</ul>
+<ul>
+	<li type="square"><a href="../reportico/tutorial_reportico.embedding.pkg.html">Embedding Reportico</a>
 </ul>
 <ul>
 	<li type="square"><a href="../reportico/tutorial_reportico.security.pkg.html">Reportico Security</a>
@@ -155,11 +158,11 @@
 </li></ul>
 
 							<ul>
-	<li type="square"><a href="../reportico/tutorial_reportico.appendix2.pkg.html">Appendix 2 - Reportico URL request parameters</a>
+	<li type="square"><a href="../reportico/tutorial_reportico.appendix1.pkg.html">Appendix 1 - Reportico Project Configuration parameters</a>
 </ul>
 
 							<ul>
-	<li type="square"><a href="../reportico/tutorial_reportico.appendix1.pkg.html">Appendix 1 - Reportico Project Configuration parameters</a>
+	<li type="square"><a href="../reportico/tutorial_reportico.appendix2.pkg.html">Appendix 2 - Reportico URL request parameters</a>
 </ul>
 
 									                        <b>Files:</b><br />
@@ -175,13 +178,12 @@
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr>
 <td width="10%" align="left" valign="bottom"><a href=
-"../reportico/tutorial_reportico.tutorial4_1.pkg.html">Prev</a></td>
+"../reportico/tutorial_reportico.appendix1.pkg.html">Prev</a></td>
 <td width="80%" align="center" valign="bottom"></td>
-<td width="10%" align="right" valign="bottom"><a href=
-"../reportico/tutorial_reportico.appendix1.pkg.html">Next</a></td>
+<td width="10%" align="right" valign="bottom">Next</td>
 </tr>
 </table>
-<span><a name="security.appendix1 config.php"></a><h2 class="title">Appendix 2 - Reportico URL request parameters</h2><a name="appendix1 config.php.urlparam"></a><p>The following parameters can be supplied when invoking Reportico from the browser or from the command line. All parameters are provide in the standard format of <strong class = "bold">param=value</strong>.
+<span><a name="output.appendix2 config.php"></a><h2 class="title">Appendix 2 - Reportico URL request parameters</h2><a name="appendix2 config.php.urlparam"></a><p>The following parameters can be supplied when invoking Reportico from the browser or from the command line. All parameters are provide in the standard format of <strong class = "bold">param=value</strong>.
     <ol><li><p><strong class = "bold">project</strong>. Identifies which project this invokation of Reportico relates. Identifies the name of the project directory containing the relevant menus, configurations and report definitions.</p></li>
         <li><p><strong class = "bold">project_password</strong>For projects controlled by a project password, this must be specified to access the project menu and reports directly.</p></li>
         <li><p><strong class = "bold">xmlin</strong>When you want to run a report directly from the URL, specifiy the name of the report file (e.g. report.xml) as it is named in the relevant project report directory</p></li>
@@ -191,7 +193,7 @@
 	  <p><strong>MAINTAIN</strong>. Brings a report up in design mode. Will also require the name of the report definition using the <strong>xmlin</strong> parameter.</p>
 	  <p><strong>EXECUTE</strong>. Executes a specified report up and generates report output. Also requires the name of the report definition using the <strong>xmlin</strong> parameter. If the <strong>target_output</strong> is not specified HTML will be the default output.<strong>target_show_body</strong> parameter to 1</p></li>
         <li><p><strong class = "bold">target_format</strong>. Used with an execute_mode of EXECUTE when running reports from the browser or command line. Indicates the output format. Can have values of <strong class = "bold">HTML, PDF, CSV, XML, JSON</strong></p></li>
-        <li><p><strong class = "bold">target_style</strong>. Used with an execute_mode of EXECUTE when running reports from the browser or command line. Indicates the output style. Can be the default of <strong class = "bold">TABLE</strong> which presents each reported row as a line of column values, or <strong class = "bold">FORM</strong> which presents each reported row using a line for each column value.</p></li>
+        <li><p><strong class = "bold">target_style</strong>Used with an execute_mode of EXECUTE when running reports from the browser or command line. Indicates the output style. Can be the default of <strong>TABLE</strong> which presents each reported row as a line of column values, or <strong>FORM</strong> which presents each reported row using a line for each column value.</p></li>
         <li><p><strong class = "bold">language</strong>. Specifies the language to operate Reportico in. Passing a value of fr_fr would run in French, es_es spanish, en_us American English</p></li>
         <li><p><strong class = "bold">clear_session</strong>Clears the current session, useful clearing your current session project and report variables.</p></li>
         <li><p><strong class = "bold">target_show_detail</strong>Set to 0 to hide the report detail lines</p>
@@ -202,21 +204,20 @@
           <p><strong class = "bold">target_show_column_headers</strong>Set to 0 to hide the report column headers</p></li></ol></p><hr /></span>
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr>
-<td width="33%" align="left" valign="top"><a href="../reportico/tutorial_reportico.tutorial4_1.pkg.html">Prev</a></td>
+<td width="33%" align="left" valign="top"><a href="../reportico/tutorial_reportico.appendix1.pkg.html">Prev</a></td>
 <td width="34%" align="center" valign="top">&nbsp;</td>
-<td width="33%" align="right" valign="top"><a href=
-"../reportico/tutorial_reportico.appendix1.pkg.html">Next</a></td>
+<td width="33%" align="right" valign="top">Next</td>
 </tr>
 
 <tr>
-<td width="33%" align="left" valign="top">Tutorial 4 - The Late Returns Summary report</td>
+<td width="33%" align="left" valign="top">Appendix 1 - Reportico Project Configuration parameters</td>
 <td width="34%" align="center" valign="top"></td>
-<td width="33%" align="right" valign="top">Appendix 1 - Reportico Project Configuration parameters</td>
+<td width="33%" align="right" valign="top"></td>
 </tr>
 </table>
         <div class="credit">
 		    <hr />
-		    Documentation generated on Fri, 26 Jul 2013 20:58:43 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Sat, 17 May 2014 16:10:56 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

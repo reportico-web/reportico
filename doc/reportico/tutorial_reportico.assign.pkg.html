@@ -74,7 +74,10 @@
 	<li type="square"><a href="../reportico/tutorial_reportico.structure.pkg.html">Reportico Installation Structure</a>
 </ul>
 <ul>
-	<li type="square"><a href="../reportico/tutorial_reportico.using.pkg.html">Running Reportico - Options</a>
+	<li type="square"><a href="../reportico/tutorial_reportico.using.pkg.html">Configuring Reportico - System Parameters</a>
+</ul>
+<ul>
+	<li type="square"><a href="../reportico/tutorial_reportico.embedding.pkg.html">Embedding Reportico</a>
 </ul>
 <ul>
 	<li type="square"><a href="../reportico/tutorial_reportico.security.pkg.html">Reportico Security</a>
@@ -155,11 +158,11 @@
 </li></ul>
 
 							<ul>
-	<li type="square"><a href="../reportico/tutorial_reportico.appendix2.pkg.html">Appendix 2 - Reportico URL request parameters</a>
+	<li type="square"><a href="../reportico/tutorial_reportico.appendix1.pkg.html">Appendix 1 - Reportico Project Configuration parameters</a>
 </ul>
 
 							<ul>
-	<li type="square"><a href="../reportico/tutorial_reportico.appendix1.pkg.html">Appendix 1 - Reportico Project Configuration parameters</a>
+	<li type="square"><a href="../reportico/tutorial_reportico.appendix2.pkg.html">Appendix 2 - Reportico URL request parameters</a>
 </ul>
 
 									                        <b>Files:</b><br />
@@ -181,7 +184,7 @@
 "../reportico/tutorial_reportico.criteria.pkg.html">Next</a></td>
 </tr>
 </table>
-<span><a name="prepare.assign"></a><h2 class="title">The Assignments Menu</h2><a name="assign.assoverview"></a><h3 class="title">Assignment Menu Overview</h3><p>The Assignment Menu allows the setting up of additional calculations
+<span><a name="tutorial.assign"></a><h2 class="title">The Assignments Menu</h2><a name="assign.assoverview"></a><h3 class="title">Assignment Menu Overview</h3><p>The Assignment Menu allows the setting up of additional calculations
     that can be included in the report. Calculations are entered as straight
     PHP code and can perform the following :-</p>
 
@@ -217,14 +220,14 @@
     assignment that same column may be blanked out if a particular condition
     is met.</p><hr />
 
-  <h3 class="title">Assignment Menu Attributes</h3><a name="assign.AssignName"></a><h4 class="title">Assign To Existing Column</h4><p>The name of the column being assigned to. This must be an existing
+  <a name="assign.AssignName"></a><h3 class="title">Assignment Menu Attributes</h3><a name="assign.AssignName.AssignName"></a><h4 class="title">Assign To Existing Column</h4><p>The name of the column being assigned to. This must be an existing
       column either present in the main report query or manually added using
       the Add button in the Query Columns sub tab off the query Details
       menu.</p><br />
 
-    <a name="assign.AssignNameNew"></a><h4 class="title">Assign To New Column</h4><p>The name of a new column to assign to. Entering a value here will generate a new column in the report output which shows the results of the assignment. To change attributes of this column , such as width, justification etc, edit the column settings within the Query Details-?&gt;Query Columns menu option.</p><br />
+    <a name="assign.AssignName.AssignNameNew"></a><h4 class="title">Assign To New Column</h4><p>The name of a new column to assign to. Entering a value here will generate a new column in the report output which shows the results of the assignment. To change attributes of this column , such as width, justification etc, edit the column settings within the Query Details-?&gt;Query Columns menu option.</p><br />
 
-    <a name="assign.Expression"></a><h4 class="title">Expression</h4><p>The expression to assign to the column. This must follow PHP
+    <a name="assign.AssignName.Expression"></a><h4 class="title">Expression</h4><p>The expression to assign to the column. This must follow PHP
       syntax but to include a column value in the assignment then enter the
       column name surrounded by {} (curly brackets). So to include the column
       <strong class = "bold">orderno</strong> in the assignment, use the
@@ -439,7 +442,7 @@
 
       <p></p><br />
 
-    <a name="assign.Condition"></a><h4 class="title">Condition</h4><p>A condition that must be met in for the assignment to be made.
+    <a name="assign.AssignName.Condition"></a><h4 class="title">Condition</h4><p>A condition that must be met in for the assignment to be made.
       This takes the form of a PHP condition clause, and like the assign to
       section allows the embedding of report column values. So for example,
       you may wish to clear a column value if another column is set to a
@@ -521,7 +524,7 @@ a list of invoices, then in each line of the customer report you can include an 
     <img src = "../media/R_16.png"/></p>
       <p>Then for each criteria item that you want to provide data for from the report (you wont probably populate all of these boxes) you need to specify the column from the source reports whose value should be passed to the target report. Leave blank any that are not relevant. The column you choose in each list box should have a value equivalent to the target criteria item's <strong class = "bold">Summary Column</strong>. Note that there may be other criteria you want to pass to the report which are not provided in the target report line and must be passed manually. This is done by performing the steps further down. Note that if you are passing date values to date type crtieria items the format of your date value must conform to your database date format, probably YYYY-MM-DD if you are using MySQL. If it does not then you may need to create another report column which can be hidden which is formatted correctly.</p>
       <p>Once you are happy you have chose click Ok and you should now see a PHP string expression in the <strong class = "bold">Expression</strong> text box. This will evaluate in the report output to an HTML &lt;a&gt; tag containing your URL and which will appear in the report as the word 'Drill' which will be clickabel. You may now change this expression to add in extra criteria or change the word Drill to something else or even a link to a drill icon that you may have.</p>
-      <p>To add more criteria you need to know the name of the criteria item in the target report and you just include in the URL definition something like &amp;MANUAL_{criteria_name}=value. If you want to specify a date or date ranges then that you can specify dates or use identifiers such as TODAY,TOMORROW,YESTERDAY,FIRSTOFMONTH,LASTOFMONTH,FIRSTOFLASTMONTH,LASTOFLASTMONTH. For a single date criteria you would need to include something like &amp;MANUAL_{criteria_name}=TODAY or &amp;MANUAL_{criteria_name}=2012-01-01. For a date range you would include something like &amp;MANUAL_{criteria_name}_FROMDATE=FIRSTOFMONTH&amp;MANUAL_{criteria_name}_TODATE=LASTOFMONTH. For more information on passing URL parameters or Date identifiers see  <a href="../reportico/tutorial_reportico.using.pkg.html">Running Reportico - Options</a></p>
+      <p>To add more criteria you need to know the name of the criteria item in the target report and you just include in the URL definition something like &amp;MANUAL_{criteria_name}=value. If you want to specify a date or date ranges then that you can specify dates or use identifiers such as TODAY,TOMORROW,YESTERDAY,FIRSTOFMONTH,LASTOFMONTH,FIRSTOFLASTMONTH,LASTOFLASTMONTH. For a single date criteria you would need to include something like &amp;MANUAL_{criteria_name}=TODAY or &amp;MANUAL_{criteria_name}=2012-01-01. For a date range you would include something like &amp;MANUAL_{criteria_name}_FROMDATE=FIRSTOFMONTH&amp;MANUAL_{criteria_name}_TODATE=LASTOFMONTH. For more information on passing URL parameters or Date identifiers see  <a href="../reportico/tutorial_reportico.using.pkg.html">Configuring Reportico - System Parameters</a></p>
       <p>If you do modify your drilldown expression then you must be careful with the PHP syntax as its quite hard to make sense of the quotes and concatenation dot characters. You will soon see if you have a syntax error when you run the report.</p>
       <p>Once you have a link appearing, then clicking on it will run the target report in a browser page. You should see the full URL used in the address bar. If you have any problems then you can check this for any clues.</p><br /><hr /></span>
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
@@ -541,7 +544,7 @@ a list of invoices, then in each line of the customer report you can include an 
 </table>
         <div class="credit">
 		    <hr />
-		    Documentation generated on Fri, 26 Jul 2013 20:58:43 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Sat, 17 May 2014 16:10:55 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

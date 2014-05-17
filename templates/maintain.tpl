@@ -6,7 +6,11 @@
 <TITLE>{$TITLE}</TITLE>
 <LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEET}">
 {if $BOOTSTRAP_STYLES}
-<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/bootstrap.min.css">
+{if $BOOTSTRAP_STYLES == "2"}
+<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/bootstrap2/bootstrap.min.css">
+{else}
+<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/bootstrap3/bootstrap.min.css">
+{/if}
 {/if}
 {$OUTPUT_ENCODING}
 </HEAD>
@@ -16,10 +20,15 @@
 <LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEET}">
 {if $BOOTSTRAP_STYLES}
 {if !$REPORTICO_BOOTSTRAP_PRELOADED}
-<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/bootstrap.min.css">
+{if $BOOTSTRAP_STYLES == "2"}
+<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/bootstrap2/bootstrap.min.css">
+{else}
+<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/bootstrap3/bootstrap.min.css">
 {/if}
 {/if}
 {/if}
+{/if}
+
 {if $AJAX_ENABLED}
 {if !$REPORTICO_AJAX_PRELOADED}
 {if !$REPORTICO_JQUERY_PRELOADED}
@@ -35,11 +44,15 @@
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/reportico.js"></script>
 {/literal}
 {/if}
+
 {if $BOOTSTRAP_STYLES}
 {if !$REPORTICO_BOOTSTRAP_PRELOADED}
-{literal}
-<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/bootstrap.min.js"></script>
-{/literal}
+
+{if $BOOTSTRAP_STYLES == "2"}
+<script type="text/javascript" src="{$JSPATH}/bootstrap2/bootstrap.min.js"></script>
+{else}
+<script type="text/javascript" src="{$JSPATH}/bootstrap3/bootstrap.min.js"></script>
+{/if}
 {/if}
 {/if}
 {/if}
@@ -53,7 +66,7 @@
 {/literal}
 {/if}
 {literal}
-<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{/literal}{$JSPATH}{literal}/ui/themes/base/jquery.ui.base.css">
+<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{/literal}{$JSPATH}{literal}/ui/themes/base/jquery.ui.core.css">
 <LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{/literal}{$JSPATH}{literal}/ui/themes/base/jquery.ui.theme.css">
 <LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{/literal}{$JSPATH}{literal}/ui/themes/base/jquery.ui.datepicker.css">
 <script type="text/javascript">var reportico_datepicker_language = "{/literal}{$AJAX_DATEPICKER_FORMAT}{literal}";</script>
@@ -61,6 +74,44 @@
 <script type="text/javascript">var reportico_ajax_script = "{/literal}{$REPORTICO_AJAX_RUNNER}{literal}";</script>
 <script type="text/javascript">var reportico_ajax_mode = "{/literal}{$REPORTICO_AJAX_MODE}{literal}";</script>
 {/literal}
+{if $REPORTICO_DYNAMIC_GRIDS}
+<script type="text/javascript">var reportico_dynamic_grids = true;</script>
+{if $REPORTICO_DYNAMIC_GRIDS_SORTABLE}
+<script type="text/javascript">var reportico_dynamic_grids_sortable = true;</script>
+{else}
+<script type="text/javascript">var reportico_dynamic_grids_sortable = false;</script>
+{/if}
+{if $REPORTICO_DYNAMIC_GRIDS_SEARCHABLE}
+<script type="text/javascript">var reportico_dynamic_grids_searchable = true;</script>
+{else}
+<script type="text/javascript">var reportico_dynamic_grids_searchable = false;</script>
+{/if}
+{if $REPORTICO_DYNAMIC_GRIDS_PAGING}
+<script type="text/javascript">var reportico_dynamic_grids_paging = true;</script>
+{else}
+<script type="text/javascript">var reportico_dynamic_grids_paging = false;</script>
+{/if}
+<script type="text/javascript">var reportico_dynamic_grids_page_size = {$REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE};</script>
+{else}
+<script type="text/javascript">var reportico_dynamic_grids = false;</script>
+{/if}
+{/if}
+{if $REPORTICO_DYNAMIC_GRIDS}
+{if !$REPORTICO_AJAX_PRELOADED}
+{literal}
+<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/jquery.dataTables.js"></script>
+{/literal}
+<LINK id="PRP_StyleSheet" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/jquery.dataTables.css">
+{/if}
+{/if}
+{if $REPORTICO_CHARTING_ENGINE == "NVD3" }
+{if !$REPORTICO_AJAX_PRELOADED}
+{literal}
+<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/nvd3/d3.min.js"></script>
+<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/nvd3/nv.d3.js"></script>
+<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{/literal}{$JSPATH}{literal}/nvd3/nv.d3.css">
+{/literal}
+{/if}
 {/if}
 <div id="reportico_container">
 <FORM class="swMntForm" name="topmenu" method="POST" action="{$SCRIPT_SELF}">
@@ -111,7 +162,7 @@ Logged On As {$DBUSER}
 {/if}
 {if $SHOW_LOGOUT}
 			<TD style="width:15%; text-align: right; padding-right: 10px;" align="right" class="swPrpTopMenuCell">
-				<input class="{{$BOOTSTRAP_STYLE_ADMIN_BUTTON}}swLinkMenu" type="submit" name="logout" value="{$T_LOGOFF}">
+				<input class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swLinkMenu" type="submit" name="logout" value="{$T_LOGOFF}">
 			</TD>
 {/if}
 {if $SHOW_LOGIN}

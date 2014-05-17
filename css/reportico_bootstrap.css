@@ -293,7 +293,6 @@ input.swAdminButton2
     padding-right: 10px;
     padding-left: 10px;
     text-align: center;
-    height:  32px;
     margin: 5px !important;
     color: #000000;
     text-decoration: none;
@@ -686,7 +685,7 @@ input.swAdminButton2
 .swCSVBox, .swHTMLBox, .swPDFBox, .swPrintBox, .swXMLBox, .swJSONBox
 {
     width: 30px !important;
-    height: 30px;
+    height: 30px !important;
     text-align: left;
     padding: 0px;
     margin-bottom: 5px !important;
@@ -706,7 +705,7 @@ input.swAdminButton2
 .swRepPrintBox,
 .swRepBackBox
 {
-    width: 38px;
+    width: 38px !important;
     height: 38px;
     margin: 0px 0px 0px 0px;
     float: left;
@@ -724,9 +723,9 @@ input.swAdminButton2
     float: left;
 }
 
-.swRepPrintBox .swLinkMenu { background-image: url(../images/printer.png); }
-.swRepRefreshBox .swLinkMenu { background-image: url(../images/refreshbutton.png); }
-.swRepBackBox .swLinkMenu { background-image: url(../images/backbutton.png); }
+.swRepPrintBox .swLinkMenu { height: 32px !important; background-image: url(../images/printer.png); }
+.swRepRefreshBox .swLinkMenu { height: 32px !important; background-image: url(../images/refreshbutton.png); }
+.swRepBackBox .swLinkMenu { height: 32px !important; background-image: url(../images/backbutton.png); }
 
 .swRepBackButton:hover 
 {
@@ -779,6 +778,7 @@ input.swAdminButton2
     width: 100%;
     border: solid;
     border-color : #BBCCFF;
+    margin: 0px !important;
     border-width : 0px;
     background-color: #EEEEFF;
     color: #121212;
@@ -895,7 +895,7 @@ input.swAdminButton2
     padding: 5px;
     background-color: inherit;
     color: #555;
-    width: 100%;
+    width: 100% !important;
 }
 
 .swMntTabMenuButUnsel
@@ -904,7 +904,7 @@ input.swAdminButton2
     padding: 5px;
     background-color: inherit;
     color: #555;
-    width: 80%;
+    width: 100% !important;
 }
 
 .swMntTabMenuCellSel
@@ -924,7 +924,7 @@ input.swAdminButton2
     padding: 5px;
     background-color: inherit;
     color: #555;
-    width: 180px;
+    width: 180px !important;
     text-align: left;
     
 }
@@ -936,7 +936,7 @@ input.swAdminButton2
     padding: 5px;
     background-color: inherit;
     color: #555;
-    width: 180px;
+    width: 180px !important;
     text-align: left;
 }
 
@@ -1009,6 +1009,7 @@ input.swAdminButton2
 .swMntSetField textarea
 {
     font-size: 10pt;
+    width: auto !important;
 }
 
 .swMntHelpLink

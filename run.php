@@ -1,7 +1,7 @@
 <?php
 /*
  Reportico - PHP Reporting Tool
- Copyright (C) 2010-2013 Peter Deed
+ Copyright (C) 2010-2014 Peter Deed
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -20,16 +20,13 @@
  * File:        run.php
  *
  * Reportico runner script
- * !!! Note this script will run reports in FULL design mode
- * !!! This means that users of the reports will be able to 
- * !!! modify reports and save those modifications
  *
  * @link http://www.reportico.org/
- * @copyright 2010-2013 Peter Deed
+ * @copyright 2010-2014 Peter Deed
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- * @version $Id: run.php,v 1.19 2014/05/06 19:57:19 peter Exp $
+ * @version $Id: run.php,v 1.25 2014/05/17 15:12:31 peter Exp $
  */
 
     // set error reporting level
@@ -55,7 +52,7 @@
 	$q = new reportico();
 
     // In design mode, allow sql debugging
-	$q->allow_debug = true;
+	//$q->allow_debug = true;
 
     // Specify any URL parameters that should be added into any links generated in Reportico.
     // Useful when embedding in another application or frameworks where requests need to be channelled
@@ -64,7 +61,7 @@
 
     // Reportico Ajax mode. If set to true will run all reportico requests from buttons and links
     // through AJAX, meaning reportico will refresh in its own window and not refresh the whole page
-    $q->reportico_ajax_mode = true;
+    //$q->reportico_ajax_mode = true;
 
     /*
     ** Initial execution states .. allows you to start user and limit user to specfic
@@ -102,7 +99,7 @@
     // Set default output style - TABLE = one row per record, FORM = one page per record
     //$q->initial_output_style = "TABLE";
 
-    // Set source SQL to generate report from 
+    // Set source SQL to generate report from, without requirement for report , requires an initial_project to be defined for connection details
     //$q->initial_sql = "SELECT column1 AS columntitle1, column2 AS columntitle2 FROM table";
 
     // Specify access mode to limit what user can do, one of :-
@@ -112,6 +109,15 @@
     // ONEREPORT - limits user to single report, crtieria entry and report execution ( requires initial project/report )
     // REPORTOUTPUT - executes a report and allows to "Return" button to crtieria entry ( requires initial project/report )
     //$q->access_mode = "<MODE>";
+
+    // Generate report definition from SQL  and set some column / report attributes
+    // Also the full report definition can be built up programmatically
+    // which requires further doicumentation
+    //$q->importSQL("SELECT column1 AS columntitle1, column2 AS columntitle2 FROM table");
+    //$q->get_column("column1")->set_attribute("column_display","hide");
+    //$q->get_column("column1")->set_attribute("column_title","Custom Title");
+    //$q->set_attribute("ReportTitle","New Report Title");
+
 
     // Default initial execute mode to single report output if REPORTOUTPUT mode specified
     if ( $q->access_mode == "REPORTOUTPUT" )
@@ -130,15 +136,15 @@
     //$q->show_refresh_button = false;
 
     // Set to true if you are embedding in another report
-    $q->embedded_report = false;
+    //$q->embedded_report = false;
 
     // Specify an alternative AJAX runner from the stanfdard run.php
     //$q=>reportico_ajax_script_url = $_SERVER["SCRIPT_NAME"];
 
 
     // If you want to connect to a reporting database whose connection information is available in the calling
-    // script, then you should configure your project connection type to "framework" and then you can pass your
-    // connection info here
+    // script, then you should configure your project connection type to "framework" using the configure project link
+    //and then you can pass your connection info here
     //define('SW_FRAMEWORK_DB_DRIVER','pdo_mysql');
     //define('SW_FRAMEWORK_DB_USER', '<USER>');
     //define('SW_FRAMEWORK_DB_PASSWORD','PASSWORD');
@@ -150,32 +156,89 @@
     //$q->user_parameters["your_parameter_name"] = "your parameter value";
 
     // Jquery already included?
-    $q->jquery_preloaded = false;
+    //$q->jquery_preloaded = false;
 
     // Bootstrap Features
-    $q->bootstrap_styles = true;
-    $q->path_to_bootstrap = "DEFAULT";
-    $q->bootstrap_preloaded = false;
+    // Set bootstrap_styles to false for reportico classic styles, or "3" for bootstrap 3 look and feel and 2 for bootstrap 2
+    // If you are embedding reportico and you have already loaded bootstrap then set bootstrap_preloaded equals true so reportico
+    // doestnt load it again.
+    //$q->bootstrap_styles = "3";
+    //$q->bootstrap_preloaded = false;
 
     // Engine to use for charts .. 
     // HTML reports can use javascript charting, PDF reports must use PCHART
-    $q->charting_engine = "PCHART";
-    $q->charting_engine_html = "NVD3";
+    //$q->charting_engine = "PCHART";
+    //$q->charting_engine_html = "NVD3";
 
     // Whether to turn on dynamic grids to provide searchable/sortable reports
-    //$q->dynamic_grids = true;
-    //$q->dynamic_grids_sortable = true;
-    //$q->dynamic_grids_searchable = true;
-    //$q->dynamic_grids_paging = true;
-    //$q->dynamic_grids_page_size = 10;
+    // $q->dynamic_grids = true;
+    // $q->dynamic_grids_sortable = true;
+    // $q->dynamic_grids_searchable = true;
+    // $q->dynamic_grids_paging = false;
+    // $q->dynamic_grids_page_size = 10;
 
-    // Generate report definition from SQL  and set some column / report attributes
-    // Also the full report definition can be built up programmatically
-    // which requires further doicumentation
-    //$q->importSQL(""SELECT column1 AS columntitle1, column2 AS columntitle2 FROM table";
-    //$q->get_column("column1")->set_attribute("column_display","hide");
-    //$q->get_column("column1")->set_attribute("column_title","Custom Title");
-    //$q->set_attribute("ReportTitle","New Report Title");
+    // Show or hide various report elements
+    //$q->output_template_parameters["show_hide_navigation_menu"] = "show";
+    //$q->output_template_parameters["show_hide_dropdown_menu"] = "show";
+    //$q->output_template_parameters["show_hide_report_output_title"] = "show";
+    //$q->output_template_parameters["show_hide_prepare_section_boxes"] = "show";
+    //$q->output_template_parameters["show_hide_prepare_pdf_button"] = "show";
+    //$q->output_template_parameters["show_hide_prepare_html_button"] = "show";
+    //$q->output_template_parameters["show_hide_prepare_print_html_button"] = "show";
+    //$q->output_template_parameters["show_hide_prepare_csv_button"] = "show";
+    //$q->output_template_parameters["show_hide_prepare_page_style"] = "show";
+
+    // Static Menu definition
+    // ======================
+    // identifies the items that will show in the middle of the project menu page.
+    // If not set will use the project level menu definitions in project/projectname/menu.php
+    // To have no static menu ( for example if you just want to use a drop down then set to empty array )
+    // To define a static menu, follow the example here.
+    // report can be a valid report file ( without the xml suffix ).
+    // If title is left as AUTO then the title will be taken form the report definition
+    // Use title of BLANKLINE to separate items and LINE to draw a horizontal line separator
+
+    //$q->static_menu = array (
+	    //array ( "report" => "an_xml_reportfile1", "title" => "<AUTO>" ),
+	    //array ( "report" => "another_reportfile", "title" => "<AUTO>" ),
+	    //array ( "report" => "", "title" => "BLANKLINE" ),
+	    //array ( "report" => "anotherfreportfile", "title" => "Custom Title" ),
+	    //array ( "report" => "", "title" => "BLANKLINE" ),
+	    //array ( "report" => "andanother", "title" => "Another Custom Title" ),
+	//);
+
+    // To auto generate a static menu from all the xml report files in the project use
+    //$q->static_menu = array ( array ( "report" => ".*\.xml", "title" => "<AUTO>" ) );
+    
+    // To hide the static report menu
+    //$q->static_menu = array ();
+
+    // Dropdown Menu definition
+    // ========================
+    // Menu items for the drop down menu
+    // Enter definition for the the dropdown menu options across the top of the page
+    // Each array element represents a dropdown menu across the page and sub array items for each drop down
+    // You must specifiy a project folder for each project entry and the reportfile definitions must point to a valid xml report file
+    // within the specified project
+    //$q->dropdown_menu = array(
+    //                array ( 
+    //                    "project" => "projectname",
+    //                    "title" => "dropdown menu 1 title",
+    //                    "items" => array (
+    //                        array ( "reportfile" => "report" ),
+    //                        array ( "reportfile" => "anotherreport" ),
+    //                        )
+    //                    ),
+    //                array ( 
+    //                    "project" => "projectname",
+    //                    "title" => "dropdown menu 2 title",
+    //                    "items" => array (
+    //                        array ( "reportfile" => "report" ),
+    //                        array ( "reportfile" => "anotherreport" ),
+    //                        )
+    //                    ),
+    //            );
+
 
     // Run the report
 	$q->execute();
