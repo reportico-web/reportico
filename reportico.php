@@ -30,7 +30,7 @@
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- * @version $Id: reportico.php,v 1.48 2013/07/30 21:12:28 peter Exp $
+ * @version $Id: reportico.php,v 1.48.2.2 2014/05/24 12:37:36 peter Exp $
  */
 
 // Include files
@@ -351,6 +351,9 @@ class reportico extends reportico_object
 	var $targets = array();
 	var $assignment = array();
 	var $criteria_links = array();
+
+    // Admin or normal login
+    var $login_type = "NORMAL";
 
     // Output control 
     var $output_skipline = false;
@@ -1739,6 +1742,9 @@ class reportico extends reportico_object
 				set_reportico_session_param('admin_password',"1");
 				$loggedon = true;
 			}
+            $this->login_type = $loggedon;
+            if ( !$this->login_type )
+                $this->login_type = "NORMAL";
 			return $loggedon;
 		}
 
@@ -1806,6 +1812,9 @@ class reportico extends reportico_object
 			}
 		}
 
+        $this->login_type = $loggedon;
+        if ( !$this->login_type )
+            $this->login_type = "NORMAL";
 		return $loggedon;
 	}
 
@@ -2769,7 +2778,7 @@ class reportico extends reportico_object
 		$smarty->compile_dir = find_best_location_in_include_path( "templates_c" );
 
 		$dummy="";
-		$version = "\$Name: reportico-3_2 $";
+		$version = "\$Name: reportico-3_3 $";
 		$version = preg_replace("/.*reportico-/", "", $version);
 		$version = preg_replace("/ \\$/", "", $version);
 		$version = preg_replace("/_/", ".", $version);
@@ -2831,6 +2840,7 @@ class reportico extends reportico_object
 		$smarty->assign('SHOW_OUTPUT', false);
 		$smarty->assign('SHOW_DESIGN_BUTTON', false);
 		$smarty->assign('SHOW_ADMIN_BUTTON', true);
+	    $smarty->assign('PROJ_PASSWORD_ERROR', "");
         $smarty->assign('SHOW_PROJECT_MENU_BUTTON', true);
         if ( $this->access_mode && ( $this->access_mode != "DEMO" && $this->access_mode != "FULL" && $this->access_mode != "ALLPROJECTS" && $this->access_mode != "ONEPROJECT" )  )
         {
@@ -3041,7 +3051,7 @@ class reportico extends reportico_object
 
 		{
 			set_reportico_session_param("loggedin",true);
-			if ( $login_type = $this->login_check($smarty) )
+			if ( $this->login_check($smarty) )
 			{
 				// User has supplied details ( user and password ), so assume that login box should
 				// not occur ( user details
@@ -3052,7 +3062,7 @@ class reportico extends reportico_object
 				$this->panels["USERINFO"]->set_visibility(true);
 				$this->panels["FORM"]->set_visibility(true);
 
-				if ( $login_type == "DESIGN" )
+				if ( $this->login_type == "DESIGN" )
 				{
 					$this->panels["RUNMODE"]->set_visibility(true);
 				}
@@ -3061,7 +3071,7 @@ class reportico extends reportico_object
 				$smarty->assign('SHOW_REPORT_MENU', true);
 
 				// Only show a logout button if a password is in effect
-				if ( $login_type == "DESIGN" || $login_type == "ADMIN" || ( defined ('SW_PROJECT_PASSWORD') && SW_PROJECT_PASSWORD != '' ) )
+				if ( $this->login_type == "DESIGN" || $this->login_type == "ADMIN" || ( defined ('SW_PROJECT_PASSWORD') && SW_PROJECT_PASSWORD != '' ) )
 					$smarty->assign('SHOW_LOGOUT', true);
 
                 // Dont show logout button in ALLPROJECTS, ONE PROJECT
@@ -3246,6 +3256,32 @@ class reportico extends reportico_object
 			//$this->user_template =  $_REQUEST["template"];
 			//set_reportico_session_param("template",$this->user_template);
 		//}
+
+        if ( $this->xmlinput && !preg_match ("/\.xml$/", $this->xmlinput) )
+        {
+            $this->xmlinput .= ".xml";
+        }
+
+        if ( ( $this->xmlinput && $mode == "PREPARE" || $mode == "EXECUTE" ) && ( $this->login_type == "NORMAL" ) && ( $this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml" || $this->xmlinput == "createproject.xml") )
+        {
+			unset_reportico_session_param("xmlin");
+            $this->xmlinput = "unknown.xml";
+            $this->xmlin = "unknown.xml";
+            $_REQUEST["xmlin"] = "unknown.xml";
+            trigger_error( "Can't find report" );
+            return;
+        }
+
+        if ( $this->xmlinput && !preg_match ("/^[A-Za-z0-9]/", $this->xmlinput) )
+        {
+			unset_reportico_session_param("xmlin");
+            $this->xmlinput = "unknown.xml";
+            $this->xmlin = "unknown.xml";
+            $_REQUEST["xmlin"] = "unknown.xml";
+            trigger_error( "Can't find report" );
+            return;
+        }
+
 
 
 		// Now work out out file...
@@ -3593,8 +3629,8 @@ class reportico extends reportico_object
 
 			case "PREPARE":
 				load_mode_language_pack("languages", $this->output_charset);
-				$this->handle_xml_query_input($mode);
 				$this->initialize_panels($mode);
+				$this->handle_xml_query_input($mode);
 				$this->set_request_columns();
 
                 global $g_translations;
@@ -3630,8 +3666,8 @@ class reportico extends reportico_object
 			
 			case "EXECUTE":
 				load_mode_language_pack("languages", $this->output_charset);
-				$this->handle_xml_query_input($mode);
 				$this->initialize_panels($mode);
+				$this->handle_xml_query_input($mode);
 				$g_code_area = "Main Query";
 				$this->build_query(false, "");
 				$g_code_area = false;
@@ -3843,7 +3879,7 @@ class reportico extends reportico_object
 	    load_mode_language_pack("languages", $this->output_charset);
 	    load_mode_language_pack("admin", $this->output_charset);
         localise_template_strings($this->panels["MAIN"]->smarty);
-		
+
 		global $g_projpath;
 		if ( $g_menu && is_array($g_menu) )
 		{
@@ -6709,7 +6745,7 @@ class reportico_assignment extends reportico_object
         if ( $g_external_param1 ) $in_string = preg_replace ("/{EXTERNAL_PARAM1}/", "'".$g_external_param1."'", $in_string);
         if ( $g_external_param2 ) $in_string = preg_replace ("/{EXTERNAL_PARAM2}/", "'".$g_external_param2."'", $in_string);
         if ( $g_external_param3 ) $in_string = preg_replace ("/{EXTERNAL_PARAM3}/", "'".$g_external_param3."'", $in_string);
-        if ( $g_external_user ) $in_string = preg_replace ("/{FRAMEWORK_USER}/", "'".$g_external_param3."'", $in_string);
+        if ( $g_external_user ) $in_string = preg_replace ("/{FRAMEWORK_USER}/", "'".$g_external_user."'", $in_string);
         if ( $g_external_param1 ) $in_string = preg_replace ("/{USER_PARAM,[^}*]}/", "'".$g_external_param1."'", $in_string);
 
         // Replace External parameters specified by {USER_PARAM,xxxxx}

@@ -30,7 +30,7 @@
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- * @version $Id: swpanel.php,v 1.32 2013/07/28 12:04:54 peter Exp $
+ * @version $Id: swpanel.php,v 1.32.2.1 2014/05/24 12:33:55 peter Exp $
  */
 
 
@@ -931,11 +931,11 @@ class reportico_xml_reader
 		{
 			if ( $filename )
 			{
-				global $g_project;
+                global $g_project;
                 if ( $this->query )
                 {
-			        $readfile = $this->query->reports_path."/".$filename;
-			        $adminfile = $this->query->admin_path."/".$filename;
+                    $readfile = $this->query->reports_path."/".$filename;
+                    $adminfile = $this->query->admin_path."/".$filename;
                 }
                 else
                 {
@@ -943,13 +943,22 @@ class reportico_xml_reader
                     $adminfile = false;
                 }
 
-				if ( !is_file($readfile) )
-				{
-					find_file_to_include($readfile, $readfile);
-				}
-				if ( is_file ( $readfile )  )
+                if ( $query )
+                if ( $query->login_type != "ADMIN" && $query->login_type != "DESIGN" )
                 {
-					$readfile = $readfile;
+                    if ( $g_project == "admin" )
+                        $readfile = false;
+                    $adminfile = false;
+                }
+
+                if ( $readfile && !is_file($readfile) )
+                {
+                    find_file_to_include($readfile, $readfile);
+                }
+
+                if ( $readfile && is_file ( $readfile )  )
+                {
+                    $readfile = $readfile;
                 }
 				else 
 				{
@@ -4414,23 +4423,12 @@ class reportico_xml_reader
 			// Set DataSource
 			foreach ( $cogquery["Datasource"] as $att => $val )
 			{
-				if ( $att == "SourceType" )
-					$this->query->source_type = $val;
+				//if ( $att == "SourceType" )
+					//$this->query->source_type = $val;
 
 				if ( $att == "SourceConnection" )
 				{
-					$ar =& $val;
-					$dt = $val["DatabaseType"];
-					$dt = "";
-					// Is this correct?
-					$dn = $val["DatabaseName"];
-					$hn = $val["HostName"];
-					$sn = $val["ServiceName"];
-					$un = $val["UserName"];
-					$pw = $val["Password"];
-					$ds = new reportico_datasource($dt, $hn, $sn );
-					$ds->set_database($dn);
-					$this->query->set_datasource($ds);
+                    // No longer relevant - connections are not supplied in xml files
 				}
 			}
 
