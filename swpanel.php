@@ -71,6 +71,9 @@ class reportico_panel
 
 	function set_menu_item($in_program, $in_text)
 	{
+        // Dont specify xml extensions in menu options
+        $in_program = preg_replace("/\.xml\$/", "", $in_program);
+
 		$this->program = $in_program;
 		$this->text = $in_text;
 

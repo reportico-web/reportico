@@ -3482,7 +3482,7 @@ class reportico extends reportico_object
             $this->xmlinput = "unknown.xml";
             $this->xmlin = "unknown.xml";
             $_REQUEST["xmlin"] = "unknown.xml";
-            trigger_error( "Unknown report format" );
+            trigger_error( "Can't find report" );
             return;
         }
 
