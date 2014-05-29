@@ -102,6 +102,9 @@
     // Set source SQL to generate report from, without requirement for report , requires an initial_project to be defined for connection details
     //$q->initial_sql = "SELECT column1 AS columntitle1, column2 AS columntitle2 FROM table";
 
+    // Set Report Title  when running reort from an SQL statement above
+    // $q->set_attribute("ReportTitle", "Report Title");
+
     // Specify access mode to limit what user can do, one of :-
     // FULL - the default, allows user to log in under admin/design mode and design reports
     // ALLPROJECTS - allows entry to admin page to select project  but no ability to logon in admin/designer mode
