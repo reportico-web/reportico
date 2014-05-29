@@ -109,6 +109,11 @@ reportico_jquery(document).ready(function()
 */
 reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenuItemLink, .swPrpSubmit, .swLinkMenu, .swLinkMenu2, .reporticoSubmit', function(event) 
 {
+    if ( reportico_jquery(this).hasClass("swNoSubmit" )  )
+    {
+        return false;
+    }
+
     if ( reportico_jquery(this).parent().hasClass("swRepPrintBox" )  )
     {
         //var data = reportico_jquery(this).closest("#reportico_container").html();

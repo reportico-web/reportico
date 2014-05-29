@@ -538,6 +538,7 @@ a:visited
     border-width: 1px;
     border-color : #000000;
     background-color : inherit;
+    text-align: left;
 }
 
 /* Container for Group Headers  */
@@ -659,12 +660,12 @@ a:visited
     float: left;
 }
 
-.swHTMLBox { background-image: url(../images/printhtml.png); }
-.swCSVBox { background-image: url(../images/printcsv.png); }
-.swPDFBox { background-image: url(../images/printpdf.png); }
-.swJSONBox { background-image: url(../images/printjson.png); }
-.swXMLBox { background-image: url(../images/printxml.png); }
-.swPrintBox { background-image: url(../images/printablehtml.png); }
+.swHTMLBox { background-image: url(../images/printhtml.png) !important; }
+.swCSVBox { background-image: url(../images/printcsv.png) !important; }
+.swPDFBox { background-image: url(../images/printpdf.png) !important; }
+.swJSONBox { background-image: url(../images/printjson.png) !important; }
+.swXMLBox { background-image: url(../images/printxml.png) !important; }
+.swPrintBox { background-image: url(../images/printablehtml.png) !important; }
 
 .swRepRefreshBox,
 .swRepPrintBox,

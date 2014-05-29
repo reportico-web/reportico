@@ -141,7 +141,7 @@
             </button>
 {if $SHOW_HIDE_DROPDOWN_MENU == "show" && $DROPDOWN_MENU_ITEMS}
 {if $BOOTSTRAP_STYLES == "2" }
-            <a href="#" class="brand">{$MENU_TITLE} :</a>
+            <a href="#" class="brand" style="float: left">{$MENU_TITLE} :</a>
 {else}
             <a href="#" class="navbar-brand">{$MENU_TITLE} :</a>
 {/if}

@@ -54,9 +54,9 @@ function set_up_reportico_session()
 	$session_name = session_id();
 
 	// Check for Posted Session Name and use that if specified
-    if (isset($_REQUEST['session_name'])) 
+    if (isset($_REQUEST['reportico_session_name'])) 
     {
-    		$session_name = $_REQUEST['session_name'];
+    		$session_name = $_REQUEST['reportico_session_name'];
             if ( preg_match("/_/", $session_name ) )
             {
 	            $ar = explode("_", $session_name);

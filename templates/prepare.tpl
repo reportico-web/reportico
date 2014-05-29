@@ -150,7 +150,7 @@
             </button>
 {if $SHOW_HIDE_DROPDOWN_MENU == "show" && $DROPDOWN_MENU_ITEMS}
 {if $BOOTSTRAP_STYLES == "2" }
-            <a href="#" class="brand">{$MENU_TITLE} :</a>
+            <a href="#" class="brand" style="float: left">{$MENU_TITLE} :</a>
 {else}
             <a href="#" class="navbar-brand">{$MENU_TITLE} :</a>
 {/if}
@@ -181,6 +181,7 @@
 {else}
             <ul style="display:none" class= "nav navbar-nav pull-right navbar-right">
 {/if}
+                <li> <input type="submit" style="width: 0px; color: transparent; background-color: transparent; border-color: transparent; cursor: default;" class="prepareAjaxExecute" id="prepareAjaxExecute" name="submitPrepare" value=""> </li>
 {if $SHOW_TOPMENU}
 {if ($SHOW_DESIGN_BUTTON)}
                 <li><input class="span {$BOOTSTRAP_STYLE_ADMIN_BUTTON}swAdminButton2" type="submit" name="submit_design_mode" value="{$T_DESIGN_REPORT}"></li>
@@ -263,6 +264,7 @@
 {/if}
 		<TR>
 			<TD style="width: 50%; text-align:left">
+    				<input type="submit" style="width: 0px; color: transparent; background-color: transparent; border-color: transparent; cursor: default;" class="prepareAjaxExecute swHTMLGoBox" id="prepareAjaxExecute" name="submitPrepare" value="{$T_GO}">
 {if ($SHOW_ADMIN_BUTTON)}
 {if strlen($ADMIN_MENU_URL)>0} 
                 <a class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swLinkMenu" href="{$ADMIN_MENU_URL}">{$T_ADMIN_MENU}</a>

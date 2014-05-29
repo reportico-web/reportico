@@ -151,6 +151,7 @@ Logged On As {$DBUSER}
 {/if}
 				&nbsp;<a class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swLinkMenu" href="{$RUN_REPORT_URL}">{$T_RUN_REPORT}</a>
 				&nbsp;<input class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swLinkMenu" type="submit" name="submit_prepare_mode" style="display:none" onclick="return(false);" value="Do nothing on enter">
+                <input class="swMntButton reporticoSubmit swNoSubmit" style="width: 0px; color: transparent; background-color: transparent; border-color: transparent; cursor: default;" type="submit" name="submit_dummy_SET" value="Ok">
 			</TD>
 {/if}
 {if $SHOW_MODE_MAINTAIN_BOX && 0}

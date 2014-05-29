@@ -3133,12 +3133,12 @@ class reportico extends reportico_object
 
 		// Store any menu page URL, in ajax mode links go through the general ajax link, otherwise go through calling script
         $calling_script = $this->get_action_url();
-		$this->prepare_url =  $calling_script."?execute_mode=PREPARE&amp;session_name=".reportico_session_name();
-		$this->menu_url =  $calling_script."?execute_mode=MENU&amp;session_name=".reportico_session_name();
-		$this->admin_menu_url =  $calling_script."?project=admin&amp;execute_mode=MENU&amp;session_name=".reportico_session_name();
-		$this->configure_project_url =  $calling_script."?execute_mode=PREPARE&amp;xmlin=configureproject.xml&amp;session_name=".reportico_session_name();
-		$this->delete_project_url =  $calling_script."?execute_mode=PREPARE&amp;xmlin=deleteproject.xml&amp;session_name=".reportico_session_name();
-		$this->create_report_url =  $calling_script."?execute_mode=MAINTAIN&amp;xmlin=&amp;session_name=".reportico_session_name();
+		$this->prepare_url =  $calling_script."?execute_mode=PREPARE&amp;reportico_session_name=".reportico_session_name();
+		$this->menu_url =  $calling_script."?execute_mode=MENU&amp;reportico_session_name=".reportico_session_name();
+		$this->admin_menu_url =  $calling_script."?project=admin&amp;execute_mode=MENU&amp;reportico_session_name=".reportico_session_name();
+		$this->configure_project_url =  $calling_script."?execute_mode=PREPARE&amp;xmlin=configureproject.xml&amp;reportico_session_name=".reportico_session_name();
+		$this->delete_project_url =  $calling_script."?execute_mode=PREPARE&amp;xmlin=deleteproject.xml&amp;reportico_session_name=".reportico_session_name();
+		$this->create_report_url =  $calling_script."?execute_mode=MAINTAIN&amp;xmlin=&amp;reportico_session_name=".reportico_session_name();
 
 		if ( $forward_url_params )
 		{
@@ -3624,6 +3624,8 @@ class reportico extends reportico_object
         register_session_param("external_param2", $this->external_param2);
         register_session_param("external_param3", $this->external_param3);
 
+        $this->user_parameters = register_session_param("user_parameters", $this->user_parameters);
+        $this->dropdown_menu = register_session_param("dropdown_menu", $this->dropdown_menu);
         $this->dropdown_menu = register_session_param("dropdown_menu", $this->dropdown_menu);
         $this->static_menu = register_session_param("static_menu", $this->static_menu);
         $this->charting_engine = register_session_param("charting_engine", $this->charting_engine);
@@ -5122,7 +5124,7 @@ class reportico extends reportico_object
         	$forward_url_params = session_request_item('forward_url_get_parameters', $this->forward_url_get_parameters);
         if ( $forward_url_params )
             $params .= "&".$forward_url_params;
-        $params .= "&session_name=".reportico_session_name();
+        $params .= "&reportico_session_name=".reportico_session_name();
 
 		$result = '<img width="'.$width.'" src=\''.$imagegetpath.'?'.$params.'&reportico_call_mode=dbimage&imagesql='.$imagesql.'\'>';
 
