@@ -3623,7 +3623,11 @@ class reportico extends reportico_object
         register_session_param("external_param1", $this->external_param1);
         register_session_param("external_param2", $this->external_param2);
         register_session_param("external_param3", $this->external_param3);
+
+        $this->dropdown_menu = register_session_param("dropdown_menu", $this->dropdown_menu);
+        $this->static_menu = register_session_param("static_menu", $this->static_menu);
         $this->charting_engine = register_session_param("charting_engine", $this->charting_engine);
+        $this->output_template_parameters = register_session_param("output_template_parameters", $this->output_template_parameters);
 
         $this->dynamic_grids = register_session_param("dynamic_grids", $this->dynamic_grids);
         $this->dynamic_grids_sortable = register_session_param("dynamic_grids_sortable", $this->dynamic_grids_sortable);
