@@ -138,6 +138,9 @@
     // Set to true if you are embedding in another report
     //$q->embedded_report = false;
 
+    // Set to true if you want to clear the report session whenever you call this script
+    // $q->clear_reportico_session = true;
+
     // Specify an alternative AJAX runner from the stanfdard run.php
     //$q=>reportico_ajax_script_url = $_SERVER["SCRIPT_NAME"];
 

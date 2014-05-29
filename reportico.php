@@ -3626,7 +3626,6 @@ class reportico extends reportico_object
 
         $this->user_parameters = register_session_param("user_parameters", $this->user_parameters);
         $this->dropdown_menu = register_session_param("dropdown_menu", $this->dropdown_menu);
-        $this->dropdown_menu = register_session_param("dropdown_menu", $this->dropdown_menu);
         $this->static_menu = register_session_param("static_menu", $this->static_menu);
         $this->charting_engine = register_session_param("charting_engine", $this->charting_engine);
         $this->output_template_parameters = register_session_param("output_template_parameters", $this->output_template_parameters);

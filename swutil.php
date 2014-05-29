@@ -1486,7 +1486,7 @@ function unset_reportico_session_param($param)
 */
 function register_session_param($param, $value)
 {
-        if ( $value && !isset_reportico_session_param($param) )
+        if ( !isset_reportico_session_param($param) )
             set_reportico_session_param($param, $value );
 
         return get_reportico_session_param($param);
