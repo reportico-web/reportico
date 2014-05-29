@@ -6737,10 +6737,10 @@ class reportico_assignment extends reportico_object
         $external_user = get_reportico_session_param("external_user");
         $user_parameters = get_reportico_session_param("user_parameters");        
 
-        if ( $g_external_param1 ) $in_string = preg_replace ("/{EXTERNAL_PARAM1}/", "'".$g_external_param1."'", $in_string);
-        if ( $g_external_param2 ) $in_string = preg_replace ("/{EXTERNAL_PARAM2}/", "'".$g_external_param2."'", $in_string);
-        if ( $g_external_param3 ) $in_string = preg_replace ("/{EXTERNAL_PARAM3}/", "'".$g_external_param3."'", $in_string);
-        if ( $g_external_user ) $in_string = preg_replace ("/{FRAMEWORK_USER}/", "'".$g_external_user."'", $in_string);
+        if ( $external_param1 ) $in_string = preg_replace ("/{EXTERNAL_PARAM1}/", "'".$external_param1."'", $in_string);
+        if ( $external_param2 ) $in_string = preg_replace ("/{EXTERNAL_PARAM2}/", "'".$external_param2."'", $in_string);
+        if ( $external_param3 ) $in_string = preg_replace ("/{EXTERNAL_PARAM3}/", "'".$external_param3."'", $in_string);
+        if ( $external_user ) $in_string = preg_replace ("/{FRAMEWORK_USER}/", "'".$external_user."'", $in_string);
 
         // Replace External parameters specified by {USER_PARAM,xxxxx}
 		if ( preg_match_all ( "/{USER_PARAM,([^}]*)}/", $in_string, $matches ) )
