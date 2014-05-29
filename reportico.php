@@ -3396,15 +3396,12 @@ class reportico extends reportico_object
         // Fetch project config
 		set_project_environment($this->initial_project);
 
-        // Set globally parameters set from application framework
-        global $g_external_param1;
-        global $g_external_param2;
-        global $g_external_param3;
-        global $g_external_user;
-        $g_external_param1 = $this->external_param1;
-        $g_external_param2 = $this->external_param2;
-        $g_external_param3 = $this->external_param3;
-        $g_external_user = $this->external_user;
+        // Set external parameters from session
+        register_session_param("user_parameters", $this->user_parameters);
+        register_session_param("external_user", $this->external_user);
+        register_session_param("external_param1", $this->external_param1);
+        register_session_param("external_param2", $this->external_param2);
+        register_session_param("external_param3", $this->external_param3);
 
         // We are in AJAX mode if it is passed throuh
         if ( isset($_REQUEST["reportico_ajax_called"]) )
@@ -6733,20 +6730,17 @@ class reportico_assignment extends reportico_object
 	// -----------------------------------------------------------------------------
 	static function reportico_meta_sql_criteria(&$in_query, $in_string, $prev_col_value = false)
 	{
-        // To allow reports to return data related to user, the
-        // reportico_user session variable maintains
-        // a current user id which can be used as part of select
-        // statement. Just include {SESSION["reportico"]_USER} in queries and it will be
-        // replaced by a quote encased user.
-        global $g_external_param1;
-        global $g_external_param2;
-        global $g_external_param3;
-        global $g_external_user;
+        // Replace user parameters with values
+        $external_param1 = get_reportico_session_param("external_param1");
+        $external_param2 = get_reportico_session_param("external_param2");
+        $external_param3 = get_reportico_session_param("external_param3");
+        $external_user = get_reportico_session_param("external_user");
+        $user_parameters = get_reportico_session_param("user_parameters");        
+
         if ( $g_external_param1 ) $in_string = preg_replace ("/{EXTERNAL_PARAM1}/", "'".$g_external_param1."'", $in_string);
         if ( $g_external_param2 ) $in_string = preg_replace ("/{EXTERNAL_PARAM2}/", "'".$g_external_param2."'", $in_string);
         if ( $g_external_param3 ) $in_string = preg_replace ("/{EXTERNAL_PARAM3}/", "'".$g_external_param3."'", $in_string);
         if ( $g_external_user ) $in_string = preg_replace ("/{FRAMEWORK_USER}/", "'".$g_external_user."'", $in_string);
-        if ( $g_external_param1 ) $in_string = preg_replace ("/{USER_PARAM,[^}*]}/", "'".$g_external_param1."'", $in_string);
 
         // Replace External parameters specified by {USER_PARAM,xxxxx}
 		if ( preg_match_all ( "/{USER_PARAM,([^}]*)}/", $in_string, $matches ) )

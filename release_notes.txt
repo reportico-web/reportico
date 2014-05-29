@@ -1,6 +1,12 @@
 Reportico Open Source PHP Report Designer
 =========================================
 
+3.3 - 24th May 2013
+-------------------
+Security Fixes
+Fix passing through of external user
+Persist external parameters through reportico session
+
 3.2.Beta - 24th July 2013
 -------------------------
 Printable HTML button

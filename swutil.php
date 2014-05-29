@@ -1478,4 +1478,18 @@ function initialize_reportico_namespace($namespace)
 			$_SESSION[$namespace]["awaiting_initial_defaults"] = true;
 			$_SESSION[$namespace]["firsttimeIn"] = true;
 }
+
+/*
+ * Ensure a session variable persists
+ *
+ */
+function register_session_param($param, $value)
+{
+        if ( $value && !isset_reportico_session_param($param) )
+            set_reportico_session_param($param, $value );
+
+        return get_reportico_session_param($param);
+}
+
+
 ?>
