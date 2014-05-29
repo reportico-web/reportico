@@ -818,6 +818,7 @@ function &sw_translate_report_desc($in_report)
 	global $g_language;
 	global $g_report_desc;
 
+    $in_report = preg_replace("/\.xml$/", "", $in_report);
 	$out_string = false;
 	if ( $g_report_desc )
 		if ( array_key_exists( $g_language, $g_report_desc ) )

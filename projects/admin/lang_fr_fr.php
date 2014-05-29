@@ -23,7 +23,7 @@ $g_translations = array (
 
 $g_report_desc = array ( 
     "fr_fr" => array (
-		"configureproject.xml" =>
+		"configureproject" =>
 "
 Configure une suite nouveau projet de déclaration.
 <P>
@@ -68,5 +68,5 @@ Désactivez cette option pour permettre l'accès à ces fonctions. Non disponibl
 "),
 		);
 
-$g_report_desc["fr_fr"]["createproject.xml"] = $g_report_desc["fr_fr"]["configureproject.xml"];
+$g_report_desc["fr_fr"]["createproject"] = $g_report_desc["fr_fr"]["configureproject"];
 ?>

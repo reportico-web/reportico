@@ -4,7 +4,7 @@ $g_translations = array ();
 
 $g_report_desc = array ( 
     "en_gb" => array (
-		"configureproject.xml" =>
+		"configureproject" =>
 "
 Configures a project reporting suite.
 <P>
@@ -63,5 +63,5 @@ Turn this off to enable access to these functions. Not available in during proje
 </div>"),
 		);
 
-$g_report_desc["en_gb"]["createproject.xml"] = $g_report_desc["en_gb"]["configureproject.xml"];
+$g_report_desc["en_gb"]["createproject"] = $g_report_desc["en_gb"]["configureproject"];
 ?>

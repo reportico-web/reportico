@@ -23,7 +23,7 @@ $g_translations = array (
 
 $g_report_desc = array ( 
     "es_es" => array (
-		"configureproject.xml" => "
+		"configureproject" => "
 Crea un conjunto de proyectos de información nueva.
 <P>
 Para crear un nuevo proyecto de suministro de la fuente de los parámetros requeridos y pulse el botón Ejecutar.
@@ -68,5 +68,5 @@ Desactive esta opción para permitir el acceso a estas funciones. No está dispo
 "),
 		);
 
-$g_report_desc["es_es"]["createproject.xml"] = $g_report_desc["es_es"]["configureproject.xml"];
+$g_report_desc["es_es"]["createproject"] = $g_report_desc["es_es"]["configureproject"];
 ?>

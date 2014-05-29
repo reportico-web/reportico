@@ -3122,7 +3122,10 @@ class reportico_xml_reader
 		                		$text .= '<TR>';
 						$text .= '<TD colspan="2">';
 						$text .= '&nbsp;&nbsp;'.template_xlate('PROJECT').$g_project.'&nbsp;&nbsp;&nbsp;&nbsp;';
-						$text .= template_xlate('REPORT_FILE').' <input type="text" name="xmlout" value="'.$this->query->xmloutfile.'">';
+                        if ( $this->query->xmloutfile == "configureproject" )
+						    $text .= template_xlate('REPORT_FILE').' <input type="text" name="xmlout" value="">';
+                        else
+						    $text .= template_xlate('REPORT_FILE').' <input type="text" name="xmlout" value="'.$this->query->xmloutfile.'">';
 						$text .= '&nbsp;&nbsp;<input class="'.$this->query->getBootstrapStyle('button_admin').'swLinkMenu reporticoSubmit" type="submit" name="submit_xxx_SAVE" value="'.template_xlate("SAVE").'">';
 						$text .= '&nbsp;&nbsp;<input class="'.$this->query->getBootstrapStyle('button_admin').'swLinkMenu reporticoSubmit" type="submit" name="submit_maintain_NEW" value="'.template_xlate("NEW_REPORT").'">';
 						$text .= '<input class="'.$this->query->getBootstrapStyle('button_delete').'swLinkMenu reporticoSubmit" style="margin-left: 80px" type="submit" name="submit_xxx_DELETEREPORT" value="'.template_xlate("DELETE_REPORT").'">';
@@ -5434,8 +5437,6 @@ class reportico_xml_writer
 		if ( !preg_match("/\.xml$/", $filename) )
 		{	
 			$filename = $filename.".xml";
-			trigger_error ( template_xlate("UNABLE_TO_REMOVE").template_xlate("SPECIFYXML"), E_USER_ERROR );
-			return false;
 		}
 
 		$projdir = "projects/".$g_project;
@@ -5478,8 +5479,6 @@ class reportico_xml_writer
 		if ( !preg_match("/\.xml$/", $filename) )
 		{	
 			$filename = $filename.".xml";
-			trigger_error ( template_xlate("UNABLE_TO_SAVE").template_xlate("SPECIFYXML"), E_USER_ERROR );
-			return false;
 		}
 
 		$projdir = "projects/".$g_project;

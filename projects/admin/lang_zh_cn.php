@@ -23,7 +23,7 @@ $g_translations = array (
 
 $g_report_desc = array ( 
     "zh_cn" => array (
-		"configureproject.xml" => "
+		"configureproject" => "
 配置项目申报套件。
 <P>
 要创建一个新的项目，提供供应所需的参数，并按下
@@ -86,5 +86,5 @@ oo
 " )
 		);
 
-$g_report_desc["zh_cn"]["createproject.xml"] = $g_report_desc["zh_cn"]["configureproject.xml"];
+$g_report_desc["zh_cn"]["createproject"] = $g_report_desc["zh_cn"]["configureproject"];
 ?>
