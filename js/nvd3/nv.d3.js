@@ -8010,7 +8010,7 @@ nv.models.multiBarChart = function() {
     , showXAxis = true
     , showYAxis = true
     , rightAlignYAxis = false
-    , reduceXTicks = true // if false a tick will show for every data point
+    , reduceXTicks = 50 // if false a tick will show for every data point
     , staggerLabels = false
     , rotateLabels = 0
     , tooltips = true
@@ -8256,7 +8256,7 @@ nv.models.multiBarChart = function() {
           if (reduceXTicks)
             xTicks
               .filter(function(d,i) {
-                  return i % Math.ceil(data[0].values.length / (availableWidth / 100)) !== 0;
+                  return i % Math.ceil(data[0].values.length / (availableWidth / reduceXTicks)) !== 0;
                 })
               .selectAll('text, line')
               .style('opacity', 0);

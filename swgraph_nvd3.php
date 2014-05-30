@@ -181,7 +181,7 @@ class reportico_graph
                 "name" => $in_query,
                 "type" => "LINE",
                 "fillcolor" => "",
-                "linecolor" => "black",
+                "linecolor" => "",
                 "datatype" => "number",
                 "legend" => "",
                 "data" => array()
@@ -309,55 +309,112 @@ class reportico_graph
         $js .= "<div class=\"reportico-chart-placeholder\" id=\"reportico_chart$session_placeholder\" style=\"overflow-y: none; width: 100%; height:100%\"><svg style=\"width:100%;height:100%;\"></svg></div>";
         $js .= "<script>\n";
         $js .= "var placeholder = 'reportico_chart$session_placeholder';\n";
-        $lct = 0;
+        $plotct = 0;
         $labels = "";
         foreach ( $this->plot as $k => $v )
         {
             if ( $v["legend"] )
                 continue;
-            if ( $lct > 0 )
+            if ( $plotct > 0 )
                 $labels .= ",";
             $labels .= "\"111".$v["legend"]."\"";
-            $lct++;
+            $plotct++;
         }
         $js .= "var xlabels = [$labels];\n";
         $js .= "var reportico_datasets". $session_placeholder." = [];\n";
 
 
-        $lct = 0;
+        $plotct = 0;
         $chartType = "MULTICHART";
+        
+        // Work out what combinations o type we have
+        $has_plot_types = array();
+        $showLegend = false;
         foreach ( $this->plot as $k => $v )
         {
+            //if ( $k == 0 ) $v["type"] = "BAR";
+            //if ( $k == 1 ) $v["type"] = "BAR";
+            //if ( $k == 2 ) $v["type"] = "STACKEDBAR";
+
             $label = "";
             if ( $v["legend"] )
+            {
+                $showLegend = true;
                 $label = $v["legend"];
+            }
 
             $js .= "values = [";
 
-            $lct1 = 0;
+            $plotct1 = 0;
             foreach ( $v["data"] as $k1 => $v1 )
             {
-                if ( $lct1 > 0 )
+                if ( $plotct1 > 0 )
                     $js .= ",";
                 $xlabel = $this->xlabels[$k1];
                 $key = $k1;
                 $js .= "{index: $k1, series: 0, x: $key, y: $v1, label: \"$xlabel\", value: $v1}";
-                $lct1++;
+                $plotct1++;
             }
             $js .= "];\n";
 
+            if ( $v["type"] == "OVERLAYBAR" ) $type = "bar";
+            if ( $v["type"] == "STACKEDBAR" ) $type = "bar";
             if ( $v["type"] == "BAR" ) $type = "bar";
             if ( $v["type"] == "LINE" ) $type = "line";
-            if ( $v["type"] == "PIE" || $v["type"] == "PIE3D" )
-            {
-                $type = "pie";
-                $chartType = "PIE";
-            }
-            $type = "bar";
+            if ( $v["type"] == "AREACHART" ) $type = "area";
+            if ( $v["type"] == "PIE" ) $type = "pie";
+            if ( $v["type"] == "PIE3D" ) $type = "pie";
+            $has_plot_types[$v["type"]] = true;
+            //$type = "bar";
+            //echo $v["type"]." = $type <BR>";
+
+            
             $js .= "reportico_datasets". $session_placeholder."[$k] = { type: \"$type\", yAxis: 1, key: \"$label\", originalKey: \"$label\", values: values};\n";
             //$js .= "reportico_datasets". $session_placeholder."[$k][\"type\"] = \"line\";\n";
-            $lct++;
+            $plotct++;
         }
+
+        // NVD3 - we dont support overlay bar, just use regular bar
+        if ( isset($has_plot_types["OVERLAYBAR"]) )
+        {
+            unset($has_plot_types["OVERLAYBAR"]);
+            $has_plot_types["BAR"] = true;
+        }
+
+        // With any plot specified as stacked, we will stack them all as specified in stacked variable
+        $stacked = false;
+        if ( isset($has_plot_types["STACKEDBAR"]) )
+        {
+            $stacked = true;
+            unset($has_plot_types["STACKEDBAR"]);
+            $has_plot_types["BAR"] = true;
+        }
+
+        $chartType = "MULTICHART";
+        // Decide what chart type to use. NVD3 cant mix stacked bars and lines in multichart, so if we have stacked bars only use multibar,
+        // lines only use multiline otherwise use multichart. Unless of course we have PIE chart specified in which case use PIE.
+        // 
+        if ( isset($has_plot_types["PIE"]) ||  isset($has_plot_types["PIE3D"] )  )
+        {
+            $chartType = "PIE";
+        }
+        else
+        {
+            // Chart contains only one type ( just lines, just areas, just bars so use relevant
+            // but use multiBar chart if more than one
+            if ( count($has_plot_types) == 1 )
+            {
+                foreach ( $has_plot_types as $k => $v )
+                {
+                    if ( $plotct > 1 )
+                        $chartType = "MULTI".$k;
+                    else
+                        $chartType = $k;
+                }
+            }
+        }
+
+
 
         $js .= "
     function reportico_chart_$session_placeholder() 
@@ -365,23 +422,48 @@ class reportico_graph
         var colorrange = d3.scale.category10().range();
         ";
 
-        $lct = 0;
+        if ( $this->xticklabelinterval_actual )
+        {
+            if ( $this->xticklabelinterval_actual  == "AUTO" )
+            {
+                $labct = count($this->plot[0]["data"]);
+                $this->xticklabelinterval_actual = floor ($labct / 40 ) + 1 ;
+                $js .= "labelInterval = 20;";
+            }
+            else
+                $js .= "labelInterval = $this->xticklabelinterval_actual;";
+        }
+        else
+            $js .= "labelInterval = false;";
+        
+        if ( $stacked )
+            $js .= "stacked = true;";
+        else
+            $js .= "stacked = false;";
+
+        if ( $showLegend )
+            $js .= "showLegend = true;";
+        else
+            $js .= "showLegend = false;";
+
+        $plotct = 0;
         foreach ( $this->plot as $k => $v )
         {
             if ( $v["linecolor"] )
                 $js .= "colorrange[$k] = '".$v["linecolor"]."';\n";
-            $lct++;
+            $plotct++;
         }
-        ;
 
         if ( $chartType == "PIE" )
         {
             $js .= "
             var chart".$session_placeholder." = nv.models.pieChart()
-            .margin({top: ".$this->margintop_actual.", right: ".$this->marginright_actual.", bottom: ".$this->marginbottom_actual.", left: ".$this->marginleft_actual." + 10})
+            //.margin({top: ".$this->margintop_actual.", right: ".$this->marginright_actual.", bottom: ".$this->marginbottom_actual.", left: ".$this->marginleft_actual." + 10})
+            .margin({top: 2, right: 0, bottom: 8, left: 0})
             .color(colorrange)
-                .showLabels(true)
-                .labelType(\"percent\")
+                .showLabels(!showLegend)
+                .showLegend(showLegend)
+                //.labelType(\"value\")
                 .donut(false)
                 .x(function (d) 
                 { 
@@ -396,6 +478,249 @@ class reportico_graph
     
             d3.select(\"#reportico_chart". $session_placeholder." svg\")
             .datum(reportico_datasets". $session_placeholder."[0].values)
+            .transition().duration(0)
+            .call(chart".$session_placeholder.");
+    
+            d3.selectAll(\"rect.nv-bar\")
+                .style(\"fill-opacity\", function (d, i) { //d is the data bound to the svg element
+                    return .5 ; 
+                })
+    
+            nv.utils.windowResize(chart".$session_placeholder.".update);
+            //d3.selectAll(\"nv-legend\")
+                //.style(\"display\", function (d, i) { //d is the data bound to the svg element
+                    //return \"none\" ; 
+                //});
+            ";
+
+
+            if ( $this->xgriddisplay_actual == "none" )
+                $js .= " reportico_jquery(\".x * * .tick line\").css(\"display\", \"none\"); ";
+            if ( $this->ygriddisplay_actual == "none" )
+                $js .= " reportico_jquery(\".y1 * * .tick line\").css(\"display\", \"none\"); ";
+        }
+        else
+        if ( $chartType == "DISCRETEBAR" )
+        {
+            $js .= "
+            var chart".$session_placeholder." = nv.models.discreteBarChart()
+            .margin({top: ".$this->margintop_actual.", right: ".$this->marginright_actual.", bottom: ".$this->marginbottom_actual.", left: ".$this->marginleft_actual." + 10})
+            .color(colorrange)
+            ;
+
+            chart".$session_placeholder.".xAxis
+                .axisLabel('".$this->xtitle."')
+                .rotateLabels (-25)
+                .showMaxMin(true)
+                //.staggerLabels(true)    //Too many bars and not enough room? Try staggering labels.
+                .tickFormat(function (d, i, j) 
+                { 
+                    //return d;
+                    //console.log(\"d = \" + d +  \" i = \" + i + \" j = \" + j );
+                        //return d3.format(\"%s\", d);
+                    console.log(\"d = \" + d +  \" i = \" + i + \" j = \" + j );
+                    if ( reportico_datasets". $session_placeholder."[0].values[d] )
+                    {
+                        //console.log(  'go ' + reportico_datasets". $session_placeholder."[0].values[d].label);
+                        return reportico_datasets". $session_placeholder."[0].values[d].label;
+                    }
+                    else
+                    {
+                        //console.log(  'go ' + reportico_datasets". $session_placeholder."[0].values[d].label);
+                        return i;
+                    }
+                })
+                ;
+    
+    
+            chart".$session_placeholder.".yAxis
+                .axisLabel('".$this->ytitle."')
+                .tickFormat(d3.format(',.1f'));
+
+            //chart".$session_placeholder.".yAxis2
+                //.tickFormat(d3.format(',.1f'));
+    
+            d3.select(\"#reportico_chart". $session_placeholder." svg\")
+            .datum(reportico_datasets". $session_placeholder.")
+            .transition().duration(0)
+            .call(chart".$session_placeholder.");
+    
+            d3.selectAll(\"rect.nv-bar\")
+                .style(\"fill-opacity\", function (d, i) { //d is the data bound to the svg element
+                    return .5 ; 
+                })
+    
+            nv.utils.windowResize(chart".$session_placeholder.".update);
+            ";
+
+            if ( $this->xgriddisplay_actual == "none" )
+                $js .= " reportico_jquery(\".x * * .tick line\").css(\"display\", \"none\"); ";
+            if ( $this->ygriddisplay_actual == "none" )
+                $js .= " reportico_jquery(\".y1 * * .tick line\").css(\"display\", \"none\"); ";
+        }
+        else
+        if ( $chartType == "BAR" || $chartType == "MULTIBAR" )
+        {
+            $js .= "
+            var chart".$session_placeholder." = nv.models.multiBarChart()
+            .reduceXTicks (labelInterval)
+            .stacked(stacked)
+            .margin({top: ".$this->margintop_actual.", right: ".$this->marginright_actual.", bottom: ".$this->marginbottom_actual.", left: ".$this->marginleft_actual." + 10})
+            .color(colorrange)
+            ;
+
+            chart".$session_placeholder.".xAxis
+                .axisLabel('".$this->xtitle."')
+                .rotateLabels (-20)
+                //.showMaxMin(true)
+                //.staggerLabels(true)    //Too many bars and not enough room? Try staggering labels.
+                .tickFormat(function (d, i, j) 
+                { 
+                    //return d;
+                    //console.log(\"d = \" + d +  \" i = \" + i + \" j = \" + j );
+                        //return d3.format(\"%s\", d);
+                    console.log(\"d = \" + d +  \" i = \" + i + \" j = \" + j );
+                    if ( reportico_datasets". $session_placeholder."[0].values[d] )
+                    {
+                        console.log(  'yesgo ' + reportico_datasets". $session_placeholder."[0].values[d].label);
+                        return reportico_datasets". $session_placeholder."[0].values[d].label;
+                    }
+                    else
+                    {
+                        console.log(  'nogo ' + reportico_datasets". $session_placeholder."[0].values[d].label);
+                        return i;
+                    }
+                })
+                ;
+    
+    
+            chart".$session_placeholder.".yAxis
+                .axisLabel('".$this->ytitle."')
+                .tickFormat(d3.format(',.1f'));
+
+            //chart".$session_placeholder.".yAxis2
+                //.tickFormat(d3.format(',.1f'));
+    
+            d3.select(\"#reportico_chart". $session_placeholder." svg\")
+            .datum(reportico_datasets". $session_placeholder.")
+            .transition().duration(0)
+            .call(chart".$session_placeholder.");
+    
+            d3.selectAll(\"rect.nv-bar\")
+                .style(\"fill-opacity\", function (d, i) { //d is the data bound to the svg element
+                    return .5 ; 
+                })
+    
+            nv.utils.windowResize(chart".$session_placeholder.".update);
+            ";
+
+            if ( $this->xgriddisplay_actual == "none" )
+                $js .= " reportico_jquery(\".x * * .tick line\").css(\"display\", \"none\"); ";
+            if ( $this->ygriddisplay_actual == "none" )
+                $js .= " reportico_jquery(\".y1 * * .tick line\").css(\"display\", \"none\"); ";
+        }
+        else
+        if ( $chartType == "AREACHART" || $chartType == "MULTIAREACHART" )
+        {
+            $js .= "
+            var chart".$session_placeholder." = nv.models.stackedAreaChart()
+            .margin({top: ".$this->margintop_actual.", right: ".$this->marginright_actual.", bottom: ".$this->marginbottom_actual.", left: ".$this->marginleft_actual." + 10})
+            .color(colorrange)
+            ;
+
+            chart".$session_placeholder.".xAxis
+                .axisLabel('".$this->xtitle."')
+                .rotateLabels (-25)
+                .showMaxMin(true)
+                //.staggerLabels(true)    //Too many bars and not enough room? Try staggering labels.
+                .tickFormat(function (d, i, j) 
+                { 
+                    //return d;
+                    //console.log(\"d = \" + d +  \" i = \" + i + \" j = \" + j );
+                        //return d3.format(\"%s\", d);
+                    console.log(\"d = \" + d +  \" i = \" + i + \" j = \" + j );
+                    if ( reportico_datasets". $session_placeholder."[0].values[d] )
+                    {
+                        //console.log(  'go ' + reportico_datasets". $session_placeholder."[0].values[d].label);
+                        return reportico_datasets". $session_placeholder."[0].values[d].label;
+                    }
+                    else
+                    {
+                        //console.log(  'go ' + reportico_datasets". $session_placeholder."[0].values[d].label);
+                        return i;
+                    }
+                })
+                ;
+    
+    
+            chart".$session_placeholder.".yAxis
+                .axisLabel('".$this->ytitle."')
+                .tickFormat(d3.format(',.1f'));
+
+            //chart".$session_placeholder.".yAxis2
+                //.tickFormat(d3.format(',.1f'));
+    
+            d3.select(\"#reportico_chart". $session_placeholder." svg\")
+            .datum(reportico_datasets". $session_placeholder.")
+            .transition().duration(0)
+            .call(chart".$session_placeholder.");
+    
+            d3.selectAll(\"rect.nv-bar\")
+                .style(\"fill-opacity\", function (d, i) { //d is the data bound to the svg element
+                    return .5 ; 
+                })
+    
+            nv.utils.windowResize(chart".$session_placeholder.".update);
+            ";
+
+            if ( $this->xgriddisplay_actual == "none" )
+                $js .= " reportico_jquery(\".x * * .tick line\").css(\"display\", \"none\"); ";
+            if ( $this->ygriddisplay_actual == "none" )
+                $js .= " reportico_jquery(\".y1 * * .tick line\").css(\"display\", \"none\"); ";
+        }
+        else
+        if ( $chartType == "LINE"  || $chartType == "MULTILINE")
+        {
+            $js .= "
+            var chart".$session_placeholder." = nv.models.lineChart()
+            .margin({top: ".$this->margintop_actual.", right: ".$this->marginright_actual.", bottom: ".$this->marginbottom_actual.", left: ".$this->marginleft_actual." + 10})
+            .color(colorrange)
+            ;
+
+            chart".$session_placeholder.".xAxis
+                .axisLabel('".$this->xtitle."')
+                .rotateLabels (-25)
+                .showMaxMin(true)
+                //.staggerLabels(true)    //Too many bars and not enough room? Try staggering labels.
+                .tickFormat(function (d, i, j) 
+                { 
+                    //return d;
+                    //console.log(\"d = \" + d +  \" i = \" + i + \" j = \" + j );
+                        //return d3.format(\"%s\", d);
+                    console.log(\"d = \" + d +  \" i = \" + i + \" j = \" + j );
+                    if ( reportico_datasets". $session_placeholder."[0].values[d] )
+                    {
+                        //console.log(  'go ' + reportico_datasets". $session_placeholder."[0].values[d].label);
+                        return reportico_datasets". $session_placeholder."[0].values[d].label;
+                    }
+                    else
+                    {
+                        //console.log(  'go ' + reportico_datasets". $session_placeholder."[0].values[d].label);
+                        return i;
+                    }
+                })
+                ;
+    
+    
+            chart".$session_placeholder.".yAxis
+                .axisLabel('".$this->ytitle."')
+                .tickFormat(d3.format(',.1f'));
+
+            //chart".$session_placeholder.".yAxis2
+                //.tickFormat(d3.format(',.1f'));
+    
+            d3.select(\"#reportico_chart". $session_placeholder." svg\")
+            .datum(reportico_datasets". $session_placeholder.")
             .transition().duration(0)
             .call(chart".$session_placeholder.");
     
@@ -449,8 +774,8 @@ class reportico_graph
                 .axisLabel('".$this->ytitle."')
                 .tickFormat(d3.format(',.1f'));
 
-            chart".$session_placeholder.".yAxis2
-                .tickFormat(d3.format(',.1f'));
+            //chart".$session_placeholder.".yAxis2
+                //.tickFormat(d3.format(',.1f'));
     
             d3.select(\"#reportico_chart". $session_placeholder." svg\")
             .datum(reportico_datasets". $session_placeholder.")

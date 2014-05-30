@@ -796,7 +796,7 @@ class reportico_xml_reader
 					"YGridDisplay" => array ( "Title" => "YGRIDDISPLAY", "Type" => "DROPDOWN", 
 												"Values" => array(".DEFAULT", "none", "major", "all") ),
 					"PlotType" => array ( "Title" => "PLOTSTYLE", "Type" => "DROPDOWN", 
-												"Values" => array("BAR", "STACKEDBAR", "OVERLAYBAR", "LINE", "SCATTER", "PIE", "PIE3D") ),
+												"Values" => array("BAR", "STACKEDBAR", "OVERLAYBAR", "LINE", "AREACHART", "SCATTER", "PIE", "PIE3D") ),
 					"Title" => array ( "Title" => "TITLE" ), 
 					"CriteriaDefaults" => array ( "Title" => "CRITERIADEFAULTS", "HelpPage" => "criteria" ),
 					"CriteriaList" => array ( "Title" => "CRITERIALIST", "HelpPage" => "criteria" ),
