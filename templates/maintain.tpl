@@ -132,7 +132,7 @@
 				</TR>
 			</TABLE>
 {/if}
-<input type="hidden" name="session_name" value="{$SESSION_ID}" />
+<input type="hidden" name="reportico_session_name" value="{$SESSION_ID}" />
 {if $SHOW_TOPMENU}
 	<TABLE class="swMntTopMenu">
 		<TR>

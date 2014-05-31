@@ -115,7 +115,7 @@
 {/if}
 <div id="reportico_container">
 <FORM class="swMenuForm" name="topmenu" method="POST" action="{$SCRIPT_SELF}">
-<input type="hidden" name="session_name" value="{$SESSION_ID}" /> 
+<input type="hidden" name="reportico_session_name" value="{$SESSION_ID}" /> 
 
 {if true || $SHOW_REPORT_MENU}
 

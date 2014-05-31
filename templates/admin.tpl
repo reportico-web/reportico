@@ -126,7 +126,7 @@
 <H1 class="swTitle" style="text-align: center; padding-top: 30px; padding-left: 200px;">{$T_ADMINTITLE}</H1>
 </div>
 </div>
-<input type="hidden" name="session_name" value="{$SESSION_ID}" /> 
+<input type="hidden" name="reportico_session_name" value="{$SESSION_ID}" /> 
 {if $SHOW_TOPMENU}
 	<TABLE class="swPrpTopMenu">
 		<TR>
