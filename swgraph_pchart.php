@@ -181,7 +181,7 @@ class reportico_graph
                 "name" => $in_query,
                 "type" => "LINE",
                 "fillcolor" => "",
-                "linecolor" => "black",
+                "linecolor" => "",
                 "datatype" => "number",
                 "legend" => "",
                 "data" => array()

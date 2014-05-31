@@ -17,7 +17,7 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
- * File:        reportico.php
+ * File:        dyngraph_pchart.php
  *
  * Generates a chart image from axes, data parameters
  *
@@ -159,7 +159,7 @@ while ( true )
 {
 	$vval = "plotdata".$v;
 	$plottype = derive_request_item("plottype".$v, "LINE");
-	$plotlcolor = derive_request_item("plotlinecolor".$v, "black");
+	$plotlcolor = derive_request_item("plotlinecolor".$v, "");
 	$plotfcolor = derive_request_item("plotfillcolor".$v, "");
 	$plotlegend = derive_request_item("plotlegend".$v, "");
 	$plotname = derive_request_item("plotname".$v, "");
@@ -342,7 +342,6 @@ foreach ( $plot as $k => $v )
 		$stackedexists = true;
 	if ( $v["type"] == "STACKEDBAR" || $v["type"] == "BAR") 
 		$barexists = true;
-
     if ( $v["linecolor"] )
         $graphImage->Palette[$k] = htmltorgb_pchart($v["linecolor"]);
 }
