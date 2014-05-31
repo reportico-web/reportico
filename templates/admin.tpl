@@ -52,9 +52,11 @@
 {/if}
 {/if}
 {/if}
+{if !$REPORTICO_AJAX_PRELOADED}
 {literal}
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/ui/i18n/jquery.ui.datepicker-{/literal}{$AJAX_DATEPICKER_LANGUAGE}{literal}.js"></script>
 {/literal}
+{/if}
 {if !$BOOTSTRAP_STYLES}
 {literal}
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/jquery.jdMenu.js"></script>

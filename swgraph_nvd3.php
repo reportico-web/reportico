@@ -626,12 +626,10 @@ class reportico_graph
                 { 
                     if ( reportico_datasets". $session_placeholder."[0].values[d] )
                     {
-                        console.log(  'yesgo ' + reportico_datasets". $session_placeholder."[0].values[d].label);
                         return reportico_datasets". $session_placeholder."[0].values[d].label;
                     }
                     else
                     {
-                        console.log(  'nogo ' + reportico_datasets". $session_placeholder."[0].values[d].label);
                         return i;
                     }
                 })
