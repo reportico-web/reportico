@@ -5415,6 +5415,8 @@ nv.models.lineChart = function() {
     , showLegend = true
     , showXAxis = true
     , showYAxis = true
+    , tickInterval = 1
+    , labelCount = 1
     , rightAlignYAxis = false
     , useInteractiveGuideline = false
     , tooltips = true
@@ -5606,7 +5608,8 @@ nv.models.lineChart = function() {
       if (showXAxis) {
         xAxis
           .scale(x)
-          .ticks( availableWidth / 100 )
+          //.ticks( availableWidth / tickInterval )
+          .ticks( labelCount )
           .tickSize(-availableHeight, 0);
 
         g.select('.nv-x.nv-axis')
@@ -5794,6 +5797,18 @@ nv.models.lineChart = function() {
   chart.showXAxis = function(_) {
     if (!arguments.length) return showXAxis;
     showXAxis = _;
+    return chart;
+  };
+
+  chart.tickInterval = function(_) {
+    if (!arguments.length) return tickInterval;
+    tickInterval = _;
+    return chart;
+  };
+
+  chart.labelCount = function(_) {
+    if (!arguments.length) return labelCount;
+    labelCount = _;
     return chart;
   };
 
@@ -8011,6 +8026,7 @@ nv.models.multiBarChart = function() {
     , showYAxis = true
     , rightAlignYAxis = false
     , reduceXTicks = 50 // if false a tick will show for every data point
+    , labelCount = 1
     , staggerLabels = false
     , rotateLabels = 0
     , tooltips = true
@@ -8216,10 +8232,25 @@ nv.models.multiBarChart = function() {
       //------------------------------------------------------------
       // Setup Axes
 
+/*
+      if (showXAxis) {
+        xAxis
+          .scale(x)
+          //.ticks( availableWidth / tickInterval )
+          .ticks( labelCount )
+          .tickSize(-availableHeight, 0);
+
+        g.select('.nv-x.nv-axis')
+            .attr('transform', 'translate(0,' + y.range()[0] + ')');
+        g.select('.nv-x.nv-axis')
+            .transition()
+            .call(xAxis);
+      }
+*/
       if (showXAxis) {
           xAxis
             .scale(x)
-            .ticks( availableWidth / 100 )
+            .ticks( labelCount )
             .tickSize(-availableHeight, 0);
 
           g.select('.nv-x.nv-axis')
@@ -8256,7 +8287,7 @@ nv.models.multiBarChart = function() {
           if (reduceXTicks)
             xTicks
               .filter(function(d,i) {
-                  return i % Math.ceil(data[0].values.length / (availableWidth / reduceXTicks)) !== 0;
+                  return i % Math.ceil(data[0].values.length / labelCount) !== 0;
                 })
               .selectAll('text, line')
               .style('opacity', 0);
@@ -8449,6 +8480,12 @@ nv.models.multiBarChart = function() {
   chart.reduceXTicks= function(_) {
     if (!arguments.length) return reduceXTicks;
     reduceXTicks = _;
+    return chart;
+  };
+
+  chart.labelCount = function(_) {
+    if (!arguments.length) return labelCount;
+    labelCount = _;
     return chart;
   };
 
@@ -9429,6 +9466,7 @@ nv.models.multiChart = function() {
       color = d3.scale.category20().range(),
       width = null, 
       height = null,
+      labelCount = 1,
       showLegend = true,
       tooltips = true,
       tooltip = function(key, x, y, e, graph) {
@@ -9644,7 +9682,8 @@ nv.models.multiChart = function() {
 
 
       xAxis
-        .ticks( availableWidth / 100 )
+        //.ticks( availableWidth / 100 )
+        .ticks( labelCount )
         .tickSize(-availableHeight, 0);
 
       g.select('.x.axis')
@@ -9855,6 +9894,13 @@ nv.models.multiChart = function() {
     showLegend = _;
     return chart;
   };
+
+  chart.labelCount = function(_) {
+    if (!arguments.length) return labelCount;
+    labelCount = _;
+    return chart;
+  };
+
 
   chart.tooltips = function(_) {
     if (!arguments.length) return tooltips;
@@ -11654,6 +11700,7 @@ nv.models.scatterChart = function() {
     , showLegend   = true
     , showXAxis    = true
     , showYAxis    = true
+    , labelCount = 1
     , rightAlignYAxis = false
     , showControls = !!d3.fisheye
     , fisheye      = 0
@@ -11898,7 +11945,8 @@ nv.models.scatterChart = function() {
       if (showXAxis) {
         xAxis
             .scale(x)
-            .ticks( xAxis.ticks() && xAxis.ticks().length ? xAxis.ticks() : availableWidth / 100 )
+            //.ticks( xAxis.ticks() && xAxis.ticks().length ? xAxis.ticks() : availableWidth / 100 )
+            .ticks( labelCount )
             .tickSize( -availableHeight , 0);
 
         g.select('.nv-x.nv-axis')
@@ -12172,6 +12220,12 @@ nv.models.scatterChart = function() {
   chart.showYAxis = function(_) {
     if (!arguments.length) return showYAxis;
     showYAxis = _;
+    return chart;
+  };
+
+  chart.labelCount = function(_) {
+    if (!arguments.length) return labelCount;
+    labelCount = _;
     return chart;
   };
 
@@ -13741,6 +13795,7 @@ nv.models.stackedAreaChart = function() {
   var stacked = nv.models.stackedArea()
     , xAxis = nv.models.axis()
     , yAxis = nv.models.axis()
+    , labelCount = 1
     , legend = nv.models.legend()
     , controls = nv.models.legend()
     , interactiveLayer = nv.interactiveGuideline()
@@ -14004,7 +14059,8 @@ nv.models.stackedAreaChart = function() {
       if (showXAxis) {
         xAxis
           .scale(x)
-          .ticks( availableWidth / 100 )
+          //.ticks( availableWidth / 100 )
+          .ticks( labelCount )
           .tickSize( -availableHeight, 0);
 
         g.select('.nv-x.nv-axis')
@@ -14272,6 +14328,12 @@ nv.models.stackedAreaChart = function() {
   chart.showXAxis = function(_) {
     if (!arguments.length) return showXAxis;
     showXAxis = _;
+    return chart;
+  };
+
+  chart.labelCount = function(_) {
+    if (!arguments.length) return labelCount;
+    labelCount = _;
     return chart;
   };
 

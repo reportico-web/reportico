@@ -332,9 +332,9 @@ class reportico_graph
         $showLegend = false;
         foreach ( $this->plot as $k => $v )
         {
-            //if ( $k == 0 ) $v["type"] = "BAR";
-            //if ( $k == 1 ) $v["type"] = "BAR";
-            //if ( $k == 2 ) $v["type"] = "STACKEDBAR";
+            //if ( $k == 0 ) $v["type"] = "SCATTER";
+            //if ( $k == 1 ) $v["type"] = "SCATTER";
+            //if ( $k == 2 ) $v["type"] = "SCATTER";
 
             $label = "";
             if ( $v["legend"] )
@@ -362,6 +362,7 @@ class reportico_graph
             if ( $v["type"] == "BAR" ) $type = "bar";
             if ( $v["type"] == "LINE" ) $type = "line";
             if ( $v["type"] == "AREACHART" ) $type = "area";
+            if ( $v["type"] == "SCATTER" ) $type = "scatter";
             if ( $v["type"] == "PIE" ) $type = "pie";
             if ( $v["type"] == "PIE3D" ) $type = "pie";
             $has_plot_types[$v["type"]] = true;
@@ -399,6 +400,11 @@ class reportico_graph
             $chartType = "PIE";
         }
         else
+        if ( isset($has_plot_types["SCATTER"]) )
+        {
+            $chartType = "SCATTER";
+        }
+        else
         {
             // Chart contains only one type ( just lines, just areas, just bars so use relevant
             // but use multiBar chart if more than one
@@ -422,20 +428,26 @@ class reportico_graph
         var colorrange = d3.scale.category10().range();
         ";
 
+
+        $labct = count($this->plot[0]["data"]);
         if ( $this->xticklabelinterval_actual )
         {
             if ( $this->xticklabelinterval_actual  == "AUTO" )
             {
-                $labct = count($this->plot[0]["data"]);
                 $this->xticklabelinterval_actual = floor ($labct / 40 ) + 1 ;
-                $js .= "labelInterval = 20;";
             }
-            else
-                $js .= "labelInterval = $this->xticklabelinterval_actual;";
+            $js .= "labelInterval = $this->xticklabelinterval_actual;";
         }
         else
             $js .= "labelInterval = false;";
+
+        $js .= "rotateLabels = -30;";
+
+        $labct = ( $labct / $this->xticklabelinterval_actual ) + 1;
+        $labct = floor ( $labct );
         
+        $js .= "labelCount = $labct;";
+
         if ( $stacked )
             $js .= "stacked = true;";
         else
@@ -510,23 +522,17 @@ class reportico_graph
 
             chart".$session_placeholder.".xAxis
                 .axisLabel('".$this->xtitle."')
-                .rotateLabels (-25)
-                .showMaxMin(true)
+                .rotateLabels (rotateLabels)
+                .showMaxMin(false)
                 //.staggerLabels(true)    //Too many bars and not enough room? Try staggering labels.
                 .tickFormat(function (d, i, j) 
                 { 
-                    //return d;
-                    //console.log(\"d = \" + d +  \" i = \" + i + \" j = \" + j );
-                        //return d3.format(\"%s\", d);
-                    console.log(\"d = \" + d +  \" i = \" + i + \" j = \" + j );
                     if ( reportico_datasets". $session_placeholder."[0].values[d] )
                     {
-                        //console.log(  'go ' + reportico_datasets". $session_placeholder."[0].values[d].label);
                         return reportico_datasets". $session_placeholder."[0].values[d].label;
                     }
                     else
                     {
-                        //console.log(  'go ' + reportico_datasets". $session_placeholder."[0].values[d].label);
                         return i;
                     }
                 })
@@ -537,9 +543,50 @@ class reportico_graph
                 .axisLabel('".$this->ytitle."')
                 .tickFormat(d3.format(',.1f'));
 
-            //chart".$session_placeholder.".yAxis2
-                //.tickFormat(d3.format(',.1f'));
+            d3.select(\"#reportico_chart". $session_placeholder." svg\")
+            .datum(reportico_datasets". $session_placeholder.")
+            .transition().duration(0)
+            .call(chart".$session_placeholder.");
     
+            d3.selectAll(\"rect.nv-bar\")
+                .style(\"fill-opacity\", function (d, i) { //d is the data bound to the svg element
+                    return .5 ; 
+                })
+    
+            nv.utils.windowResize(chart".$session_placeholder.".update);
+            ";
+
+            if ( $this->xgriddisplay_actual == "none" )
+                $js .= " reportico_jquery(\".x * * .tick line\").css(\"display\", \"none\"); ";
+            if ( $this->ygriddisplay_actual == "none" )
+                $js .= " reportico_jquery(\".y1 * * .tick line\").css(\"display\", \"none\"); ";
+        }
+        else
+        if ( $chartType == "SCATTER" )
+        {
+            $js .= "
+            var chart".$session_placeholder." = nv.models.scatterChart()
+                .showDistX(false)    //showDist, when true, will display those little distribution lines on the axis.
+                .showDistY(false)
+                .transitionDuration(350)
+                .color(d3.scale.category10().range())
+                .margin({top: ".$this->margintop_actual.", right: ".$this->marginright_actual.", bottom: ".$this->marginbottom_actual.", left: ".$this->marginleft_actual." + 10})
+                .color(colorrange)
+                ;
+
+
+            //Configure how the tooltip looks.
+            chart".$session_placeholder.".tooltipContent(function(key) {
+                return '<h3>' + key + '</h3>';
+            });
+
+            //Axis settings
+            chart".$session_placeholder.".xAxis.tickFormat(d3.format('.02f'));
+            chart".$session_placeholder.".yAxis.tickFormat(d3.format('.02f'));
+
+            //We want to show shapes other than circles.
+            chart".$session_placeholder.".scatter.onlyCircles(false);
+
             d3.select(\"#reportico_chart". $session_placeholder." svg\")
             .datum(reportico_datasets". $session_placeholder.")
             .transition().duration(0)
@@ -564,6 +611,7 @@ class reportico_graph
             $js .= "
             var chart".$session_placeholder." = nv.models.multiBarChart()
             .reduceXTicks (labelInterval)
+            .labelCount(labelCount)
             .stacked(stacked)
             .margin({top: ".$this->margintop_actual.", right: ".$this->marginright_actual.", bottom: ".$this->marginbottom_actual.", left: ".$this->marginleft_actual." + 10})
             .color(colorrange)
@@ -571,15 +619,11 @@ class reportico_graph
 
             chart".$session_placeholder.".xAxis
                 .axisLabel('".$this->xtitle."')
-                .rotateLabels (-20)
-                //.showMaxMin(true)
+                .rotateLabels (rotateLabels)
+                .showMaxMin(false)
                 //.staggerLabels(true)    //Too many bars and not enough room? Try staggering labels.
                 .tickFormat(function (d, i, j) 
                 { 
-                    //return d;
-                    //console.log(\"d = \" + d +  \" i = \" + i + \" j = \" + j );
-                        //return d3.format(\"%s\", d);
-                    console.log(\"d = \" + d +  \" i = \" + i + \" j = \" + j );
                     if ( reportico_datasets". $session_placeholder."[0].values[d] )
                     {
                         console.log(  'yesgo ' + reportico_datasets". $session_placeholder."[0].values[d].label);
@@ -598,9 +642,6 @@ class reportico_graph
                 .axisLabel('".$this->ytitle."')
                 .tickFormat(d3.format(',.1f'));
 
-            //chart".$session_placeholder.".yAxis2
-                //.tickFormat(d3.format(',.1f'));
-    
             d3.select(\"#reportico_chart". $session_placeholder." svg\")
             .datum(reportico_datasets". $session_placeholder.")
             .transition().duration(0)
@@ -625,28 +666,23 @@ class reportico_graph
             $js .= "
             var chart".$session_placeholder." = nv.models.stackedAreaChart()
             .margin({top: ".$this->margintop_actual.", right: ".$this->marginright_actual.", bottom: ".$this->marginbottom_actual.", left: ".$this->marginleft_actual." + 10})
+            .labelCount(labelCount)
             .color(colorrange)
             ;
 
             chart".$session_placeholder.".xAxis
                 .axisLabel('".$this->xtitle."')
-                .rotateLabels (-25)
-                .showMaxMin(true)
+                .rotateLabels (rotateLabels)
+                .showMaxMin(false)
                 //.staggerLabels(true)    //Too many bars and not enough room? Try staggering labels.
                 .tickFormat(function (d, i, j) 
                 { 
-                    //return d;
-                    //console.log(\"d = \" + d +  \" i = \" + i + \" j = \" + j );
-                        //return d3.format(\"%s\", d);
-                    console.log(\"d = \" + d +  \" i = \" + i + \" j = \" + j );
                     if ( reportico_datasets". $session_placeholder."[0].values[d] )
                     {
-                        //console.log(  'go ' + reportico_datasets". $session_placeholder."[0].values[d].label);
                         return reportico_datasets". $session_placeholder."[0].values[d].label;
                     }
                     else
                     {
-                        //console.log(  'go ' + reportico_datasets". $session_placeholder."[0].values[d].label);
                         return i;
                     }
                 })
@@ -657,9 +693,6 @@ class reportico_graph
                 .axisLabel('".$this->ytitle."')
                 .tickFormat(d3.format(',.1f'));
 
-            //chart".$session_placeholder.".yAxis2
-                //.tickFormat(d3.format(',.1f'));
-    
             d3.select(\"#reportico_chart". $session_placeholder." svg\")
             .datum(reportico_datasets". $session_placeholder.")
             .transition().duration(0)
@@ -684,28 +717,24 @@ class reportico_graph
             $js .= "
             var chart".$session_placeholder." = nv.models.lineChart()
             .margin({top: ".$this->margintop_actual.", right: ".$this->marginright_actual.", bottom: ".$this->marginbottom_actual.", left: ".$this->marginleft_actual." + 10})
+            .tickInterval($this->xticklabelinterval_actual)
+            .labelCount(labelCount)
             .color(colorrange)
             ;
 
             chart".$session_placeholder.".xAxis
                 .axisLabel('".$this->xtitle."')
-                .rotateLabels (-25)
-                .showMaxMin(true)
+                .rotateLabels (rotateLabels)
+                .showMaxMin(false)
                 //.staggerLabels(true)    //Too many bars and not enough room? Try staggering labels.
                 .tickFormat(function (d, i, j) 
                 { 
-                    //return d;
-                    //console.log(\"d = \" + d +  \" i = \" + i + \" j = \" + j );
-                        //return d3.format(\"%s\", d);
-                    console.log(\"d = \" + d +  \" i = \" + i + \" j = \" + j );
                     if ( reportico_datasets". $session_placeholder."[0].values[d] )
                     {
-                        //console.log(  'go ' + reportico_datasets". $session_placeholder."[0].values[d].label);
                         return reportico_datasets". $session_placeholder."[0].values[d].label;
                     }
                     else
                     {
-                        //console.log(  'go ' + reportico_datasets". $session_placeholder."[0].values[d].label);
                         return i;
                     }
                 })
@@ -716,9 +745,6 @@ class reportico_graph
                 .axisLabel('".$this->ytitle."')
                 .tickFormat(d3.format(',.1f'));
 
-            //chart".$session_placeholder.".yAxis2
-                //.tickFormat(d3.format(',.1f'));
-    
             d3.select(\"#reportico_chart". $session_placeholder." svg\")
             .datum(reportico_datasets". $session_placeholder.")
             .transition().duration(0)
@@ -742,28 +768,23 @@ class reportico_graph
             $js .= "
             var chart".$session_placeholder." = nv.models.multiChart()
             .margin({top: ".$this->margintop_actual.", right: ".$this->marginright_actual.", bottom: ".$this->marginbottom_actual.", left: ".$this->marginleft_actual." + 10})
+            .labelCount(labelCount)
             .color(colorrange)
             ;
 
             chart".$session_placeholder.".xAxis
                 .axisLabel('".$this->xtitle."')
-                .rotateLabels (-25)
-                .showMaxMin(true)
+                .rotateLabels (rotateLabels)
+                .showMaxMin(false)
                 //.staggerLabels(true)    //Too many bars and not enough room? Try staggering labels.
                 .tickFormat(function (d, i, j) 
                 { 
-                    //return d;
-                    //console.log(\"d = \" + d +  \" i = \" + i + \" j = \" + j );
-                        //return d3.format(\"%s\", d);
-                    console.log(\"d = \" + d +  \" i = \" + i + \" j = \" + j );
                     if ( reportico_datasets". $session_placeholder."[0].values[d] )
                     {
-                        //console.log(  'go ' + reportico_datasets". $session_placeholder."[0].values[d].label);
                         return reportico_datasets". $session_placeholder."[0].values[d].label;
                     }
                     else
                     {
-                        //console.log(  'go ' + reportico_datasets". $session_placeholder."[0].values[d].label);
                         return i;
                     }
                 })
@@ -774,9 +795,6 @@ class reportico_graph
                 .axisLabel('".$this->ytitle."')
                 .tickFormat(d3.format(',.1f'));
 
-            //chart".$session_placeholder.".yAxis2
-                //.tickFormat(d3.format(',.1f'));
-    
             d3.select(\"#reportico_chart". $session_placeholder." svg\")
             .datum(reportico_datasets". $session_placeholder.")
             .transition().duration(0)
