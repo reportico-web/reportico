@@ -524,7 +524,7 @@ class reportico extends reportico_object
 	function &create_graph()
 	{
         $engine = $this->charting_engine;
-        if ( $this->target_format = "HTML" )
+        if ( $this->target_format == "HTML" )
             $engine = $this->charting_engine_html;
         if ( get_request_item("target_format", "HTML") == "PDF" )
             $engine = $this->charting_engine;
