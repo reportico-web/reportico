@@ -176,6 +176,16 @@ function get_datepicker_language($in_format)
 	$retval = "";
 	switch ( $in_format )
 	{
+        case "en-GB": $retval = "en-GB"; break;
+        case "ar-DZ": $retval = "ar-DZ"; break;
+        case "en-AU": $retval = "en-AU"; break;
+        case "en-NZ": $retval = "en-NZ"; break;
+        case "fr-CN": $retval = "fr-CH"; break;
+        case "pt-BR": $retval = "pt-BR"; break;
+        case "sr-SR": $retval = "sr-SR"; break;
+        case "zh-HK": $retval = "zh-HK"; break;
+        case "zh-TW": $retval = "zh-TW"; break;
+        case "zh-CN": $retval = "zh-CN"; break;
 		case "en_gb": $retval = "en-GB"; break;
 		case "ar_dz": $retval = "ar-DZ"; break;
 		case "en_au": $retval = "en-AU"; break;
