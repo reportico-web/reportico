@@ -637,7 +637,6 @@ class reportico_report extends reportico_object
 
 		$changect = 0;
 		reset($this->query->groups);
-	    //if ( get_reportico_session_param("target_show_group_headers") )
 		foreach ( $this->query->groups as $name => $group) 
 		{
 			if ( count($group->headers) > 0 && ( (  $group->group_name == "REPORT_BODY" && $this->line_count == 0 ) || $this->query->changed($group->group_name) )) 
@@ -654,11 +653,12 @@ class reportico_report extends reportico_object
 				}
 
  
-				for ($i = 0; $i < count($group->headers); $i++ )
-				{
-					$col =& $group->headers[$i];
-					$this->format_group_header($col);
-				}
+	            if ( get_reportico_session_param("target_show_group_headers") )
+				    for ($i = 0; $i < count($group->headers); $i++ )
+				    {
+					    $col =& $group->headers[$i];
+					    $this->format_group_header($col);
+				    }
 				if ( $graphs =& $this->query->get_graph_by_name($group->group_name) )
 				{
                     foreach ( $graphs as $graph )
