@@ -138,7 +138,7 @@
 {/if}
     <!--div class="navbar navbar-default navbar-static-top" role="navigation"-->
 {if $BOOTSTRAP_STYLES == "2" }
-        <div class="navbar-inner">
+        <div class="navbar-inner" style="padding-left:0px; padding-right: 0px;">
 {/if}
         <div class="container">
 {if $BOOTSTRAP_STYLES == "2" }
@@ -214,10 +214,12 @@
 			</li>
 {/if}
 {/if}
+{if ($SHOW_ADMIN_BUTTON)}
 {if strlen($ADMIN_MENU_URL)>0} 
               <li>
                     <a class="swAdminButton2" href="{$ADMIN_MENU_URL}">{$T_ADMIN_MENU}</a>
               </li>
+{/if}
 {/if}
 {if $SHOW_PROJECT_MENU_BUTTON}
               <li>
