@@ -2235,7 +2235,8 @@ class reportico extends reportico_object
 	// -----------------------------------------------------------------------------
 	function build_query($in_is_expanding = false, $criteria_name = "", $in_design_mode = false )
 	{
-		$this->set_request_columns();
+        if ( !$criteria_name )
+		    $this->set_request_columns();
 		$execute_mode = $this->get_execute_mode();
 
         // Use raw user query in >= Version 2.5
