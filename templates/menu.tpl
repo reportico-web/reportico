@@ -129,7 +129,7 @@
 {/if}
     <!--div class="navbar navbar-default navbar-static-top" role="navigation"-->
 {if $BOOTSTRAP_STYLES == "2" }
-        <div class="navbar-inner" style="padding-left:0px; padding-right: 0px;">
+        <div class="navbar-inner">
 {/if}
         <div class="container">
 {if $BOOTSTRAP_STYLES == "2" }
