@@ -3628,6 +3628,7 @@ class reportico extends reportico_object
         $this->dropdown_menu = register_session_param("dropdown_menu", $this->dropdown_menu);
         $this->static_menu = register_session_param("static_menu", $this->static_menu);
         $this->charting_engine = register_session_param("charting_engine", $this->charting_engine);
+        $this->charting_engine_html = register_session_param("charting_engine_html", $this->charting_engine_html);
         $this->output_template_parameters = register_session_param("output_template_parameters", $this->output_template_parameters);
 
         $this->dynamic_grids = register_session_param("dynamic_grids", $this->dynamic_grids);
@@ -3724,6 +3725,23 @@ class reportico extends reportico_object
 					break;
 
 				case "EXECUTE":
+
+                    // If external page has supplied an initial output format then use it
+                    if ( $this->initial_output_format )
+                        $_REQUEST["target_format"] = $this->initial_output_format;
+
+                    // If printable HTML requested force output type to HTML
+                    if ( get_request_item("printable_html") )
+                    {
+                        $_REQUEST["target_format"] = "HTML";
+                    }
+
+		            // Prompt user for report destination if target not already set - default to HTML if not set
+		            if ( !array_key_exists("target_format", $_REQUEST) && $execute_mode == "EXECUTE" )
+			            $_REQUEST["target_format"] = "HTML";
+
+                    $this->target_format = strtoupper($_REQUEST["target_format"]);
+			
 					if ( array_key_exists("submit", $_REQUEST))
 						$this->first_criteria_selection = false;
 					else
