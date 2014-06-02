@@ -2956,9 +2956,13 @@ class reportico extends reportico_object
 
         // In frameworks we dont want to load jquery when its intalled once when the module load
         // so flag this unless specified in new_reportico_window
+		$smarty->assign('REPORTICO_STANDALONE_WINDOW',  false);
 		$smarty->assign('REPORTICO_AJAX_PRELOADED',  $this->reportico_ajax_preloaded);
         if ( get_request_item("new_reportico_window",  false ) )
+        {
 		    $smarty->assign('REPORTICO_AJAX_PRELOADED',  false);
+		    $smarty->assign('REPORTICO_STANDALONE_WINDOW',  true);
+        }
     
 		$smarty->assign('SHOW_LOGOUT', false);
 		$smarty->assign('SHOW_LOGIN', false);

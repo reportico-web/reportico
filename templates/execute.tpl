@@ -7,9 +7,17 @@
 {$OUTPUT_ENCODING}
 </HEAD>
 {if $REPORT_PAGE_STYLE}
-<BODY class="swRepBody" {$REPORT_PAGE_STYLE};">
+{if $REPORTICO_STANDALONE_WINDOW}
+<BODY class="swRepBody swRepBodyStandalone" {$REPORT_PAGE_STYLE};">
 {else}
 <BODY class="swRepBody">
+{/if}
+{else}
+{if $REPORTICO_STANDALONE_WINDOW}
+<BODY class="swRepBody swRepBodyStandalone">
+{else}
+<BODY class="swRepBody">
+{/if}
 {/if}
 {if $BOOTSTRAP_STYLES}
 {if $BOOTSTRAP_STYLES == "2"}
