@@ -1119,10 +1119,10 @@ input.swAdminButton2
     line-height: 1.2em;
 }
 
-#reportico_container form .navbar .container
+/*#reportico_container form .navbar .container
 {
-    width: 100% !important;
-}
+    width: 100%;
+}*/
 
 #criteriaform .navbar, .swMenuForm .navbar
 {
