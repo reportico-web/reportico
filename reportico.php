@@ -2899,10 +2899,7 @@ class reportico extends reportico_object
 		$smarty->compile_dir = find_best_location_in_include_path( "templates_c" );
 
 		$dummy="";
-		$version = "\$Name:  $";
-		$version = preg_replace("/.*reportico-/", "", $version);
-		$version = preg_replace("/ \\$/", "", $version);
-		$version = preg_replace("/_/", ".", $version);
+		$version = "4.0";
 
 		$forward_url_params = session_request_item('forward_url_get_parameters', $this->forward_url_get_parameters);
 		$forward_url_params_graph = session_request_item('forward_url_get_parameters_graph', $this->forward_url_get_parameters_graph);
