@@ -3739,7 +3739,7 @@ class reportico extends reportico_object
                     }
 
 		            // Prompt user for report destination if target not already set - default to HTML if not set
-		            if ( !array_key_exists("target_format", $_REQUEST) && $execute_mode == "EXECUTE" )
+		            if ( !array_key_exists("target_format", $_REQUEST) && $mode == "EXECUTE" )
 			            $_REQUEST["target_format"] = "HTML";
 
                     $this->target_format = strtoupper($_REQUEST["target_format"]);
