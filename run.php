@@ -80,7 +80,7 @@
     //$q->initial_report = "reportfile.xml";
 
     // Specify whether user is started in administration page, project menu, report criteria entry, 
-    // report output or report design mode, use respectively ( "ADMIN", "u$q->get_execute_mode(), true);ENU", "PREPARE", "EXECUTE", "MAINTAIN")
+    // report output or report design mode, use respectively ( "ADMIN", "MENU", "PREPARE", "EXECUTE", "MAINTAIN")
     // default is "ADMIN"
     //$q->initial_execute_mode = "<MODE>";
 
