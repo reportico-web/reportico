@@ -3,6 +3,9 @@
  * HTML CSS
  */
 
+.nvd3 {
+    visibility: visible !important;
+}
 
 .chartWrap {
   margin: 0;
