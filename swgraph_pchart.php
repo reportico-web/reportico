@@ -38,13 +38,9 @@ error_reporting(E_ALL);
 
 if ( function_exists( "imagecreatefromstring" ) )
 {
-    //include("pChart/class/pData.class.php");
-    //include("pChart/class/pDraw.class.php");
-    //include("pChart/class/pImage.class.php");
-    //include("pChart/class/pPie.class.php");
-    include("pChart/pChart.class");
-    include("pChart/pData.class");
-    include("pChart/pCache.class");
+    include_once("pChart/pChart.class");
+    include_once("pChart/pData.class");
+    include_once("pChart/pCache.class");
 
     $fontpath = find_best_location_in_include_path( "pChart/fonts" );
     define ( "PCHARTFONTS_DIR", $fontpath."/" );
@@ -334,7 +330,7 @@ class reportico_graph
         if ( $forward_url_params )
             $url .= "&".$forward_url_params;
         $url .= "&reportico_call_mode=graph_pchart";
-        $url .= "&session_name=".reportico_session_name();
+        $url .= "&reportico_session_name=".reportico_session_name();
 		$result = '<img class="swRepGraph" src=\''.$dyngraph.'?'.$url.'\'>';
 
 		return $result;

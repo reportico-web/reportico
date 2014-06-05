@@ -295,18 +295,14 @@ class reportico_graph
 				$url .= "&plotfillcolor$k=".$v["fillcolor"];
 		}
 	
-		if ( $session_placeholder)
-		{
-			$ses = "graph_".$session_placeholder;
-            set_reportico_session_param($ses, $url);
-			$url = "graphid=".$ses."&time=".time();
-		}
+        global $g_session_namespace;
+		$session_placeholder = $session_placeholder."_".$g_session_namespace;
 
         $js = "";
         $js .= "<div class=\"reportico-chart-container\" style=\"width: ".$this->width_actual."px;height: ".$this->height_actual."px\"> ".$this->convert_special_chars($this->title_actual);
         //$js .= "<div id=\"reportico_chart$session_placeholder\" class=\"reportico-chart-placeholder\"></div> </div>\n";
 
-        $js .= "<div class=\"reportico-chart-placeholder\" id=\"reportico_chart$session_placeholder\" style=\"overflow-y: none; width: 100%; height:100%\"><svg style=\"width:100%;height:100%;\"></svg></div>";
+        $js .= "<div class=\"reportico-chart-placeholder\" id=\"reportico_chart$session_placeholder\" style=\"overflow-y: none; width: 100%; height:100%\"><svg style=\"width:100%;height:100%;\"></svg></div></div>";
         $js .= "<script>\n";
         $js .= "var placeholder = 'reportico_chart$session_placeholder';\n";
         $plotct = 0;

@@ -529,6 +529,8 @@ class reportico extends reportico_object
         if ( get_request_item("target_format", "HTML") == "PDF" )
             $engine = $this->charting_engine;
 
+        // Cannot use two forms of charting in the same 
+        if ( !class_exists("reportico_graph") )
         switch ( $engine )
         {
             case "NVD3":
