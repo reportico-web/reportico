@@ -1,6 +1,6 @@
 <?php
  /*
-     pChart - a PHP class to build charts!jjjjjjjjjjjjjjjjjjjj
+     pChart - a PHP class to build charts!
      Copyright (C) 2008 Jean-Damien POGOLOTTI
      Version  1.27d last updated on 09/30/08
 
@@ -3146,7 +3146,7 @@
      if ( $X < 0 || $Y < 0 || $X >= $this->XSize || $Y >= $this->YSize )
       return(-1);
 
-     $RGB2 = imagecolorat($this->Picture, $X, $Y);
+     $RGB2 = @imagecolorat($this->Picture, $X, $Y);
      $R2   = ($RGB2 >> 16) & 0xFF;
      $G2   = ($RGB2 >> 8) & 0xFF;
      $B2   = $RGB2 & 0xFF;
