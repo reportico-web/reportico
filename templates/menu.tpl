@@ -131,7 +131,7 @@
 {if $BOOTSTRAP_STYLES == "2" }
         <div class="navbar-inner">
 {/if}
-        <div class="container">
+        <div class="container" style="width: 100%">
 {if $BOOTSTRAP_STYLES == "2" }
             <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target="#reportico-bootstrap-collapse"-->
 {else}
