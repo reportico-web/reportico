@@ -273,7 +273,7 @@
       &lt;/BODY&gt;
     &lt;/HTML&gt;
 </pre></code></p><hr />
-    <a name="using.controllingaccess"></a><h3 class="title">Passing Reportico an SQL query</h3><p>When running reportico from an embedded page or via custom scripts it is possible to avoid the need to write a report and just give Reportico the SQL.
+    <a name="using.passsql"></a><h3 class="title">Passing Reportico an SQL query</h3><p>When running reportico from an embedded page or via custom scripts it is possible to avoid the need to write a report and just give Reportico the SQL.
 This is possible in two ways:</p>
 
 <p>Option 1 - Use the initial_sql parameter and the initial_project parameter. 
@@ -357,7 +357,7 @@ Note that the column aliases are useful to provide more meaning ful column title
     $q-&gt;show_refresh_button = true;
 </pre></code></p><hr />
 
-<a name="using.controllingparameters"></a><h3 class="title">Reportico Styling</h3><p>Reportico by default is styled according to Bootstrap 3, a copy of which is supplied with Reportico, which Reportico loads up.
+<a name="using.styling"></a><h3 class="title">Reportico Styling</h3><p>Reportico by default is styled according to Bootstrap 3, a copy of which is supplied with Reportico, which Reportico loads up.
 However when embedding into a web page this may not be desirable. If your web page is not compatible with Bootstrap then you can revert to Reportico Classic styling by setting bootstrap_styles = false. 
 If your web pages already have Bootstrap 3 loaded then set bootstrap styles to &quot;3&quot; and set bootstrap_preloaded. If your site has bootstrap 2 then set this to &quot;2&quot;.
     <code><pre>
@@ -366,7 +366,7 @@ If your web pages already have Bootstrap 3 loaded then set bootstrap styles to &
 </pre></code></p><hr />
 
 
-<a name="using.controllingparameters"></a><h3 class="title">Passing criteria parameters within embedded reports</h3><p>One way of passing parameters reports is to use the &quot;MANUAL_&quot; method mechanism of passing parameters within the $_REQUEST record. A better way when embedding reportico or generating custom reportico scritps is to use the <strong>initial_execution_parameters</strong> array property. Just biuld this array up with the key of the criteria name ( as specified in the report criteria definitions ) and the criteria value you want used witihn the report query. For date ranges use the &quot;-&quot; notation and for multiple options for a list or lookup type criteria specify the values with comma separated values.</p>
+<a name="using.passparameters"></a><h3 class="title">Passing criteria parameters within embedded reports</h3><p>One way of passing parameters reports is to use the &quot;MANUAL_&quot; method mechanism of passing parameters within the $_REQUEST record. A better way when embedding reportico or generating custom reportico scritps is to use the <strong>initial_execution_parameters</strong> array property. Just biuld this array up with the key of the criteria name ( as specified in the report criteria definitions ) and the criteria value you want used witihn the report query. For date ranges use the &quot;-&quot; notation and for multiple options for a list or lookup type criteria specify the values with comma separated values.</p>
 
 <p>The following example runs a report for specified countries and covers the dates between the start of 2013 and today :-</p>
 <p><code><pre>
@@ -395,7 +395,7 @@ In AJAX mode, all button presses are made as an AJAX call meaning that there is 
     $q-&gt;reportico_ajax_mode = true;
 </pre></code></p><hr />
 
-<a name="using.controllingparameters"></a><h3 class="title">Dynamic Grids</h3><p>You can turn on dynamic sortable, searchable, pageable grids with the following parameters -
+<a name="using.dynamicgrids"></a><h3 class="title">Dynamic Grids</h3><p>You can turn on dynamic sortable, searchable, pageable grids with the following parameters -
     <code><pre>
     $q-&gt;dynamic_grids = true;
     $q-&gt;dynamic_grids_sortable = true;
@@ -404,7 +404,7 @@ In AJAX mode, all button presses are made as an AJAX call meaning that there is 
     $q-&gt;dynamic_grids_page_size = 10;
 </pre></code></p><hr />
 
-<a name="using.controllingparameters"></a><h3 class="title">Report Menus - Static And Dropdown</h3><p>When embedding it is easier to specify the menu items available to the user both in the dropdown control panel at the top and in the front end menu page.
+<a name="using.projectmenus"></a><h3 class="title">Report Menus - Static And Dropdown</h3><p>When embedding it is easier to specify the menu items available to the user both in the dropdown control panel at the top and in the front end menu page.
 Just set up the following arrays :-
     <code><pre>
     // Static - main menu definition
@@ -446,7 +446,7 @@ Just set up the following arrays :-
 
 </pre></code></p><hr />
 
-<a name="using.controllingparameters"></a><h3 class="title">Hiding Reportico UI features</h3><p>It is possible to turn off the report output title, some of the control panel buttons and checkboxes in crtieria entry mode and some of the the menus by setting any of the following to &quot;hide&quot;
+<a name="using.hidingui"></a><h3 class="title">Hiding Reportico UI features</h3><p>It is possible to turn off the report output title, some of the control panel buttons and checkboxes in crtieria entry mode and some of the the menus by setting any of the following to &quot;hide&quot;
     <code><pre>
     $q-&gt;output_template_parameters[&quot;show_hide_navigation_menu&quot;] = &quot;show&quot;;
     $q-&gt;output_template_parameters[&quot;show_hide_dropdown_menu&quot;] = &quot;show&quot;;
@@ -558,7 +558,7 @@ Just set up the following arrays :-
 </table>
         <div class="credit">
 		    <hr />
-		    Documentation generated on Mon, 09 Jun 2014 18:10:07 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Mon, 09 Jun 2014 20:06:30 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>
