@@ -94,13 +94,11 @@
 <script type="text/javascript">var reportico_dynamic_grids = false;</script>
 {/if}
 {/if}
-{if $REPORTICO_DYNAMIC_GRIDS}
 {if !$REPORTICO_AJAX_PRELOADED}
 {literal}
-<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/jquery.dataTables.js"></script>
+<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/jquery.dataTables.min.js"></script>
 {/literal}
 <LINK id="PRP_StyleSheet" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/jquery.dataTables.css">
-{/if}
 {/if}
 {if $REPORTICO_CHARTING_ENGINE == "NVD3" }
 {if !$REPORTICO_AJAX_PRELOADED}

@@ -86,27 +86,6 @@
 <script type="text/javascript">var reportico_report_title = "{/literal}{$TITLE}{literal}";</script>
 <script type="text/javascript">var reportico_css_path = "{/literal}{$STYLESHEET}{literal}";</script>
 {/literal}
-{if $REPORTICO_DYNAMIC_GRIDS}
-<script type="text/javascript">var reportico_dynamic_grids = true;</script>
-{if $REPORTICO_DYNAMIC_GRIDS_SORTABLE}
-<script type="text/javascript">var reportico_dynamic_grids_sortable = true;</script>
-{else}
-<script type="text/javascript">var reportico_dynamic_grids_sortable = false;</script>
-{/if}
-{if $REPORTICO_DYNAMIC_GRIDS_SEARCHABLE}
-<script type="text/javascript">var reportico_dynamic_grids_searchable = true;</script>
-{else}
-<script type="text/javascript">var reportico_dynamic_grids_searchable = false;</script>
-{/if}
-{if $REPORTICO_DYNAMIC_GRIDS_PAGING}
-<script type="text/javascript">var reportico_dynamic_grids_paging = true;</script>
-{else}
-<script type="text/javascript">var reportico_dynamic_grids_paging = false;</script>
-{/if}
-<script type="text/javascript">var reportico_dynamic_grids_page_size = {$REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE};</script>
-{else}
-<script type="text/javascript">var reportico_dynamic_grids = false;</script>
-{/if}
 {/if}
 {if $REPORTICO_CHARTING_ENGINE == "FLOT" }
 {literal}
@@ -123,13 +102,11 @@
 {/literal}
 {/if}
 {/if}
-{if $REPORTICO_DYNAMIC_GRIDS}
 {if !$REPORTICO_AJAX_PRELOADED}
 {literal}
-<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/jquery.dataTables.js"></script>
+<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/jquery.dataTables.min.js"></script>
 {/literal}
 <LINK id="PRP_StyleSheet" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/jquery.dataTables.css">
-{/if}
 {/if}
 {if $PRINTABLE_HTML}
 {literal}
@@ -193,6 +170,27 @@ function resizeOutputTables(window)
 				Enter the report project password. <br><input type="password" name="project_password" value=""></div>
 				<input class="swLinkMenu" type="submit" name="login" value="Login">
 			</TD>
+{/if}
+{if $REPORTICO_DYNAMIC_GRIDS}
+<script type="text/javascript">var reportico_dynamic_grids = true;</script>
+{if $REPORTICO_DYNAMIC_GRIDS_SORTABLE}
+<script type="text/javascript">var reportico_dynamic_grids_sortable = true;</script>
+{else}
+<script type="text/javascript">var reportico_dynamic_grids_sortable = false;</script>
+{/if}
+{if $REPORTICO_DYNAMIC_GRIDS_SEARCHABLE}
+<script type="text/javascript">var reportico_dynamic_grids_searchable = true;</script>
+{else}
+<script type="text/javascript">var reportico_dynamic_grids_searchable = false;</script>
+{/if}
+{if $REPORTICO_DYNAMIC_GRIDS_PAGING}
+<script type="text/javascript">var reportico_dynamic_grids_paging = true;</script>
+{else}
+<script type="text/javascript">var reportico_dynamic_grids_paging = false;</script>
+{/if}
+<script type="text/javascript">var reportico_dynamic_grids_page_size = {$REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE};</script>
+{else}
+<script type="text/javascript">var reportico_dynamic_grids = false;</script>
 {/if}
 {$CONTENT}
 </div>

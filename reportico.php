@@ -360,7 +360,12 @@ class reportico extends reportico_object
 			"PreExecuteCode" =>  "NONE",
 			"formBetweenRows" => "solidline",
 			"bodyDisplay" => "show",
-			"graphDisplay" => "show"
+			"graphDisplay" => "show",
+			"gridDisplay" => ".DEFAULT",
+			"gridSortable" => ".DEFAULT",
+			"gridSearchable" => ".DEFAULT",
+			"gridPageable" => ".DEFAULT",
+			"gridPageSize" => ".DEFAULT"
 			);
 
 	var $panels = array();
@@ -3054,13 +3059,6 @@ class reportico extends reportico_object
         // Set charting engine 
         $smarty->assign('REPORTICO_CHARTING_ENGINE', $this->charting_engine_html);
 
-        // Set grid mode
-        $smarty->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
-        $smarty->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
-        $smarty->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
-        $smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
-        $smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
-
         // Set on/off template elements
         foreach ( $this->output_template_parameters as $k => $v )
         {
@@ -3920,6 +3918,20 @@ class reportico extends reportico_object
 				load_mode_language_pack("languages", $this->output_charset);
 				$this->initialize_panels($mode);
 				$this->handle_xml_query_input($mode);
+
+                // Set Grid display options based on report and session defaults
+		        if ( $this->attributes["gridDisplay"] != ".DEFAULT" ) $this->dynamic_grids =  ( $this->attributes["gridDisplay"] == "show" ) ;
+		        if ( $this->attributes["gridSortable"] != ".DEFAULT" ) $this->dynamic_grids_sortable =  ( $this->attributes["gridSortable"] == "yes" ) ;
+		        if ( $this->attributes["gridSearchable"] != ".DEFAULT" ) $this->dynamic_grids_searchable =  ( $this->attributes["gridSearchable"] == "yes" ) ;
+		        if ( $this->attributes["gridPageable"] != ".DEFAULT" ) $this->dynamic_grids_paging =  ( $this->attributes["gridPageable"] == "yes" ) ;
+		        if ( $this->attributes["gridPageSize"] != ".DEFAULT" && $this->attributes["gridPageSize"] ) $this->dynamic_grids_page_size =  $this->attributes["gridPageSize"];
+
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
+
 				$g_code_area = "Main Query";
 				$this->build_query(false, "");
 				$g_code_area = false;
