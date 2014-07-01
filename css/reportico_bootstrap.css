@@ -154,6 +154,11 @@ td.loading *, div.loading * {
     opacity: .9;
 }
 
+div.modal-loading {
+    background-image: url('../images/loading.gif');
+    background-position:  center;
+    background-repeat: no-repeat;
+}
 
 
 .swAdminBanner
@@ -701,6 +706,19 @@ input.swAdminButton2
 .swXMLBox { background-image: url(../images/printxml.png) !important; }
 .swPrintBox { background-image: url(../images/printablehtml.png) !important; }
 
+.swMiniMaintain
+{
+    height: 30px !important;
+    text-align: left;
+    padding: 0px;
+    margin-bottom: 5px !important;
+    background-repeat: no-repeat;
+    background-color: #ffffff;
+    text-decoration: none;
+    border:none !important;
+}
+.swMiniMaintain { background-image: url(../images/icons/pencil-2x.png) !important; }
+
 .swRepRefreshBox,
 .swRepPrintBox,
 .swRepBackBox
@@ -924,7 +942,7 @@ input.swAdminButton2
     padding: 5px;
     background-color: inherit;
     color: #555;
-    width: 180px !important;
+    width: 225px !important;
     text-align: left;
     
 }
@@ -936,7 +954,7 @@ input.swAdminButton2
     padding: 5px;
     background-color: inherit;
     color: #555;
-    width: 180px !important;
+    width: 225px !important;
     text-align: left;
 }
 

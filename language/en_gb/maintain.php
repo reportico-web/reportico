@@ -3,7 +3,7 @@ $locale_arr = array (
     "language" => "English",
     "template" => array (
         // Maintenance Buttons
-        "T_OK" => "Ok",
+        "T_OK" => "Apply",
         "T_ADD" => "Add",
 
         // Maintenance Tabs

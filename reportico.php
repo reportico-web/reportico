@@ -3188,7 +3188,7 @@ class reportico extends reportico_object
 
 		if ( $mode == "MAINTAIN" )
 		{
-			$this->panels["MAINTAIN"]->set_visibility(true);
+		    $this->panels["MAINTAIN"]->set_visibility(true);
 			//$this->panels["FORM"]->add_panel($this->panels["MAINTAIN"]);
 		}
 
@@ -4086,6 +4086,7 @@ class reportico extends reportico_object
 					set_reportico_session_param("xmlintext",$this->xmlintext);
 
 					$text = $this->panels["BODY"]->draw_smarty();
+				    $this->panels["MAIN"]->smarty->assign('PARTIALMAINTAIN', get_request_item("partialMaintain", false ));
 					$this->panels["MAIN"]->smarty->assign('CONTENT', $text);
                     if ( $this->user_template )
                         $this->panels["MAIN"]->smarty->display($this->user_template.'_maintain.tpl');

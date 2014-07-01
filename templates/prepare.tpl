@@ -314,7 +314,20 @@
 	</TABLE>
 {/if}
 {/if}
-<h1 class="swTitle">{$TITLE}</h1>
+{if $LOGIN_TYPE == "DESIGN"}
+<div style="width: 100%; padding-top: 3px; text-align: right">
+    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITSQL}" id="submit_mainquerqury_SHOW" value="{$T_EDITSQL}" name="mainquerqurysqlt_QuerySql">
+    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITCOLUMNS}" id="submit_mainquerquryqcol0000_SHOW" value="{$T_EDITCOLUMNS}" name="mainquerquryqcol0000_ANY">
+    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITASSIGNMENT}" id="submit_mainquerassg{$criterianumber}" value="{$T_EDITASSIGNMENT}" name="mainquerassg{$criterianumber}_ANY">
+    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITGROUPS}" id="submit_mainqueroutpgrps{$criterianumber}" value="{$T_EDITGROUPS}" name="mainqueroutpgrps{$criterianumber}_ANY">
+    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITGRAPHS}" id="submit_mainqueroutpgrps{$criterianumber}" value="{$T_EDITGRAPHS}" name="mainqueroutpgrps{$criterianumber}_ANY">
+</div>
+{/if}
+<h1 class="swTitle" >{$TITLE}
+{if $LOGIN_TYPE == "DESIGN"}
+    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITTITLE}" id="submit_mainquerform_SHOW" value="{$T_SQL}" name="mainquerform_ReportTitle">
+{/if}
+</h1>
 {if $SHOW_CRITERIA}
     <div style="display: none">
 										&nbsp;
@@ -419,14 +432,27 @@
 			<div id="swPrpSubmitPane">
     				<input type="submit" class="{$BOOTSTRAP_STYLE_GO_BUTTON}prepareAjaxExecute swHTMLGoBox" id="prepareAjaxExecute" name="submitPrepare" value="{$T_GO}">
     				<input type="submit" class="{$BOOTSTRAP_STYLE_RESET_BUTTON}reporticoSubmit" name="clearform" value="{$T_RESET}">
+{if $LOGIN_TYPE == "DESIGN"}
+<div style="float: left">
+    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITCRITERIA}" id="submit_mainquercrit{$criterianumber}" value="{$T_EDITCRITERIA}" name="mainquercrit{$criterianumber}_ANY">
+</div>
+{/if}
                     &nbsp;
 			</div>
 
                 <TABLE class="swPrpCritEntryBox">
+{php}
+$loopct = 0;
+{/php}
 {if isset($CRITERIA_ITEMS)}
 {section name=critno loop=$CRITERIA_ITEMS}
                     <tr class="swPrpCritLine" id="criteria_{$CRITERIA_ITEMS[critno].name}">
                         <td class='swPrpCritTitle'>
+{php}
+$itemval = str_pad($loopct, 4, '0', STR_PAD_LEFT);
+$this->assign('criterianumber', $itemval);
+$loopct++;
+{/php}
                             {$CRITERIA_ITEMS[critno].title}
                         </td>
                         <td class="swPrpCritSel">
@@ -509,6 +535,43 @@
 </div>
 			<!---->
 
+{if $BOOTSTRAP_STYLES}
+<div class="modal fade" id="reporticoModal" tabindex="-1" role="dialog" aria-labelledby="reporticoModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+            <button type="button" class="close reportico-bootstrap-modal-close" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="myModalLabel">Set Parameter</h4>
+            </div>
+            <div class="modal-body" style="padding: 0px" id="swMiniMaintain">
+                <h3>Modal Body</h3>
+            </div>
+            <div class="modal-footer">
+                <!--button type="button" class="btn btn-default" data-dismiss="modal">Close</button-->
+                <button type="button" class="btn btn-primary swMiniMaintainSubmit" >Close</button>
+        </div>
+    </div>
+  </div>
+</div>
+{else}
+<div id="reporticoModal" tabindex="-1" class="reportico-modal">
+    <div class="reportico-modal-dialog">
+        <div class="reportico-modal-content">
+            <div class="reportico-modal-header">
+            <button type="button" class="reportico-modal-close">&times;</button>
+            <h4 class="reportico-modal-title" id="reporticoModalLabel">Set Parameter</h4>
+            </div>
+            <div class="reportico-modal-body" style="padding: 0px" id="swMiniMaintain">
+                <h3>Modal Body</h3>
+            </div>
+            <div class="reportico-modal-footer">
+                <!--button type="button" class="btn btn-default" data-dismiss="modal">Close</button-->
+                <button type="button" class="btn btn-primary swMiniMaintainSubmit" >Close</button>
+        </div>
+    </div>
+  </div>
+</div>
+{/if}
 </FORM>
 <!--div class="smallbanner">Powered by <a href="http://www.reportico.org/" target="_blank">reportico {$REPORTICO_VERSION}</a></div-->
 </div>

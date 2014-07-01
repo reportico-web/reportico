@@ -2978,6 +2978,21 @@ class reportico_xml_reader
 	{
 		$text = "";
         $in_value = template_xlate($in_value);
+
+        // Only draw horizontal tab buttons if not mini maintain or they are relevant to tag
+        if ( $partialMaintain = get_request_item("partialMaintain", false ) )
+        {
+            if ( preg_match("/_ANY$/", $partialMaintain)  )
+            {
+                $match1 = preg_replace("/_ANY/", "", $partialMaintain);
+                $match2 = substr($in_tag, 0, strlen($match1));
+                if ( $match1 != $match2 || $match1 == $in_tag)
+                    return $text;
+            }
+            else
+          return $text;
+        }
+    
 		if ( !$this->is_showing($in_tag ) )
 		{
             
@@ -3127,6 +3142,8 @@ class reportico_xml_reader
 					case "CogModule":
 						$this->id = "main";
 						$text .= '<TABLE class="swMntMainBox">';
+                        if ( get_request_item("partialMaintain", false ) )
+		                    break;
 						global $g_project;
 		                		$text .= '<TR>';
 						$text .= '<TD colspan="2">';
@@ -3902,6 +3919,16 @@ class reportico_xml_reader
 	function & display_maintain_field($tag, $val, &$tagct, $translate = true, $overridetitle = false, $toggleclass = false, $togglestate = false)
 	{
 		$text = "";
+		$striptag = preg_replace("/ .*/", "", $tag);
+		$showtag = preg_replace("/ /", "_", $tag);
+        $partialMaintain = get_request_item("partialMaintain", false );
+        if ( $partialMaintain )
+        {
+            $x = $this->id . "_" . $showtag;
+            if ( $partialMaintain != $x && !preg_match("/_ANY/", $partialMaintain ) )
+                return $text;
+        }
+
 		$text .= "\n<!-- SETFIELD-->";
 		$text .= '<TR';
         if ( $toggleclass ) 
@@ -3918,8 +3945,6 @@ class reportico_xml_reader
 		$edit_mode = "FULL";
 		$tagvals = array();
 
-		$striptag = preg_replace("/ .*/", "", $tag);
-		$showtag = preg_replace("/ /", "_", $tag);
 		$subtitle = "";
 		if ( preg_match("/ /", $tag ) )
 			$subtitle = preg_replace("/.* /", " ", $tag);
@@ -4190,7 +4215,16 @@ class reportico_xml_reader
 			$text .= '&nbsp;';
 		$text .= '</TD>';
 
-		if ( $tagct == 1 )
+        if ( $partial = get_request_item("partialMaintain", false ) )
+        {
+            $arr = explode("_" ,$partial);
+            if ( count($arr) > 1 )
+            {
+                $partial = $arr[1];
+            }
+        }
+
+		if ( $tagct == 1 || ( $partial == $tag && $partial != "ANY" ) )
 		{
 			$text .= "\n<!-- TAG 1-->";
 			$text .= '<TD colspan="1">';

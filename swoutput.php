@@ -48,6 +48,7 @@ class reportico_report extends reportico_object
 	var	$last_line = false;
 	var	$query;
 	var	$reporttitle;
+	var	$reportfilename;
 	var	$body_display = "show";
 	var	$graph_display = "show";
 	var	$page_started = false;

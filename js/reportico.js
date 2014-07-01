@@ -30,6 +30,13 @@ function setupDatePickers()
     });
 }
 
+function setupModals()
+{
+var options = {
+}
+    reportico_jquery('#reporticoModal').modal(options);
+}
+
 function setupDropMenu()
 {
     if ( reportico_jquery('ul.jd_menu').length != 0  )
@@ -101,6 +108,143 @@ reportico_jquery(document).ready(function()
     setupDynamicGrids();
 });
 
+reportico_jquery(document).on('click', '.reportico-bootstrap-modal-close', function(event) 
+{
+    reportico_jquery("#swMiniMaintain").html("");
+    reportico_jquery('#reporticoModal').modal('hide');
+    reportico_jquery('.modal-backdrop').remove();
+});
+
+reportico_jquery(document).on('click', '.reportico-modal-close', function(event) 
+{
+    reportico_jquery("#swMiniMaintain").html("");
+    reportico_jquery('#reporticoModal').hide();
+});
+
+reportico_jquery(document).on('click', '.swMiniMaintainSubmit', function(event) 
+{
+
+    if ( reportico_jquery(this).hasClass("btn" )  )
+        var loadpanel = reportico_jquery("#reporticoModal .modal-dialog .modal-content .modal-header");
+    else
+        var loadpanel = reportico_jquery("#reporticoModal .reportico-modal-dialog .reportico-modal-content .reportico-modal-header");
+
+	var expandpanel = reportico_jquery('#swPrpExpandCell');
+    reportico_jquery(loadpanel).addClass("modal-loading");
+
+    forms = reportico_jquery(this).closest('.swMntForm,.swPrpForm,form');
+    if (    reportico_jquery.type(reportico_ajax_script) === 'undefined' )
+    {
+        var ajaxaction = reportico_jquery(forms).prop("action");
+    }
+    else
+    {
+        ajaxaction = reportico_ajax_script;
+    }
+
+	params = forms.serialize();
+    params += "&" + reportico_jquery(this).prop("name") + "=1";
+    params += "&reportico_ajax_called=1";
+    params += "&execute_mode=PREPARE";
+
+    if ( reportico_jquery(this).hasClass("btn" )  )
+        reporticobootstrapbutton = true;
+    else
+        reporticobootstrapbutton = false;
+
+    var cont = this;
+    reportico_jquery.ajax({
+        type: 'POST',
+        url: ajaxaction,
+        data: params,
+        dataType: 'html',
+        success: function(data, status) 
+        {
+          reportico_jquery(loadpanel).removeClass("modal-loading");
+          reportico_jquery("#swMiniMaintain").html("");
+          if ( reporticobootstrapbutton )
+          {
+            reportico_jquery('#reporticoModal').modal('hide');
+            reportico_jquery('.modal-backdrop').remove();
+          }
+          else
+            reportico_jquery('#reporticoModal').hide();
+
+          //reportico_jquery(reportico_container).removeClass("loading");
+          fillDialog(data, cont);
+        },
+        error: function(xhr, desc, err) {
+          reportico_jquery("#swMiniMaintain").html("");
+          reportico_jquery('#reporticoModal').modal('hide');
+          reportico_jquery('.modal-backdrop').remove();
+          //$('#modalwindow').modal('hide');
+          reportico_jquery(loadpanel).removeClass("modal-loading");
+          //reportico_jquery(reportico_container).removeClass("loading");
+          reportico_jquery(loadpanel).prop('innerHTML',"Ajax Error: " + xhr + "\nTextStatus: " + desc + "\nErrorThrown: " + err);
+        }
+      });
+      return false;
+});
+
+/*
+** Trigger AJAX request for reportico button/link press if running in AJAX mode
+** AJAX mode is in place when reportico session ("reportico_ajax_script") is set
+** will generate full reportico output to replace the reportico_container tag
+*/
+
+reportico_jquery(document).on('click', '.swMiniMaintain', function(event) 
+{
+	var expandpanel = reportico_jquery(this).closest('#criteriaform').find('#swPrpExpandCell');
+    var reportico_container = reportico_jquery(this).closest("#reportico_container");
+
+    reportico_jquery(expandpanel).addClass("loading");
+    forms = reportico_jquery(this).closest('.swMntForm,.swPrpForm,form');
+    if (    reportico_jquery.type(reportico_ajax_script) === 'undefined' )
+    {
+        var ajaxaction = reportico_jquery(forms).prop("action");
+    }
+    else
+    {
+        ajaxaction = reportico_ajax_script;
+    }
+
+    if ( reportico_jquery(this).hasClass("btn" )  )
+        reporticobootstrapbutton = true;
+    else
+        reporticobootstrapbutton = false;
+
+    maintainButton = reportico_jquery(this).prop("name"); 
+    reportico_jquery(".reportico-modal-title").html(reportico_jquery(this).prop("title")); 
+    bits = maintainButton.split("_");
+    params="execute_mode=MAINTAIN&partialMaintain=" + maintainButton + "&partial_template=mini&submit_" + bits[0] + "_SHOW=1";
+
+    reportico_jquery.ajax({
+        type: 'POST',
+        url: ajaxaction,
+        data: params,
+        dataType: 'html',
+        success: function(data, status) 
+        {
+          reportico_jquery(expandpanel).removeClass("loading");
+          reportico_jquery(reportico_container).removeClass("loading");
+          if ( reporticobootstrapbutton )
+            setupModals();
+          else
+            reportico_jquery("#reporticoModal").show();
+          reportico_jquery("#swMiniMaintain").html(data);
+          x = reportico_jquery(".swMntButton").prop("name");
+          reportico_jquery(".swMiniMaintainSubmit").prop("id", x);
+        },
+        error: function(xhr, desc, err) {
+          reportico_jquery(expandpanel).removeClass("loading");
+          reportico_jquery(reportico_container).removeClass("loading");
+          reportico_jquery(expandpanel).prop('innerHTML',"Ajax Error: " + xhr + "\nTextStatus: " + desc + "\nErrorThrown: " + err);
+        }
+      });
+
+    return false;
+
+})
 
 /*
 ** Trigger AJAX request for reportico button/link press if running in AJAX mode
@@ -111,6 +255,61 @@ reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenu
 {
     if ( reportico_jquery(this).hasClass("swNoSubmit" )  )
     {
+        return false;
+    }
+
+    if ( reportico_jquery(this).parents("#swMiniMaintain").length == 1 ) 
+    {
+	    var expandpanel = reportico_jquery(this).closest('#criteriaform').find('#swPrpExpandCell');
+        if ( reportico_jquery(this).hasClass("btn" )  )
+            var loadpanel = reportico_jquery("#reporticoModal .modal-dialog .modal-content .modal-header");
+        else
+            var loadpanel = reportico_jquery("#reporticoModal .reportico-modal-dialog .reportico-modal-content .reportico-modal-header");
+        var reportico_container = reportico_jquery(this).closest("#reportico_container");
+
+        reportico_jquery(loadpanel).addClass("modal-loading");
+        forms = reportico_jquery(this).closest('.swMntForm,.swPrpForm,form');
+        if (    reportico_jquery.type(reportico_ajax_script) === 'undefined' )
+        {
+            var ajaxaction = reportico_jquery(forms).prop("action");
+        }
+        else
+        {
+            ajaxaction = reportico_ajax_script;
+        }
+
+        params = forms.serialize();
+           
+        maintainButton = reportico_jquery(this).prop("name"); 
+        params += "&execute_mode=MAINTAIN&partial_template=mini";
+        params += "&" + reportico_jquery(this).prop("name") + "=1";
+        params += "&reportico_ajax_called=1";
+
+        if ( reportico_jquery(this).hasClass("btn" )  )
+            reporticobootstrapbutton = true;
+        else
+            reporticobootstrapbutton = false;
+
+        reportico_jquery.ajax({
+            type: 'POST',
+            url: ajaxaction,
+            data: params,
+            dataType: 'html',
+            success: function(data, status) 
+            {
+              reportico_jquery(loadpanel).removeClass("modal-loading");
+              if ( reporticobootstrapbutton )
+                setupModals();
+              reportico_jquery("#swMiniMaintain").html(data);
+              x = reportico_jquery(".swMntButton").prop("name");
+              reportico_jquery(".swMiniMaintainSubmit").prop("id", x);
+            },
+            error: function(xhr, desc, err) {
+              reportico_jquery(loadpanel).removeClass("modal-loading");
+              reportico_jquery(expandpanel).prop('innerHTML',"Ajax Error: " + xhr + "\nTextStatus: " + desc + "\nErrorThrown: " + err);
+            }
+          });
+
         return false;
     }
 

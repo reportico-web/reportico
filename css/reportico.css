@@ -139,6 +139,11 @@ td.loading *, div.loading * {
     opacity: .9;
 }
 
+div.modal-loading {
+    background-image: url('../images/loading.gif');
+    background-position:  center;
+    background-repeat: no-repeat;
+}
 
 
 .swAdminBanner
@@ -667,6 +672,19 @@ a:visited
 .swXMLBox { background-image: url(../images/printxml.png) !important; }
 .swPrintBox { background-image: url(../images/printablehtml.png) !important; }
 
+.swMiniMaintain
+{
+    height: 30px !important;
+    text-align: left;
+    padding-left: 10px;
+    margin-bottom: 5px !important;
+    background-repeat: no-repeat;
+    background-color: #ffffff;
+    text-decoration: none;
+    border:none !important;
+}
+.swMiniMaintain { background-image: url(../images/icons/pencil-2x.png) !important; }
+
 .swRepRefreshBox,
 .swRepPrintBox,
 .swRepBackBox
@@ -1099,3 +1117,87 @@ a:visited
 {
     margin-bottom: 0px;
 }
+
+.reportico-modal-title
+{
+    margin: 0;
+    line-height: 1.42857143;
+    font-size: 18px;
+    display: block;
+}
+
+.reportico-modal-close
+{
+padding: 0;
+cursor: pointer;
+background: transparent;
+border: 0;
+-webkit-appearance: none;
+float: right;
+font-size: 21px;
+font-weight: bold;
+line-height: 1;
+color: #000;
+text-shadow: 0 1px 0 #fff;
+opacity: .2;
+}
+
+.reportico-modal
+{
+display: none;
+overflow: auto;
+overflow-y: scroll;
+position: fixed;
+top: 0;
+right: 0;
+bottom: 0;
+left: 0;
+z-index: 1050;
+outline: 0;
+display: none;
+}
+
+.reportico-modal-header
+{
+padding: 15px;
+border-bottom: 1px solid #e5e5e5;
+min-height: 16.42857143px;
+font-size: 14px;
+line-height: 1.42857143;
+color: #333;
+}
+
+.reportico-modal-dialog
+{
+margin: 30px auto;
+position: relative;
+width: 900px;
+}
+
+.reportico-modal-body
+{
+    position: relative;
+    padding: 20px;
+}
+
+.reportico-modal-content
+{
+position: relative;
+background-color: #fff;
+border: 1px solid #999;
+border: 1px solid rgba(0,0,0,0.2);
+border-radius: 6px;
+-webkit-box-shadow: 0 3px 9px rgba(0,0,0,0.5);
+box-shadow: 0 3px 9px rgba(0,0,0,0.5);
+background-clip: padding-box;
+outline: none;
+}
+
+.reportico-modal-footer
+{
+margin-top: 15px;
+padding: 19px 20px 20px;
+text-align: right;
+border-top: 1px solid #e5e5e5;
+}
+

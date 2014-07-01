@@ -15,7 +15,6 @@
 {$OUTPUT_ENCODING}
 </HEAD>
 <BODY class="swMntBody">
-<p>
 {else}
 <LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEET}">
 {if $BOOTSTRAP_STYLES}
