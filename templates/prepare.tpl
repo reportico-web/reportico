@@ -541,7 +541,7 @@ $loopct++;
         <div class="modal-content">
             <div class="modal-header">
             <button type="button" class="close reportico-bootstrap-modal-close" aria-hidden="true">&times;</button>
-            <h4 class="modal-title" id="myModalLabel">Set Parameter</h4>
+            <h4 class="modal-title reportico-modal-title" id="reporticoModalLabel">Set Parameter</h4>
             </div>
             <div class="modal-body" style="padding: 0px" id="swMiniMaintain">
                 <h3>Modal Body</h3>
