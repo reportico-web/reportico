@@ -713,9 +713,11 @@ input.swAdminButton2
     padding: 0px;
     margin-bottom: 5px !important;
     background-repeat: no-repeat;
-    background-color: #ffffff;
+    background-color: #ffffff !important;
     text-decoration: none;
     border:none !important;
+    background-position: 0px 0px !important;
+    background-repeat: no-repeat !important;
 }
 .swMiniMaintain { background-image: url(../images/icons/pencil-2x.png) !important; }
 

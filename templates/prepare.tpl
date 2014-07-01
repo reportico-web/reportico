@@ -536,8 +536,13 @@ $loopct++;
 			<!---->
 
 {if $BOOTSTRAP_STYLES}
+{if $BOOTSTRAP_STYLES == "3" }
 <div class="modal fade" id="reporticoModal" tabindex="-1" role="dialog" aria-labelledby="reporticoModal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
+{else}
+<div class="modal fade" style="width: 900px; margin-left: -450px" id="reporticoModal" tabindex="-1" role="dialog" aria-labelledby="reporticoModal" aria-hidden="true">
+    <div class="modal-dialog">
+{/if}
         <div class="modal-content">
             <div class="modal-header">
             <button type="button" class="close reportico-bootstrap-modal-close" aria-hidden="true">&times;</button>
@@ -566,7 +571,7 @@ $loopct++;
             </div>
             <div class="reportico-modal-footer">
                 <!--button type="button" class="btn btn-default" data-dismiss="modal">Close</button-->
-                <button type="button" class="btn btn-primary swMiniMaintainSubmit" >Close</button>
+                <button type="button" class="swMiniMaintainSubmit" >Close</button>
         </div>
     </div>
   </div>
