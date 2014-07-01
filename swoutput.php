@@ -161,8 +161,8 @@ class reportico_report extends reportico_object
 		$this->line_count = 0;
 		$this->page_count = 0;
 		$this->debug("Base Start **");
-		$this->reporttitle = $this->query->derive_attribute("ReportTitle", 
-					"Set Report Title");
+		$this->reporttitle = $this->query->derive_attribute("ReportTitle", "Set Report Title");
+		$this->reportfilename = $this->reporttitle;
 		$pos = 5;
 	}
 
@@ -171,7 +171,8 @@ class reportico_report extends reportico_object
 	{
 		$this->last_line = true;
 		$this->debug("Base finish");
-		$this->after_group_trailers();
+		if ( get_reportico_session_param("target_show_group_trailers") )
+		    $this->after_group_trailers();
 		if ( $this->page_count > 0 )
 			$this->finish_page();
 
@@ -1252,8 +1253,8 @@ class reportico_report_pdf extends reportico_report
 			header("Content-Length: $len");
 			header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
             $attachfile = "reportico.pdf";
-            if ( $this->reporttitle )
-                $attachfile = preg_replace("/ /", "_", $this->reporttitle.".pdf");
+            if ( $this->reportfilename )
+                $attachfile = preg_replace("/ /", "_", $this->reportfilename.".pdf");
 			header('Content-Disposition: attachment;filename='.$attachfile);
 
 
@@ -1591,6 +1592,7 @@ class reportico_report_pdf extends reportico_report
 
 	function format_page_header_start() // PDF
 	{
+		$this->reporttitle = $this->query->derive_attribute("ReportTitle", "Set Report Title");
                     
         // Add custom image here
         if ( defined("PDF_HEADER_IMAGE") )
