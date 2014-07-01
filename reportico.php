@@ -3240,6 +3240,7 @@ class reportico extends reportico_object
 				$smarty->assign('SHOW_SET_ADMIN_PASSWORD', false);
 		} 
 
+		$smarty->assign('LOGIN_TYPE', "NORMAL");
 		{
 			set_reportico_session_param("loggedin",true);
 			if ( $this->login_check($smarty) )
@@ -3253,6 +3254,7 @@ class reportico extends reportico_object
 				$this->panels["USERINFO"]->set_visibility(true);
 				$this->panels["FORM"]->set_visibility(true);
 
+		        $smarty->assign('LOGIN_TYPE', $this->login_type);
 				if ( $this->login_type == "DESIGN" )
 				{
 					$this->panels["RUNMODE"]->set_visibility(true);
@@ -3328,6 +3330,10 @@ class reportico extends reportico_object
 
 			}
 		}
+
+        // Turn off design mode if login type anything except design
+        if ( $this->login_type != "DESIGN" )
+		    $this->panels["MAINTAIN"]->set_visibility(false);
 	}
 
 	// -----------------------------------------------------------------------------
@@ -4081,7 +4087,10 @@ class reportico extends reportico_object
 
 					$text = $this->panels["BODY"]->draw_smarty();
 					$this->panels["MAIN"]->smarty->assign('CONTENT', $text);
-					$this->panels["MAIN"]->smarty->display('maintain.tpl');
+                    if ( $this->user_template )
+                        $this->panels["MAIN"]->smarty->display($this->user_template.'_maintain.tpl');
+                    else
+                        $this->panels["MAIN"]->smarty->display('maintain.tpl');
 				}
 				else
 				{
