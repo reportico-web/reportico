@@ -112,7 +112,6 @@ reportico_jquery(document).on('click', '.reportico-bootstrap-modal-close', funct
 {
     reportico_jquery("#swMiniMaintain").html("");
     reportico_jquery('#reporticoModal').modal('hide');
-    reportico_jquery('.modal-backdrop').remove();
 });
 
 reportico_jquery(document).on('click', '.reportico-modal-close', function(event) 
@@ -161,14 +160,15 @@ reportico_jquery(document).on('click', '.swMiniMaintainSubmit', function(event)
         success: function(data, status) 
         {
           reportico_jquery(loadpanel).removeClass("modal-loading");
-          reportico_jquery("#swMiniMaintain").html("");
           if ( reporticobootstrapbutton )
           {
             reportico_jquery('#reporticoModal').modal('hide');
             reportico_jquery('.modal-backdrop').remove();
+            reportico_jquery('.swPrpBody').removeClass('modal-open');
           }
           else
             reportico_jquery('#reporticoModal').hide();
+          reportico_jquery("#swMiniMaintain").html("");
 
           //reportico_jquery(reportico_container).removeClass("loading");
           fillDialog(data, cont);
@@ -177,9 +177,7 @@ reportico_jquery(document).on('click', '.swMiniMaintainSubmit', function(event)
           reportico_jquery("#swMiniMaintain").html("");
           reportico_jquery('#reporticoModal').modal('hide');
           reportico_jquery('.modal-backdrop').remove();
-          //$('#modalwindow').modal('hide');
           reportico_jquery(loadpanel).removeClass("modal-loading");
-          //reportico_jquery(reportico_container).removeClass("loading");
           reportico_jquery(loadpanel).prop('innerHTML',"Ajax Error: " + xhr + "\nTextStatus: " + desc + "\nErrorThrown: " + err);
         }
       });
