@@ -314,17 +314,17 @@
 	</TABLE>
 {/if}
 {/if}
-{if $LOGIN_TYPE == "DESIGN"}
+{if $SHOW_MINIMAINTAIN} 
 <div style="width: 100%; padding-top: 3px; text-align: right">
     				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITSQL}" id="submit_mainquerqury_SHOW" value="{$T_EDITSQL}" name="mainquerqurysqlt_QuerySql">
     				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITCOLUMNS}" id="submit_mainquerquryqcol0000_SHOW" value="{$T_EDITCOLUMNS}" name="mainquerquryqcol0000_ANY">
     				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITASSIGNMENT}" id="submit_mainquerassg{$criterianumber}" value="{$T_EDITASSIGNMENT}" name="mainquerassg{$criterianumber}_ANY">
     				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITGROUPS}" id="submit_mainqueroutpgrps{$criterianumber}" value="{$T_EDITGROUPS}" name="mainqueroutpgrps{$criterianumber}_ANY">
-    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITGRAPHS}" id="submit_mainqueroutpgrps{$criterianumber}" value="{$T_EDITGRAPHS}" name="mainqueroutpgrps{$criterianumber}_ANY">
+    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITGRAPHS}" id="submit_mainqueroutpgrph{$criterianumber}" value="{$T_EDITGRAPHS}" name="mainqueroutpgrph{$criterianumber}_ANY">
 </div>
 {/if}
 <h1 class="swTitle" >{$TITLE}
-{if $LOGIN_TYPE == "DESIGN"}
+{if $SHOW_MINIMAINTAIN} 
     				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITTITLE}" id="submit_mainquerform_SHOW" value="{$T_SQL}" name="mainquerform_ReportTitle">
 {/if}
 </h1>
@@ -432,7 +432,7 @@
 			<div id="swPrpSubmitPane">
     				<input type="submit" class="{$BOOTSTRAP_STYLE_GO_BUTTON}prepareAjaxExecute swHTMLGoBox" id="prepareAjaxExecute" name="submitPrepare" value="{$T_GO}">
     				<input type="submit" class="{$BOOTSTRAP_STYLE_RESET_BUTTON}reporticoSubmit" name="clearform" value="{$T_RESET}">
-{if $LOGIN_TYPE == "DESIGN"}
+{if $SHOW_MINIMAINTAIN} 
 <div style="float: left">
     				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITCRITERIA}" id="submit_mainquercrit{$criterianumber}" value="{$T_EDITCRITERIA}" name="mainquercrit{$criterianumber}_ANY">
 </div>
@@ -535,6 +535,7 @@ $loopct++;
 </div>
 			<!---->
 
+{if $SHOW_MINIMAINTAIN} 
 {if $BOOTSTRAP_STYLES}
 {if $BOOTSTRAP_STYLES == "3" }
 <div class="modal fade" id="reporticoModal" tabindex="-1" role="dialog" aria-labelledby="reporticoModal" aria-hidden="true">
@@ -576,6 +577,7 @@ $loopct++;
     </div>
   </div>
 </div>
+{/if}
 {/if}
 </FORM>
 <!--div class="smallbanner">Powered by <a href="http://www.reportico.org/" target="_blank">reportico {$REPORTICO_VERSION}</a></div-->

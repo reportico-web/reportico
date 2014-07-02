@@ -1807,7 +1807,6 @@ class reportico extends reportico_object
 	// -----------------------------------------------------------------------------
 	function login_check($smarty)
 	{
-
 		global $g_project;
 		
 		if ( !$this->datasource )
@@ -3011,7 +3010,6 @@ class reportico extends reportico_object
         {
             $smarty->assign('SHOW_ADMIN_BUTTON', false);
         }
-
 	    	
         $partialajaxpath = find_best_location_in_include_path( "partial.php" );
 		$smarty->assign('AJAX_PARTIAL_RUNNER', $this->reportico_url_path.$partialajaxpath );
@@ -3240,7 +3238,7 @@ class reportico extends reportico_object
 				$smarty->assign('SHOW_SET_ADMIN_PASSWORD', false);
 		} 
 
-		$smarty->assign('LOGIN_TYPE', "NORMAL");
+		$smarty->assign('SHOW_MINIMAINTAIN', false);
 		{
 			set_reportico_session_param("loggedin",true);
 			if ( $this->login_check($smarty) )
@@ -3254,7 +3252,11 @@ class reportico extends reportico_object
 				$this->panels["USERINFO"]->set_visibility(true);
 				$this->panels["FORM"]->set_visibility(true);
 
-		        $smarty->assign('LOGIN_TYPE', $this->login_type);
+                // Show quick edit/mini maintain elements if in design or demo mode 
+                // unless the report is a reportico configuration report
+                if ( $this->login_type == "DESIGN" || $this->access_mode == "DEMO" )
+		            $smarty->assign('SHOW_MINIMAINTAIN', true);
+
 				if ( $this->login_type == "DESIGN" )
 				{
 					$this->panels["RUNMODE"]->set_visibility(true);
@@ -3897,6 +3899,7 @@ class reportico extends reportico_object
                     // If configuring project then use project language strings from admin project
                     // found in projects/admin/lang.php
                     load_project_language_pack("admin", $this->output_charset);
+				    $this->panels["MAIN"]->smarty->assign('SHOW_MINIMAINTAIN', false);
                 }
 				load_mode_language_pack("prepare", $this->output_charset);
                 localise_template_strings($this->panels["MAIN"]->smarty);
@@ -3985,6 +3988,13 @@ class reportico extends reportico_object
 					$title = sw_translate($this->derive_attribute("ReportTitle", "Unknown"));
 					$this->panels["MAIN"]->smarty->assign('TITLE', $title);
 					$this->panels["MAIN"]->smarty->assign('CONTENT', $text);
+                    if ( $this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml" || $this->xmlinput == "createproject.xml" )
+                    {
+                        // If configuring project then use project language strings from admin project
+                        // found in projects/admin/lang.php
+                        load_project_language_pack("admin", $this->output_charset);
+				        $this->panels["MAIN"]->smarty->assign('SHOW_MINIMAINTAIN', false);
+                    }
 				    load_mode_language_pack("languages", $this->output_charset, true);
 					load_mode_language_pack("prepare", $this->output_charset);
                     localise_template_strings($this->panels["MAIN"]->smarty);
@@ -4076,10 +4086,13 @@ class reportico extends reportico_object
 				break;
 				
 			case "MAINTAIN":
+                // Avoid url manipulation by only allowing maintain mode in design or demo mode
 				$this->handle_xml_query_input($mode);
 				if ( $this->top_level_query )
 				{
 					$this->initialize_panels($mode);
+                    if ( !($this->login_type == "DESIGN" || $this->access_mode == "DEMO") )
+                        break;
 				    load_mode_language_pack("maintain", $this->output_charset);
                     localise_template_strings($this->panels["MAIN"]->smarty);
 					$this->xmlin->handle_user_entry();
