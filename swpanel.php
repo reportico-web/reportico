@@ -2470,6 +2470,19 @@ class reportico_xml_reader
 			return $ret;
 	}
 
+	function get_matching_post_item ($match) 
+	{
+			$ret = false;
+			foreach ( $_POST as $k => $v )
+			{
+				if ( preg_match ( $match, $k ) )
+				{
+					return $k;
+				}
+			}
+			return $ret;
+	}
+
 	// Processes the HTML get/post paramters passed through on the maintain screen
 	function handle_user_entry () 
 	{
@@ -2481,7 +2494,7 @@ class reportico_xml_reader
 		$maintain_sql = false;
 		$xmlsavefile = false;
 		$xmldeletefile = false;
-		if ( ( $k = $this->get_matching_request_item("/^submit_/") ) )
+		if ( ( $k = $this->get_matching_post_item("/^submit_/") ) )
 		{
 			// Strip off "_submit"
 			preg_match("/^submit_(.*)/", $k, $match);
@@ -2545,6 +2558,8 @@ class reportico_xml_reader
 
 				case "SAVE":
 					$xmlsavefile = $this->query->xmloutfile;
+                    if ( !$xmlsavefile )
+			            trigger_error ( template_xlate("UNABLE_TO_SAVE").template_xlate("SPECIFYXML"), E_USER_ERROR );
 					break; 
 
 				case "DELETEREPORT":
@@ -2976,6 +2991,7 @@ class reportico_xml_reader
 	// Draws a tab menu item within a horizontal tab menu
 	function & draw_show_hide_tab_button ($in_tag, $in_value = false) 
 	{
+
 		$text = "";
         $in_value = template_xlate($in_value);
 
@@ -2995,7 +3011,6 @@ class reportico_xml_reader
     
 		if ( !$this->is_showing($in_tag ) )
 		{
-            
 			$text .= '<LI class="swMntTabMenuCellUnsel">';
 			//$text .= '<input class="swMntTabMenuBu1tUnsel reporticoSubmit" type="submit" name="submit_'.$in_tag."_SHOW".'" value="'.$in_value.'">';
 			$text .= '<a class="swMntTabMenuBu1tUnsel reporticoSubmit" name="submit_'.$in_tag."_SHOW".'" >';
