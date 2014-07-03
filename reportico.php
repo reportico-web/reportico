@@ -507,7 +507,7 @@ class reportico extends reportico_object
     var $dynamic_grids_paging = false;
     var $dynamic_grids_page_size = 10;
 
-    // In bootstrap enable pages, the bootstrap modal is by default used for the quick edit buttons
+    // In bootstrap enabled pages, the bootstrap modal is by default used for the quick edit buttons
     // but they can be ignored and reportico's own modal invoked by setting this to true
     var $force_reportico_mini_maintains = false;
 

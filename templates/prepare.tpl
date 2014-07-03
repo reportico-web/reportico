@@ -320,7 +320,7 @@
 {/if}
 {/if}
 {if $SHOW_MINIMAINTAIN} 
-{if $SHOW_REPORTICO_MINIMAINTAIN} 
+{if !$REPORTICO_BOOTSTRAP_MODAL}
 <div style="width: 100%; padding-top: 3px; text-align: right">
     				<input type="submit" class="prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITSQL}" id="submit_mainquerqury_SHOW" value="{$T_EDITSQL}" name="mainquerqurysqlt_QuerySql">
     				<input type="submit" class="prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITCOLUMNS}" id="submit_mainquerquryqcol0000_SHOW" value="{$T_EDITCOLUMNS}" name="mainquerquryqcol0000_ANY">
@@ -340,7 +340,7 @@
 {/if}
 <h1 class="swTitle" >{$TITLE}
 {if $SHOW_MINIMAINTAIN} 
-{if $SHOW_REPORTICO_MINIMAINTAIN} 
+{if !$REPORTICO_BOOTSTRAP_MODAL}
     				<input type="submit" class="prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITTITLE}" id="submit_mainquerform_SHOW" value="{$T_SQL}" name="mainquerform_ReportTitle">
 {else}
     				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITTITLE}" id="submit_mainquerform_SHOW" value="{$T_SQL}" name="mainquerform_ReportTitle">
@@ -453,7 +453,7 @@
     				<input type="submit" class="{$BOOTSTRAP_STYLE_RESET_BUTTON}reporticoSubmit" name="clearform" value="{$T_RESET}">
 {if $SHOW_MINIMAINTAIN} 
 <div style="float: left">
-{if $SHOW_REPORTICO_MINIMAINTAIN} 
+{if !$REPORTICO_BOOTSTRAP_MODAL}
     				<input type="submit" class="prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITCRITERIA}" id="submit_mainquercrit{$criterianumber}" value="{$T_EDITCRITERIA}" name="mainquercrit{$criterianumber}_ANY">
 {else}
     				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITCRITERIA}" id="submit_mainquercrit{$criterianumber}" value="{$T_EDITCRITERIA}" name="mainquercrit{$criterianumber}_ANY">
@@ -560,7 +560,7 @@ $loopct++;
 
 </FORM>
 {if $SHOW_MINIMAINTAIN}
-{if $BOOTSTRAP_STYLES && !$SHOW_REPORTICO_MINIMAINTAIN}
+{if $REPORTICO_BOOTSTRAP_MODAL}
 {if $BOOTSTRAP_STYLES == "3" }
 <div class="modal fade" id="reporticoModal" tabindex="-1" role="dialog" aria-labelledby="reporticoModal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
