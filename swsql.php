@@ -533,6 +533,13 @@ class reportico_sql_parser
 				$colexp = $colname;
 			}
 			else
+			if ( preg_match ( "/^[a-zA-Z]$/s", $out_match[2] ) )
+			{
+				$colalias = $out_match[2];
+				$colname = $out_match[1];
+				$colexp = $colname;
+			}
+			else
 			{
 				if ( preg_match("/[^0-9A-Za-z_\r\n\t .]/", $in_string ) )
 				{
