@@ -334,6 +334,8 @@ reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenu
             params += "&reportico_ajax_called=1";
 
             csvpdfoutput = false;
+
+            if (  reportico_jquery(this).prop("name") != "submit_design_mode" )
             reportico_jquery(reportico_container).find("input:radio").each(function() { 
                 d = 0;
                 nm = reportico_jquery(this).prop("value");
