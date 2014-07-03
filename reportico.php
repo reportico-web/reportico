@@ -507,6 +507,10 @@ class reportico extends reportico_object
     var $dynamic_grids_paging = false;
     var $dynamic_grids_page_size = 10;
 
+    // In bootstrap enable pages, the bootstrap modal is by default used for the quick edit buttons
+    // but they can be ignored and reportico's own modal invoked by setting this to true
+    var $force_reportico_mini_maintains = false;
+
 	function reportico()
 	{ 	
 		reportico_object::reportico_object();
@@ -3018,6 +3022,9 @@ class reportico extends reportico_object
         // Set stylesheet to the reportico bootstrap if bootstrap styles in place
         $this->bootstrap_styles = register_session_param("bootstrap_styles", $this->bootstrap_styles);
 
+        // Force reportico modals or decide based on style?
+        $this->force_reportico_mini_maintains = register_session_param("force_reportico_mini_maintains", $this->force_reportico_mini_maintains);
+
         $this->url_path_to_assets = register_session_param("url_path_to_assets", $this->url_path_to_assets);
         $this->jquery_preloaded = register_session_param("jquery_preloaded", $this->jquery_preloaded);
         $this->bootstrap_preloaded = register_session_param("bootstrap_preloaded", $this->bootstrap_preloaded);
@@ -3237,6 +3244,10 @@ class reportico extends reportico_object
 			else
 				$smarty->assign('SHOW_SET_ADMIN_PASSWORD', false);
 		} 
+
+		$smarty->assign('REPORTICO_BOOTSTRAP_MODAL', true);
+        if ( !$this->bootstrap_styles || $this->force_reportico_mini_maintains )
+            $smarty->assign('REPORTICO_BOOTSTRAP_MODAL', false);
 
 		$smarty->assign('SHOW_MINIMAINTAIN', false);
 		{
@@ -4110,7 +4121,6 @@ class reportico extends reportico_object
 				{
 					$this->premaintain_query();
 				}
-				 
 				break;
 				
 			case "XMLOUT":

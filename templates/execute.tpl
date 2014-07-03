@@ -82,6 +82,13 @@
 <script type="text/javascript">var reportico_datepicker_language = "{/literal}{$AJAX_DATEPICKER_FORMAT}{literal}";</script>
 <script type="text/javascript">var reportico_this_script = "{/literal}{$SCRIPT_SELF}{literal}";</script>
 <script type="text/javascript">var reportico_ajax_script = "{/literal}{$REPORTICO_AJAX_RUNNER}{literal}";</script>
+{/literal}
+{if $REPORTICO_BOOTSTRAP_MODAL}
+<script type="text/javascript">var reportico_bootstrap_modal = true;</script>
+{else}
+<script type="text/javascript">var reportico_bootstrap_modal = false;</script>
+{/if}
+{literal}
 <script type="text/javascript">var reportico_ajax_mode = "{/literal}{$REPORTICO_AJAX_MODE}{literal}";</script>
 <script type="text/javascript">var reportico_report_title = "{/literal}{$TITLE}{literal}";</script>
 <script type="text/javascript">var reportico_css_path = "{/literal}{$STYLESHEET}{literal}";</script>

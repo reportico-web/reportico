@@ -1,4 +1,4 @@
-<FORM class="swMntForm" name="topmenu" method="POST" action="{$SCRIPT_SELF}">
+<FORM class="swMiniMntForm" name="topmenu" method="POST" action="{$SCRIPT_SELF}">
 {if ($PARTIALMAINTAIN)} 
     <input type="hidden" name="partialMaintain" value="{$PARTIALMAINTAIN}" />
 {/if}

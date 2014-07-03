@@ -82,6 +82,11 @@
 <script type="text/javascript">var reportico_this_script = "{/literal}{$SCRIPT_SELF}{literal}";</script>
 <script type="text/javascript">var reportico_ajax_script = "{/literal}{$REPORTICO_AJAX_RUNNER}{literal}";</script>
 {/literal}
+{if $REPORTICO_BOOTSTRAP_MODAL}
+<script type="text/javascript">var reportico_bootstrap_modal = true;</script>
+{else}
+<script type="text/javascript">var reportico_bootstrap_modal = false;</script>
+{/if}
 {if $REPORTICO_DYNAMIC_GRIDS}
 <script type="text/javascript">var reportico_dynamic_grids = true;</script>
 {if $REPORTICO_DYNAMIC_GRIDS_SORTABLE}
@@ -315,6 +320,15 @@
 {/if}
 {/if}
 {if $SHOW_MINIMAINTAIN} 
+{if $SHOW_REPORTICO_MINIMAINTAIN} 
+<div style="width: 100%; padding-top: 3px; text-align: right">
+    				<input type="submit" class="prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITSQL}" id="submit_mainquerqury_SHOW" value="{$T_EDITSQL}" name="mainquerqurysqlt_QuerySql">
+    				<input type="submit" class="prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITCOLUMNS}" id="submit_mainquerquryqcol0000_SHOW" value="{$T_EDITCOLUMNS}" name="mainquerquryqcol0000_ANY">
+    				<input type="submit" class="prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITASSIGNMENT}" id="submit_mainquerassg{$criterianumber}" value="{$T_EDITASSIGNMENT}" name="mainquerassg{$criterianumber}_ANY">
+    				<input type="submit" class="prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITGROUPS}" id="submit_mainqueroutpgrps{$criterianumber}" value="{$T_EDITGROUPS}" name="mainqueroutpgrps{$criterianumber}_ANY">
+    				<input type="submit" class="prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITGRAPHS}" id="submit_mainqueroutpgrph{$criterianumber}" value="{$T_EDITGRAPHS}" name="mainqueroutpgrph{$criterianumber}_ANY">
+</div>
+{else}
 <div style="width: 100%; padding-top: 3px; text-align: right">
     				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITSQL}" id="submit_mainquerqury_SHOW" value="{$T_EDITSQL}" name="mainquerqurysqlt_QuerySql">
     				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITCOLUMNS}" id="submit_mainquerquryqcol0000_SHOW" value="{$T_EDITCOLUMNS}" name="mainquerquryqcol0000_ANY">
@@ -323,9 +337,14 @@
     				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITGRAPHS}" id="submit_mainqueroutpgrph{$criterianumber}" value="{$T_EDITGRAPHS}" name="mainqueroutpgrph{$criterianumber}_ANY">
 </div>
 {/if}
+{/if}
 <h1 class="swTitle" >{$TITLE}
 {if $SHOW_MINIMAINTAIN} 
+{if $SHOW_REPORTICO_MINIMAINTAIN} 
+    				<input type="submit" class="prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITTITLE}" id="submit_mainquerform_SHOW" value="{$T_SQL}" name="mainquerform_ReportTitle">
+{else}
     				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITTITLE}" id="submit_mainquerform_SHOW" value="{$T_SQL}" name="mainquerform_ReportTitle">
+{/if}
 {/if}
 </h1>
 {if $SHOW_CRITERIA}
@@ -434,7 +453,11 @@
     				<input type="submit" class="{$BOOTSTRAP_STYLE_RESET_BUTTON}reporticoSubmit" name="clearform" value="{$T_RESET}">
 {if $SHOW_MINIMAINTAIN} 
 <div style="float: left">
+{if $SHOW_REPORTICO_MINIMAINTAIN} 
+    				<input type="submit" class="prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITCRITERIA}" id="submit_mainquercrit{$criterianumber}" value="{$T_EDITCRITERIA}" name="mainquercrit{$criterianumber}_ANY">
+{else}
     				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITCRITERIA}" id="submit_mainquercrit{$criterianumber}" value="{$T_EDITCRITERIA}" name="mainquercrit{$criterianumber}_ANY">
+{/if}
 </div>
 {/if}
                     &nbsp;
@@ -535,8 +558,9 @@ $loopct++;
 </div>
 			<!---->
 
-{if $SHOW_MINIMAINTAIN} 
-{if $BOOTSTRAP_STYLES}
+</FORM>
+{if $SHOW_MINIMAINTAIN}
+{if $BOOTSTRAP_STYLES && !$SHOW_REPORTICO_MINIMAINTAIN}
 {if $BOOTSTRAP_STYLES == "3" }
 <div class="modal fade" id="reporticoModal" tabindex="-1" role="dialog" aria-labelledby="reporticoModal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -579,7 +603,6 @@ $loopct++;
 </div>
 {/if}
 {/if}
-</FORM>
 <!--div class="smallbanner">Powered by <a href="http://www.reportico.org/" target="_blank">reportico {$REPORTICO_VERSION}</a></div-->
 </div>
 {if !$EMBEDDED_REPORT} 

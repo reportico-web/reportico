@@ -171,6 +171,10 @@
     //$q->bootstrap_styles = "3";
     //$q->bootstrap_preloaded = false;
 
+    // In bootstrap enable pages, the bootstrap modal is by default used for the quick edit buttons
+    // but they can be ignored and reportico's own modal invoked by setting this to true
+    //$q->force_reportico_mini_maintains = false;
+
     // Engine to use for charts .. 
     // HTML reports can use javascript charting, PDF reports must use PCHART
     //$q->charting_engine = "PCHART";

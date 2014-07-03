@@ -123,7 +123,7 @@ reportico_jquery(document).on('click', '.reportico-modal-close', function(event)
 reportico_jquery(document).on('click', '.swMiniMaintainSubmit', function(event) 
 {
 
-    if ( reportico_jquery(this).hasClass("btn" )  )
+    if ( reportico_bootstrap_modal )
         var loadpanel = reportico_jquery("#reporticoModal .modal-dialog .modal-content .modal-header");
     else
         var loadpanel = reportico_jquery("#reporticoModal .reportico-modal-dialog .reportico-modal-content .reportico-modal-header");
@@ -146,11 +146,6 @@ reportico_jquery(document).on('click', '.swMiniMaintainSubmit', function(event)
     params += "&reportico_ajax_called=1";
     params += "&execute_mode=PREPARE";
 
-    if ( reportico_jquery(this).hasClass("btn" )  )
-        reporticobootstrapbutton = true;
-    else
-        reporticobootstrapbutton = false;
-
     var cont = this;
     reportico_jquery.ajax({
         type: 'POST',
@@ -160,7 +155,7 @@ reportico_jquery(document).on('click', '.swMiniMaintainSubmit', function(event)
         success: function(data, status) 
         {
           reportico_jquery(loadpanel).removeClass("modal-loading");
-          if ( reporticobootstrapbutton )
+          if ( reportico_bootstrap_modal )
           {
             reportico_jquery('#reporticoModal').modal('hide');
             reportico_jquery('.modal-backdrop').remove();
@@ -206,15 +201,11 @@ reportico_jquery(document).on('click', '.swMiniMaintain', function(event)
         ajaxaction = reportico_ajax_script;
     }
 
-    if ( reportico_jquery(this).hasClass("btn" )  )
-        reporticobootstrapbutton = true;
-    else
-        reporticobootstrapbutton = false;
-
     maintainButton = reportico_jquery(this).prop("name"); 
     reportico_jquery(".reportico-modal-title").html(reportico_jquery(this).prop("title")); 
     bits = maintainButton.split("_");
     params="execute_mode=MAINTAIN&partialMaintain=" + maintainButton + "&partial_template=mini&submit_" + bits[0] + "_SHOW=1";
+    params += "&reportico_ajax_called=1";
 
     reportico_jquery.ajax({
         type: 'POST',
@@ -225,7 +216,7 @@ reportico_jquery(document).on('click', '.swMiniMaintain', function(event)
         {
           reportico_jquery(expandpanel).removeClass("loading");
           reportico_jquery(reportico_container).removeClass("loading");
-          if ( reporticobootstrapbutton )
+          if ( reportico_bootstrap_modal )
             setupModals();
           else
             reportico_jquery("#reporticoModal").show();
@@ -259,14 +250,14 @@ reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenu
     if ( reportico_jquery(this).parents("#swMiniMaintain").length == 1 ) 
     {
 	    var expandpanel = reportico_jquery(this).closest('#criteriaform').find('#swPrpExpandCell');
-        if ( reportico_jquery(this).hasClass("btn" )  )
+        if ( reportico_bootstrap_modal )
             var loadpanel = reportico_jquery("#reporticoModal .modal-dialog .modal-content .modal-header");
         else
             var loadpanel = reportico_jquery("#reporticoModal .reportico-modal-dialog .reportico-modal-content .reportico-modal-header");
         var reportico_container = reportico_jquery(this).closest("#reportico_container");
 
         reportico_jquery(loadpanel).addClass("modal-loading");
-        forms = reportico_jquery(this).closest('.swMntForm,.swPrpForm,form');
+        forms = reportico_jquery(this).closest('.swMiniMntForm');
         if (    reportico_jquery.type(reportico_ajax_script) === 'undefined' )
         {
             var ajaxaction = reportico_jquery(forms).prop("action");
@@ -283,11 +274,6 @@ reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenu
         params += "&" + reportico_jquery(this).prop("name") + "=1";
         params += "&reportico_ajax_called=1";
 
-        if ( reportico_jquery(this).hasClass("btn" )  )
-            reporticobootstrapbutton = true;
-        else
-            reporticobootstrapbutton = false;
-
         reportico_jquery.ajax({
             type: 'POST',
             url: ajaxaction,
@@ -296,7 +282,7 @@ reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenu
             success: function(data, status) 
             {
               reportico_jquery(loadpanel).removeClass("modal-loading");
-              if ( reporticobootstrapbutton )
+              if ( reportico_bootstrap_modal )
                 setupModals();
               reportico_jquery("#swMiniMaintain").html(data);
               x = reportico_jquery(".swMntButton").prop("name");
