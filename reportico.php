@@ -539,7 +539,7 @@ class reportico extends reportico_object
             $engine = $this->charting_engine;
 
         // Cannot use two forms of charting in the same 
-        if ( !class_exists("reportico_graph") )
+        if ( !class_exists("reportico_graph", false) )
         switch ( $engine )
         {
             case "NVD3":

@@ -3086,9 +3086,11 @@ class reportico_report_html_template extends reportico_report
 
 	function format_group_trailer_start($first=false)
 	{
-        $this->text .= "</TBODY><TFOOT>";
 		if ( $first )
+        {
+            $this->text .= "</TBODY><TFOOT>";
 			$this->text .= '<TR class="swRepGrpTlrRow1st">';
+        }
 		else
 			$this->text .= '<TR class="swRepGrpTlrRow">';
 	}
@@ -3096,12 +3098,12 @@ class reportico_report_html_template extends reportico_report
 	function format_group_trailer_end()
 	{
 
+		$this->text .= "</TR>";
         if ( $this->page_started )
         {
 		    $this->text .= "</TFOOT></TABLE>";
         }
         $this->page_started = false;
-		//$this->text .= "gte</TR>";
 	}
 
 
