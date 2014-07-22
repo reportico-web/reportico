@@ -118,9 +118,6 @@
 {/if}
 <div id="reportico_container">
 
-
-
-
 <FORM class="swMenuForm" name="topmenu" method="POST" action="{$SCRIPT_SELF}">
 <div style="height: 78px" class="swAdminBanner">
 <div style="float: right;">

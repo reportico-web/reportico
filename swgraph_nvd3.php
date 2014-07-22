@@ -167,7 +167,7 @@ class reportico_graph
 	var $plot = array();
 	var $reportico = false;
 
-	function reportico_graph(&$reportico, $in_mode, $in_val = "")
+	function __construct(&$reportico, $in_mode, $in_val = "")
 	{
 		$this->reportico = $reportico;
 		$this->calling_mode = $in_mode;
@@ -645,7 +645,7 @@ class reportico_graph
                 .style(\"fill-opacity\", function (d, i) { //d is the data bound to the svg element
                     return .5 ; 
                 })
-    
+
             nv.utils.windowResize(chart".$session_placeholder.".update);
             ";
 
@@ -798,6 +798,12 @@ class reportico_graph
                 .style(\"fill-opacity\", function (d, i) { //d is the data bound to the svg element
                     return .5 ; 
                 })
+
+            d3.selectAll(\".tick line\")
+                .style(\"opacity\", function (d, i) { //d is the data bound to the svg element
+                    return .2 ; 
+                })
+    
     
             nv.utils.windowResize(chart".$session_placeholder.".update);
             ";

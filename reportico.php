@@ -87,7 +87,7 @@ class reportico_object
 	var $attributes = array();
 	var $default_attr = array();
 
-	function reportico_object()
+	function __construct()
 	{
 		$this->default_attr = $this->attributes;
 	}
@@ -507,13 +507,20 @@ class reportico extends reportico_object
     var $dynamic_grids_paging = false;
     var $dynamic_grids_page_size = 10;
 
+    // Dynamic grids
+    var $parent_reportico = false;
+
+    // For laravel ( and other frameworks supporting multiple connections ) specifies
+    // an array of available databases to connect ot
+    var $available_connections=array();
+
     // In bootstrap enabled pages, the bootstrap modal is by default used for the quick edit buttons
     // but they can be ignored and reportico's own modal invoked by setting this to true
     var $force_reportico_mini_maintains = false;
 
-	function reportico()
+	function __construct()
 	{ 	
-		reportico_object::reportico_object();
+		reportico_object::__construct();
 
 		$this->parent_query =& $this;
 
@@ -943,6 +950,7 @@ class reportico extends reportico_object
 		else
 		{
 			$this->lookup_queries[$query_name] = new reportico_criteria_column(
+                        $this,
 						$query_name,
 						$in_table,
 						$in_column,
@@ -1815,7 +1823,7 @@ class reportico extends reportico_object
 		
 		if ( !$this->datasource )
 		{
-			$this->datasource = new reportico_datasource("none", "localhost", "");
+			$this->datasource = new reportico_datasource($this->external_connection, $this->available_connections);
 		}
 
 		$loggedon = false;
@@ -2753,6 +2761,7 @@ class reportico extends reportico_object
 			{
 				$this->columns[] = new reportico_criteria_column
 					(
+                        $this,
 						$query_name,
 						$table_name,
 						$column_name, 
@@ -3597,9 +3606,6 @@ class reportico extends reportico_object
         {
                 $p->import_into_query($this);
         }
-        //$this->sqlinput = $sql;
-        //if ( !get_reportico_session_param("sqlin") )
-		    //set_reportico_session_param("sqlin",$this->initial_sql);
     }
 
 	// -----------------------------------------------------------------------------
@@ -3868,6 +3874,12 @@ class reportico extends reportico_object
 				$this->panels["MAIN"]->smarty->debugging =false;
 				$this->panels["MAIN"]->smarty->assign('LANGUAGES', available_languages());
 				$this->panels["MAIN"]->smarty->assign('CONTENT', $txt);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
+
                 restore_error_handler();
 
 				if ( $this->user_template )
@@ -3888,6 +3900,12 @@ class reportico extends reportico_object
 				$this->panels["MAIN"]->smarty->debugging =false;
 				$this->panels["MAIN"]->smarty->assign('CONTENT', $text);
 			    $this->panels["MAIN"]->smarty->assign('LANGUAGES', available_languages());
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
+
                 restore_error_handler();
 				if ( $this->user_template )
 				    $this->panels["MAIN"]->smarty->display($this->user_template.'_menu.tpl');
@@ -3918,6 +3936,12 @@ class reportico extends reportico_object
 				$text = $this->panels["BODY"]->draw_smarty();
 				$this->panels["MAIN"]->smarty->debugging =false;
 				$this->panels["MAIN"]->smarty->assign('CONTENT', $text);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
+
 
 				$reportname = preg_replace("/.xml/", "", $this->xmloutfile.'_prepare.tpl');
                 restore_error_handler();
@@ -4112,6 +4136,11 @@ class reportico extends reportico_object
 					$text = $this->panels["BODY"]->draw_smarty();
 				    $this->panels["MAIN"]->smarty->assign('PARTIALMAINTAIN', get_request_item("partialMaintain", false ));
 					$this->panels["MAIN"]->smarty->assign('CONTENT', $text);
+                    $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
+                    $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
+                    $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
+                    $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
+                    $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
                     if ( $this->user_template )
                         $this->panels["MAIN"]->smarty->display($this->user_template.'_maintain.tpl');
                     else
@@ -4308,8 +4337,19 @@ class reportico extends reportico_object
 		foreach ( $this->pre_sql as $sql)
 		{
 			$nsql = reportico_assignment::reportico_lookup_string_to_php($sql);
-			$recordSet = $conn->Execute($sql) ;
-			echo $this->query_statement."<br>Query failed : ".$conn->ErrorMsg();
+            $recordSet = false;
+            try {
+			    $recordSet = $conn->Execute($sql) ;
+            }
+            catch ( \PDOException $ex)
+            {
+            }
+            if ( !$recordSet )
+            {
+			    handle_error("Query Failed<BR><BR>".$sql."<br><br>" . 
+			    "Status ".$conn->ErrorNo()." - ".
+			    $conn->ErrorMsg());
+            }
 		}
 
 		
@@ -4340,12 +4380,6 @@ class reportico extends reportico_object
 		global $g_code_source;
 		global $g_error_status;
 
-        // If external pdo connection is specified then use this
-        if ( !$in_criteria_name && $this->external_connection )
-        {
-		    $this->datasource->ado_connection->_connectionID = $this->external_connection;
-        }
-
 		$text = "";
 		$g_error_status = false;
 
@@ -4373,7 +4407,7 @@ class reportico extends reportico_object
 		{
 			// Execute query 2
 			$this->assignment = array();
-			$ds = new reportico_datasource("array", "localhost");
+			$ds = new reportico_datasource();
 			$this->set_datasource($ds);
 
 			$ds->set_database($this->targets[0]->results);
@@ -4397,10 +4431,15 @@ class reportico extends reportico_object
 			$g_code_area = "Custom User SQLs";
 			$nsql = reportico_assignment::reportico_meta_sql_criteria($this, $sql, true);
 			handle_debug("Pre-SQL".$nsql, SW_DEBUG_LOW);
-			//echo "<br>META SQL<br>========<br>";
-			//echo "<BR>$nsql<BR>";
-			$recordSet = $conn->Execute($nsql) 
-				or handle_error("Pre-Query Failed<BR>$nsql<br><br>" . 
+            $recordSet = false;
+            try {
+			    $recordSet = $conn->Execute($nsql) ;
+            }
+            catch ( \PDOException $ex)
+            {
+            }
+            if ( !$recordSet )
+				handle_error("Pre-Query Failed<BR>$nsql<br><br>" . 
 						$conn->ErrorMsg());
 			$g_code_area = "";
 		}
@@ -4481,16 +4520,29 @@ class reportico extends reportico_object
 		if ( $g_no_sql )
 			return;
 
-		if ( !$g_error_status && $conn != false )
-			$recordSet = $conn->Execute($this->query_statement) 
-			or handle_error("Query Failed<BR><BR>".$this->query_statement."<br><br>" . 
+
+        $recordSet = false;
+        try {
+		    if ( !$g_error_status && $conn != false )
+			    $recordSet = $conn->Execute($this->query_statement) ;
+        }
+        catch ( \PDOException $ex)
+        {
+            $g_error_status = 1;
+        }
+
+        if ( !$recordSet )
+        {
+			handle_error("Query Failed<BR><BR>".$this->query_statement."<br><br>" . 
 			"Status ".$conn->ErrorNo()." - ".
 			$conn->ErrorMsg());
+        }
+
 		if ( $conn != false )
 			handle_debug($this->query_statement, SW_DEBUG_LOW);
 
 		// Begin Target Output
-		if (!$recordSet) 
+		if (!$recordSet || $g_error_status) 
 		{
 			return;
 		}
@@ -4715,6 +4767,18 @@ class reportico extends reportico_object
 
 		}
 	}
+
+    function get_query_column_value( $name, &$arr )
+    {
+	    $ret = "NONE";
+	    foreach($arr as $val)
+	    {
+		    if ( $val->query_name == $name )
+		    {	
+			    return $val->column_value;
+		    }
+	    }
+    }
 
 	// -----------------------------------------------------------------------------
 	// Function : test
@@ -5261,7 +5325,7 @@ class reportico_page_end extends reportico_object
 		"ColumnWidthPDF" => false
 		);
 
-	function reportico_page_end($line, $text)
+	function __construct($line, $text)
 	{
             parent::__construct();
 			$this->line = $line;
@@ -5292,9 +5356,9 @@ class reportico_group extends reportico_object
 			"after_trailer" => "blankline"
 				);
 
-	function reportico_group($in_name, &$in_query)
+	function __construct($in_name, &$in_query)
 	{
-		reportico_object::reportico_object();
+		reportico_object::__construct();
 
 		$this->group_name = $in_name;
 		$this->query =& $in_query;
@@ -5329,7 +5393,7 @@ class reportico_group extends reportico_object
 
 class reportico_criteria extends reportico
 {
-	function reportico_criteria()
+	function __construct()
 	{
 	}
 	
@@ -5359,6 +5423,7 @@ class reportico_criteria_column extends reportico_query_column
 	var $order_type;
 	var $list_values = array();
 	var	$first_criteria_selection = true;
+    var $parent_reportico = false;
     
     // For criteria that is linked to in another report
     // Specifies both the report to link to and the criteria item
@@ -5383,8 +5448,9 @@ class reportico_criteria_column extends reportico_query_column
 						"SWITCH"
 						);
 
-	function reportico_criteria_column
+	function __construct
 	(
+            $parent_reportico,
 			$query_name,
 			$table_name,
 			$column_name, 
@@ -5394,7 +5460,9 @@ class reportico_criteria_column extends reportico_query_column
 			$in_select
 	)
 	{
-		reportico_query_column::reportico_query_column(	
+        $this->parent_reportico = $parent_reportico;
+
+		reportico_query_column::__construct(	
 			$query_name,
 			$table_name,
 			$column_name, 
@@ -5411,7 +5479,7 @@ class reportico_criteria_column extends reportico_query_column
 	// -----------------------------------------------------------------------------
 	// Function : execute_criteria_lookup
 	// -----------------------------------------------------------------------------
-	function execute_criteria_lookup($in_is_expanding = false, $parent_query = false)
+	function execute_criteria_lookup($in_is_expanding = false)
 	{
 		global $g_code_area;
 		require_once("swoutput.php");
@@ -5424,13 +5492,7 @@ class reportico_criteria_column extends reportico_query_column
 		$this->lookup_query->targets = array();
 		$this->lookup_query->add_target($rep);
 		$this->lookup_query->build_query($in_is_expanding, $this->query_name);
-		if ( $this->lookup_query->datasource->connect() )
-		{
-			$this->lookup_query->fetch_column_attributes();
-			$this->lookup_query->execute_query($this->query_name);
-		}
-		else
-			handle_error( "Error in Connection: ");
+		$this->lookup_query->execute_query($this->query_name);
 		$g_code_area = "";
 	}
 
@@ -5639,6 +5701,36 @@ class reportico_criteria_column extends reportico_query_column
 		if ( $in_list )
 		{
             $choices = array();
+            if ( $in_list == "{laravelconnections}" )
+            {
+                $choices[] = "Existing Laravel Connection=existingconnection";
+                if (isset($this->parent_reportico) && $this->parent_reportico->available_connections )
+                {
+                    foreach ( $this->parent_reportico->available_connections as $k => $v )
+                        $choices[] = "Database '$k'=byname_$k";
+                }
+
+                //$choices[] = "MySQL=pdo_mysql";
+                //$choices[] = "PostgreSQL with PDO=pdo_pgsql";
+                //$choices[] = "Informix=pdo_informix";
+                //$choices[] = "Oracle without PDO (Beta)=oci8";
+                //$choices[] = "Oracle with PDO (Beta)=pdo_oci";
+                //$choices[] = "Mssql (with DBLIB/MSSQL PDO)=pdo_mssql";
+                //$choices[] = "Mssql (with SQLSRV PDO)=pdo_sqlsrv";
+                //$choices[] = "SQLite3=pdo_sqlite3";
+                //$choices[] = "No Database=none";
+			    $this->criteria_list = $in_list;
+            }
+            else
+            if ( $in_list == "{connections}" )
+            {
+                foreach ( $this->available_connections as $k => $v )
+                {
+                   $choices[] = $k."=".$k;
+                }
+			    $this->criteria_list = $in_list;
+            }
+            else
             if ( $in_list == "{languages}" )
             {
                 $langs = available_languages();
@@ -7050,7 +7142,7 @@ class reportico_assignment extends reportico_object
     // Indicates an operation which causes an action rather than setting a value
 	var $non_assignment_operation = false;
 
-	function reportico_assignment($query_name, $expression, $criteria)
+	function __construct($query_name, $expression, $criteria)
 	{
 		//echo "ink ".$query_name." ".$expression." ".$criteria."\n<br>";
 		$this->raw_expression = $expression;
@@ -7355,7 +7447,7 @@ class reportico_assignment extends reportico_object
 
 		$out_string = preg_replace('/{([^}]*)}/', 
 			//'$this->columns[\'\1\']->column_value', 
-			'get_query_column_value(\'\1\', $this->columns)', 
+			'$this->get_query_column_value(\'\1\', $this->columns)', 
 			$out_string);
 
 		return $out_string;
@@ -7440,7 +7532,7 @@ class reportico_query_column extends reportico_object
 	}
 
 
-	function reportico_query_column
+	function __construct
 		(
 			$query_name = "",
 			$table_name = "table_name",
@@ -7451,7 +7543,7 @@ class reportico_query_column extends reportico_object
 			$in_select = true
 		)
 		{
-			reportico_object::reportico_object();
+			reportico_object::__construct();
 
 			$this->query_name = $query_name;
 			$this->table_name = $table_name;

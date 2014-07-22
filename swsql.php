@@ -56,7 +56,7 @@ class reportico_sql_parser
     var $whereoffset = 0;       // Positon in sql where WHERE clause exists or would exist
     var $haswhere = false;      // Does the sql have a where clause?
 
-	function reportico_sql_parser( $in_sql )
+	function __construct( $in_sql )
 	{
 		$this->sql = $in_sql;
 	}
@@ -638,7 +638,16 @@ class reportico_sql_parser
         }
 
 
-		$recordSet = $conn->Execute($sql) ;
+		$recordSet = false;
+        try
+        {
+		    $recordSet = $conn->Execute($sql) ;
+        }
+        catch( \PDOException $Exception ) {
+            // PHP Fatal Error. Second Argument Has To Be An Integer, But PDOException::getCode Returns A
+            // String.
+        }
+
 
 		// Begin Target Output
 		if (!$recordSet) 

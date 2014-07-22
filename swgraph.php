@@ -153,7 +153,7 @@ class reportico_graph
 	var $plot = array();
 	var $reportico = false;
 
-	function reportico_graph(&$reportico, $in_val = "")
+	function __construct(&$reportico, $in_val = "")
 	{
 		$this->reportico = $reportico;
 		$this->graph_column = $in_val;
@@ -302,7 +302,7 @@ class reportico_graph
         if ( $forward_url_params )
             $url .= "&".$forward_url_params;
         $url .= "&reportico_call_mode=graph_jpgraph";
-        $url .= "&session_name=".reportico_session_name();
+        $url .= "&reportico_session_name=".reportico_session_name();
 		$result = '<img class="swRepGraph" src=\''.$dyngraph.'?'.$url.'\'>';
 
 		return $result;

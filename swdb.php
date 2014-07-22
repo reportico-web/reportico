@@ -67,17 +67,14 @@ class reportico_datasource extends reportico_object
 	var $_conn_database = SW_DB_DATABASE;
 	var $_conn_server = SW_DB_SERVER;
 	var $_conn_protocol = SW_DB_PROTOCOL;
-	
-	function reportico_datasource($driver = "mysql", $host_name = "localhost", 
-						$service_name = "?Unknown?", $server = false, $protocol = false )
-	{
-		reportico_object::reportico_object();
 
-		$this->driver = $driver;
-		$this->host_name = $host_name;
-		$this->service_name = $service_name;
-		$this->protocol = $protocol;
-		$this->server = $server;
+    var $external_connection = false;
+    var $available_connections = false;
+	
+	function __construct($pdo = false, $connections = false)
+	{
+        $this->external_connection = &$pdo;
+        $this->available_connections = &$connections;
 	}
 
 	function set_details($driver = "mysql", $host_name = "localhost", 
@@ -286,7 +283,7 @@ class reportico_datasource extends reportico_object
         return $found;
     }
 
-	function connect($ignore_config = false)
+	function connect()
 	{
 		$connected = false;
 
@@ -295,17 +292,7 @@ class reportico_datasource extends reportico_object
 			$this->disconnect();
 		}
 
-		if ( $ignore_config )
-		{
-			$this->_conn_driver = $this->driver;
-			$this->_conn_user_name = $this->user_name;
-			$this->_conn_password = $this->password;
-			$this->_conn_host_name = $this->host_name;
-			$this->_conn_database = $this->database;
-			$this->_conn_server = $this->server;
-			$this->_conn_protocol = $this->protocol;
-		}
-		else if ( SW_DB_CONNECT_FROM_CONFIG )
+		if ( SW_DB_CONNECT_FROM_CONFIG )
 		{
 			$this->_conn_driver = SW_DB_DRIVER;
 			if ( !$this->_conn_user_name ) 
@@ -335,6 +322,53 @@ class reportico_datasource extends reportico_object
 			$connected = true;
 		}
 
+
+        if ( defined ("SW_DB_TYPE") && SW_DB_TYPE == "existingconnection" && $this->external_connection )
+        {
+            $this->ado_connection = NewADOConnection("pdo");
+			$this->ado_connection->ConnectExisting($this->external_connection);
+		    $this->connected = true;
+		    return $this->connected;
+        }
+
+        if ( defined ("SW_DB_TYPE") && preg_match ("/^byname_/", SW_DB_TYPE) )
+        {
+            $connection_name = preg_replace("/byname_/", "", SW_DB_TYPE);
+            if ( !isset($this->available_connections[$connection_name] ))
+            {
+				handle_error( "Connection name \"$connection \" not found in framework connection set");
+                return false;
+            }
+            $useConnection = $this->available_connections[$connection_name];
+            switch($useConnection["driver"]) 
+            {
+                case "pgsql":
+                    $this->driver = "pdo_pgsql";
+                    break;
+                case "sqlsrv":
+                    $this->_conn_driver = "pdo_sqlsrv";
+                    break;
+                case "mysql":
+                    $this->_conn_driver = "pdo_mysql";
+                    break;
+                case "sqlite":
+                    $this->_conn_driver = "pdo_sqlite3";
+                    break;
+                default: 
+                    $this->_conn_driver = "unknown";
+            }
+
+            // Extract Yii database elements from connection string 
+            $this->_conn_host_name = "unknown";
+            $this->_conn_database = "unknown";
+            $this->_conn_user_name = "unknown";
+            $this->_conn_password = "unknown";
+
+            if ( isset ( $useConnection["host"] ) ) $this->_conn_host_name = $useConnection["host"];
+            if ( isset ( $useConnection["database"] ) ) $this->_conn_database = $useConnection["database"];
+            if ( isset ( $useConnection["username"] ) ) $this->_conn_user_name = $useConnection["username"];
+            if ( isset ( $useConnection["password"] ) ) $this->_conn_password = $useConnection["password"];
+        }
 
 		switch ( $this->_conn_driver )
 		{
@@ -664,7 +698,7 @@ class reportico_db_array
 	var $ct = 0;
 	var $numrows = 0;
 
-	function reportico_db_array()
+	function __construct()
 	{
 	}
 

@@ -163,7 +163,7 @@ class reportico_graph
 	var $plot = array();
 	var $reportico = false;
 
-	function reportico_graph(&$reportico, $in_mode, $in_val = "")
+	function __construct(&$reportico, $in_mode, $in_val = "")
 	{
 		$this->reportico = $reportico;
 		$this->calling_mode = $in_mode;
@@ -317,6 +317,7 @@ class reportico_graph
 
         $dr = get_reportico_url_path();
         $dyngraph = $dr."/".find_best_url_in_include_path( $dyngraph );
+
         if ( $this->reportico->framework_parent )
         {
             $dyngraph = "";

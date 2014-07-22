@@ -167,7 +167,7 @@ class reportico_graph
 	var $plot = array();
 	var $reportico = false;
 
-	function reportico_graph(&$reportico, $in_mode, $in_val = "")
+	function __construct(&$reportico, $in_mode, $in_val = "")
 	{
 		$this->reportico = $reportico;
 		$this->calling_mode = $in_mode;

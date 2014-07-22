@@ -58,7 +58,7 @@ class reportico_panel
 	var $reportlink_report = false;
 	var $reportlink_report_item = false;
 
-	function reportico_panel(&$in_query, $in_type)
+	function __construct(&$in_query, $in_type)
 	{
 		$this->query = &$in_query;
 		$this->panel_type = $in_type;
@@ -346,7 +346,7 @@ class reportico_panel
 						
 					$this->query->projectitems[] = array (
 						"label" => $this->text,
-						"url" => $this->query->get_action_url()."?".$forward."execute_mode=MENU&project=".$this->program."&amp;session_name=".reportico_session_name()
+						"url" => $this->query->get_action_url()."?".$forward."execute_mode=MENU&project=".$this->program."&amp;reportico_session_name=".reportico_session_name()
 							);
 				}
 				break;
@@ -358,7 +358,7 @@ class reportico_panel
 						
 				$this->query->menuitems[] = array (
 						"label" => $this->text,
-						"url" => $this->query->get_action_url()."?".$forward."execute_mode=PREPARE&xmlin=".$this->program."&amp;session_name=".reportico_session_name()
+						"url" => $this->query->get_action_url()."?".$forward."execute_mode=PREPARE&xmlin=".$this->program."&amp;reportico_session_name=".reportico_session_name()
 							);
 				break;
 
@@ -628,7 +628,7 @@ class reportico_xml_reader
 	var	$search_response = false;
 	var	$element_counts = array();
 
-  	function reportico_xml_reader (&$query, $filename, $xmlstring = false, $search_tag = false ) 
+  	function __construct (&$query, $filename, $xmlstring = false, $search_tag = false ) 
 	{
     	$this->query =& $query;
 
@@ -4939,7 +4939,7 @@ class reportico_xml_writer
 	var $xml_version = "1.0";
 	var $xmldata;
 
-	function reportico_xml_writer(&$in_query)
+	function __construct(&$in_query)
 	{
 		$this->query = &$in_query;
 	}
@@ -5587,7 +5587,7 @@ class reportico_xmlval
 	var $xmltext = "";
 	var $elements = array();
 
-	function reportico_xmlval ( $name, $value = false, $attributes = array() )
+	function __construct ( $name, $value = false, $attributes = array() )
 	{
 		$this->name = $name;
 		$this->value = $value;
