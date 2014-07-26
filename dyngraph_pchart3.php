@@ -17,7 +17,7 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
- * File:        reportico.php
+ * File:        dyngraph_pchart3.php
  *
  * Generates a chart image from axes, data parameters
  *
