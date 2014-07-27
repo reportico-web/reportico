@@ -126,6 +126,29 @@
     if ( $q->access_mode == "REPORTOUTPUT" )
         $q->initial_execute_mode = "EXECUTE";
 
+
+    // Provide an existing connection to Reportico, at the moment to use this there still needs to be project
+    // in existence, but the connection specified here will override the 
+    // this allows you build create temporary tables and perform other actions prior to reporting
+    // $q->external_connection = false;
+    // try 
+    // {
+            // $q->external_connection = new PDO("mysql:host=localhost; username=root; password=root; dbname=ico1nnex", "root", "root" );
+    // }
+    // catch ( PDOException $ex )
+    // {
+            // $q->external_connection = false;
+            // // Handle Error
+    // }
+    
+    // For setting report criteria parameters.. use the criteria name as the key and the criteria value
+    // $q->initial_execution_parameters = array();
+    // $q->initial_execution_parameters["lookupcriteria"] = "value1,value2";
+    // $q->initial_execution_parameters["datecriteria"] = "2014-07-01";
+    // $q->initial_execution_parameters["datecriteria2"] = "TODAY";
+    // $q->initial_execution_parameters["daterangecriteria1"] = "2014-01-01-2014-02-01";
+    // $q->initial_execution_parameters["daterangecriteria2"] = "FIRSTOFMONTH-LASTOFMONTH";
+
     // The session namespace to use. Only relevant when showing more than one report in a single page. Specify a name
     // to store all session variables for this instance and then when running another report instance later in the script 
     // use another name
