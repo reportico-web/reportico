@@ -323,7 +323,7 @@ class reportico_datasource extends reportico_object
 		}
 
 
-        if ( defined ("SW_DB_TYPE") && SW_DB_TYPE == "existingconnection" && $this->external_connection )
+        if ( $this->external_connection )
         {
             $this->ado_connection = NewADOConnection("pdo");
 			$this->ado_connection->ConnectExisting($this->external_connection);
