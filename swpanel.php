@@ -2243,7 +2243,7 @@ class reportico_xml_reader
 					}
 	
 
-					$updateitem->reportico_assignment(
+					$updateitem->__construct(
 					$updates["AssignName"], $updates["Expression"], $updates["Condition"]);
 					break;
 
