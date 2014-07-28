@@ -566,8 +566,8 @@ class reportico_datasource extends reportico_object
 						        "mysql:".
 						        "host=".$hostarr[0]."; ".
 						        "port=".$hostarr[1]."; ".
-						        "username=".$this->_conn_user_name."; ".
-						        "password=".$this->_conn_password."; ".
+						        //"username=".$this->_conn_user_name."; ".
+						        //"password=".$this->_conn_password."; ".
 						        "dbname=".$this->_conn_database;
                         }
                         else
@@ -575,8 +575,8 @@ class reportico_datasource extends reportico_object
 					        $cnstr =
 						        "mysql:".
 						        "host=".$this->_conn_host_name."; ".
-						        "username=".$this->_conn_user_name."; ".
-						        "password=".$this->_conn_password."; ".
+						        //"username=".$this->_conn_user_name."; ".
+						        //"password=".$this->_conn_password."; ".
 						        "dbname=".$this->_conn_database;
                         }
 					    $connected = $this->ado_connection->Connect($cnstr,$this->_conn_user_name,$this->_conn_password);
