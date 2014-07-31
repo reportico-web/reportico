@@ -1109,6 +1109,11 @@ input.swAdminButton2
 
     .swRepTitle { font-size: 18pt; text-align: center; margin-top: 0px; border: none;}
     .swMntForm { text-align: left; margin-left: 0%; background-color: #ffffff; border: none; }
+    .swRepResultLine td a
+    {
+        text-decoration: underline;
+    color: #ff0000;
+    }
 }
 
 
@@ -1232,3 +1237,4 @@ padding: 19px 20px 20px;
 text-align: right;
 border-top: 1px solid #e5e5e5;
 }
+
