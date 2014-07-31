@@ -3855,6 +3855,12 @@ class reportico extends reportico_object
 				$this->panels["MAIN"]->smarty->debugging =false;
 				$this->panels["MAIN"]->smarty->assign('LANGUAGES', available_languages());
 				$this->panels["MAIN"]->smarty->assign('CONTENT', $txt);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
+
                 restore_error_handler();
 
 				if ( $this->user_template )
@@ -3875,6 +3881,12 @@ class reportico extends reportico_object
 				$this->panels["MAIN"]->smarty->debugging =false;
 				$this->panels["MAIN"]->smarty->assign('CONTENT', $text);
 			    $this->panels["MAIN"]->smarty->assign('LANGUAGES', available_languages());
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
+
                 restore_error_handler();
 				if ( $this->user_template )
 				    $this->panels["MAIN"]->smarty->display($this->user_template.'_menu.tpl');
@@ -3904,6 +3916,12 @@ class reportico extends reportico_object
 				$text = $this->panels["BODY"]->draw_smarty();
 				$this->panels["MAIN"]->smarty->debugging =false;
 				$this->panels["MAIN"]->smarty->assign('CONTENT', $text);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
+                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
+
 
 				$reportname = preg_replace("/.xml/", "", $this->xmloutfile.'_prepare.tpl');
                 restore_error_handler();
@@ -4087,6 +4105,11 @@ class reportico extends reportico_object
 
 					$text = $this->panels["BODY"]->draw_smarty();
 					$this->panels["MAIN"]->smarty->assign('CONTENT', $text);
+                    $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
+                    $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
+                    $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
+                    $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
+                    $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
                     if ( $this->user_template )
                         $this->panels["MAIN"]->smarty->display($this->user_template.'_maintain.tpl');
                     else
