@@ -2764,9 +2764,8 @@ class reportico_report_html_template extends reportico_report
             if ( session_request_item('forward_url_get_parameters', '') )
                 $url .= "&".session_request_item('forward_url_get_parameters', '');
 
-        // Add drilldown namespace normally specified in frameworks
-            if ( $this->query->drilldown_namespace )
-                $url .= '&clear_session=1&reportico_session_name=NS_drilldown';
+            // Add drilldown namespace normally specified in frameworks
+            $url .= '&clear_session=1&reportico_session_name=NS_drilldown';
         }
 
 
