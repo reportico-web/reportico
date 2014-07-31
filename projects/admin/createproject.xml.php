@@ -23,7 +23,7 @@ global $g_debug_mode;
 $g_debug_mode = true;
 ;
 
-$test = new reportico_datasource("array", "localhost");
+$test = new reportico_datasource();
 
 $test->driver = $type;
 $test->user_name = $user;
