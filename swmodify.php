@@ -40,7 +40,7 @@ class reportico_db_engine
 	public $errormsg;
 	public $errortext;
 
-    function reportico_db_engine($in_pdo)
+    function __construct($in_pdo)
     {
 	    $this->pdo = $in_pdo;
     }

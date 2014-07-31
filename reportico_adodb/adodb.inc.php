@@ -439,6 +439,29 @@
 		return $ret;
 	}	
 	
+	/**
+	 * Connect to existing database
+	 *
+	 * @param [argHostname]		Host to connect to
+	 * @param [argUsername]		Userid to login
+	 * @param [argPassword]		Associated password
+	 * @param [argDatabaseName]	database
+	 * @param [forceNew]		force new connection
+	 *
+	 * @return true or false
+	 */	  
+	function ConnectExisting($pdo)
+	{
+        $ret = true;
+	    if (!$rez=$this->_connectExisting($pdo))
+        {
+			$err = "Connection error to existing connection ";
+			$ret = false;
+        }
+
+        return $ret;
+	}	
+	
 	function _nconnect($argHostname, $argUsername, $argPassword, $argDatabaseName)
 	{
 		return $this->_connect($argHostname, $argUsername, $argPassword, $argDatabaseName);

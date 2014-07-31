@@ -49,7 +49,15 @@ $locale_arr = array (
         "T_STYLE_FORM" => "Form Output",
         "T_FORM" => "Form",
         "T_TABLE" => "Table",
-        "T_REPORT_STYLE" => "Style"
+        "T_REPORT_STYLE" => "Style",
+        "T_EDITASSIGNMENT" => "Assignments",
+        "T_EDITGROUPS" => "Groups",
+        "T_EDITGRAPHS" => "Graphs",
+        "T_EDITTITLE" => "Title",
+        "T_EDITSQL" => "SQL",
+        "T_EDITCRITERIA" => "Criteria",
+        "T_EDITCOLUMNS" => "Columns",
+        "T_EDIT" => "Edit",
         ),
         );
 ?>

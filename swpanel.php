@@ -58,7 +58,7 @@ class reportico_panel
 	var $reportlink_report = false;
 	var $reportlink_report_item = false;
 
-	function reportico_panel(&$in_query, $in_type)
+	function __construct(&$in_query, $in_type)
 	{
 		$this->query = &$in_query;
 		$this->panel_type = $in_type;
@@ -346,7 +346,7 @@ class reportico_panel
 						
 					$this->query->projectitems[] = array (
 						"label" => $this->text,
-						"url" => $this->query->get_action_url()."?".$forward."execute_mode=MENU&project=".$this->program."&amp;session_name=".reportico_session_name()
+						"url" => $this->query->get_action_url()."?".$forward."execute_mode=MENU&project=".$this->program."&amp;reportico_session_name=".reportico_session_name()
 							);
 				}
 				break;
@@ -358,7 +358,7 @@ class reportico_panel
 						
 				$this->query->menuitems[] = array (
 						"label" => $this->text,
-						"url" => $this->query->get_action_url()."?".$forward."execute_mode=PREPARE&xmlin=".$this->program."&amp;session_name=".reportico_session_name()
+						"url" => $this->query->get_action_url()."?".$forward."execute_mode=PREPARE&xmlin=".$this->program."&amp;reportico_session_name=".reportico_session_name()
 							);
 				break;
 
@@ -628,7 +628,7 @@ class reportico_xml_reader
 	var	$search_response = false;
 	var	$element_counts = array();
 
-  	function reportico_xml_reader (&$query, $filename, $xmlstring = false, $search_tag = false ) 
+  	function __construct (&$query, $filename, $xmlstring = false, $search_tag = false ) 
 	{
     	$this->query =& $query;
 
@@ -2243,7 +2243,7 @@ class reportico_xml_reader
 					}
 	
 
-					$updateitem->reportico_assignment(
+					$updateitem->__construct(
 					$updates["AssignName"], $updates["Expression"], $updates["Condition"]);
 					break;
 
@@ -2470,6 +2470,19 @@ class reportico_xml_reader
 			return $ret;
 	}
 
+	function get_matching_post_item ($match) 
+	{
+			$ret = false;
+			foreach ( $_POST as $k => $v )
+			{
+				if ( preg_match ( $match, $k ) )
+				{
+					return $k;
+				}
+			}
+			return $ret;
+	}
+
 	// Processes the HTML get/post paramters passed through on the maintain screen
 	function handle_user_entry () 
 	{
@@ -2481,7 +2494,7 @@ class reportico_xml_reader
 		$maintain_sql = false;
 		$xmlsavefile = false;
 		$xmldeletefile = false;
-		if ( ( $k = $this->get_matching_request_item("/^submit_/") ) )
+		if ( ( $k = $this->get_matching_post_item("/^submit_/") ) )
 		{
 			// Strip off "_submit"
 			preg_match("/^submit_(.*)/", $k, $match);
@@ -2545,6 +2558,8 @@ class reportico_xml_reader
 
 				case "SAVE":
 					$xmlsavefile = $this->query->xmloutfile;
+                    if ( !$xmlsavefile )
+			            trigger_error ( template_xlate("UNABLE_TO_SAVE").template_xlate("SPECIFYXML"), E_USER_ERROR );
 					break; 
 
 				case "DELETEREPORT":
@@ -2976,11 +2991,26 @@ class reportico_xml_reader
 	// Draws a tab menu item within a horizontal tab menu
 	function & draw_show_hide_tab_button ($in_tag, $in_value = false) 
 	{
+
 		$text = "";
         $in_value = template_xlate($in_value);
+
+        // Only draw horizontal tab buttons if not mini maintain or they are relevant to tag
+        if ( $partialMaintain = get_request_item("partialMaintain", false ) )
+        {
+            if ( preg_match("/_ANY$/", $partialMaintain)  )
+            {
+                $match1 = preg_replace("/_ANY/", "", $partialMaintain);
+                $match2 = substr($in_tag, 0, strlen($match1));
+                if ( $match1 != $match2 || $match1 == $in_tag)
+                    return $text;
+            }
+            else
+          return $text;
+        }
+    
 		if ( !$this->is_showing($in_tag ) )
 		{
-            
 			$text .= '<LI class="swMntTabMenuCellUnsel">';
 			//$text .= '<input class="swMntTabMenuBu1tUnsel reporticoSubmit" type="submit" name="submit_'.$in_tag."_SHOW".'" value="'.$in_value.'">';
 			$text .= '<a class="swMntTabMenuBu1tUnsel reporticoSubmit" name="submit_'.$in_tag."_SHOW".'" >';
@@ -3127,6 +3157,8 @@ class reportico_xml_reader
 					case "CogModule":
 						$this->id = "main";
 						$text .= '<TABLE class="swMntMainBox">';
+                        if ( get_request_item("partialMaintain", false ) )
+		                    break;
 						global $g_project;
 		                		$text .= '<TR>';
 						$text .= '<TD colspan="2">';
@@ -3902,6 +3934,16 @@ class reportico_xml_reader
 	function & display_maintain_field($tag, $val, &$tagct, $translate = true, $overridetitle = false, $toggleclass = false, $togglestate = false)
 	{
 		$text = "";
+		$striptag = preg_replace("/ .*/", "", $tag);
+		$showtag = preg_replace("/ /", "_", $tag);
+        $partialMaintain = get_request_item("partialMaintain", false );
+        if ( $partialMaintain )
+        {
+            $x = $this->id . "_" . $showtag;
+            if ( $partialMaintain != $x && !preg_match("/_ANY/", $partialMaintain ) )
+                return $text;
+        }
+
 		$text .= "\n<!-- SETFIELD-->";
 		$text .= '<TR';
         if ( $toggleclass ) 
@@ -3918,8 +3960,6 @@ class reportico_xml_reader
 		$edit_mode = "FULL";
 		$tagvals = array();
 
-		$striptag = preg_replace("/ .*/", "", $tag);
-		$showtag = preg_replace("/ /", "_", $tag);
 		$subtitle = "";
 		if ( preg_match("/ /", $tag ) )
 			$subtitle = preg_replace("/.* /", " ", $tag);
@@ -4190,7 +4230,16 @@ class reportico_xml_reader
 			$text .= '&nbsp;';
 		$text .= '</TD>';
 
-		if ( $tagct == 1 )
+        if ( $partial = get_request_item("partialMaintain", false ) )
+        {
+            $arr = explode("_" ,$partial);
+            if ( count($arr) > 1 )
+            {
+                $partial = $arr[1];
+            }
+        }
+
+		if ( $tagct == 1 || ( $partial == $tag && $partial != "ANY" ) )
 		{
 			$text .= "\n<!-- TAG 1-->";
 			$text .= '<TD colspan="1">';
@@ -4890,7 +4939,7 @@ class reportico_xml_writer
 	var $xml_version = "1.0";
 	var $xmldata;
 
-	function reportico_xml_writer(&$in_query)
+	function __construct(&$in_query)
 	{
 		$this->query = &$in_query;
 	}
@@ -5538,7 +5587,7 @@ class reportico_xmlval
 	var $xmltext = "";
 	var $elements = array();
 
-	function reportico_xmlval ( $name, $value = false, $attributes = array() )
+	function __construct ( $name, $value = false, $attributes = array() )
 	{
 		$this->name = $name;
 		$this->value = $value;
