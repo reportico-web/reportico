@@ -210,6 +210,7 @@ class reportico_graph
 	function add_plot_value($in_query, $plot_no, $in_val)
 	{
 		$in_val = trim($in_val);
+		$in_val = str_replace(",", "", $in_val);
 		if ( !$in_val )
 			$in_val = 0;
 		foreach ( $this->plot as $k => $v )

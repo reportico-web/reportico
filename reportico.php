@@ -4956,13 +4956,13 @@ class reportico extends reportico_object
 			handle_error ("The report includes an sum assignment involving a group or column ($query_name) that does not exist within the report");
 			return 0;
 		}
-		$result = $col->column_value;
+		$result = str_replace(",", "", $col->column_value);
 
 		if ( $col->old_column_value &&  !$col->reset_flag )
 		{
 			$result = 
 				$col->old_column_value +
-				$col->column_value;
+				str_replace(",", "", $col->column_value);
 		}
 		if ( $group_name )
 		{
@@ -4976,17 +4976,17 @@ class reportico extends reportico_object
 						"max" => 0 );
 
 			if ( $this->changed($group_name) )
-				$col->groupvals[$group_name]["sum"] = $col->column_value;
+				$col->groupvals[$group_name]["sum"] = str_replace(",", "", $col->column_value);
 			else
-				$col->groupvals[$group_name]["sum"] += $col->column_value;
+				$col->groupvals[$group_name]["sum"] += str_replace(",", "", $col->column_value);
 			$result = $col->groupvals[$group_name]["sum"];
 		}
 		else
 		{
 			if ( $col->reset_flag || !$col->sum)
-				$col->sum = $col->column_value;
+				$col->sum = str_replace(",", "", $col->column_value);
 			else
-				$col->sum += $col->column_value;
+				$col->sum += str_replace(",", "", $col->column_value);
 
 			$result = $col->sum;
 		}
