@@ -4466,6 +4466,8 @@ class reportico extends reportico_object
 			$code = "\$ds =& \$this->datasource->ado_connection;". $code;
 			$code = "\$_criteria =& \$this->lookup_queries;". $code;
 			$code = "\$_pdo =& \$_connection->_connectionID;". $code;
+			$code = "if ( \$_connection )". $code;
+			$code = "\$_pdo = false;". $code;
 			$code = "\$_connection =& \$this->datasource->ado_connection;". $code;
 
 			// set to the user defined error handler
@@ -4531,7 +4533,7 @@ class reportico extends reportico_object
             $g_error_status = 1;
         }
 
-        if ( !$recordSet )
+        if ( $conn && !$recordSet )
         {
 			handle_error("Query Failed<BR><BR>".$this->query_statement."<br><br>" . 
 			"Status ".$conn->ErrorNo()." - ".
