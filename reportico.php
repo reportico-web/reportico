@@ -3232,6 +3232,10 @@ class reportico extends reportico_object
 		$this->panels["USERINFO"]->set_visibility(true);
 		$this->panels["RUNMODE"]->set_visibility(true);
 
+		$smarty->assign('REPORTICO_BOOTSTRAP_MODAL', true);
+        if ( !$this->bootstrap_styles || $this->force_reportico_mini_maintains )
+            $smarty->assign('REPORTICO_BOOTSTRAP_MODAL', false);
+
 		// If no admin password then force user to enter one and  a language
 		if ( $g_project == "admin" && SW_ADMIN_PASSWORD == "PROMPT" )
 		{
@@ -3253,10 +3257,6 @@ class reportico extends reportico_object
 			else
 				$smarty->assign('SHOW_SET_ADMIN_PASSWORD', false);
 		} 
-
-		$smarty->assign('REPORTICO_BOOTSTRAP_MODAL', true);
-        if ( !$this->bootstrap_styles || $this->force_reportico_mini_maintains )
-            $smarty->assign('REPORTICO_BOOTSTRAP_MODAL', false);
 
 		$smarty->assign('SHOW_MINIMAINTAIN', false);
 		{
