@@ -159,7 +159,7 @@ reportico_jquery(document).on('click', '.swMiniMaintainSubmit', function(event)
           {
             reportico_jquery('#reporticoModal').modal('hide');
             reportico_jquery('.modal-backdrop').remove();
-            reportico_jquery('.swPrpBody').removeClass('modal-open');
+            reportico_jquery('#reportico_container').closest('body').removeClass('modal-open');
           }
           else
             reportico_jquery('#reporticoModal').hide();
