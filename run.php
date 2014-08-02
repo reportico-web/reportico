@@ -133,7 +133,7 @@
     // $q->external_connection = false;
     // try 
     // {
-            // $q->external_connection = new PDO("mysql:host=localhost; username=root; password=root; dbname=ico1nnex", "root", "root" );
+            // $q->external_connection = new PDO("mysql:host=localhost; dbname=dbname", "username", "password" );
     // }
     // catch ( PDOException $ex )
     // {
