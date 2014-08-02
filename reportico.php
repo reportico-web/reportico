@@ -4341,7 +4341,7 @@ class reportico extends reportico_object
             try {
 			    $recordSet = $conn->Execute($sql) ;
             }
-            catch ( \PDOException $ex)
+            catch ( PDOException $ex)
             {
             }
             if ( !$recordSet )
@@ -4435,7 +4435,7 @@ class reportico extends reportico_object
             try {
 			    $recordSet = $conn->Execute($nsql) ;
             }
-            catch ( \PDOException $ex)
+            catch ( PDOException $ex)
             {
             }
             if ( !$recordSet )
@@ -4528,7 +4528,7 @@ class reportico extends reportico_object
 		    if ( !$g_error_status && $conn != false )
 			    $recordSet = $conn->Execute($this->query_statement) ;
         }
-        catch ( \PDOException $ex)
+        catch ( PDOException $ex)
         {
             $g_error_status = 1;
         }
