@@ -3006,13 +3006,12 @@ class reportico_xml_reader
                     return $text;
             }
             else
-          return $text;
+                return $text;
         }
     
 		if ( !$this->is_showing($in_tag ) )
 		{
 			$text .= '<LI class="swMntTabMenuCellUnsel">';
-			//$text .= '<input class="swMntTabMenuBu1tUnsel reporticoSubmit" type="submit" name="submit_'.$in_tag."_SHOW".'" value="'.$in_value.'">';
 			$text .= '<a class="swMntTabMenuBu1tUnsel reporticoSubmit" name="submit_'.$in_tag."_SHOW".'" >';
 			$text .= '<input class="swMntTabMenuButUnsel reporticoSubmit" type="submit" name="submit_'.$in_tag."_SHOW".'" value="'.$in_value.'">';
 			$text .= '</a>';
