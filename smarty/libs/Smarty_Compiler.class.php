@@ -265,9 +265,9 @@ class Smarty_Compiler extends Smarty {
             $source_content = preg_replace_callback($search, 
                                         function($m){
                                                 return 
-                                                strtr($this->left_delimiter, array('\\' => '\\\\', '$' => '\\$')) .'php'.
+                                                strtr("{", array('\\' => '\\\\', '$' => '\\$')) .'php'.
                                                 str_repeat("\n", substr_count($m[0], "\n")).
-                                                strtr($this->right_delimiter, array('\\' => '\\\\', '$' => '\\$'))
+                                                strtr("}", array('\\' => '\\\\', '$' => '\\$'))
                                                  ;
                                        }
                                        , $source_content);
