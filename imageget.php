@@ -35,7 +35,6 @@
 include_once('reportico_adodb/adodb.inc.php');
 include_once ("reportico.php");
 include_once ("swutil.php");
-
 include_once ("swdb.php");
 
 error_reporting(E_ALL);
