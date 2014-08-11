@@ -7,31 +7,7 @@ This tutorial demonstrates the following features :-
 &lt;br&gt;3. &lt;b&gt;Use of a criteria item with the &lt;/b&gt;
 
 
-</ReportDescription><PageSize>A4</PageSize><PageOrientation>Portrait</PageOrientation><TopMargin></TopMargin><BottomMargin></BottomMargin><RightMargin></RightMargin><LeftMargin></LeftMargin><pdfFont></pdfFont><pdfFontSize></pdfFontSize><PreExecuteCode>    // Create temporary table to hold count of each film category
-    $sql =&quot;CREATE TEMPORARY TABLE t_cattotal 
-          ( 
-              cat_code CHAR(5),
-              cat_total INTEGER 
-           ) &quot;;
-    $stat = $_connection-&gt;Execute($sql); 
-
-    if ( !$stat ) 
-    {
-        trigger_error(&quot;Query Failed&lt;BR&gt;&quot;.$sql.&quot;&lt;br&gt;&quot; . 
-              &quot;Error &quot;.$_connection-&gt;ErrorNo(). &quot; - &quot;. 
-              $_connection-&gt;ErrorMsg(), E_USER_ERROR); 
-              return; 
-    } 
-
-    // Now populate table with category counts
-    $sql = &quot;INSERT INTO t_cattotal 
-                SELECT cat_code, count(*)
-                  FROM film
-                  GROUP BY cat_code&quot;; 
-    $stat = $_connection-&gt;Execute($sql); 
-
-
-</PreExecuteCode><formBetweenRows>solidline</formBetweenRows><bodyDisplay>show</bodyDisplay><graphDisplay>show</graphDisplay></Format><Datasource><SourceType>database</SourceType><SourceConnection><DatabaseType></DatabaseType><DatabaseName></DatabaseName><HostName>localhost</HostName><ServiceName></ServiceName><UserName></UserName><Password></Password></SourceConnection></Datasource><EntryForm><Query><TableSql></TableSql><WhereSql></WhereSql><GroupSql></GroupSql><RowSelection>all</RowSelection><SQL><QuerySql></QuerySql><SQLRaw>SELECT DATE_FORMAT(loan_date, '%m') loaned_mthno, DATE_FORMAT(loan_date, '%M') loaned_mth, DATE_FORMAT(loan_date, '%Y') loaned_yr, count(*) loan_count, SUM(IF(to_days(return_date) - to_days(loan_date) &gt; 2 OR return_date IS NULL, 1,0)) overdue 
+</ReportDescription><PageSize>A4</PageSize><PageOrientation>Portrait</PageOrientation><TopMargin></TopMargin><BottomMargin></BottomMargin><RightMargin></RightMargin><LeftMargin></LeftMargin><pdfFont></pdfFont><pdfFontSize></pdfFontSize><PreExecuteCode>NONE</PreExecuteCode><formBetweenRows>solidline</formBetweenRows><bodyDisplay>show</bodyDisplay><graphDisplay>show</graphDisplay><gridDisplay>.DEFAULT</gridDisplay><gridSortable>.DEFAULT</gridSortable><gridSearchable>.DEFAULT</gridSearchable><gridPageable>.DEFAULT</gridPageable><gridPageSize>.DEFAULT</gridPageSize></Format><Datasource><SourceType>database</SourceType><SourceConnection><DatabaseType>mysql</DatabaseType><DatabaseName></DatabaseName><HostName></HostName><ServiceName></ServiceName><UserName></UserName><Password></Password></SourceConnection></Datasource><EntryForm><Query><TableSql></TableSql><WhereSql></WhereSql><GroupSql></GroupSql><RowSelection>all</RowSelection><SQL><QuerySql></QuerySql><SQLRaw>SELECT DATE_FORMAT(loan_date, '%m') loaned_mthno, DATE_FORMAT(loan_date, '%M') loaned_mth, DATE_FORMAT(loan_date, '%Y') loaned_yr, count(*) loan_count, SUM(IF(to_days(return_date) - to_days(loan_date) &gt; 2 OR return_date IS NULL, 1,0)) overdue 
 FROM reptut_film film INNER JOIN reptut_loan loan ON film.film_id = loan.film_id 
 WHERE 1 = 1                                  
 AND film.film_id = loan.film_id GROUP BY 1, 2, 3 
