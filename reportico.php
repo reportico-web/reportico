@@ -4450,7 +4450,8 @@ class reportico extends reportico_object
 		if ( !$code || $code == "NONE" || $code == "XX" )
         {
 		    global $g_project;
-	        $source_path = find_best_location_in_include_path( "projects/".$g_project."/".$this->xmloutfile.".php" );
+            $include_source = "projects/".$g_project."/".preg_replace("/\.xml$/", "", $this->xmloutfile).".php";
+	        $source_path = find_best_location_in_include_path( $include_source );
             if ( is_file($source_path) )
             {
                 $code = file_get_contents($source_path);

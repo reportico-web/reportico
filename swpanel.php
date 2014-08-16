@@ -2249,7 +2249,7 @@ class reportico_xml_reader
 
 				case "pgft":
 					$updateitem =& $anal["item"];
-					$updateitem->reportico_page_end(
+					$updateitem->__construct(
 							$updates["LineNumber"], $updates["FooterText"]);
 					break;
 
@@ -2431,7 +2431,7 @@ class reportico_xml_reader
 
 				case "pghd":
 					$updateitem =& $anal["item"];
-					$updateitem->reportico_page_end(
+					$updateitem->__construct(
 							$updates["LineNumber"], $updates["HeaderText"]);
 					break;
 
