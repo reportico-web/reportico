@@ -71,7 +71,7 @@ class reportico_datasource extends reportico_object
     var $external_connection = false;
     var $available_connections = false;
 	
-	function __construct($pdo = false, $connections = false)
+	function __construct(&$pdo = false, $connections = false)
 	{
         $this->external_connection = &$pdo;
         $this->available_connections = &$connections;
@@ -283,7 +283,7 @@ class reportico_datasource extends reportico_object
         return $found;
     }
 
-	function connect()
+	function connect($ignore_config = false)
 	{
 		$connected = false;
 
@@ -292,7 +292,17 @@ class reportico_datasource extends reportico_object
 			$this->disconnect();
 		}
 
-		if ( SW_DB_CONNECT_FROM_CONFIG )
+		if ( $ignore_config )
+		{
+			$this->_conn_driver = $this->driver;
+			$this->_conn_user_name = $this->user_name;
+			$this->_conn_password = $this->password;
+			$this->_conn_host_name = $this->host_name;
+			$this->_conn_database = $this->database;
+			$this->_conn_server = $this->server;
+			$this->_conn_protocol = $this->protocol;
+		}
+		else if ( SW_DB_CONNECT_FROM_CONFIG )
 		{
 			$this->_conn_driver = SW_DB_DRIVER;
 			if ( !$this->_conn_user_name ) 

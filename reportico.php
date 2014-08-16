@@ -3232,6 +3232,10 @@ class reportico extends reportico_object
 		$this->panels["USERINFO"]->set_visibility(true);
 		$this->panels["RUNMODE"]->set_visibility(true);
 
+		$smarty->assign('REPORTICO_BOOTSTRAP_MODAL', true);
+        if ( !$this->bootstrap_styles || $this->force_reportico_mini_maintains )
+            $smarty->assign('REPORTICO_BOOTSTRAP_MODAL', false);
+
 		// If no admin password then force user to enter one and  a language
 		if ( $g_project == "admin" && SW_ADMIN_PASSWORD == "PROMPT" )
 		{
@@ -3253,10 +3257,6 @@ class reportico extends reportico_object
 			else
 				$smarty->assign('SHOW_SET_ADMIN_PASSWORD', false);
 		} 
-
-		$smarty->assign('REPORTICO_BOOTSTRAP_MODAL', true);
-        if ( !$this->bootstrap_styles || $this->force_reportico_mini_maintains )
-            $smarty->assign('REPORTICO_BOOTSTRAP_MODAL', false);
 
 		$smarty->assign('SHOW_MINIMAINTAIN', false);
 		{
@@ -4341,7 +4341,7 @@ class reportico extends reportico_object
             try {
 			    $recordSet = $conn->Execute($sql) ;
             }
-            catch ( \PDOException $ex)
+            catch ( PDOException $ex)
             {
             }
             if ( !$recordSet )
@@ -4435,7 +4435,7 @@ class reportico extends reportico_object
             try {
 			    $recordSet = $conn->Execute($nsql) ;
             }
-            catch ( \PDOException $ex)
+            catch ( PDOException $ex)
             {
             }
             if ( !$recordSet )
@@ -4450,7 +4450,8 @@ class reportico extends reportico_object
 		if ( !$code || $code == "NONE" || $code == "XX" )
         {
 		    global $g_project;
-	        $source_path = find_best_location_in_include_path( "projects/".$g_project."/".$this->xmloutfile.".php" );
+            $include_source = "projects/".$g_project."/".preg_replace("/\.xml$/", "", $this->xmloutfile).".php";
+	        $source_path = find_best_location_in_include_path( $include_source );
             if ( is_file($source_path) )
             {
                 $code = file_get_contents($source_path);
@@ -4466,6 +4467,8 @@ class reportico extends reportico_object
 			$code = "\$ds =& \$this->datasource->ado_connection;". $code;
 			$code = "\$_criteria =& \$this->lookup_queries;". $code;
 			$code = "\$_pdo =& \$_connection->_connectionID;". $code;
+			$code = "if ( \$_connection )". $code;
+			$code = "\$_pdo = false;". $code;
 			$code = "\$_connection =& \$this->datasource->ado_connection;". $code;
 
 			// set to the user defined error handler
@@ -4526,12 +4529,12 @@ class reportico extends reportico_object
 		    if ( !$g_error_status && $conn != false )
 			    $recordSet = $conn->Execute($this->query_statement) ;
         }
-        catch ( \PDOException $ex)
+        catch ( PDOException $ex)
         {
             $g_error_status = 1;
         }
 
-        if ( !$recordSet )
+        if ( $conn && !$recordSet )
         {
 			handle_error("Query Failed<BR><BR>".$this->query_statement."<br><br>" . 
 			"Status ".$conn->ErrorNo()." - ".

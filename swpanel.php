@@ -2249,7 +2249,7 @@ class reportico_xml_reader
 
 				case "pgft":
 					$updateitem =& $anal["item"];
-					$updateitem->reportico_page_end(
+					$updateitem->__construct(
 							$updates["LineNumber"], $updates["FooterText"]);
 					break;
 
@@ -2431,7 +2431,7 @@ class reportico_xml_reader
 
 				case "pghd":
 					$updateitem =& $anal["item"];
-					$updateitem->reportico_page_end(
+					$updateitem->__construct(
 							$updates["LineNumber"], $updates["HeaderText"]);
 					break;
 
@@ -3006,13 +3006,12 @@ class reportico_xml_reader
                     return $text;
             }
             else
-          return $text;
+                return $text;
         }
     
 		if ( !$this->is_showing($in_tag ) )
 		{
 			$text .= '<LI class="swMntTabMenuCellUnsel">';
-			//$text .= '<input class="swMntTabMenuBu1tUnsel reporticoSubmit" type="submit" name="submit_'.$in_tag."_SHOW".'" value="'.$in_value.'">';
 			$text .= '<a class="swMntTabMenuBu1tUnsel reporticoSubmit" name="submit_'.$in_tag."_SHOW".'" >';
 			$text .= '<input class="swMntTabMenuButUnsel reporticoSubmit" type="submit" name="submit_'.$in_tag."_SHOW".'" value="'.$in_value.'">';
 			$text .= '</a>';

@@ -33,7 +33,9 @@
 
 
 include_once('reportico_adodb/adodb.inc.php');
+include_once ("reportico.php");
 include_once ("swutil.php");
+include_once ("swdb.php");
 
 error_reporting(E_ALL);
 
@@ -54,7 +56,6 @@ if ( $g_session_namespace )
 
 if ( !function_exists("set_project_environment" ) )
 {
-
 /**
  * Function set_project_environment
  *
@@ -128,144 +129,22 @@ function set_project_environment()
 }
 
 set_project_environment();
+$datasource = new reportico_datasource();
+$datasource->connect();
 
 $imagesql = $_REQUEST["imagesql"];
 
-$username='';
-$password='';
+$rs = $datasource->ado_connection->Execute($imagesql) 
+    or die("Query failed : " . $ado_connection->ErrorMsg());
+$line = $rs->FetchRow();
 
-if ( SW_DB_CONNECT_FROM_CONFIG )
+//header('Content-Type: image/gif');
+foreach ( $line as $col )
 {
-	$driver = SW_DB_DRIVER;
-	$password = SW_DB_PASSWORD;
-	$username = SW_DB_USER;
-	$hostname = SW_DB_HOST;
-	$dbname = SW_DB_DATABASE;
-	$server = SW_DB_SERVER;
-	$protocol = SW_DB_PROTOCOL;
+    $data = $col;
+    break;
 }
-
-
-
-$ado_connection = false;
-if ( $driver == "pdo_informix" )
-{
-	$cnstr =
-		"informix:".
-		"host=".$hostname."; ".
-		"server=".$server."; ".
-		"protocol=".$protocol."; ".
-		"database=".$dbname;
-
-	$db = new PDO($cnstr, $username,$password); 
-	$db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-	$db->setAttribute( PDO::ATTR_CASE, PDO::CASE_LOWER );
-
-	$stmt = $db->prepare($imagesql);
-	$stmt->execute();
-	$stmt->bindColumn(1, $data, PDO::PARAM_LOB);
-	$row = $stmt->fetch(PDO::FETCH_BOUND);
-	fpassthru($data);
-	$stmt = null;
-}
-else
-if ( $driver == "pdo_oci" )
-{
-	$cnstr =
-		"oci:".
-		"host=".$hostname."; ".
-		"dbname=".$dbname;
-
-	$db = new PDO($cnstr, $username,$password); 
-	$db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-	$db->setAttribute( PDO::ATTR_CASE, PDO::CASE_LOWER );
-
-	$stmt = $db->prepare(stripslashes($imagesql));
-	$stmt->execute();
-	$stmt->bindColumn(1, $data, PDO::PARAM_LOB);
-	$row = $stmt->fetch(PDO::FETCH_BOUND);
-	echo $data;
-	//fpassthru($data);
-	$stmt = null;
-}
-else
-if ( $driver == "pdo_pgsql" )
-{
-	$cnstr =
-		"pgsql:".
-		"host=".$hostname."; ".
-		"user=".$username."; ".
-		"password=".$password."; ".
-		"dbname=".$dbname;
-
-	$db = new PDO($cnstr, $username,$password); 
-	$db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-	$db->setAttribute( PDO::ATTR_CASE, PDO::CASE_LOWER );
-
-	$stmt = $db->prepare(stripslashes($imagesql));
-	$stmt->execute();
-	$stmt->bindColumn(1, $data, PDO::PARAM_LOB);
-	$row = $stmt->fetch(PDO::FETCH_BOUND);
-	echo $data;
-	//fpassthru($data);
-	$stmt = null;
-}
-else
-if ( $driver == "pdo_mysql" )
-{
-	$cnstr =
-		"mysql:".
-		"host=".$hostname."; ".
-		"dbname=".$dbname;
-
-	$db = new PDO($cnstr, $username,$password); 
-	$db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-	$db->setAttribute( PDO::ATTR_CASE, PDO::CASE_LOWER );
-
-	$stmt = $db->prepare(stripslashes($imagesql));
-	$stmt->execute();
-	$stmt->bindColumn(1, $data, PDO::PARAM_LOB);
-	$row = $stmt->fetch(PDO::FETCH_BOUND);
-	echo $data;
-	//fpassthru($data);
-	$stmt = null;
-}
-else
-if ( $driver == "pdo_sqlite3" )
-{
-	$cnstr =
-		"sqlite:".
-		$hostname.$dbname;
-
-	$db = new PDO($cnstr, $username,$password); 
-	$db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-	$db->setAttribute( PDO::ATTR_CASE, PDO::CASE_LOWER );
-
-	$stmt = $db->prepare(stripslashes($imagesql));
-	$stmt->execute();
-	$stmt->bindColumn(1, $data, PDO::PARAM_LOB);
-	$row = $stmt->fetch(PDO::FETCH_BOUND);
-	echo $data;
-	//fpassthru($data);
-	$stmt = null;
-}
-else
-{
-	$ado_connection = NewADOConnection($driver);
-	$ado_connection->SetFetchMode(ADODB_FETCH_ASSOC);
-	$ado_connection->PConnect($hostname,$username,$password,$dbname);
-
-	$rs = $ado_connection->Execute($imagesql) 
-		or die("Query failed : " . $ado_connection->ErrorMsg());
-	$line = $rs->FetchRow();
-
-	//header('Content-Type: image/gif');
-	foreach ( $line as $col )
-	{
-		$data = $col;
-		break;
-	}
-}
+echo $data;
 
 
 ?>

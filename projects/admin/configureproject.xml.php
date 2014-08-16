@@ -37,7 +37,7 @@ if ( $_configure_mode != "DELETE" )
 
     if ( !$configparams["SW_DB_TYPE"] ) { trigger_error ( "Specify Database Type" ); return; }
 
-    $test = new reportico_datasource("array", "localhost");
+    $test = new reportico_datasource();
     $test->driver = $configparams["SW_DB_TYPE"];
 
     if ( $test->driver != "framework" )

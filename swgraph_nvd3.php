@@ -327,8 +327,10 @@ class reportico_graph
         // Work out what combinations o type we have
         $has_plot_types = array();
         $showLegend = false;
-        foreach ( $this->plot as $k => $v )
+        $datasetct = 0;
+        for ( $k = 0; $k < count($this->plot); $k++ )
         {
+            $v = $this->plot[$k];
             //if ( $k == 0 ) $v["type"] = "SCATTER";
             //if ( $k == 1 ) $v["type"] = "SCATTER";
             //if ( $k == 2 ) $v["type"] = "SCATTER";
@@ -349,7 +351,13 @@ class reportico_graph
                     $js .= ",";
                 $xlabel = $this->xlabels[$k1];
                 $key = $k1;
-                $js .= "{index: $k1, series: 0, x: $key, y: $v1, label: \"$xlabel\", value: $v1}";
+                if ( $v["type"] == "SCATTER" && $k < count($this->plot) - 1)
+                {
+                    $yvalue = $this->plot[$k+1]["data"][$k1];
+                    $js .= "{index: $k1, series: 0, x: $v1, y: $yvalue, label: \"$xlabel\", value: $v1}";
+                }
+                else
+                    $js .= "{index: $k1, series: 0, x: $key, y: $v1, label: \"$xlabel\", value: $v1}";
                 $plotct1++;
             }
             $js .= "];\n";
@@ -367,9 +375,16 @@ class reportico_graph
             //echo $v["type"]." = $type <BR>";
 
             
-            $js .= "reportico_datasets". $session_placeholder."[$k] = { type: \"$type\", yAxis: 1, key: \"$label\", originalKey: \"$label\", values: values};\n";
+            $js .= "reportico_datasets". $session_placeholder."[$datasetct] = { type: \"$type\", yAxis: 1, key: \"$label\", originalKey: \"$label\", values: values};\n";
             //$js .= "reportico_datasets". $session_placeholder."[$k][\"type\"] = \"line\";\n";
             $plotct++;
+
+            $datasetct++;
+            if ( $v["type"] == "SCATTER" )
+            {
+                $k++;
+                continue;
+            }
         }
 
         // NVD3 - we dont support overlay bar, just use regular bar

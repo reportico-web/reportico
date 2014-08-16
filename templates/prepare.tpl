@@ -323,18 +323,18 @@
 {if !$REPORTICO_BOOTSTRAP_MODAL}
 <div style="width: 100%; padding-top: 3px; text-align: right">
     				<input type="submit" class="prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITSQL}" id="submit_mainquerqury_SHOW" value="{$T_EDITSQL}" name="mainquerqurysqlt_QuerySql">
-    				<input type="submit" class="prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITCOLUMNS}" id="submit_mainquerquryqcol0000_SHOW" value="{$T_EDITCOLUMNS}" name="mainquerquryqcol0000_ANY">
-    				<input type="submit" class="prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITASSIGNMENT}" id="submit_mainquerassg0000" value="{$T_EDITASSIGNMENT}" name="mainquerassg0000_ANY">
-    				<input type="submit" class="prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITGROUPS}" id="submit_mainqueroutpgrps0000" value="{$T_EDITGROUPS}" name="mainqueroutpgrps0000_ANY">
-    				<input type="submit" class="prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITGRAPHS}" id="submit_mainqueroutpgrph0000" value="{$T_EDITGRAPHS}" name="mainqueroutpgrph0000_ANY">
+    				<input type="submit" class="prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITCOLUMNS}" id="submit_mainquerquryqcol_SHOW" value="{$T_EDITCOLUMNS}" name="mainquerquryqcol_ANY">
+    				<input type="submit" class="prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITASSIGNMENT}" id="submit_mainquerassg" value="{$T_EDITASSIGNMENT}" name="mainquerassg_ANY">
+    				<input type="submit" class="prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITGROUPS}" id="submit_mainqueroutpgrps" value="{$T_EDITGROUPS}" name="mainqueroutpgrps_ANY">
+    				<input type="submit" class="prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITGRAPHS}" id="submit_mainqueroutpgrph" value="{$T_EDITGRAPHS}" name="mainqueroutpgrph_ANY">
 </div>
 {else}
 <div style="width: 100%; padding-top: 3px; text-align: right">
     				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITSQL}" id="submit_mainquerqury_SHOW" value="{$T_EDITSQL}" name="mainquerqurysqlt_QuerySql">
-    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITCOLUMNS}" id="submit_mainquerquryqcol0000_SHOW" value="{$T_EDITCOLUMNS}" name="mainquerquryqcol0000_ANY">
-    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITASSIGNMENT}" id="submit_mainquerassg0000" value="{$T_EDITASSIGNMENT}" name="mainquerassg0000_ANY">
-    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITGROUPS}" id="submit_mainqueroutpgrps0000" value="{$T_EDITGROUPS}" name="mainqueroutpgrps0000_ANY">
-    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITGRAPHS}" id="submit_mainqueroutpgrph0000" value="{$T_EDITGRAPHS}" name="mainqueroutpgrph0000_ANY">
+    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITCOLUMNS}" id="submit_mainquerquryqcol_SHOW" value="{$T_EDITCOLUMNS}" name="mainquerquryqcol_ANY">
+    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITASSIGNMENT}" id="submit_mainquerassg" value="{$T_EDITASSIGNMENT}" name="mainquerassg_ANY">
+    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITGROUPS}" id="submit_mainqueroutpgrps" value="{$T_EDITGROUPS}" name="mainqueroutpgrps_ANY">
+    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITGRAPHS}" id="submit_mainqueroutpgrph" value="{$T_EDITGRAPHS}" name="mainqueroutpgrph_ANY">
 </div>
 {/if}
 {/if}
@@ -454,9 +454,9 @@
 {if $SHOW_MINIMAINTAIN} 
 <div style="float: left">
 {if !$REPORTICO_BOOTSTRAP_MODAL}
-    				<input type="submit" class="prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITCRITERIA}" id="submit_mainquercrit0000" value="{$T_EDITCRITERIA}" name="mainquercrit0000_ANY">
+    				<input type="submit" class="prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITCRITERIA}" id="submit_mainquercrit" value="{$T_EDITCRITERIA}" name="mainquercrit_ANY">
 {else}
-    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITCRITERIA}" id="submit_mainquercrit0000" value="{$T_EDITCRITERIA}" name="mainquercrit0000_ANY">
+    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITCRITERIA}" id="submit_mainquercrit" value="{$T_EDITCRITERIA}" name="mainquercrit_ANY">
 {/if}
 </div>
 {/if}
