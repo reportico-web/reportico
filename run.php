@@ -140,6 +140,11 @@
             // $q->external_connection = false;
             // // Handle Error
     // }
+
+    // Specify alternate path to projects folder, templates_c folder
+    //$q->projects_folder = "projects";
+    //$q->admin_projects_folder = "projects";
+    //$q->compiled_templates_folder = "templates_c";
     
     // For setting report criteria parameters.. use the criteria name as the key and the criteria value
     // $q->initial_execution_parameters = array();

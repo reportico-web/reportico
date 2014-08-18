@@ -948,8 +948,8 @@ class reportico_xml_reader
                 global $g_project;
                 if ( $this->query )
                 {
-                    $readfile = $this->query->reports_path."/".$filename;
-                    $adminfile = $this->query->admin_path."/".$filename;
+                    $readfile = $this->query->projects_folder."/$g_project/".$filename;
+                    $adminfile = $this->query->admin_projects_folder."/admin/".$filename;
                 }
                 else
                 {
@@ -1380,7 +1380,7 @@ class reportico_xml_reader
 					break;
 
 				case "assg":
-                    $q =  load_existing_report ( $this->query->reportlink_report );
+                    $q =  load_existing_report ( $this->query->reportlink_report, $this->query->projects_folder );
 					foreach ( $q->assignment as $k => $v )
 					{
                         if ( strval($this->query->reportlink_report_item) == "ALLITEMS" || $this->query->reportlink_report_item == $k )
@@ -1399,7 +1399,7 @@ class reportico_xml_reader
 					break;
 
 				case "pghd":
-                    $q =  load_existing_report ( $this->query->reportlink_report );
+                    $q =  load_existing_report ( $this->query->reportlink_report, $this->query->projects_folder );
 					foreach ( $q->page_headers as $k => $v )
 					{
                         if ( strval($this->query->reportlink_report_item) == "ALLITEMS" || $this->query->reportlink_report_item == $k )
@@ -1449,7 +1449,7 @@ class reportico_xml_reader
 					break;
 
 				case "crit":
-                    $q =  load_existing_report ( $this->query->reportlink_report );
+                    $q =  load_existing_report ( $this->query->reportlink_report, $this->query->projects_folder );
 					foreach ( $q->lookup_queries as $k => $v )
 					{
                         if ( $this->query->reportlink_report_item == "ALLITEMS" ||
@@ -2188,7 +2188,7 @@ class reportico_xml_reader
 							$this->query->drilldown_report = $updates["DrilldownReport"];
 							$q = new reportico();
 							global $g_project;
-							$q->reports_path = "projects/".$g_project;
+							$q->reports_path = $q->projects_folder."/".$g_project;
 							$reader = new reportico_xml_reader($q, $updates["DrilldownReport"], false);
 							$reader->xml2query();
 
@@ -2896,7 +2896,11 @@ class reportico_xml_reader
         if ( $showtag )
             $showtag = "_".$showtag;
 
-        $testpath = find_best_location_in_include_path( $this->query->reports_path );
+        if ( is_dir ( $this->query->reports_path ) )
+            $testpath = $this->query->reports_path;
+        else
+            $testpath = find_best_location_in_include_path( $this->query->reports_path );
+
         if (is_dir($testpath)) 
         {
             if ($dh = opendir($testpath)) 
@@ -4088,7 +4092,10 @@ class reportico_xml_reader
 			case "REPORTLIST":
 				$keys = array();
 				$keys[] = "";
-				$testpath = find_best_location_in_include_path( $this->query->reports_path );
+                if ( is_dir ( $this->query->reports_path ) )
+                    $testpath = $this->query->reports_path;
+                else
+				        $testpath = find_best_location_in_include_path( $this->query->reports_path );
 				if (is_dir($testpath)) 
 				{
     				if ($dh = opendir($testpath)) 
@@ -4357,7 +4364,7 @@ class reportico_xml_reader
 		{
 				$q = new reportico();
 				global $g_project;
-				$q->reports_path = "projects/".$g_project;
+				$q->reports_path = $q->projects_folder."/".$g_project;
 				$reader = new reportico_xml_reader($q, $this->query->drilldown_report, false);
 				$reader->xml2query();
 				foreach ( $q->lookup_queries as $k => $v )
@@ -4778,7 +4785,7 @@ class reportico_xml_reader
                 {
 					$q = new reportico();
 					global $g_project;
-					$q->reports_path = "projects/".$g_project;
+					$q->reports_path = $q->projects_folder."/".$g_project;
 					$reader = new reportico_xml_reader($q, $linked_report, false);
 					$reader->xml2query();
 
@@ -5496,7 +5503,7 @@ class reportico_xml_writer
 			$filename = $filename.".xml";
 		}
 
-		$projdir = "projects/".$g_project;
+		$projdir = $this->query->projects_folder."/".$g_project;
 		if ( !is_file($projdir) )
 			find_file_to_include($projdir, $projdir);
 
@@ -5538,7 +5545,7 @@ class reportico_xml_writer
 			$filename = $filename.".xml";
 		}
 
-		$projdir = "projects/".$g_project;
+		$projdir = $this->query->projects_folder."/".$g_project;
 		if ( !is_file($projdir) )
 			find_file_to_include($projdir, $projdir);
 

@@ -1371,11 +1371,13 @@ function htmltorgb($color)
 
 //
 // Loads an existing report in to a reportico class instance
-function &load_existing_report ( $reportfile )
+function &load_existing_report ( $reportfile, $projects_folder = "projects" )
 {
     $q = new reportico();
     global $g_project;
-    $q->reports_path = "projects/".$g_project;
+    $q->reports_path = $projects_folder."/".$g_project;
+    $q->projects_folder = $projects_folder;
+
     $reader = new reportico_xml_reader($q, $reportfile, false);
     $reader->xml2query();
 

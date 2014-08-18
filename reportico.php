@@ -337,14 +337,16 @@ class reportico extends reportico_object
 
 	var $show_form_panel = false;
 	var $status_message = "";
-	var $reports_path = "projects/reports";
-	var $admin_path = "projects/admin";
 
 	var $framework_parent = false;
 	var $framework_type = false;
 
 	var $charting_engine = "PCHART";
 	var $charting_engine_html = "NVD3";
+
+    var $projects_folder = "projects";
+    var $admin_projects_folder = "projects";
+    var $compiled_templates_folder = "templates_c";
 
 	var $attributes = array (
 			"ReportTitle" => "Set Report Title",
@@ -3244,7 +3246,7 @@ class reportico extends reportico_object
 			if ( array_key_exists("submit_admin_password", $_REQUEST) )
 			{
 				$smarty->assign('SET_ADMIN_PASSWORD_ERROR', 
-					save_admin_password($_REQUEST["new_admin_password"], $_REQUEST["new_admin_password2"], $_REQUEST["jump_to_language"]  ) );
+					$this->save_admin_password($_REQUEST["new_admin_password"], $_REQUEST["new_admin_password2"], $_REQUEST["jump_to_language"]  ) );
 			}
 
 			$this->panels["SET_ADMIN_PASSWORD"]->set_visibility(true);
@@ -3600,7 +3602,7 @@ class reportico extends reportico_object
 	// -----------------------------------------------------------------------------
 	function importSQL($sql)
 	{
-		set_project_environment($this->initial_project);
+		$this->set_project_environment($this->initial_project, $this->projects_folder, $this->admin_projects_folder);
         $p = new reportico_sql_parser($sql);
         if ( $p->parse(false) )
         {
@@ -3644,7 +3646,7 @@ class reportico extends reportico_object
 	    $this->handle_initial_settings();
 
         // Fetch project config
-		set_project_environment($this->initial_project);
+		$this->set_project_environment($this->initial_project, $this->projects_folder, $this->admin_projects_folder);
 
         register_session_param("external_user", $this->external_user);
         register_session_param("external_param1", $this->external_param1);
@@ -3678,15 +3680,13 @@ class reportico extends reportico_object
         if ( $this->access_mode == "DEMO" )
             $this->allow_maintain = "DEMO";
 
-		$this->reports_path = "projects/".$g_project;
-
         // Convert input and out charsets into their PHP versions
         // for later iconv use
         $this->db_charset = db_charset_to_php_charset(SW_DB_ENCODING);
         $this->output_charset = output_charset_to_php_charset(SW_OUTPUT_ENCODING);
 
 		// Ensure Smarty Template folder exists and is writeable
-		$include_template_dir="templates_c";
+		$include_template_dir=$this->compiled_templates_folder;
 		if ( !( is_dir ("templates_c")) )
 		{
 			find_file_to_include("templates_c", $include_template_dir, $include_template_dir);
@@ -4251,15 +4251,23 @@ class reportico extends reportico_object
 			// Generate list of projects to choose from by finding all folders above the
 			// current project area (i.e. the projects folder) and looking for any folder
 			// that contains a config.php file (which means it proably is a project)
-			if (is_dir($g_projpath."/..")) 
+	        $projpath = $this->projects_folder;
+	        if ( !is_dir($projpath) )
+	        {
+		        find_file_to_include($projpath, $projpath);
+	        }
+
+			if (is_dir($projpath)) 
 			{
 				$ct = 0;
-				if ($dh = opendir($g_projpath."/..")) 
+				if ($dh = opendir($projpath)) 
 				{
 					while (($file = readdir($dh)) !== false) 
 					{
-						if ( is_dir ( $g_projpath."/../".$file ) )
-							if ( is_file ( $g_projpath."/../".$file."/config.php" ) )
+                        if ( $file == "." )
+                            continue;
+						if ( is_dir ( $projpath."/".$file ) )
+							if ( is_file ( $projpath."/".$file."/config.php" ) )
 							{
 								//$repxml = new reportico_xml_reader($this, $file, false, "ReportTitle");
 								$this->panels["ADMIN"]->set_project_item($file, $file);
@@ -4450,8 +4458,7 @@ class reportico extends reportico_object
 		if ( !$code || $code == "NONE" || $code == "XX" )
         {
 		    global $g_project;
-            $include_source = "projects/".$g_project."/".preg_replace("/\.xml$/", "", $this->xmloutfile).".php";
-	        $source_path = find_best_location_in_include_path( $include_source );
+	        $source_path = find_best_location_in_include_path( $this->projects_folder."/projects/".$g_project."/".$this->xmloutfile.".php" );
             if ( is_file($source_path) )
             {
                 $code = file_get_contents($source_path);
@@ -5283,8 +5290,10 @@ class reportico extends reportico_object
                 if ( !isset ($menuitem["reportname"] ) || $menuitem["reportname"] == "<AUTO>" )
                 {
                     // Generate Menu from XML files
-                    global $g_projpath;
-                    $proj_parent = find_best_location_in_include_path( "projects" );
+                    if ( is_dir ( $this->projects_folder ) )
+                        $proj_parent = $this->projects_folder;
+                    else
+                        $proj_parent = find_best_location_in_include_path( $this->projects_folder );
                     $filename = $proj_parent."/".$project."/".$menuitem["reportfile"];
                     if ( !preg_match("/\.xml/", $filename ) ) $filename .= ".xml";
                     if (is_file($filename)) 
@@ -5309,6 +5318,307 @@ class reportico extends reportico_object
             return $x." ";
         }
     }
+
+/**
+ * Function save_admin_password
+ *
+ * Writes new admin password to the admin config.php 
+ */
+function save_admin_password($password1, $password2, $language)
+{
+    global $g_language;
+    if ( $language )
+	    $g_language = $language;
+
+	if ( $password1 != $password2 )
+		return sw_translate("The passwords are not identical please reenter");
+	if ( strlen($password1) == 0 )
+		return sw_translate("The password may not be blank");
+
+	$proj_parent = find_best_location_in_include_path( $this->admin_projects_folder );
+	$proj_dir = $proj_parent."/admin";
+	$proj_conf = $proj_dir."/config.php";
+	$proj_template = $proj_dir."/adminconfig.template";
+
+	if ( !file_exists ( $proj_parent ) )
+    		return "Projects area $proj_parent does not exist - cannot write project";
+
+	if ( file_exists ( $proj_conf ) )
+	{
+		if ( !is_writeable ( $proj_conf  ) )
+			return "Projects config file $proj_conf is not writeable - cannot write config file - change permissions to continue";
+	}
+
+	if ( !is_writeable ( $proj_dir  ) )
+    		return "Projects area $proj_dir is not writeable - cannot write project password in config.php - change permissions to continue";
+
+
+	if ( !file_exists ( $proj_conf ) )
+		if ( !file_exists ( $proj_template ) )
+    		return "Projects config template file $proj_template does not exist - please contact reportico.org";
+
+	if ( file_exists ( $proj_conf ) )
+	{
+		$txt = file_get_contents($proj_conf);
+	}
+	else
+	{
+		$txt = file_get_contents($proj_template);
+	}
+
+	$proj_language = find_best_location_in_include_path( "language" ) ;
+	$lang_dir = $proj_language."/".$language;
+	if ( !is_dir ( $lang_dir ) )
+    	return "Language directory $language does not exist within the language folder";
+
+	$txt = preg_replace ( "/(define.*?SW_ADMIN_PASSWORD',).*\);/", "$1'$password1');", $txt);
+	$txt = preg_replace ( "/(define.*?SW_LANGUAGE',).*\);/", "$1'$language');", $txt);
+
+    unset_reportico_session_param('admin_password');
+	$retval = file_put_contents($proj_conf, $txt );
+	
+	// Password is saved so use it so user can login
+	if ( !defined('SW_ADMIN_PASSWORD') )
+		define ('SW_ADMIN_PASSWORD', $password1);
+	else
+		define ('SW_ADMIN_PASSWORD_RESET', $password1);
+
+	return ;
+
+}
+
+/**
+ * Function set_project_environment
+ *
+ * Analyses configuration and current session to identify which project area
+ * is to be used. 
+ * If a project is specified in the HTTP parameters then that is used, otherwise
+ * the current SESSION
+ * "reports" project is used
+ */
+function set_project_environment($initial_project = false, $project_folder = "projects", $admin_project_folder = "projects" )
+{
+	global $g_project;
+	global $g_projpath;
+	global $g_language;
+	global $g_translations;
+	global $g_menu;
+	global $g_menu_title;
+	global $g_dropdown_menu;
+	global $g_report_desc;
+	global $g_included_config;
+	
+	$target_menu = "";
+	$project = "";
+
+    $last_project = "";
+
+    if ( isset_reportico_session_param("project") )
+        if ( get_reportico_session_param("project") )
+            $last_project = get_reportico_session_param("project");
+
+	if ( !$project && array_key_exists("submit_delete_project", $_REQUEST) )
+	{
+		$project = get_request_item("jump_to_delete_project", "");	
+		$_REQUEST["xmlin"] = "deleteproject.xml";
+		set_reportico_session_param("project",$project);
+	}
+
+	if ( !$project && array_key_exists("submit_configure_project", $_REQUEST) )
+	{
+		$project = get_request_item("jump_to_configure_project", "");	
+		$_REQUEST["xmlin"] = "configureproject.xml";
+		set_reportico_session_param("project",$project);
+	}
+
+	if ( !$project && array_key_exists("submit_menu_project", $_REQUEST) )
+	{
+		$project = get_request_item("jump_to_menu_project", "");	
+		set_reportico_session_param("project",$project);
+	}
+
+	if ( !$project && array_key_exists("submit_design_project", $_REQUEST) )
+	{
+		$project = get_request_item("jump_to_design_project", "");	
+		set_reportico_session_param("project",$project);
+	}
+    
+	if ( $initial_project )
+	{
+		$project = $initial_project;
+		set_reportico_session_param("project",$project);
+	}
+    
+
+	if ( !$project )
+		$project = session_request_item("project", "admin");
+
+	if ( !$target_menu )
+		$target_menu = session_request_item("target_menu", "");
+
+	$menu = false;
+	$menu_title = "Set Menu Title";
+
+    if ( $project == "admin" )
+        $project_folder = $admin_project_folder;
+
+	// Now we now the project include the relevant config.php
+	$projpath = $project_folder."/".$project;
+
+	$configfile = $projpath."/config.php";
+	$configtemplatefile = $projpath."/adminconfig.template";
+
+	$menufile = $projpath."/menu.php";
+	if ( $target_menu != "" )
+		$menufile = $projpath."/menu_".$target_menu.".php";
+
+	if ( !is_file($projpath) )
+	{
+		find_file_to_include($projpath, $projpath);
+	}
+
+    set_reportico_session_param("project_path", $projpath); 
+    $this->reports_path = $projpath;
+
+	if ( !$projpath )
+	{
+		find_file_to_include("config.php", $configfile);
+        if ( $g_included_config && $g_included_config != $configfile )
+            handle_error("Cannot load two different instances on a single page from different projects.", E_USER_ERROR);
+        else
+        {
+            $g_included_config = $configfile;
+            include_once($configfile);
+        }
+		$g_projpath = false;
+		$g_project = false;
+		$g_menu = false;
+		$g_menu_title = "";
+		$g_dropdown_menu = false;
+		$old_error_handler = set_error_handler("\Reportico\Reportico\ErrorHandler");
+		handle_error("Project Directory $project not found. Check INCLUDE_PATH or project name");
+		return;
+	}
+
+	$g_projpath = $projpath;
+	if ( !is_file($configfile) )
+		find_file_to_include($configfile, $configfile);
+	if ( !is_file($menufile) )
+		find_file_to_include($menufile, $menufile);
+
+	if ( $project == "admin" && !is_file($configfile))
+	{
+		find_file_to_include($configtemplatefile, $configfile);
+	}
+	
+	if ( $configfile )
+	{
+		if ( !is_file($configfile) )
+        {
+			handle_error("Config file $menufile not found in project $project", E_USER_WARNING);
+        }
+
+        if ( $g_included_config && $g_included_config != $configfile )
+	        handle_error("Cannot load two different instances on a single page from different projects.", E_USER_ERROR);
+        else
+        {
+		    include_once($configfile);
+            $g_included_config = $configfile;
+        }
+
+		if ( is_file($menufile) )
+			include($menufile);
+		else
+			handle_error("Menu Definition file $menufile not found in project $project", E_USER_WARNING);
+
+	}
+	else
+	{
+		find_file_to_include("config.php", $configfile);
+		if ( $configfile )
+        {
+            if ( $g_included_config && $g_included_config != $configfile )
+	            handle_error("Cannot load two different instances on a single page from different projects.", E_USER_ERROR);
+            else
+            {
+		        include_once($configfile);
+                $g_included_config = $configfile;
+            }
+        }
+		$g_project = false;
+		$g_projpath = false;
+		$g_menu = false;
+		$g_menu_title = "";
+		$g_dropdown_menu = false;
+		$old_error_handler = set_error_handler("\Reportico\Reportico\ErrorHandler");
+		handle_error("Configuration Definition file config.php not found in project $project", E_USER_ERROR);
+	}
+
+    // Ensure a Database and Output Character Set Encoding is set
+    if ( !defined("SW_DB_ENCODING" ) )
+        define("SW_DB_ENCODING", "UTF8");
+    if ( !defined("SW_OUTPUT_ENCODING" ) )
+        define("SW_OUTPUT_ENCODING", "UTF8");
+
+    // Ensure a language is set
+    if ( !defined("SW_LANGUAGE" ) )
+        define("SW_LANGUAGE", "en_gb");
+
+	$g_project = $project;
+	if ( !defined('SW_PROJECT') )
+	    define('SW_PROJECT', $g_project);
+
+	$language = "en_gb";
+    // Default language to first language in avaible_languages
+    $langs = available_languages();
+    if ( count($langs) > 0 )
+    {
+        $language = $langs[0]["value"];
+    }
+
+	if ( defined('SW_LANGUAGE') && SW_LANGUAGE && SW_LANGUAGE != "PROMPT" )
+	    $language = session_request_item("reportico_language", SW_LANGUAGE);
+    else
+	    $language = session_request_item("reportico_language", "en_gb");
+
+    // language not found the default to first
+    $found = false;
+    foreach ( $langs as $k => $v )
+    {
+        if ( $v["value"] == $language )
+        {
+            $found = true;
+            break;
+        }
+    }
+    if ( !$found && count($langs) > 0 )
+        $language = $langs[0]["value"];
+
+    // If project has change then change to default project language
+    // Ignore for now as want to use chosen Administrator language if set
+    //if ( $last_project && ( $last_project != $project ) )
+    //{
+        //$language = SW_LANGUAGE;
+		//set_reportico_session_param("language",$language);
+    //}
+
+	if ( array_key_exists("submit_language", $_REQUEST) )
+	{
+		$language = $_REQUEST["jump_to_language"];
+		set_reportico_session_param("reportico_language",$language);
+	}
+
+	$g_language = $language;
+	$g_menu = $menu;
+	$g_menu_title = $menu_title;
+    if ( isset($dropdown_menu ) )
+	    $g_dropdown_menu = $dropdown_menu;
+
+    // Include project specific language translations
+    load_project_language_pack($project, output_charset_to_php_charset(SW_OUTPUT_ENCODING));
+
+	return $project;
+}
 
 }
 // -----------------------------------------------------------------------------
@@ -7574,300 +7884,7 @@ class reportico_query_column extends reportico_object
 
 }
 
-/**
- * Function set_project_environment
- *
- * Analyses configuration and current session to identify which project area
- * is to be used. 
- * If a project is specified in the HTTP parameters then that is used, otherwise
- * the current SESSION
- * "reports" project is used
- */
-function set_project_environment($initial_project = false)
-{
-	global $g_project;
-	global $g_projpath;
-	global $g_language;
-	global $g_translations;
-	global $g_menu;
-	global $g_menu_title;
-	global $g_dropdown_menu;
-	global $g_report_desc;
-	global $g_included_config;
-	
-	$target_menu = "";
-	$project = "";
 
-    $last_project = "";
-
-    if ( isset_reportico_session_param("project") )
-        if ( get_reportico_session_param("project") )
-            $last_project = get_reportico_session_param("project");
-
-	if ( !$project && array_key_exists("submit_delete_project", $_REQUEST) )
-	{
-		$project = get_request_item("jump_to_delete_project", "");	
-		$_REQUEST["xmlin"] = "deleteproject.xml";
-		set_reportico_session_param("project",$project);
-	}
-
-	if ( !$project && array_key_exists("submit_configure_project", $_REQUEST) )
-	{
-		$project = get_request_item("jump_to_configure_project", "");	
-		$_REQUEST["xmlin"] = "configureproject.xml";
-		set_reportico_session_param("project",$project);
-	}
-
-	if ( !$project && array_key_exists("submit_menu_project", $_REQUEST) )
-	{
-		$project = get_request_item("jump_to_menu_project", "");	
-		set_reportico_session_param("project",$project);
-	}
-
-	if ( !$project && array_key_exists("submit_design_project", $_REQUEST) )
-	{
-		$project = get_request_item("jump_to_design_project", "");	
-		set_reportico_session_param("project",$project);
-	}
-    
-	if ( $initial_project )
-	{
-		$project = $initial_project;
-		set_reportico_session_param("project",$project);
-	}
-    
-
-	if ( !$project )
-		$project = session_request_item("project", "admin");
-
-	if ( !$target_menu )
-		$target_menu = session_request_item("target_menu", "");
-
-	$menu = false;
-	$menu_title = "Set Menu Title";
-
-	// Now we now the project include the relevant config.php
-	$projpath = "projects/".$project;
-	$configfile = $projpath."/config.php";
-	$configtemplatefile = $projpath."/adminconfig.template";
-
-	$menufile = $projpath."/menu.php";
-	if ( $target_menu != "" )
-		$menufile = $projpath."/menu_".$target_menu.".php";
-
-	if ( !is_file($projpath) )
-	{
-		find_file_to_include($projpath, $projpath);
-	}
-
-	if ( !$projpath )
-	{
-		find_file_to_include("config.php", $configfile);
-        if ( $g_included_config && $g_included_config != $configfile )
-            handle_error("Cannot load two different instances on a single page from different projects.", E_USER_ERROR);
-        else
-        {
-            $g_included_config = $configfile;
-            include_once($configfile);
-        }
-		$g_projpath = false;
-		$g_project = false;
-		$g_menu = false;
-		$g_menu_title = "";
-		$g_dropdown_menu = false;
-		$old_error_handler = set_error_handler("ErrorHandler");
-		handle_error("Project Directory $project not found. Check INCLUDE_PATH or project name");
-		return;
-	}
-
-	$g_projpath = $projpath;
-	if ( !is_file($configfile) )
-		find_file_to_include($configfile, $configfile);
-	if ( !is_file($menufile) )
-		find_file_to_include($menufile, $menufile);
-
-	if ( $project == "admin" && !is_file($configfile))
-	{
-		find_file_to_include($configtemplatefile, $configfile);
-	}
-	
-	if ( $configfile )
-	{
-		if ( !is_file($configfile) )
-        {
-			handle_error("Config file $menufile not found in project $project", E_USER_WARNING);
-        }
-
-        if ( $g_included_config && $g_included_config != $configfile )
-	        handle_error("Cannot load two different instances on a single page from different projects.", E_USER_ERROR);
-        else
-        {
-		    include_once($configfile);
-            $g_included_config = $configfile;
-        }
-
-		if ( is_file($menufile) )
-			include($menufile);
-		else
-			handle_error("Menu Definition file $menufile not found in project $project", E_USER_WARNING);
-
-	}
-	else
-	{
-		find_file_to_include("config.php", $configfile);
-		if ( $configfile )
-        {
-            if ( $g_included_config && $g_included_config != $configfile )
-	            handle_error("Cannot load two different instances on a single page from different projects.", E_USER_ERROR);
-            else
-            {
-		        include_once($configfile);
-                $g_included_config = $configfile;
-            }
-        }
-		$g_project = false;
-		$g_projpath = false;
-		$g_menu = false;
-		$g_menu_title = "";
-		$g_dropdown_menu = false;
-		$old_error_handler = set_error_handler("ErrorHandler");
-		handle_error("Configuration Definition file config.php not found in project $project", E_USER_ERROR);
-	}
-
-    // Ensure a Database and Output Character Set Encoding is set
-    if ( !defined("SW_DB_ENCODING" ) )
-        define("SW_DB_ENCODING", "UTF8");
-    if ( !defined("SW_OUTPUT_ENCODING" ) )
-        define("SW_OUTPUT_ENCODING", "UTF8");
-
-    // Ensure a language is set
-    if ( !defined("SW_LANGUAGE" ) )
-        define("SW_LANGUAGE", "en_gb");
-
-	$g_project = $project;
-	if ( !defined('SW_PROJECT') )
-	    define('SW_PROJECT', $g_project);
-
-	$language = "en_gb";
-    // Default language to first language in avaible_languages
-    $langs = available_languages();
-    if ( count($langs) > 0 )
-    {
-        $language = $langs[0]["value"];
-    }
-
-	if ( defined('SW_LANGUAGE') && SW_LANGUAGE && SW_LANGUAGE != "PROMPT" )
-	    $language = session_request_item("reportico_language", SW_LANGUAGE);
-    else
-	    $language = session_request_item("reportico_language", "en_gb");
-
-    // language not found the default to first
-    $found = false;
-    foreach ( $langs as $k => $v )
-    {
-        if ( $v["value"] == $language )
-        {
-            $found = true;
-            break;
-        }
-    }
-    if ( !$found && count($langs) > 0 )
-        $language = $langs[0]["value"];
-
-    // If project has change then change to default project language
-    // Ignore for now as want to use chosen Administrator language if set
-    //if ( $last_project && ( $last_project != $project ) )
-    //{
-        //$language = SW_LANGUAGE;
-		//set_reportico_session_param("language",$language);
-    //}
-
-	if ( array_key_exists("submit_language", $_REQUEST) )
-	{
-		$language = $_REQUEST["jump_to_language"];
-		set_reportico_session_param("reportico_language",$language);
-	}
-
-	$g_language = $language;
-	$g_menu = $menu;
-	$g_menu_title = $menu_title;
-    if ( isset($dropdown_menu ) )
-	    $g_dropdown_menu = $dropdown_menu;
-
-    // Include project specific language translations
-    load_project_language_pack($project, output_charset_to_php_charset(SW_OUTPUT_ENCODING));
-
-	return $project;
-}
-
-
-/**
- * Function save_admin_password
- *
- * Writes new admin password to the admin config.php 
- */
-function save_admin_password($password1, $password2, $language)
-{
-    global $g_language;
-    if ( $language )
-	    $g_language = $language;
-
-	if ( $password1 != $password2 )
-		return sw_translate("The passwords are not identical please reenter");
-	if ( strlen($password1) == 0 )
-		return sw_translate("The password may not be blank");
-
-	$proj_parent = find_best_location_in_include_path( "projects" );
-	$proj_dir = $proj_parent."/admin";
-	$proj_conf = $proj_dir."/config.php";
-	$proj_template = $proj_dir."/adminconfig.template";
-
-	if ( !file_exists ( $proj_parent ) )
-    		return "Projects area $proj_parent does not exist - cannot write project";
-
-	if ( file_exists ( $proj_conf ) )
-	{
-		if ( !is_writeable ( $proj_conf  ) )
-			return "Projects config file $proj_conf is not writeable - cannot write config file - change permissions to continue";
-	}
-
-	if ( !is_writeable ( $proj_dir  ) )
-    		return "Projects area $proj_dir is not writeable - cannot write project password in config.php - change permissions to continue";
-
-
-	if ( !file_exists ( $proj_conf ) )
-		if ( !file_exists ( $proj_template ) )
-    		return "Projects config template file $proj_template does not exist - please contact reportico.org";
-
-	if ( file_exists ( $proj_conf ) )
-	{
-		$txt = file_get_contents($proj_conf);
-	}
-	else
-	{
-		$txt = file_get_contents($proj_template);
-	}
-
-	$proj_language = find_best_location_in_include_path( "language" ) ;
-	$lang_dir = $proj_language."/".$language;
-	if ( !is_dir ( $lang_dir ) )
-    	return "Language directory $language does not exist within the language folder";
-
-	$txt = preg_replace ( "/(define.*?SW_ADMIN_PASSWORD',).*\);/", "$1'$password1');", $txt);
-	$txt = preg_replace ( "/(define.*?SW_LANGUAGE',).*\);/", "$1'$language');", $txt);
-
-    unset_reportico_session_param('admin_password');
-	$retval = file_put_contents($proj_conf, $txt );
-	
-	// Password is saved so use it so user can login
-	if ( !defined('SW_ADMIN_PASSWORD') )
-		define ('SW_ADMIN_PASSWORD', $password1);
-	else
-		define ('SW_ADMIN_PASSWORD_RESET', $password1);
-
-	return ;
-
-}
 
 // Setup SESSION
 set_up_reportico_session();
