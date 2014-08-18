@@ -1418,7 +1418,7 @@ class reportico_xml_reader
 					break;
 
 				case "pgft":
-                    $q =  load_existing_report ( $this->query->reportlink_report );
+                    $q =  load_existing_report ( $this->query->reportlink_report, $this->query->projects_folder );
 					foreach ( $q->page_footers as $k => $v )
 					{
                         if ( strval($this->query->reportlink_report_item) == "ALLITEMS" || $this->query->reportlink_report_item == $k )
@@ -2822,7 +2822,7 @@ class reportico_xml_reader
         if ( $this->query->reportlink_report )
         {
             // Draw report criteria items we can link to
-            $q =  load_existing_report ( $this->query->reportlink_report );
+            $q =  load_existing_report ( $this->query->reportlink_report, $this->query->projects_folder );
             if ( !$q )
                 trigger_error ( template_xlate("NOOPENLINK").$this->query->reportlink_report );
             else if ( !$q->lookup_queries || count($q->lookup_queries) == 0 )
