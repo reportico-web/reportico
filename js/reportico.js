@@ -6,6 +6,9 @@ var reportico_ajax_script = "index.php";
 */
 function setupDynamicGrids()
 {
+    if (typeof reportico_dynamic_grids === 'undefined') {
+        return;
+    }
     if (  reportico_jquery.type(reportico_dynamic_grids) != 'undefined' )
     if ( reportico_dynamic_grids )
     {
