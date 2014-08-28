@@ -1873,6 +1873,16 @@ class reportico extends reportico_object
 			return $loggedon;
 		}
 
+        $matches=array();
+        if ( preg_match("/_drilldown(.*)/", reportico_namespace(), $matches) )
+        {
+            $parent_session = $matches[1];
+            if ( isset ( $_SESSION[$parent_session]['project_password'] ) )
+            {
+                set_reportico_session_param('project_password', $_SESSION[$parent_session]['project_password']);
+            }
+        }
+
 		if ( 
 			( !defined ('SW_PROJECT_PASSWORD') ) || 
 			( SW_PROJECT_PASSWORD == '' ) ||
