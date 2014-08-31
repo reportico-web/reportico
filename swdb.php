@@ -341,6 +341,12 @@ class reportico_datasource extends reportico_object
 		    return $this->connected;
         }
 
+        if ( defined ("SW_DB_TYPE") && SW_DB_TYPE == "existingconnection" && !$this->external_connection )
+        {
+				handle_error( "Project defined to use existing connection but none set.");
+                return false;
+        }
+
         if ( defined ("SW_DB_TYPE") && preg_match ("/^byname_/", SW_DB_TYPE) )
         {
             $connection_name = preg_replace("/byname_/", "", SW_DB_TYPE);
