@@ -2897,6 +2897,9 @@ class reportico extends reportico_object
 
         // If full ajax mode is requested but no ajax url is passed then defalt the ajax url to the default reportico runner
         register_session_param("reportico_ajax_script_url", $this->reportico_ajax_script_url);
+
+        if ( $this->reportico_ajax_mode )
+            return;
         $this->reportico_ajax_script_url = get_reportico_session_param("reportico_ajax_script_url");
         if ( $this->reportico_ajax_script_url && !$this->reportico_ajax_mode)
             $this->reportico_ajax_mode = true;
@@ -5345,7 +5348,7 @@ function save_admin_password($password1, $password2, $language)
 	if ( strlen($password1) == 0 )
 		return sw_translate("The password may not be blank");
 
-	$proj_parent = find_best_location_in_include_path( $this->admin_projects_folder );
+	$proj_parent = find_best_location_in_include_path( $this->admin_projects_folder);
 	$proj_dir = $proj_parent."/admin";
 	$proj_conf = $proj_dir."/config.php";
 	$proj_template = $proj_dir."/adminconfig.template";
@@ -5505,7 +5508,7 @@ function set_project_environment($initial_project = false, $project_folder = "pr
 		$g_menu = false;
 		$g_menu_title = "";
 		$g_dropdown_menu = false;
-		$old_error_handler = set_error_handler("\Reportico\Reportico\ErrorHandler");
+		$old_error_handler = set_error_handler("ErrorHandler");
 		handle_error("Project Directory $project not found. Check INCLUDE_PATH or project name");
 		return;
 	}
@@ -5560,7 +5563,7 @@ function set_project_environment($initial_project = false, $project_folder = "pr
 		$g_menu = false;
 		$g_menu_title = "";
 		$g_dropdown_menu = false;
-		$old_error_handler = set_error_handler("\Reportico\Reportico\ErrorHandler");
+		$old_error_handler = set_error_handler("ErrorHandler");
 		handle_error("Configuration Definition file config.php not found in project $project", E_USER_ERROR);
 	}
 
