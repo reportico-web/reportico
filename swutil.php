@@ -1011,6 +1011,14 @@ function find_best_location_in_include_path( $path )
 {
 	$newpath = $path;
 	$reltoinclude;
+    if ( substr($newpath, 0, 1) == "/" || substr($newpath, 0, 1) == "\\" )
+    {
+	    if ( is_file ( $newpath ) || is_dir ( $newpath ) )
+	        return $newpath;
+        else
+	        return false;
+    }
+
 	//if ( !is_file ( $newpath ) && !is_dir ( $newpath ) )
 	//{
 		$found = find_file_to_include($newpath, $newpath, $reltoinclude);
