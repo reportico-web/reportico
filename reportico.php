@@ -4362,7 +4362,7 @@ class reportico extends reportico_object
             $errorCode = false;
             $errorMessage = false;
             try {
-			    $recordSet = $conn->Execute($sql) ;
+			    $recordSet = $conn->Execute($nsql) ;
             }
             catch ( PDOException $ex)
             {
