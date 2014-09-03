@@ -4359,17 +4359,25 @@ class reportico extends reportico_object
 		{
 			$nsql = reportico_assignment::reportico_lookup_string_to_php($sql);
             $recordSet = false;
+            $errorCode = false;
+            $errorMessage = false;
             try {
 			    $recordSet = $conn->Execute($sql) ;
             }
             catch ( PDOException $ex)
             {
+                $errorCode = $ex->getCode();
+                $errorMessage = $ex->getMessage();
             }
             if ( !$recordSet )
             {
-			    handle_error("Query Failed<BR><BR>".$sql."<br><br>" . 
-			    "Status ".$conn->ErrorNo()." - ".
-			    $conn->ErrorMsg());
+                if ( $errorMessage )
+			        handle_error("Query Failed<BR><BR>".$nsql."<br><br>" . 
+			        $errorMessage);
+                else
+			        handle_error("Query Failed<BR><BR>".$nsql."<br><br>" . 
+			        "Status ".$conn->ErrorNo()." - ".
+			        $conn->ErrorMsg());
             }
 		}
 
@@ -4453,15 +4461,26 @@ class reportico extends reportico_object
 			$nsql = reportico_assignment::reportico_meta_sql_criteria($this, $sql, true);
 			handle_debug("Pre-SQL".$nsql, SW_DEBUG_LOW);
             $recordSet = false;
+            $errorCode = false;
+            $errorMessage = false;
             try {
 			    $recordSet = $conn->Execute($nsql) ;
             }
             catch ( PDOException $ex)
             {
+                $errorCode = $ex->getCode();
+                $errorMessage = $ex->getMessage();
             }
             if ( !$recordSet )
-				handle_error("Pre-Query Failed<BR>$nsql<br><br>" . 
-						$conn->ErrorMsg());
+            {
+                if ( $errorMessage )
+			        handle_error("Pre-Query Failed<BR><BR>".$nsql."<br><br>" . 
+			        $errorMessage);
+                else
+			        handle_error("Pre-Query Failed<BR><BR>".$nsql."<br><br>" . 
+			        "Status ".$conn->ErrorNo()." - ".
+			        $conn->ErrorMsg());
+            }
 			$g_code_area = "";
 		}
 
@@ -4545,20 +4564,27 @@ class reportico extends reportico_object
 
 
         $recordSet = false;
+        $errorCode = false;
+        $errorMessage = false;
         try {
 		    if ( !$g_error_status && $conn != false )
 			    $recordSet = $conn->Execute($this->query_statement) ;
         }
         catch ( PDOException $ex)
         {
+            $errorCode = $ex->getCode();
+            $errorMessage = $ex->getMessage();
             $g_error_status = 1;
         }
-
         if ( $conn && !$recordSet )
         {
-			handle_error("Query Failed<BR><BR>".$this->query_statement."<br><br>" . 
-			"Status ".$conn->ErrorNo()." - ".
-			$conn->ErrorMsg());
+            if ( $errorMessage )
+                handle_error("Query Failed<BR><BR>".$this->query_statement."<br><br>" . 
+                $errorMessage);
+            else
+                handle_error("Query Failed<BR><BR>".$this->query_statement."<br><br>" . 
+                "Status ".$conn->ErrorNo()." - ".
+                $conn->ErrorMsg());
         }
 
 		if ( $conn != false )

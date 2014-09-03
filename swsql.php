@@ -638,12 +638,16 @@ class reportico_sql_parser
         }
 
 
-		$recordSet = false;
+        $errorCode = false;
+        $errorMessage = false;
+	    $recordSet = false;
         try
         {
 		    $recordSet = $conn->Execute($sql) ;
         }
         catch( PDOException $Exception ) {
+            $errorNumber = $Exception->getCode();
+            $errorMessage = $Exception->getMessage();
             // PHP Fatal Error. Second Argument Has To Be An Integer, But PDOException::getCode Returns A
             // String.
         }
@@ -652,7 +656,10 @@ class reportico_sql_parser
 		// Begin Target Output
 		if (!$recordSet) 
 		{
-			handle_error( "Error ( ".$conn->ErrorNo().") in Connection:  ".$conn->ErrorMsg(). "<BR><BR>(Note that if the error warns of a missing temporary table that will be created at runtime, it is safe to ignore this message)");
+            if ( $errorMessage )
+			    handle_error( "Error in Connection:  ".$errorMessage. "<BR><BR>(Note that if the error warns of a missing temporary table that will be created at runtime, it is safe to ignore this message)");
+            else
+			    handle_error( "Error ( ".$conn->ErrorNo().") in Connection:  ".$conn->ErrorMsg(). "<BR><BR>(Note that if the error warns of a missing temporary table that will be created at runtime, it is safe to ignore this message)");
 			return false;
 		}
 		else
