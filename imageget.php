@@ -133,6 +133,8 @@ $datasource = new reportico_datasource();
 $datasource->connect();
 
 $imagesql = $_REQUEST["imagesql"];
+if ( !preg_match("/^select/i", $imagesql )
+    return false;
 
 $rs = $datasource->ado_connection->Execute($imagesql) 
     or die("Query failed : " . $ado_connection->ErrorMsg());
