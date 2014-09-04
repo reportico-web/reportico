@@ -2898,14 +2898,12 @@ class reportico extends reportico_object
         // If full ajax mode is requested but no ajax url is passed then defalt the ajax url to the default reportico runner
         register_session_param("reportico_ajax_script_url", $this->reportico_ajax_script_url);
 
-        if ( $this->reportico_ajax_mode )
-            return;
         $this->reportico_ajax_script_url = get_reportico_session_param("reportico_ajax_script_url");
         if ( $this->reportico_ajax_script_url && !$this->reportico_ajax_mode)
             $this->reportico_ajax_mode = true;
         if ( !$this->reportico_ajax_script_url )
             $this->reportico_ajax_script_url = $this->url_path_to_reportico_runner;
-        if ( $this->reportico_ajax_called )
+        if ( $this->reportico_ajax_called && !$this->reportico_ajax_mode)
             $this->reportico_ajax_mode = true;
 		$this->reportico_ajax_preloaded = get_request_item("reportico_ajax_called", $this->reportico_ajax_preloaded);
 		if ( get_reportico_session_param("reportico_ajax_called" ) )
