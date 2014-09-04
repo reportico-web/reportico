@@ -263,14 +263,8 @@ class Smarty_Compiler extends Smarty {
 
         if (function_exists("preg_replace_callback")) {
             $source_content = preg_replace_callback($search, 
-                                        function($m){
-                                                return 
-                                                strtr("{", array('\\' => '\\\\', '$' => '\\$')) .'php'.
-                                                str_repeat("\n", substr_count($m[0], "\n")).
-                                                strtr("}", array('\\' => '\\\\', '$' => '\\$'))
-                                                 ;
-                                       }
-                                       , $source_content);
+                                        "extract_code_elements",
+                                       $source_content);
         }
         else
         {
@@ -2372,6 +2366,14 @@ function _smarty_sort_length($a, $b)
         return ($a > $b) ? -1 : 1;
 
     return (strlen($a) > strlen($b)) ? -1 : 1;
+}
+
+function extract_code_elements($m){
+    return 
+        strtr("{", array('\\' => '\\\\', '$' => '\\$')) .'php'.
+        str_repeat("\n", substr_count($m[0], "\n")).
+        strtr("}", array('\\' => '\\\\', '$' => '\\$'))
+        ;
 }
 
 
