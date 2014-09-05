@@ -261,10 +261,14 @@ class Smarty_Compiler extends Smarty {
         $this->_folded_blocks = $match;
         reset($this->_folded_blocks);
 
+        /* replace special blocks by "{php}" */
         if (function_exists("preg_replace_callback")) {
-            $source_content = preg_replace_callback($search, 
-                                        "extract_code_elements",
-                                       $source_content);
+            $source_content = preg_replace_callback($search, create_function ('$matches', "return '"
+                                       . $this->_quote_replace($this->left_delimiter) . 'php'
+                                       . "' . str_repeat(\"\n\", substr_count('\$matches[1]', \"\n\")) .'"
+                                       . $this->_quote_replace($this->right_delimiter)
+                                       . "';")
+                                       , $source_content);
         }
         else
         {
@@ -2131,7 +2135,7 @@ class Smarty_Compiler extends Smarty {
                 return null;
 
             case 'template':
-                $compiled_ref = "'$this->_current_file'";
+                $compiled_ref = "'" . addslashes($this->_current_file) . "'";
                 $_max_index = 1;
                 break;
 
@@ -2366,14 +2370,6 @@ function _smarty_sort_length($a, $b)
         return ($a > $b) ? -1 : 1;
 
     return (strlen($a) > strlen($b)) ? -1 : 1;
-}
-
-function extract_code_elements($m){
-    return 
-        strtr("{", array('\\' => '\\\\', '$' => '\\$')) .'php'.
-        str_repeat("\n", substr_count($m[0], "\n")).
-        strtr("}", array('\\' => '\\\\', '$' => '\\$'))
-        ;
 }
 
 
