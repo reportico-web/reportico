@@ -1,0 +1,48 @@
+function ImageHeight($file,$x,$y,$w=0,$h=0,$type='',$link='')
+{
+	//Put an image on the page
+	if(!isset($this->images[$file]))
+	{
+		//First use of image, get info
+		if($type=='')
+		{
+			$pos=strrpos($file,'.');
+			if(!$pos)
+				$this->Error('Image file has no extension and no type was specified: '.$file);
+			$type=substr($file,$pos+1);
+		}
+		$type=strtolower($type);
+		$mqr=get_magic_quotes_runtime();
+		ini_set('magic_quotes_runtime', 0);
+		if($type=='jpg' or $type=='jpeg')
+			$info=$this->_parsejpg($file);
+		elseif($type=='png')
+			$info=$this->_parsepng($file);
+		else
+		{
+			//Allow for additional formats
+			$mtd='_parse'.$type;
+			if(!method_exists($this,$mtd))
+				$this->Error('Unsupported image type: '.$type);
+			$info=$this->$mtd($file);
+		}
+		ini_set('magic_quotes_runtime', $mqr);
+		$info['i']=count($this->images)+1;
+		$this->images[$file]=$info;
+	}
+	else
+		$info=$this->images[$file];
+	//Automatic width and height calculation if needed
+	if($w==0 and $h==0)
+	{
+		//Put image at 72 dpi
+		$w=$info['w']/$this->k;
+		$h=$info['h']/$this->k;
+	}
+	if($w==0)
+		$w=$h*$info['w']/$info['h'];
+	if($h==0)
+		$h=$w*$info['h']/$info['w'];
+
+	return $h;
+}
