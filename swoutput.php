@@ -3191,6 +3191,7 @@ class reportico_report_csv extends reportico_report
 	var	$abs_bottom_margin;
 	var	$abs_left_margin;
 	var	$abs_right_margin;
+    var $first_column;
 	
 	function __construct ()
 	{
@@ -3258,7 +3259,13 @@ class reportico_report_csv extends reportico_report
 		$padstring = ucwords(strtolower($padstring));
 		$padstring = sw_translate($padstring);
 
-		echo '"'.$padstring.'"'.",";
+        if ( $this->first_column )
+        {
+            $this->first_column = false;
+		    echo '"'.$padstring.'"';
+        }
+        else
+		    echo ',"'.$padstring.'"';
 	}
 
 	function format_column(& $column_item)
@@ -3277,25 +3284,35 @@ class reportico_report_csv extends reportico_report
 
         // Handle double quotes by changing " to ""
         $output = str_replace("\"", "\"\"", $output);
-        echo "\"".$output."\",";
+        if ( $this->first_column )
+            $this->first_column = false;
+        else
+            echo ",";
+        echo "\"".$output."\"";
 
 	}
 
 	function each_line($val)
 	{
+        $this->first_column = true;
 		reportico_report::each_line($val);
 
 		// Excel requires group headers are printed as the first columns in the spreadsheet against
 		// the detail. 
-                foreach ( $this->query->groups as $name => $group)
+        $this->first_column = true;
+        foreach ( $this->query->groups as $name => $group)
 		{
 			if ( count($group->headers) > 0  )
 			foreach ($group->headers as $gphk => $col )
 			{
 				$qn = get_query_column($col->query_name, $this->query->columns ) ;
 				$padstring = $qn->column_value;
+                if ( $this->first_column )
+                    $this->first_column = false;
+                else
+				    echo ",";
+                
 				echo "\"".$padstring."\"";
-				echo ",";
 			}
 		}
 				
@@ -3306,6 +3323,7 @@ class reportico_report_csv extends reportico_report
 			$this->format_column($col);
        		}
 		echo "\n";
+        $this->first_column = true;
 
 	}
 
@@ -3352,8 +3370,11 @@ class reportico_report_csv extends reportico_report
 				$qn = get_query_column($col->query_name, $this->query->columns ) ;
 				$tempstring = str_replace("_", " ", $col->query_name);
 				$tempstring = ucwords(strtolower($tempstring));
+                if ( $this->first_column )
+		            $this->first_column = false;
+                else
+				    echo ",";
 				echo "\"".sw_translate($col->derive_attribute("column_title",  $tempstring))."\"";
-				echo ",";
 			}
 		}
 				
@@ -3390,17 +3411,25 @@ class reportico_report_csv extends reportico_report
 		// the detail. 
 		$obj = new ArrayObject( $this->query->groups );
 		$it = $obj->getIterator();
+        $this->first_column = true;
         foreach ( $it as $name => $group)
 		{
 			for ($i = 0; $i < count($group->headers); $i++ )
 			{
-				echo ",";
+                if ( $this->first_column )
+                    $this->first_column = false;
+                else
+		            echo ",";
 			}
 		}
 	}
 
 	function format_column_trailer(&$trailer_col, &$value_col, $trailer_first = false)
 	{
+        if ( $this->first_column )
+            $this->first_column = false;
+        else
+		    echo ",";
 		if ( $value_col )
 		{
 			$group_label = $value_col->get_attribute("group_trailer_label" );
@@ -3416,7 +3445,6 @@ class reportico_report_csv extends reportico_report
 			$padstring = $value_col->old_column_value;
 			echo $group_label.":".$padstring;
 		}
-		echo ",";
 	}
 
 	function end_line()
