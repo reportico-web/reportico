@@ -472,25 +472,26 @@ reportico_jquery(document).on('click', '#returnFromExpand', function() {
 */
 reportico_jquery(document).on('click', '.swPrintBox,.prepareAjaxExecute,#prepareAjaxExecute', function() {
 
-    reportico_jquery("#rpt_format_pdf").prop("checked", false );
-    reportico_jquery("#rpt_format_csv").prop("checked", false );
-    reportico_jquery("#rpt_format_html").prop("checked", false );
-    reportico_jquery("#rpt_format_json").prop("checked", false );
-    reportico_jquery("#rpt_format_xml").prop("checked", false );
+    var reportico_container = reportico_jquery(this).closest("#reportico_container");
+    reportico_jquery(reportico_container).find("#rpt_format_pdf").prop("checked", false );
+    reportico_jquery(reportico_container).find("#rpt_format_csv").prop("checked", false );
+    reportico_jquery(reportico_container).find("#rpt_format_html").prop("checked", false );
+    reportico_jquery(reportico_container).find("#rpt_format_json").prop("checked", false );
+    reportico_jquery(reportico_container).find("#rpt_format_xml").prop("checked", false );
     if (  reportico_jquery(this).hasClass("swPDFBox") ) 
-        reportico_jquery("#rpt_format_pdf").prop("checked", "checked");
+        reportico_jquery(reportico_container).find("#rpt_format_pdf").prop("checked", "checked");
     if (  reportico_jquery(this).hasClass("swCSVBox") ) 
-        reportico_jquery("#rpt_format_csv").prop("checked", "checked");
+        reportico_jquery(reportico_container).find("#rpt_format_csv").prop("checked", "checked");
     if (  reportico_jquery(this).hasClass("swHTMLBox") ) 
-        reportico_jquery("#rpt_format_html").prop("checked", "checked");
+        reportico_jquery(reportico_container).find("#rpt_format_html").prop("checked", "checked");
     if (  reportico_jquery(this).hasClass("swHTMLGoBox") ) 
-        reportico_jquery("#rpt_format_html").prop("checked", "checked");
+        reportico_jquery(reportico_container).find("#rpt_format_html").prop("checked", "checked");
     if (  reportico_jquery(this).hasClass("swXMLBox") ) 
-        reportico_jquery("#rpt_format_xml").prop("checked", "checked");
+        reportico_jquery(reportico_container).find("#rpt_format_xml").prop("checked", "checked");
     if (  reportico_jquery(this).hasClass("swJSONBox") ) 
-        reportico_jquery("#rpt_format_json").prop("checked", "checked");
+        reportico_jquery(reportico_container).find("#rpt_format_json").prop("checked", "checked");
     if (  reportico_jquery(this).hasClass("swPrintBox") ) 
-        reportico_jquery("#rpt_format_html").prop("checked", "checked");
+        reportico_jquery(reportico_container).find("#rpt_format_html").prop("checked", "checked");
 
     if (  !reportico_jquery(this).hasClass("swPrintBox") )
     if (  reportico_jquery.type(reportico_ajax_mode) === 'undefined' || !reportico_ajax_mode)
@@ -499,7 +500,6 @@ reportico_jquery(document).on('click', '.swPrintBox,.prepareAjaxExecute,#prepare
     }
 
 
-    var reportico_container = reportico_jquery(this).closest("#reportico_container");
 	var expandpanel = reportico_jquery(this).closest('#criteriaform').find('#swPrpExpandCell');
 	var critform = reportico_jquery(this).closest('#criteriaform');
     reportico_jquery(expandpanel).addClass("loading");
