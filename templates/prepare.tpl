@@ -123,8 +123,8 @@
 {/if}
 <div id="reportico_container">
 
-<script type="text/javascript">var reportico_datepicker_language = "{/literal}{$AJAX_DATEPICKER_FORMAT}{literal}";</script>
-<script type="text/javascript">var reportico_ajax_mode = "{/literal}{$REPORTICO_AJAX_MODE}{literal}";</script>
+<script type="text/javascript">var reportico_datepicker_language = "{$AJAX_DATEPICKER_FORMAT}";</script>
+<script type="text/javascript">var reportico_ajax_mode = "{$REPORTICO_AJAX_MODE}";</script>
 <FORM class="swPrpForm" id="criteriaform" name="topmenu" method="POST" action="{$SCRIPT_SELF}">
 <input type="hidden" name="reportico_session_name" value="{$SESSION_ID}" />
 
@@ -332,6 +332,10 @@
     				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITASSIGNMENT}" id="submit_mainquerassg" value="{$T_EDITASSIGNMENT}" name="mainquerassg_ANY">
     				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITGROUPS}" id="submit_mainqueroutpgrps" value="{$T_EDITGROUPS}" name="mainqueroutpgrps_ANY">
     				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITGRAPHS}" id="submit_mainqueroutpgrph" value="{$T_EDITGRAPHS}" name="mainqueroutpgrph_ANY">
+    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITPAGEHEADERS}" id="submit_mainqueroutppghd0000form" value="{$T_EDITPAGEHEADERS}" name="mainqueroutppghd0000form_ANY">
+    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITPAGEFOOTERS}" id="submit_mainqueroutppgft0000form" value="{$T_EDITPAGEFOOTERS}" name="mainqueroutppgft0000form_ANY">
+    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITGROUPHEADERS}" id="submit_mainqueroutpgrps0001ghdr" value="{$T_EDITGROUPHEADERS}" name="mainqueroutpgrps0001ghdr0000_ANY">
+                    <input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITGROUPTRAILERS}" id="submit_mainqueroutpgrps0001ghdr" value="{$T_EDITGROUPTRAILERS}" name="mainqueroutpgrps0001gtrl0000_ANY">
 </div>
 {/if}
 {/if}

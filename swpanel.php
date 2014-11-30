@@ -627,6 +627,7 @@ class reportico_xml_reader
 	var	$search_tag = false;
 	var	$search_response = false;
 	var	$element_counts = array();
+    var $wizard_linked_to = false;
 
   	function __construct (&$query, $filename, $xmlstring = false, $search_tag = false ) 
 	{
@@ -640,8 +641,10 @@ class reportico_xml_reader
 					"Expression" => array ( "Title" => "EXPRESSION", "EditMode" => "SAFE" ),
 					"Condition" => array ( "Title" => "CONDITION", "EditMode" => "SAFE" ),
 					"GroupHeaderColumn" => array ( "Title" => "GROUPHEADERCOLUMN", "Type" => "QUERYCOLUMNS"),
+                    "GroupHeaderCustom" => array ( "Title" => "GROUPHEADERCUSTOM", "Type" => "TEXTBOX", "WizardLink" => true ),
 					"GroupTrailerDisplayColumn" => array ( "Title" => "GROUPTRAILERDISPLAYCOLUMN", "Type" => "QUERYCOLUMNS"),
 					"GroupTrailerValueColumn" => array ( "Title" => "GROUPTRAILERVALUECOLUMN", "Type" => "QUERYCOLUMNS"),
+                    "GroupTrailerCustom" => array ( "Title" => "GROUPTRAILERCUSTOM", "Type" => "TEXTBOX", "WizardLink" => true ),
 					"ColumnType" => array ( "Type" => "HIDE"),
 					"ColumnLength" => array ( "Type" => "HIDE"),
 					"ColumnName" => array ( "Type" => "HIDE"),
@@ -663,6 +666,57 @@ class reportico_xml_reader
 					"AssignImageUrl" => array ( "Title" => "ASSIGNIMAGEURL" ),
 					"AssignHyperlinkLabel" => array ( "Title" => "ASSIGNHYPERLABEL" ),
 					"AssignHyperlinkUrl" => array ( "Title" => "ASSIGNHYPERURL" ),
+
+/*
+					"GroupHeaderStyleFgColor" => array ( "Title" => "ASSIGNSTYLEFGCOLOR", "Validate" => "HTMLCOLOR" ),
+					"GroupHeaderStyleBgColor" => array ( "Title" => "ASSIGNSTYLEBGCOLOR", "Validate" => "HTMLCOLOR" ),
+					"GroupHeaderStyleBorderStyle" => array ( "Title" => "ASSIGNSTYLEBORDERSTYLE", "Type" => "BORDERSTYLES", "XlateOptions" => true ),
+					"GroupHeaderStyleBorderSize" => array ( "Title" => "ASSIGNSTYLEBORDERSIZE", "Validate" => "CSS4SIZE" ),
+					"GroupHeaderStyleBorderColor" => array ( "Title" => "ASSIGNSTYLEBORDERCOLOR", "Validate" => "HTMLCOLOR" ),
+					"GroupHeaderStyleMargin" => array ( "Title" => "ASSIGNSTYLEMARGIN", "Validate" => "CSS4SIZE" ),
+					"GroupHeaderStylePadding" => array ( "Title" => "ASSIGNSTYLEPADDING", "Validate" => "CSS4SIZE" ),
+					"GroupHeaderStyleFontSize" => array ( "Title" => "ASSIGNFONTSIZE", "Validate" => "CSSFONTSIZE" ),
+					"GroupHeaderStyleFontStyle" => array ( "Title" => "ASSIGNFONTSTYLE", "Type" => "FONTSTYLES", "XlateOptions" => true ),
+					"GroupHeaderStyleWidth" => array ( "Title" => "ASSIGNWIDTH", "Validate" => "CSS1SIZE" ),
+					"GroupHeaderStyleBackgroundImage" => array ( "Title" => "ASSIGNPDFBACKGROUNDIMAGE" ),
+
+					"GroupTrailerStyleFgColor" => array ( "Title" => "ASSIGNSTYLEFGCOLOR", "Validate" => "HTMLCOLOR" ),
+					"GroupTrailerStyleBgColor" => array ( "Title" => "ASSIGNSTYLEBGCOLOR", "Validate" => "HTMLCOLOR" ),
+					"GroupTrailerStyleBorderStyle" => array ( "Title" => "ASSIGNSTYLEBORDERSTYLE", "Type" => "BORDERSTYLES", "XlateOptions" => true ),
+					"GroupTrailerStyleBorderSize" => array ( "Title" => "ASSIGNSTYLEBORDERSIZE", "Validate" => "CSS4SIZE" ),
+					"GroupTrailerStyleBorderColor" => array ( "Title" => "ASSIGNSTYLEBORDERCOLOR", "Validate" => "HTMLCOLOR" ),
+					"GroupTrailerStyleMargin" => array ( "Title" => "ASSIGNSTYLEMARGIN", "Validate" => "CSS4SIZE" ),
+					"GroupTrailerStylePadding" => array ( "Title" => "ASSIGNSTYLEPADDING", "Validate" => "CSS4SIZE" ),
+					"GroupTrailerStyleFontSize" => array ( "Title" => "ASSIGNFONTSIZE", "Validate" => "CSSFONTSIZE" ),
+					"GroupTrailerStyleFontStyle" => array ( "Title" => "ASSIGNFONTSTYLE", "Type" => "FONTSTYLES", "XlateOptions" => true ),
+					"GroupTrailerStyleWidth" => array ( "Title" => "ASSIGNWIDTH", "Validate" => "CSS1SIZE" ),
+					"GroupTrailerStyleBackgroundImage" => array ( "Title" => "ASSIGNPDFBACKGROUNDIMAGE" ),
+
+					"PageHeaderStyleFgColor" => array ( "Title" => "ASSIGNSTYLEFGCOLOR", "Validate" => "HTMLCOLOR" ),
+					"PageHeaderStyleBgColor" => array ( "Title" => "ASSIGNSTYLEBGCOLOR", "Validate" => "HTMLCOLOR" ),
+					"PageHeaderStyleBorderStyle" => array ( "Title" => "ASSIGNSTYLEBORDERSTYLE", "Type" => "BORDERSTYLES", "XlateOptions" => true ),
+					"PageHeaderStyleBorderSize" => array ( "Title" => "ASSIGNSTYLEBORDERSIZE", "Validate" => "CSS4SIZE" ),
+					"PageHeaderStyleBorderColor" => array ( "Title" => "ASSIGNSTYLEBORDERCOLOR", "Validate" => "HTMLCOLOR" ),
+					"PageHeaderStyleMargin" => array ( "Title" => "ASSIGNSTYLEMARGIN", "Validate" => "CSS4SIZE" ),
+					"PageHeaderStylePadding" => array ( "Title" => "ASSIGNSTYLEPADDING", "Validate" => "CSS4SIZE" ),
+					"PageHeaderStyleFontName" => array ( "Title" => "ASSIGNFONTNAME", "Type" => "FONTLIST" ),
+					"PageHeaderStyleFontSize" => array ( "Title" => "ASSIGNFONTSIZE", "Validate" => "CSSFONTSIZE" ),
+					"PageHeaderStyleFontStyle" => array ( "Title" => "ASSIGNFONTSTYLE", "Type" => "FONTSTYLES", "XlateOptions" => true ),
+					"PageHeaderStyleWidth" => array ( "Title" => "ASSIGNWIDTH", "Validate" => "CSS1SIZE" ),
+					"PageHeaderStyleBackgroundImage" => array ( "Title" => "ASSIGNPDFBACKGROUNDIMAGE" ),
+
+					"PageFooterStyleFgColor" => array ( "Title" => "ASSIGNSTYLEFGCOLOR", "Validate" => "HTMLCOLOR" ),
+					"PageFooterStyleBgColor" => array ( "Title" => "ASSIGNSTYLEBGCOLOR", "Validate" => "HTMLCOLOR" ),
+					"PageFooterStyleBorderStyle" => array ( "Title" => "ASSIGNSTYLEBORDERSTYLE", "Type" => "BORDERSTYLES", "XlateOptions" => true ),
+					"PageFooterStyleBorderSize" => array ( "Title" => "ASSIGNSTYLEBORDERSIZE", "Validate" => "CSS4SIZE" ),
+					"PageFooterStyleBorderColor" => array ( "Title" => "ASSIGNSTYLEBORDERCOLOR", "Validate" => "HTMLCOLOR" ),
+					"PageFooterStyleMargin" => array ( "Title" => "ASSIGNSTYLEMARGIN", "Validate" => "CSS4SIZE" ),
+					"PageFooterStylePadding" => array ( "Title" => "ASSIGNSTYLEPADDING", "Validate" => "CSS4SIZE" ),
+					"PageFooterStyleFontSize" => array ( "Title" => "ASSIGNFONTSIZE", "Validate" => "CSSFONTSIZE" ),
+					"PageFooterStyleFontStyle" => array ( "Title" => "ASSIGNFONTSTYLE", "Type" => "FONTSTYLES", "XlateOptions" => true ),
+					"PageFooterStyleWidth" => array ( "Title" => "ASSIGNWIDTH", "Validate" => "CSS1SIZE" ),
+					"PageFooterBackgroundImage" => array ( "Title" => "ASSIGNPDFBACKGROUNDIMAGE" ),
+*/
 					"AssignStyleLocType" => array ( "Title" => "ASSIGNSTYLELOCTYPE", "Type" => "STYLELOCTYPES", "XlateOptions" => true),
 					"AssignStyleFgColor" => array ( "Title" => "ASSIGNSTYLEFGCOLOR", "Validate" => "HTMLCOLOR" ),
 					"AssignStyleBgColor" => array ( "Title" => "ASSIGNSTYLEBGCOLOR", "Validate" => "HTMLCOLOR" ),
@@ -755,7 +809,7 @@ class reportico_xml_reader
 					"BottomMargin" => array ( "Title" => "BOTTOMMARGIN" ),
 					"RightMargin" => array ( "Title" => "RIGHTMARGIN" ),
 					"LeftMargin" => array ( "Title" => "LEFTMARGIN" ),
-					"pdfFont" => array ( "Title" => "PDFFONT" ),
+					"pdfFont" => array ( "Title" => "PDFFONT",  "Type" => "FONTLIST"),
 					"OrderNumber" => array ( "Title" => "ORDERNUMBER" ),
 					"ReportJustify" => array ( "Type" => "HIDE" ),
 					"BeforeGroupHeader" => array ( "Title" => "BEFOREGROUPHEADER", "Type" => "DROPDOWN", "XlateOptions" => true,
@@ -785,8 +839,8 @@ class reportico_xml_reader
 					"GroupTrailerDisplayColumn" => array ( "Title" => "GROUPTRAILERDISPLAYCOLUMN", "Type" => "QUERYCOLUMNS" ),
 					"GroupTrailerValueColumn" => array ( "Title" => "GROUPTRAILERVALUECOLUMN", "Type" => "QUERYCOLUMNS" ),
 					"LineNumber" => array ( "Title" => "LINENUMBER" ),
-					"HeaderText" => array ( "Title" => "HEADERTEXT" ),
-					"FooterText" => array ( "Title" => "FOOTERTEXT" ),
+					"HeaderText" => array ( "Title" => "HEADERTEXT", "Type" => "TEXTBOXSMALL", "WizardLink" => true ),
+					"FooterText" => array ( "Title" => "FOOTERTEXT", "Type" => "TEXTBOXSMALL", "WizardLink" => true ),
 					"ColumnStartPDF" => array ( "Title" => "COLUMNSTARTPDF" ),
 					"ColumnWidthPDF" => array ( "Title" => "COLUMNWIDTHPDF" ),
 					"ColumnWidthHTML" => array ( "Title" => "COLUMNWIDTHHTML" ),
@@ -847,6 +901,11 @@ class reportico_xml_reader
 					"YTitleFontStyle" => array ( "Title" => "YTITLEFONTSTYLE", "Type" => "DROPDOWN", 
 								"Values" => array(".DEFAULT", "Normal", "Bold", "Italic", "Bold+Italic") )
 					);
+    
+        if ( $this->query )
+        {
+            $this->query->apply_plugins("design-options", array("query" => &$this->query, "field_display" => &$this->field_display));
+        }
 
         // If using pchart engine, then certain graph options are not available
         // and should therefore be hidden from design pane
@@ -1485,7 +1544,7 @@ class reportico_xml_reader
 					if ( reset ( $this->query->columns ) )
 					{
 						$cn = current( $this->query->columns );
-						$this->query->create_group_header( $gn, $cn->query_name );
+						$this->query->create_group_header( $gn, $cn->query_name, "" );
 					}
 					break;
 
@@ -1966,9 +2025,9 @@ class reportico_xml_reader
                 if ( $this->field_display[$k]["Validate"] == "CSS1SIZE" )
                 {
                     if ( !preg_match ( "/^[0-9]+px$/", $v ) &&
-                         !preg_match ( "/^[0-9]+cm$/", $v1 ) &&
-                         !preg_match ( "/^[0-9]+mm$/", $v1 ) &&
-                         !preg_match ( "/^[0-9]+em$/", $v1 ) &&
+                         !preg_match ( "/^[0-9]+cm$/", $v ) &&
+                         !preg_match ( "/^[0-9]+mm$/", $v ) &&
+                         !preg_match ( "/^[0-9]+em$/", $v ) &&
                          !preg_match ( "/^[0-9]+%$/", $v ) &&
                          !preg_match ( "/^[0-9]+$/", $v ) )
                     {
@@ -2248,6 +2307,7 @@ class reportico_xml_reader
 					break;
 
 				case "pgft":
+					$updates["FooterText"] = $this->query->apply_plugins("apply-section", array("type" => "PageFooter", "updates" => &$updates, "applyto" => $updates["FooterText"]) );
 					$updateitem =& $anal["item"];
 					$updateitem->__construct(
 							$updates["LineNumber"], $updates["FooterText"]);
@@ -2341,19 +2401,24 @@ class reportico_xml_reader
 					break;
 
 				case "ghdr":
+					//$updates["GroupHeaderCustom"] = $this->apply_pdf_styles ( "GroupHeader", $updates, $updates["GroupHeaderCustom"] );
+					$updates["GroupHeaderCustom"] = $this->query->apply_plugins("apply-section", array("type" => "GroupHeader", "updates" => &$updates, "applyto" => $updates["GroupHeaderCustom"]) );
 					$updateitem =& $anal["item"];
 					$gr =& $anal["group"];
 					$anal["quer"]->set_group_header_by_number 
-							( $anal["groupname"], $anal["number"], $updates["GroupHeaderColumn"] );
+							( $anal["groupname"], $anal["number"], $updates["GroupHeaderColumn"], $updates["GroupHeaderCustom"] );
 					break;
 
 				case "gtrl":
+					//$updates["GroupTrailerCustom"] = $this->apply_pdf_styles ( "GroupTrailer", $updates, $updates["GroupTrailerCustom"] );
+					$updates["GroupTrailerCustom"] = $this->query->apply_plugins("apply-section", array("type" => "GroupTrailer", "updates" => &$updates, "applyto" => $updates["GroupTrailerCustom"]) );
 					$updateitem =& $anal["item"];
 					$gr =& $anal["group"];
 					$anal["quer"]->set_group_trailer_by_number 
 							( $anal["groupname"], $anal["number"], 
 										$updates["GroupTrailerDisplayColumn"],
-										$updates["GroupTrailerValueColumn"]
+										$updates["GroupTrailerValueColumn"],
+										$updates["GroupTrailerCustom"]
 							   	);
 					break;
 
@@ -2430,6 +2495,8 @@ class reportico_xml_reader
 					break;
 
 				case "pghd":
+					//$updates["HeaderText"] = $this->apply_pdf_styles ( "PageHeader", $updates, $updates["HeaderText"] );
+					$updates["HeaderText"] = $this->query->apply_plugins("apply-section", array("type" => "PageHeader", "updates" => &$updates, "applyto" => $updates["HeaderText"]) );
 					$updateitem =& $anal["item"];
 					$updateitem->__construct(
 							$updates["LineNumber"], $updates["HeaderText"]);
@@ -3770,6 +3837,34 @@ class reportico_xml_reader
 									$text .= $this->assignment_aggregates( $parent_id);
 							}
 
+							$match = "/pghd[0-9][0-9][0-9][0-9]/";
+							if ( preg_match( $match, $parent_id ) )
+							{
+								if ( $this->is_showing ( $parent_id ) )
+                                    $text .= $this->query->apply_plugins("draw-section", array("parent" => &$this, "parent_id" => &$parent_id, "type" => "PageHeader", "value" => $val, "tagct" => &$tagct));
+							}
+
+							$match = "/ghdr[0-9][0-9][0-9][0-9]/";
+							if ( preg_match( $match, $parent_id ) )
+							{
+								if ( $this->is_showing ( $parent_id ) )
+                                    $text .= $this->query->apply_plugins("draw-section", array("parent" => &$this, "parent_id" => &$parent_id, "type" => "GroupHeader", "value" => $val, "tagct" => &$tagct));
+							}
+
+							$match = "/gtrl[0-9][0-9][0-9][0-9]/";
+							if ( preg_match( $match, $parent_id ) )
+							{
+								if ( $this->is_showing ( $parent_id ) )
+                                    $text .= $this->query->apply_plugins("draw-section", array("parent" => &$this, "parent_id" => &$parent_id, "type" => "GroupTrailer", "value" => $val, "tagct" => &$tagct));
+							}
+
+							$match = "/pgft[0-9][0-9][0-9][0-9]/";
+							if ( preg_match( $match, $parent_id ) )
+							{
+								if ( $this->is_showing ( $parent_id ) )
+                                    $text .= $this->query->apply_plugins("draw-section", array("parent" => &$this, "parent_id" => &$parent_id, "type" => "PageFooter", "value" => $val, "tagct" => &$tagct));
+							}
+
 							$match = "/grph[0-9][0-9][0-9][0-9]/";
 							if ( preg_match( $match, $parent_id ) )
 							{
@@ -3976,6 +4071,11 @@ class reportico_xml_reader
 			if ( array_key_exists("Type", $arval ) )
 				$type = $arval["Type"];
 
+			if ( array_key_exists("WizardLink", $arval ) )
+            {
+                $this->wizard_linked_to = $val;
+            }
+
 			if ( array_key_exists("XlateOptions", $arval ) )
 				$translateoptions = $arval["XlateOptions"];
 
@@ -4063,6 +4163,15 @@ class reportico_xml_reader
 				$text .= '</textarea>';
 				break;
 
+			case "TEXTBOXSMALL":
+				$readonly = "";
+				if ( $edit_mode == "SAFE" && ( $this->query->allow_maintain == "SAFE" || $this->query->allow_maintain == "DEMO" || SW_SAFE_DESIGN_MODE ) )
+					$readonly = "readonly";
+				$text .= '<textarea class="'.$this->query->getBootstrapStyle('textfield').'" '.$readonly.' cols="70" rows="4" name="set_'.$this->id."_".$showtag.'" >';
+				$text .= htmlspecialchars($val);
+				$text .= '</textarea>';
+				break;
+
 			case "DROPDOWN":
 				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag, $tagvals, $val, false, $translateoptions);
 				break;
@@ -4115,6 +4224,37 @@ class reportico_xml_reader
 
 				break;
 		
+			case "FONTLIST":
+				$keys = array();
+				$keys[] = "";
+                if ( is_dir ( "tcpdf/fonts" ) )
+                    $testpath = "tcpdf/fonts";
+                else
+				        $testpath = find_best_location_in_include_path( "tcpdf/font" );
+				if (is_dir($testpath)) 
+				{
+    				if ($dh = opendir($testpath)) 
+					{
+        				while (($file = readdir($dh)) !== false) 
+						{
+							if ( preg_match ( "/.*\.php/", $file ) )
+                            {
+								$keys[] = preg_replace("/.php/", "", $file);
+                            }
+        				}
+        				closedir($dh);
+    				}
+				}
+				else
+                    trigger_error ( template_xlate("NOOPENDIR").$this->query->reports_path );
+
+                if( !in_array($val, $keys) )
+                    $keys[] = $val;
+                
+				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag, $keys, $val, false, $translateoptions);
+
+				break;
+		
 			case "STYLELOCTYPES":
 				if ( !$this->current_criteria_name )
 					$q =& $this->query;
@@ -4150,6 +4290,19 @@ class reportico_xml_reader
 				$keys[] = "STRIKETHROUGH";
 				$keys[] = "OVERLINE";
 				$keys[] = "BLINK";
+				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag, $keys, $val, false, $translateoptions);
+				break;
+				
+			case "POSITIONS":
+				if ( !$this->current_criteria_name )
+					$q =& $this->query;
+				else
+					$q =& $this->query->lookup_queries[$this->current_criteria_name]->lookup_query;
+
+				$keys=array();
+				$keys[] = "";
+				$keys[] = "RELATIVE";
+				$keys[] = "ABSOLUTE";
 				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag, $keys, $val, false, $translateoptions);
 				break;
 				
@@ -4298,6 +4451,163 @@ class reportico_xml_reader
 		return $text;
 	}
 
+	function apply_pdf_styles($type, &$updates, $applyto)
+	{
+        $styletxt = "";
+        if ( $updates["${type}StyleFgColor"] ) $styletxt .=  "color: ".$updates["${type}StyleFgColor"].";";
+        if ( $updates["${type}StyleBgColor"] ) $styletxt .=  "background-color:".$updates["${type}StyleBgColor"].";";
+        if ( $updates["${type}StyleFontName"] ) $styletxt .=  "font-family:".$updates["${type}StyleFontName"].";";
+        if ( $updates["${type}StyleFontSize"] ) $styletxt .=  "font-size:".$updates["${type}StyleFontSize"].";";
+        if ( $updates["${type}StyleWidth"] ) $styletxt .=  "width:".$updates["${type}StyleWidth"].";";
+
+        if ( $updates["${type}StyleFontStyle"] && $updates["${type}StyleFontStyle"] != "NONE" )
+        {
+            $stylevalue = "none";
+            if ( $updates["${type}StyleFontStyle"] == "BOLD" || $updates["${type}StyleFontStyle"] == "BOLDANDITALIC" ) 
+            if ( $updates["${type}StyleFontStyle"] ) $styletxt .=  "font-weight:bold;";
+            if ( $updates["${type}StyleFontStyle"] == "ITALIC" || $updates["${type}StyleFontStyle"] == "BOLDANDITALIC" ) 
+            if ( $updates["${type}StyleFontStyle"] ) $styletxt .=  "font-style:italic;";
+            if ( $updates["${type}StyleFontStyle"] == "NORMAL" ) 
+            if ( $updates["${type}StyleFontStyle"] ) $styletxt .=  "font-style:normal;";
+            if ( $updates["${type}StyleFontStyle"] == "UNDERLINE" ) 
+            if ( $updates["${type}StyleFontStyle"] == "UNDERLINE" ) 
+            if ( $updates["${type}StyleFontStyle"] ) $styletxt .=  "text-decoration:underline;";
+            if ( $updates["${type}StyleFontStyle"] == "OVERLINE" ) 
+            if ( $updates["${type}StyleFontStyle"] ) $styletxt .=  "text-decoration:overline;";
+            if ( $updates["${type}StyleFontStyle"] == "BLINK" ) 
+            if ( $updates["${type}StyleFontStyle"] ) $styletxt .=  "text-decoration:blink;";
+            if ( $updates["${type}StyleFontStyle"] == "STRIKETHROUGH" ) 
+            if ( $updates["${type}StyleFontStyle"] ) $styletxt .=  "text-decoration:line-through;";
+        }
+
+        if ( !$updates["${type}StyleBorderStyle"] || $updates["${type}StyleBorderStyle"] == "NOBORDER" )
+        {
+            if ( $updates["${type}StyleBorderSize"] || $updates["${type}StyleBorderColor"] )
+            trigger_error ( template_xlate("SETBORDERSTYLE"), E_USER_ERROR );
+        }
+        else
+        {
+            $stylevalue = "none";
+            if ( $updates["${type}StyleBorderStyle"] == "SOLIDLINE" ) $stylevalue = "solid";
+            if ( $updates["${type}StyleBorderStyle"] == "DASHED" ) $stylevalue = "dashed";
+            if ( $updates["${type}StyleBorderStyle"] == "DOTTED" ) $stylevalue = "dotted";
+            $styletxt .=  "border-style:$stylevalue;";
+            if ( $updates["${type}StyleBorderSize"] ) $styletxt .=  "border-width:".$updates["${type}StyleBorderSize"].";";
+            if ( $updates["${type}StyleBorderColor"] ) $styletxt .=  "border-color:".$updates["${type}StyleBorderColor"].";";
+        }
+        
+        if ( $updates["${type}StylePadding"] ) 
+        {
+            $styletxt .=  "padding:".$updates["${type}StylePadding"].";";
+        }
+
+        if ( $updates["${type}StyleBackgroundImage"] ) 
+        {
+            $styletxt .=  "background-image:".$updates["${type}StyleBackgroundImage"].";";
+        }
+
+        if ( $updates["${type}StyleMargin"] ) 
+        {
+            $styletxt .=  "margin:".$updates["${type}StyleMargin"].";";
+        }
+
+        if ( $styletxt )
+        {
+            $applyto = preg_replace("/{STYLE [^}]*}/", "", $applyto);
+            $applyto .= "{STYLE $styletxt}";
+        }
+        return $applyto;
+    }
+
+/*
+	function & pdf_styles_wizard($in_parent, $type)
+	{
+		$text = "";
+
+		$tagct = 1;
+		$tmpid = $this->id;
+		$this->id = $in_parent;
+        $blocktype = "assignTypeStyle";
+		$text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="'.$blocktype.'" href="javascript:toggleLine(\''.$blocktype.'\')">+</a><b>'.template_xlate("OUTPUTSTYLESWIZARD").'</b></TD></TR>';
+        $val = false;
+        
+        // Extract existing styles into wizard elements
+        $styles = array(
+            "color" => false,
+            "background-color" => false,
+            "border-style" => false,
+            "border-width" => false,
+            "border-color" => false,
+            "margin" => false,
+            "padding" => false,
+            "width" => false,
+            "font-family" => false,
+            "font-size" => false,
+            "font-style" => false,
+            "background-image" => false,
+        );
+        if ( $this->wizard_linked_to )
+        {
+            if (preg_match("/{STYLE[ ,]*([^}].*)}/", $this->wizard_linked_to , $matches))
+            {
+                if ( isset($matches[1]))
+                {
+                    $stylearr = explode(";",$matches[1]);
+                    foreach ($stylearr as $v )
+                    {
+                        $element = explode(":",$v);
+                        if ( $element && isset($element[1]))
+                        {
+                            $styles[$element[0]] = trim($element[1]);
+                        }
+                    }
+                }
+            }
+        }
+        if ( $styles["border-style"] )
+        {
+            if ( $styles["border-style"] == "noone" ) $styles["border-style"] = "NONE";
+            if ( $styles["border-style"] == "solid" ) $styles["border-style"] = "SOLIDLINE";
+            if ( $styles["border-style"] == "dotted" ) $styles["border-style"] = "DOTTED";
+            if ( $styles["border-style"] == "dashed" ) $styles["border-style"] = "DASHED";
+        }
+
+        if ( $styles["font-style"] )
+        {
+            if ( $styles["font-style"] == "noone" ) $styles["border-style"] = "NONE";
+        }
+
+		$text .= $this->display_maintain_field("${type}StyleFgColor", $styles["color"], $tagct, true, false, $blocktype); $tagct++;
+		$text .= $this->display_maintain_field("${type}StyleBgColor", $styles["background-color"], $tagct, true, false, $blocktype); $tagct++;
+		$text .= $this->display_maintain_field("${type}StyleBorderStyle", $styles["border-style"], $tagct, true, false, $blocktype); $tagct++;
+		$text .= $this->display_maintain_field("${type}StyleBorderSize", $styles["border-width"], $tagct, true, false, $blocktype); $tagct++;
+		$text .= $this->display_maintain_field("${type}StyleBorderColor", $styles["border-color"], $tagct, true, false, $blocktype); $tagct++;
+		$text .= $this->display_maintain_field("${type}StyleMargin", $styles["margin"], $tagct, true, false, $blocktype); $tagct++;
+		$text .= $this->display_maintain_field("${type}StylePadding", $styles["padding"], $tagct, true, false, $blocktype); $tagct++;
+		$text .= $this->display_maintain_field("${type}StyleWidth", $styles["width"], $tagct, true, false, $blocktype); $tagct++;
+		$text .= $this->display_maintain_field("${type}StyleFontName", $styles["font-family"], $tagct, true, false, $blocktype); $tagct++;
+		$text .= $this->display_maintain_field("${type}StyleFontSize", $styles["font-size"], $tagct, true, false, $blocktype); $tagct++;
+		$text .= $this->display_maintain_field("${type}StyleFontStyle", $styles["font-style"], $tagct, true, false, $blocktype); $tagct++;
+
+        if ( $type == "PageHeader" || $type == "PageFooter" || $type == "GroupHeader" || $type == "GroupTrailer" )
+        {
+		    $text .= $this->display_maintain_field("${type}StyleBackgroundImage", $styles["background-image"], $tagct, true, false, $blocktype); $tagct++;
+        }
+
+		//$tagct = 1;
+        //$blocktype = "assignTypeDbg";
+		//$text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="'.$blocktype.'" href="javascript:toggleLine(\''.$blocktype.'\')">+</a><b>'.template_xlate("DATABASEGRAPHICWIZARD").'</b></TD></TR>';
+		//$text .= $this->display_maintain_field("AssignGraphicBlobCol", false, $tagct, true, false, $blocktype); $tagct++;
+		//$text .= $this->display_maintain_field("AssignGraphicBlobTab", false, $tagct, true, false, $blocktype); $tagct++;
+		//$text .= $this->display_maintain_field("AssignGraphicBlobMatch", false, $tagct, true, false, $blocktype); $tagct++;
+		//$text .= $this->display_maintain_field("AssignGraphicWidth", false, $tagct, true, false, $blocktype); $tagct++;
+		//$text .= $this->display_maintain_field("AssignGraphicReportCol", false, $tagct, true, false, $blocktype); $tagct++;
+
+		$this->id = $tmpid;
+
+		return $text;
+	}
+*/
 	function & assignment_aggregates($in_parent)
 	{
 		$text = "";
@@ -4511,6 +4821,7 @@ class reportico_xml_reader
 			}
 
 			// Set DataSource
+            if ( isset ( $cogquery["Datasource"] ) )
 			foreach ( $cogquery["Datasource"] as $att => $val )
 			{
 				//if ( $att == "SourceType" )
@@ -4688,14 +4999,19 @@ class reportico_xml_reader
 						if ( ($gp =& $this->get_array_element($phi,"GroupHeaders")) )
 							foreach ( $gp as $att => $val )
 							{
-									$this->query->create_group_header($gpname, $val["GroupHeaderColumn"]);
+                                    if ( !isset($val["GroupHeaderCustom"]) )
+                                        $val["GroupHeaderCustom"] = false;
+									$this->query->create_group_header($gpname, $val["GroupHeaderColumn"],$val["GroupHeaderCustom"]);
 							}
 
 						if ( ($gp =& $this->get_array_element($phi,"GroupTrailers")) )
 							foreach ( $gp as $att => $val )
 							{
+                                    if ( !isset($val["GroupTrailerCustom"]) )
+                                        $val["GroupTrailerCustom"] = false;
 									$this->query->create_group_trailer($gpname, $val["GroupTrailerDisplayColumn"], 
-																	$val["GroupTrailerValueColumn"]);
+																	$val["GroupTrailerValueColumn"],
+																	$val["GroupTrailerCustom"]);
 							}
 					}
 				}
@@ -5226,21 +5542,24 @@ class reportico_xml_writer
 				$el =& $gpi->add_xmlval ( "AfterGroupTrailer", $val->get_attribute("after_trailer"));
 
 				$gph =& $gpi->add_xmlval ( "GroupHeaders" );
-				foreach ( $val->headers as $val2 )
+				foreach ( $val->headers as $k5 => $val2 )
 				{
 					$gphi =& $gph->add_xmlval ( "GroupHeader" );
-					$el =& $gphi->add_xmlval ( "GroupHeaderColumn", $val2->query_name );
+					$el =& $gphi->add_xmlval ( "GroupHeaderColumn", $val2["GroupHeaderColumn"]->query_name );
+					$el =& $gphi->add_xmlval ( "GroupHeaderCustom", $val2["GroupHeaderCustom"]);
 				}
 
 				$gpt =& $gpi->add_xmlval ( "GroupTrailers" );
 				foreach ( $val->trailers as $k2 => $val2 )
 				{
+                    
 					if ( is_array ( $val2) )
-					foreach ( $val2 as $val3 )
+					foreach ( $val2 as $kkk => $val3 )
 					{
 					$gpti =& $gpt->add_xmlval ( "GroupTrailer" );
 					$el =& $gpti->add_xmlval ( "GroupTrailerDisplayColumn", $k2 );
-					$el =& $gpti->add_xmlval ( "GroupTrailerValueColumn", $val3->query_name );
+					$el =& $gpti->add_xmlval ( "GroupTrailerValueColumn", $val3["GroupTrailerValueColumn"]->query_name );
+					$el =& $gpti->add_xmlval ( "GroupTrailerCustom", $val3["GroupTrailerCustom"]);
 					}
 				}
 			}

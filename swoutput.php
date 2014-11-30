@@ -102,9 +102,7 @@ class reportico_report extends reportico_object
 							get_reportico_session_param($crit), $out_string);
 				}
 			}
-			
 		}
-
 
 		if ( preg_match("/date\((.*)\)/", $out_string, $match) )	
 		{
@@ -136,6 +134,8 @@ class reportico_report extends reportico_object
 		$out_string = preg_replace('/{title}/', $this->reporttitle, 
 			$out_string);
 
+//echo $in_string);
+//echo $out_string; die;
 		return($out_string);
 	}
 
@@ -163,6 +163,7 @@ class reportico_report extends reportico_object
 		$this->page_count = 0;
 		$this->debug("Base Start **");
 		$this->reporttitle = $this->query->derive_attribute("ReportTitle", "Set Report Title");
+		$this->reporttitle = preg_replace("/<[^>]*>/", "", $this->reporttitle);
 		$this->reportfilename = $this->reporttitle;
 		$pos = 5;
 	}
@@ -547,7 +548,7 @@ class reportico_report extends reportico_object
                                 }
                             } // foreach
                         }
-                        if (  get_class($this) != "reportico_report_html_template" )
+                        if (  get_class($this) != "reportico_report_html" )
 						    $this->format_group_trailer_end();
 						if ( $trailer_first )
 							$trailer_first = false;
@@ -559,7 +560,7 @@ class reportico_report extends reportico_object
 			}
 			while( prev($this->query->groups) );
 
-            if ( $group_changed && get_class($this) == "reportico_report_html_template" )
+            if ( $group_changed && get_class($this) == "reportico_report_html" )
             {
                 $this->format_group_trailer_end();
             }
@@ -658,8 +659,9 @@ class reportico_report extends reportico_object
 	            if ( get_reportico_session_param("target_show_group_headers") )
 				    for ($i = 0; $i < count($group->headers); $i++ )
 				    {
-					    $col =& $group->headers[$i];
-					    $this->format_group_header($col);
+				        $col =& $group->headers[$i]["GroupHeaderColumn"];
+				        $custom = $group->headers[$i]["GroupHeaderCustom"];
+				        $this->format_group_header($col, $custom);
 				    }
 				if ( $graphs =& $this->query->get_graph_by_name($group->group_name) )
 				{
@@ -693,7 +695,7 @@ class reportico_report extends reportico_object
 		}
 	}
 
-	function format_group_header(&$col)
+	function format_group_header(&$col, $custom)
 	{
 		return;
 	}
@@ -1396,7 +1398,7 @@ class reportico_report_pdf extends reportico_report
             $tmpborder = "";
             if ( preg_match("/T/", $borderwidth ) )
             {
-                $tmpborder = "T";
+                $tmpborder = preg_replace("/B/", "", $borderwidth);
                 $borderwidth = preg_replace("/T/", "", $borderwidth);
             }
             
@@ -1410,12 +1412,12 @@ class reportico_report_pdf extends reportico_report
             $tmpborder = "";
             if ( preg_match("/B/", $borderwidth ) )
             {
-                $tmpborder = "B";
+                $tmpborder = preg_replace("/T/", "", $borderwidth);
                 $borderwidth = preg_replace("/B/", "", $borderwidth);
             }
             
             $prevx = $this->document->GetX();
-            $this->document->MultiCell($w,$bottompad,"",$tmpborder,$align,$fill,$link);
+            $this->document->MultiCell($w, $h + $bottompad,"",$tmpborder,$align,$fill,$link);
 		    $this->set_position($prevx, false);
         }
 
@@ -1482,6 +1484,7 @@ class reportico_report_pdf extends reportico_report
 	function format_page_header_start() // PDF
 	{
 		$this->reporttitle = $this->query->derive_attribute("ReportTitle", "Set Report Title");
+		//$this->reporttitle = preg_replace("/<[^>]*>/", "", $this->reporttitle);
                     
         // Add custom image here
         if ( defined("PDF_HEADER_IMAGE") )
@@ -1565,8 +1568,9 @@ class reportico_report_pdf extends reportico_report
         {
 			for ($i = 0; $i < count($val->headers); $i++ )
 			{
-				$col =& $val->headers[$i];
-				$this->format_group_header($col, true);
+				$col =& $val->headers[$i]["GroupHeaderColumn"];
+				$custom = $val->headers[$i]["GroupHeaderCustom"];
+				$this->format_group_header($col, $custom, true);
                 $totheaderheight += $this->calculated_line_height;
 			}
         }
@@ -1597,11 +1601,12 @@ class reportico_report_pdf extends reportico_report
 		return;
 	}
 
-	function format_group_header(&$col, $calculate_only = false) // PDF format group headers
+	function format_group_header(&$col, $custom, $calculate_only = false) // PDF format group headers
 	{
+echo "gr8<BR>";
         for ( $ctr = 0; $ctr < 2; $ctr++ )
         {
-
+echo "CTR $ctr <BR>";
             $this->draw_mode = "CALCULATE";
             if ( $ctr == 1 && $calculate_only )
             {
@@ -1616,6 +1621,71 @@ class reportico_report_pdf extends reportico_report
             }
 
 		    $y = $this->document->GetY();
+
+            if ( $custom )
+            {
+                $this->yjump = 2;
+                // Fetch Group Header Label Start Column + display
+                $group_data_xpos = $col->get_attribute("group_header_data_xpos" );
+                if ( !$group_data_xpos )
+                    $group_data_xpos = $this->abs_left_margin;
+
+                $group_data_xpos = $this->abs_paging_width($group_data_xpos);
+                $group_data_width = $this->abs_right_margin - $group_data_xpos;
+
+                $this->unapply_style_tags($this->query->output_page_styles);
+        
+                // Display group header value
+                $this->apply_style_tags($this->query->output_group_header_value_styles);
+                $this->set_position($group_data_xpos, $y);
+
+                $tx = $custom;
+                $styles = false;
+                $matches = array();
+                if (preg_match("/{STYLE[ ,]*([^}].*)}/", $tx, $matches))
+                {
+                    if ( isset($matches[1]))
+                    {
+                        $stylearr = explode(";",$matches[1]);
+                        $tx = preg_replace("/{STYLE[ ,]*[^}].*}/", "", $tx);
+                        foreach ($stylearr as $v )
+                        {
+                            if ( !$v )
+                                continue;
+                            $style = explode(":", $v);
+                            if ( trim($style[0] ) == "width" )
+                                $wd = trim($style[1]);
+                            else
+                                $styles[trim($style[0])] = trim($style[1]);
+                        }
+                    }
+                }
+
+                $tx = $this->reportico_string_to_php($tx);
+		        $tx = reportico_assignment::reportico_meta_sql_criteria($this->query, $tx);
+                $tx = preg_replace("/<\/*u>/", "", $tx);
+                
+	            $this->apply_style_tags($styles);
+                if ( $this->draw_mode == "DRAW" )
+                {
+				    $this->draw_cell_container($wd, $this->vsize + 4, $tx,"PBR",0,$just);
+                }
+                $link = false;
+				$this->draw_cell($wd, $this->vsize + 4, $tx,"P",0,$just, "T", $link);
+	            $this->unapply_style_tags($styles);
+
+                $this->unapply_style_tags($this->query->output_group_header_value_styles);
+                $this->end_line();
+                $this->draw_cell($group_data_width, $this->vsize, "");    // Blank cell to continue page breaking at this size
+                $y = $this->document->GetY();
+
+                if ( $this->yjump )
+                    $this->set_position(false, $y + $this->yjump);
+
+                $this->apply_style_tags($this->query->output_page_styles);
+                continue;
+            }
+
 		    $group_label = $col->get_attribute("group_header_label" );
 		    if ( !$group_label )
 			    $group_label = $col->get_attribute("column_title" );
@@ -1847,7 +1917,7 @@ class reportico_report_pdf extends reportico_report
     }
 
 
-	function format_column(& $column_item)
+	function format_column(& $column_item) // PDF
 	{
 		if ( !$this->show_column_header($column_item) )
 				return;
@@ -2180,8 +2250,8 @@ class reportico_report_pdf extends reportico_report
             {
 			    for ($i = 0; $i < count($val->headers); $i++ )
 			    {
-				    $col =& $val->headers[$i];
-				    $this->format_group_header($col);
+				    $col =& $val->headers[$i]["GroupHeaderColumn"];
+				    $this->format_group_header($col, false);
                     $totheaderheight += $this->calculated_line_height;
 			    }
             }
@@ -2191,7 +2261,7 @@ class reportico_report_pdf extends reportico_report
 					    continue;
                 $ct++;
 
-				$this->format_group_header($w);
+				$this->format_group_header($w, false);
                 $totheaderheight += $this->calculated_line_height;
             }
             $this->calculated_line_height = $totheaderheight;
@@ -2425,8 +2495,36 @@ class reportico_report_pdf extends reportico_report
 		$y = $this->abs_top_margin + ( $this->vsize * ( $header->line - 1 ) );
 		$this->set_position($tw,$y);
 		
-		$tx = $this->reportico_string_to_php(reportico_assignment::reportico_meta_sql_criteria($this->query, $header->text));
+        // Decode page header
+        $tx = $header->text;
+        $styles = false;
+        $matches = array();
+        if (preg_match("/{STYLE[ ,]*([^}].*)}/", $tx, $matches))
+        {
+            if ( isset($matches[1]))
+            {
+                $stylearr = explode(";",$matches[1]);
+                $tx = preg_replace("/{STYLE[ ,]*[^}].*}/", "", $tx);
+                foreach ($stylearr as $v )
+                {
+                    if ( !$v )
+                        continue;
+                    $style = explode(":", $v);
+                    if ( trim($style[0] ) == "width" )
+                        $wd = trim($style[1]);
+                    else
+                        $styles[trim($style[0])] = trim($style[1]);
+                }
+            }
+        }
+
+        $tx = $this->reportico_string_to_php($tx);
+		$tx = reportico_assignment::reportico_meta_sql_criteria($this->query, $tx);
+        $tx = preg_replace("/<\/*u>/", "", $tx);
+
+	    $this->apply_style_tags($styles);
 		$this->draw_cell($wd, $this->vsize, $tx, "PBF", 0, $just );
+	    $this->unapply_style_tags($styles);
 		$this->end_line();
 
 		return;
@@ -2451,9 +2549,37 @@ class reportico_report_pdf extends reportico_report
 
 		$y = $this->abs_bottom_margin - ( $this->vsize * $footer->line );
 		$this->set_position($tw, $y);
-		//$tx = $this->reportico_string_to_php($footer->text);
-		$tx = $this->reportico_string_to_php(reportico_assignment::reportico_meta_sql_criteria($this->query, $footer->text));
+
+        // Decode page header
+        $tx = $footer->text;
+        $styles = false;
+        $matches = array();
+        if (preg_match("/{STYLE[ ,]*([^}].*)}/", $tx, $matches))
+        {
+            if ( isset($matches[1]))
+            {
+                $stylearr = explode(";",$matches[1]);
+                $tx = preg_replace("/{STYLE[ ,]*[^}].*}/", "", $tx);
+                foreach ($stylearr as $v )
+                {
+                    if ( !$v )
+                        continue;
+                    $style = explode(":", $v);
+                    if ( trim($style[0] ) == "width" )
+                        $wd = trim($style[1]);
+                    else
+                        $styles[trim($style[0])] = trim($style[1]);
+                }
+            }
+        }
+
+        $tx = $this->reportico_string_to_php($tx);
+		$tx = reportico_assignment::reportico_meta_sql_criteria($this->query, $tx);
+        $tx = preg_replace("/<\/*u>/", "", $tx);
+
+	    $this->apply_style_tags($styles);
 		$this->draw_cell($wd, $this->vsize, $tx, "PBF", 0, $just);
+	    $this->unapply_style_tags($styles);
 		$this->end_line();
 
 		return;
@@ -2577,9 +2703,9 @@ class reportico_report_soap_template extends reportico_report
 
 
 // -----------------------------------------------------------------------------
-// Class reportico_report_html_template
+// Class reportico_report_html
 // -----------------------------------------------------------------------------
-class reportico_report_html_template extends reportico_report
+class reportico_report_html extends reportico_report
 {
 	var	$abs_top_margin;
 	var	$abs_bottom_margin;
@@ -2868,7 +2994,7 @@ class reportico_report_html_template extends reportico_report
 		    $this->text .= '<TABLE class="swRepGrpHdrBox" cellspacing="0">';
 	}
 
-	function format_group_header(&$col) // HTML
+	function format_group_header(&$col, $custom) // HTML
 	{
 		$this->text .= '<TR class="swRepGrpHdrRow">';
 		$this->text .= '<TD class="swRepGrpHdrLbl" '.$this->get_style_tags($this->query->output_group_header_label_styles).'>';
@@ -3034,8 +3160,8 @@ class reportico_report_html_template extends reportico_report
             {
 			    for ($i = 0; $i < count($val->headers); $i++ )
 			    {
-				    $col =& $val->headers[$i];
-				    $this->format_group_header($col);
+				    $col =& $val->headers[$i]["GroupHeaderColumn"];
+				    $this->format_group_header($col, false);
 			    }
             }
             foreach ( $this->query->display_order_set["column"] as $k => $w )
@@ -3191,7 +3317,6 @@ class reportico_report_csv extends reportico_report
 	var	$abs_bottom_margin;
 	var	$abs_left_margin;
 	var	$abs_right_margin;
-    var $first_column;
 	
 	function __construct ()
 	{
@@ -3259,13 +3384,7 @@ class reportico_report_csv extends reportico_report
 		$padstring = ucwords(strtolower($padstring));
 		$padstring = sw_translate($padstring);
 
-        if ( $this->first_column )
-        {
-            $this->first_column = false;
-		    echo '"'.$padstring.'"';
-        }
-        else
-		    echo ',"'.$padstring.'"';
+		echo '"'.$padstring.'"'.",";
 	}
 
 	function format_column(& $column_item)
@@ -3284,35 +3403,25 @@ class reportico_report_csv extends reportico_report
 
         // Handle double quotes by changing " to ""
         $output = str_replace("\"", "\"\"", $output);
-        if ( $this->first_column )
-            $this->first_column = false;
-        else
-            echo ",";
-        echo "\"".$output."\"";
+        echo "\"".$output."\",";
 
 	}
 
 	function each_line($val)
 	{
-        $this->first_column = true;
 		reportico_report::each_line($val);
 
 		// Excel requires group headers are printed as the first columns in the spreadsheet against
 		// the detail. 
-        $this->first_column = true;
-        foreach ( $this->query->groups as $name => $group)
+                foreach ( $this->query->groups as $name => $group)
 		{
 			if ( count($group->headers) > 0  )
 			foreach ($group->headers as $gphk => $col )
 			{
 				$qn = get_query_column($col->query_name, $this->query->columns ) ;
 				$padstring = $qn->column_value;
-                if ( $this->first_column )
-                    $this->first_column = false;
-                else
-				    echo ",";
-                
 				echo "\"".$padstring."\"";
+				echo ",";
 			}
 		}
 				
@@ -3323,7 +3432,6 @@ class reportico_report_csv extends reportico_report
 			$this->format_column($col);
        		}
 		echo "\n";
-        $this->first_column = true;
 
 	}
 
@@ -3370,11 +3478,8 @@ class reportico_report_csv extends reportico_report
 				$qn = get_query_column($col->query_name, $this->query->columns ) ;
 				$tempstring = str_replace("_", " ", $col->query_name);
 				$tempstring = ucwords(strtolower($tempstring));
-                if ( $this->first_column )
-		            $this->first_column = false;
-                else
-				    echo ",";
 				echo "\"".sw_translate($col->derive_attribute("column_title",  $tempstring))."\"";
+				echo ",";
 			}
 		}
 				
@@ -3383,7 +3488,7 @@ class reportico_report_csv extends reportico_report
 		echo "\n";
 	}
 
-	function format_group_header(&$col) // CSV
+	function format_group_header(&$col, $custom) // CSV
 	{
 		// Excel requires group headers are printed as the first columns in the spreadsheet against
 		// the detail. 
@@ -3411,25 +3516,17 @@ class reportico_report_csv extends reportico_report
 		// the detail. 
 		$obj = new ArrayObject( $this->query->groups );
 		$it = $obj->getIterator();
-        $this->first_column = true;
         foreach ( $it as $name => $group)
 		{
 			for ($i = 0; $i < count($group->headers); $i++ )
 			{
-                if ( $this->first_column )
-                    $this->first_column = false;
-                else
-		            echo ",";
+				echo ",";
 			}
 		}
 	}
 
 	function format_column_trailer(&$trailer_col, &$value_col, $trailer_first = false)
 	{
-        if ( $this->first_column )
-            $this->first_column = false;
-        else
-		    echo ",";
 		if ( $value_col )
 		{
 			$group_label = $value_col->get_attribute("group_trailer_label" );
@@ -3445,6 +3542,7 @@ class reportico_report_csv extends reportico_report
 			$padstring = $value_col->old_column_value;
 			echo $group_label.":".$padstring;
 		}
+		echo ",";
 	}
 
 	function end_line()

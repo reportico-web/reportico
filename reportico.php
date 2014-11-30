@@ -520,6 +520,10 @@ class reportico extends reportico_object
     // but they can be ignored and reportico's own modal invoked by setting this to true
     var $force_reportico_mini_maintains = false;
 
+    // Array to hold plugins
+    var $plugins = array();
+
+
 	function __construct()
 	{ 	
 		reportico_object::__construct();
@@ -1724,9 +1728,12 @@ class reportico extends reportico_object
 			
 		if ( array_key_exists("target_format", $_REQUEST) && $execute_mode == "EXECUTE" && count($this->targets) == 0)
 		{	
-		
-			require_once("swoutput.php");
 			$tf = $_REQUEST["target_format"];
+            if ( isset ( $_GET["target_format"] ) )
+			    $tf = $_GET["target_format"];
+			$this->target_format = strtolower($tf);
+
+			require_once("reportico_report_".$this->target_format.".php");
 			$this->target_format = strtoupper($tf);
 			switch ( $tf )
 			{
@@ -1748,16 +1755,13 @@ class reportico extends reportico_object
 
 				case "html" :
 				case "HTML" :
-					//$rep = new reportico_report_html_template();
-			        require_once("swoutput.php");
-					$rep = new reportico_report_html_template();
+					$rep = new reportico_report_html();
 					$this->add_target($rep);
 					$rep->set_query($this);
 					break;
 
 				case "htmlgrid" :
 				case "HTMLGRID" :
-			        require_once("swoutput_grid.php");
 					$rep = new reportico_report_html_grid_template();
 					$this->add_target($rep);
 					$rep->set_query($this);
@@ -2416,7 +2420,7 @@ class reportico extends reportico_object
 	// -----------------------------------------------------------------------------
 	// Function : create_group_trailer
 	// -----------------------------------------------------------------------------
-	function create_group_trailer( $query_name, $trailer_column, $value_column )
+	function create_group_trailer( $query_name, $trailer_column, $value_column, $trailer_custom = false )
 	{
 		$this->check_group_name("create_group_trailer", $query_name);
 		//$this->check_column_name("create_group_trailer", $trailer_column);
@@ -2425,7 +2429,7 @@ class reportico extends reportico_object
 		$grp = get_group_column($query_name, $this->groups );
 		$qc = get_query_column($value_column, $this->columns );
 		//$trl = get_query_column($trailer_column, $this->columns )) )
-		$grp->add_trailer($trailer_column, $qc);
+		$grp->add_trailer($trailer_column, $qc, $trailer_custom);
 	}
 
 	// -----------------------------------------------------------------------------
@@ -2464,7 +2468,7 @@ class reportico extends reportico_object
 	// -----------------------------------------------------------------------------
 	// Function : set_group_trailer_by_number
 	// -----------------------------------------------------------------------------
-	function set_group_trailer_by_number( $query_name, $trailer_number, $trailer_column, $value_column )
+	function set_group_trailer_by_number( $query_name, $trailer_number, $trailer_column, $value_column, $trailer_custom = false )
 	{
 		$tn = (int)$trailer_number;
 		if ( !$this->check_group_name_r("create_group_trailer", $query_name) )
@@ -2485,9 +2489,14 @@ class reportico extends reportico_object
 			return;
 		}
 
+
 		//$grp =& $this->groups[$query_name] ;
 		$grp = get_group_column($query_name, $this->groups );
 		$col = get_query_column($value_column, $this->columns );
+
+        $trailer = array();
+        $trailer["GroupTrailerValueColumn"] = $col;
+        $trailer["GroupTrailerCustom"] = $trailer_custom;
 
 		$ct = 0;
 		$k = false;
@@ -2501,7 +2510,7 @@ class reportico extends reportico_object
 				if ( $ct == $tn )
 				{
 					array_splice ( $grp->trailers[$k], $k2, 1 );
-					$grp->trailers[$trailer_column][] =& $col;
+					$grp->trailers[$trailer_column][] =& $trailer;
 					$looping = false;
 					break;
 				}
@@ -2516,24 +2525,21 @@ class reportico extends reportico_object
 	// -----------------------------------------------------------------------------
 	// Function : create_group_header
 	// -----------------------------------------------------------------------------
-	function create_group_header ( $query_name, $header_column )
+	function create_group_header ( $query_name, $header_column, $header_custom = false )
 	{
 		$this->check_group_name("create_group_header", $query_name);
 		$this->check_column_name("create_group_header", $header_column);
 
 		$grp = get_group_column($query_name, $this->groups );
 		$col = get_query_column($header_column, $this->columns );
-		//$trl = get_query_column($trailer_column, $this->columns );
-		//$trl =& $this->columns[$trailer_column] ;
-		$grp->add_header($col);
+		$grp->add_header($col, $header_custom);
 	}
 
 	// -----------------------------------------------------------------------------
 	// Function : set_group_header_by_number
 	// -----------------------------------------------------------------------------
-	function set_group_header_by_number ( $query_name, $header_number, $header_column )
+	function set_group_header_by_number ( $query_name, $header_number, $header_column, $header_custom )
 	{
-
 		$hn = (int)$header_number;
 		if ( !$this->check_group_name_r("create_group_header", $query_name) )
 		{	
@@ -2549,7 +2555,11 @@ class reportico extends reportico_object
 
 		$grp = get_group_column($query_name, $this->groups );
 		$col = get_query_column($header_column, $this->columns );
-		$grp->headers[$hn] =& $col;
+		$header = array();
+        $header["GroupHeaderColumn"] = $col;
+        $header["GroupHeaderCustom"] = $header_custom;
+		$grp->headers[$hn] = $header;
+		//$this->headers[] = $header;
 	}
 
 	// -----------------------------------------------------------------------------
@@ -3569,12 +3579,22 @@ class reportico extends reportico_object
 		}
 
 
+        // Run customized reportico actions if not using xml text in session
+        $do_customize = true;
+
 		if ( $this->sqlinput )
         {
             $this->importSQL($this->sqlinput);
         }
 		else if ( $this->xmlinput || $this->xmlintext )
 		{
+            if ( $this->get_execute_mode() == "MAINTAIN" )
+            {
+                $do_customize = false;
+            }
+            else if ( $this->xmlintext )
+                $do_customize = false;
+
 			$this->xmlin = new reportico_xml_reader($this, $this->xmlinput, $this->xmlintext);
 			$this->xmlin->xml2query();
 		}
@@ -3583,6 +3603,12 @@ class reportico extends reportico_object
 			$this->xmlin = new reportico_xml_reader($this, false, "");
 			$this->xmlin->xml2query();
 		}
+
+        // Custom query stuff
+        if ( $do_customize && function_exists("reportico_customize") )
+        {
+            reportico_customize($this);
+        }
 
 	}
 
@@ -3655,6 +3681,9 @@ class reportico extends reportico_object
 
         // If new session, we need to use initial project, report etc, otherwise ignore them
 	    $this->handle_initial_settings();
+
+        // load plugins
+        $this->load_plugins();
 
         // Fetch project config
 		$this->set_project_environment($this->initial_project, $this->projects_folder, $this->admin_projects_folder);
@@ -5656,6 +5685,58 @@ function set_project_environment($initial_project = false, $project_folder = "pr
 
 	return $project;
 }
+	// -----------------------------------------------------------------------------
+	// Function : load_plugins
+	//
+	// Scan plugins folder for custom plugin functions and load them into plugins array
+	// -----------------------------------------------------------------------------
+	function load_plugins()
+	{
+		$plugin_dir = find_best_location_in_include_path( "plugins" );
+
+        if (is_dir($plugin_dir)) 
+        {
+            if ($dh = opendir($plugin_dir)) 
+            {
+                while (($file = readdir($dh)) !== false) 
+                {
+                    $plugin = $plugin_dir."/".$file;
+                    if (is_dir($plugin)) 
+                    {
+                        $plugin_file = $plugin."/".$file.".php";
+                        if (is_file($plugin_file)) 
+                        {
+                            require_once($plugin_file);
+                        }
+					}
+                }
+            }
+        }
+    }
+
+	// -----------------------------------------------------------------------------
+	// Function : load_plugins
+	//
+	// Scan plugins folder for custom plugin functions and load them into plugins array
+	// -----------------------------------------------------------------------------
+	function apply_plugins($section, $params)
+	{
+		foreach ( $this->plugins as $k => $plugin )
+        {
+            if ( isset ( $plugin[$section] ) )
+            {
+                if ( isset ( $plugin[$section]["function"] ) )
+                {
+                    return $plugin[$section]["function"]($params);
+                }
+                else if ( isset ( $plugin[$section]["file"] ) )
+                {
+                    require_once($plugin["file"]);
+                }
+            }
+        }
+    }
+
 
 }
 // -----------------------------------------------------------------------------
@@ -5721,18 +5802,25 @@ class reportico_group extends reportico_object
 				);
 	}
 
-	function add_header(&$in_value_column)
+	function add_header(&$in_value_column, $in_value_custom = false)
 	{
-		$this->headers[] = $in_value_column;
+		$header = array();
+        $header["GroupHeaderColumn"] = $in_value_column;
+        $header["GroupHeaderCustom"] = $in_value_custom;
+		$this->headers[] = $header;
+        
 	}			
 
-	function add_trailer($in_trailer_column, &$in_value_column)
+	function add_trailer($in_trailer_column, &$in_value_column, $in_custom)
 	{
+        $trailer = array();
 		if ( !array_key_exists($in_trailer_column, $this->trailers) )
 		{
 			$this->trailers[$in_trailer_column] =  array();
 		}
-		$this->trailers[$in_trailer_column][] =& $in_value_column;
+        $trailer["GroupTrailerValueColumn"] = $in_value_column;
+        $trailer["GroupTrailerCustom"] = $in_custom;
+		$this->trailers[$in_trailer_column][] =& $trailer;
 		$level = count($this->trailers[$in_trailer_column]) - 1;
 		if ( $this->max_level < $level )
 			$this->max_level = $level;
@@ -5832,7 +5920,7 @@ class reportico_criteria_column extends reportico_query_column
 	function execute_criteria_lookup($in_is_expanding = false)
 	{
 		global $g_code_area;
-		require_once("swoutput.php");
+		require_once("reportico_report_array.php");
 
 		$g_code_area = "Criteria ".$this->query_name;
 		$rep = new reportico_report_array();
@@ -7567,7 +7655,6 @@ class reportico_assignment extends reportico_object
 			{
 				$crit = $matches[1];
 				$first = substr($crit, 0, 1);
-
 				$critexp = $crit;
 				if ( $first == "=" )
 				{
@@ -7627,12 +7714,19 @@ class reportico_assignment extends reportico_object
 						}
 					}
 					else if ( $cl = get_query_column($crit, $in_query->columns ) )
+                    {
 							if ( $prev_col_value )
 								$clause = $cl->old_column_value;
 							else
 								$clause = $cl->column_value;
+					}
+					//else if ( strtoupper($crit) == "REPORT_TITLE" )
+					//{
+                        //$clause = "go";
+					//}
 					else
 					{
+						echo "Unknown Criteria Item $crit in Query $in_string";
 						//handle_error( "Unknown Criteria Item $crit in Query $in_string");
 						return $in_string;
 					}
@@ -7654,7 +7748,6 @@ class reportico_assignment extends reportico_object
 			}
 			else
 				$looping = false;
-
 		}
 	
 

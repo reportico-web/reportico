@@ -94,7 +94,7 @@
     //$q->initial_show_group_headers = "show";
     //$q->initial_show_group_trailers = "show";
     //$q->initial_show_column_headers = "show";
-    //$q->initial_show_criteria = "show";
+    $q->initial_show_criteria = "hide";
 
     // Set default output style - TABLE = one row per record, FORM = one page per record
     //$q->initial_output_style = "TABLE";
@@ -187,7 +187,7 @@
 
     // For passing external user parameters, can be referenced in SQL with {USER_PARAM,parameter_name}
     // and can be referenced in custom SQL with $this->user_parameters
-    //$q->user_parameters["your_parameter_name"] = "your parameter value";
+    //$q->user_parameters["hello"] = "peter";
 
     // Jquery already included?
     //$q->jquery_preloaded = false;
@@ -282,4 +282,11 @@
 	$q->execute();
 
 	//ob_end_flush();
+
+    function reportico_customize($reportico)
+    {
+            $reportico->create_page_header("pp", 1, "188888{STYLE width:200;height:1cm;margin: 6cm 0cm 0cm 5cm; color: #ffee00; background-color:#000000}" );
+            $reportico->create_page_header("qq", 1, "200000 skdfjsl dfjlskj dfksjdf sldfj lkj{STYLE width:200;height:1cm;background-color:#00aa22; margin: 4cm 0cm 0cm 1cm; }" );
+            $reportico->create_page_header("rr", 1, "399999{STYLE width:200;height:1cm;margin: 2cm 0cm 0cm 8cm; background-color:#00aaee}" );
+    }   
 ?>
