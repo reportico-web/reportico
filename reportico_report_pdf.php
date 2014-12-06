@@ -2469,8 +2469,7 @@ echo "$background_image, $custom_height $h <BR>";
         $this->page_number++;
 		$this->document->AddPage($this->orientations[$this->orientation]);
 
-		//$font = $this->document->SetFont($this->fontName, "I", 24);
-		$font = $this->document->SetFont("liberationsans-regular", "BI", 24);
+		$font = $this->document->SetFont($this->fontName, "I", 24);
 		$font = $this->document->SetFontSize($this->vsize);
 		$this->set_position($this->abs_left_margin, $this->abs_top_margin);
         $this->current_line_start_y = $this->document->GetY();
