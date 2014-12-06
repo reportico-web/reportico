@@ -283,10 +283,13 @@
 
 	//ob_end_flush();
 
+    /*
+     * Global reportico customization .. PDF headers etc.
+    */
     function reportico_customize($reportico)
     {
-            $reportico->create_page_header("pp", 1, "188888{STYLE width:200;height:1cm;margin: 6cm 0cm 0cm 5cm; color: #ffee00; background-color:#000000}" );
-            $reportico->create_page_header("qq", 1, "200000 skdfjsl dfjlskj dfksjdf sldfj lkj{STYLE width:200;height:1cm;background-color:#00aa22; margin: 4cm 0cm 0cm 1cm; }" );
-            $reportico->create_page_header("rr", 1, "399999{STYLE width:200;height:1cm;margin: 2cm 0cm 0cm 8cm; background-color:#00aaee}" );
+            //$reportico->create_page_header("pp", 1, "188888{STYLE width:200;height:1cm;margin: 6cm 0cm 0cm 5cm; color: #ffee00; background-color:#000000}" );
+            //$reportico->create_page_header("qq", 1, "200000 skdfjsl dfjlskj dfksjdf sldfj lkj{STYLE width:200;height:1cm;background-color:#00aa22; margin: 4cm 0cm 0cm 1cm; }" );
+            //$reportico->create_page_header("rr", 1, "399999{STYLE width:200;height:1cm;margin: 2cm 0cm 0cm 8cm; background-color:#00aaee}" );
     }   
 ?>
