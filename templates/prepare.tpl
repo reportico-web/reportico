@@ -326,17 +326,31 @@
     				<input type="submit" class="prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITGRAPHS}" id="submit_mainqueroutpgrph" value="{$T_EDITGRAPHS}" name="mainqueroutpgrph_ANY">
 </div>
 {else}
-<div style="width: 100%; padding-top: 3px; text-align: right">
-    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITSQL}" id="submit_mainquerqury_SHOW" value="{$T_EDITSQL}" name="mainquerqurysqlt_QuerySql">
-    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITCOLUMNS}" id="submit_mainquerquryqcol_SHOW" value="{$T_EDITCOLUMNS}" name="mainquerquryqcol_ANY">
-    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITASSIGNMENT}" id="submit_mainquerassg" value="{$T_EDITASSIGNMENT}" name="mainquerassg_ANY">
-    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITGROUPS}" id="submit_mainqueroutpgrps" value="{$T_EDITGROUPS}" name="mainqueroutpgrps_ANY">
-    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITGRAPHS}" id="submit_mainqueroutpgrph" value="{$T_EDITGRAPHS}" name="mainqueroutpgrph_ANY">
-    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITPAGEHEADERS}" id="submit_mainqueroutppghd0000form" value="{$T_EDITPAGEHEADERS}" name="mainqueroutppghd0000form_ANY">
-    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITPAGEFOOTERS}" id="submit_mainqueroutppgft0000form" value="{$T_EDITPAGEFOOTERS}" name="mainqueroutppgft0000form_ANY">
-    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITGROUPHEADERS}" id="submit_mainqueroutpgrps0001ghdr" value="{$T_EDITGROUPHEADERS}" name="mainqueroutpgrps0001ghdr0000_ANY">
-                    <input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITGROUPTRAILERS}" id="submit_mainqueroutpgrps0001ghdr" value="{$T_EDITGROUPTRAILERS}" name="mainqueroutpgrps0001gtrl0000_ANY">
+
+
+<div class="navbar navbar-default" role="navigation">
+    <!--div class="navbar navbar-default navbar-static-top" role="navigation"-->
+        <div class="container" style="width: 100%">
+            <div class="nav-collapse collapse in" id="reportico-bootstrap-collapse">
+                <ul class="nav navbar-nav pull-right navbar-right">
+    				    <li><input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-top: 10px; margin-right: 30px" title="{$T_EDIT} {$T_EDITSQL}" id="submit_mainquerqury_SHOW" value="{$T_EDITSQL}" name="mainquerqurysqlt_QuerySql"></li>
+    				    <li><input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-top: 10px; margin-right: 30px" title="{$T_EDIT} {$T_EDITCOLUMNS}" id="submit_mainquerquryqcol_SHOW" value="{$T_EDITCOLUMNS}" name="mainquerquryqcol_ANY"></li>
+    				    <li><input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-top: 10px; margin-right: 30px" title="{$T_EDIT} {$T_EDITASSIGNMENT}" id="submit_mainquerassg" value="{$T_EDITASSIGNMENT}" name="mainquerassg_ANY"></li>
+    				    <li><input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-top: 10px; margin-right: 30px" title="{$T_EDIT} {$T_EDITGROUPS}" id="submit_mainqueroutpgrps" value="{$T_EDITGROUPS}" name="mainqueroutpgrps_ANY"></li>
+    				    <li><input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-top: 10px; margin-right: 30px" title="{$T_EDIT} {$T_EDITGRAPHS}" id="submit_mainqueroutpgrph" value="{$T_EDITGRAPHS}" name="mainqueroutpgrph_ANY"></li>
+                        <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">More Shortcuts<span class="caret"></span></a>
+                            <ul class="dropdown-menu reportico-dropdown">
+    				            <li><input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITPAGEHEADERS}" id="submit_mainqueroutppghd0000form" value="{$T_EDITPAGEHEADERS}" name="mainqueroutppghd0000form_ANY"></li>
+    				            <li><input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITPAGEFOOTERS}" id="submit_mainqueroutppgft0000form" value="{$T_EDITPAGEFOOTERS}" name="mainqueroutppgft0000form_ANY"></li>
+    				            <li><input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITGROUPHEADERS}" id="submit_mainqueroutpgrps0001ghdr" value="{$T_EDITGROUPHEADERS}" name="mainqueroutpgrps0001ghdr0000_ANY"></li>
+                                <li><input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITGROUPTRAILERS}" id="submit_mainqueroutpgrps0001ghdr" value="{$T_EDITGROUPTRAILERS}" name="mainqueroutpgrps0001gtrl0000_ANY"></li>
+                            </ul>
+                        </li>
+                </ul>
+            </div>
+        </div>
 </div>
+
 {/if}
 {/if}
 <h1 class="swTitle" >{$TITLE}
