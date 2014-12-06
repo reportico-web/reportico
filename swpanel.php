@@ -641,10 +641,10 @@ class reportico_xml_reader
 					"Expression" => array ( "Title" => "EXPRESSION", "EditMode" => "SAFE" ),
 					"Condition" => array ( "Title" => "CONDITION", "EditMode" => "SAFE" ),
 					"GroupHeaderColumn" => array ( "Title" => "GROUPHEADERCOLUMN", "Type" => "QUERYCOLUMNS"),
-                    "GroupHeaderCustom" => array ( "Title" => "GROUPHEADERCUSTOM", "Type" => "TEXTBOX", "WizardLink" => true ),
+                    "GroupHeaderCustom" => array ( "Title" => "GROUPHEADERCUSTOM", "Type" => "TEXTBOX", "WizardLink" => true, "HasChangeComparator" => true ),
 					"GroupTrailerDisplayColumn" => array ( "Title" => "GROUPTRAILERDISPLAYCOLUMN", "Type" => "QUERYCOLUMNS"),
 					"GroupTrailerValueColumn" => array ( "Title" => "GROUPTRAILERVALUECOLUMN", "Type" => "QUERYCOLUMNS"),
-                    "GroupTrailerCustom" => array ( "Title" => "GROUPTRAILERCUSTOM", "Type" => "TEXTBOX", "WizardLink" => true ),
+                    "GroupTrailerCustom" => array ( "Title" => "GROUPTRAILERCUSTOM", "Type" => "TEXTBOX", "WizardLink" => true, "HasChangeComparator" => true ),
 					"ColumnType" => array ( "Type" => "HIDE"),
 					"ColumnLength" => array ( "Type" => "HIDE"),
 					"ColumnName" => array ( "Type" => "HIDE"),
@@ -839,8 +839,8 @@ class reportico_xml_reader
 					"GroupTrailerDisplayColumn" => array ( "Title" => "GROUPTRAILERDISPLAYCOLUMN", "Type" => "QUERYCOLUMNS" ),
 					"GroupTrailerValueColumn" => array ( "Title" => "GROUPTRAILERVALUECOLUMN", "Type" => "QUERYCOLUMNS" ),
 					"LineNumber" => array ( "Title" => "LINENUMBER" ),
-					"HeaderText" => array ( "Title" => "HEADERTEXT", "Type" => "TEXTBOXSMALL", "WizardLink" => true ),
-					"FooterText" => array ( "Title" => "FOOTERTEXT", "Type" => "TEXTBOXSMALL", "WizardLink" => true ),
+					"HeaderText" => array ( "Title" => "HEADERTEXT", "Type" => "TEXTBOXSMALL", "WizardLink" => true, "HasChangeComparator" => true ),
+					"FooterText" => array ( "Title" => "FOOTERTEXT", "Type" => "TEXTBOXSMALL", "WizardLink" => true, "HasChangeComparator" => true ),
 					"ColumnStartPDF" => array ( "Title" => "COLUMNSTARTPDF" ),
 					"ColumnWidthPDF" => array ( "Title" => "COLUMNWIDTHPDF" ),
 					"ColumnWidthHTML" => array ( "Title" => "COLUMNWIDTHHTML" ),
@@ -2307,7 +2307,10 @@ class reportico_xml_reader
 					break;
 
 				case "pgft":
-					$updates["FooterText"] = $this->query->apply_plugins("apply-section", array("type" => "PageFooter", "updates" => &$updates, "applyto" => $updates["FooterText"]) );
+                    if ( isset($updates["FooterText_shadow"]) && $updates["FooterText_shadow"] != $updates["FooterText"] )
+                        $updates["FooterText"] = $updates["FooterText"];
+                    else
+					    $updates["FooterText"] = $this->query->apply_plugins("apply-section", array("type" => "PageFooter", "updates" => &$updates, "applyto" => $updates["FooterText"]) );
 					$updateitem =& $anal["item"];
 					$updateitem->__construct(
 							$updates["LineNumber"], $updates["FooterText"]);
@@ -2402,7 +2405,10 @@ class reportico_xml_reader
 
 				case "ghdr":
 					//$updates["GroupHeaderCustom"] = $this->apply_pdf_styles ( "GroupHeader", $updates, $updates["GroupHeaderCustom"] );
-					$updates["GroupHeaderCustom"] = $this->query->apply_plugins("apply-section", array("type" => "GroupHeader", "updates" => &$updates, "applyto" => $updates["GroupHeaderCustom"]) );
+                    if ( isset($updates["GroupHeaderCustom_shadow"]) && $updates["GroupHeaderCustom_shadow"] != $updates["GroupHeaderCustom"] )
+                        $updates["GroupHeaderCustom"] = $updates["GroupHeaderCustom"];
+                    else
+					    $updates["GroupHeaderCustom"] = $this->query->apply_plugins("apply-section", array("type" => "GroupHeader", "updates" => &$updates, "applyto" => $updates["GroupHeaderCustom"]) );
 					$updateitem =& $anal["item"];
 					$gr =& $anal["group"];
 					$anal["quer"]->set_group_header_by_number 
@@ -2411,7 +2417,10 @@ class reportico_xml_reader
 
 				case "gtrl":
 					//$updates["GroupTrailerCustom"] = $this->apply_pdf_styles ( "GroupTrailer", $updates, $updates["GroupTrailerCustom"] );
-					$updates["GroupTrailerCustom"] = $this->query->apply_plugins("apply-section", array("type" => "GroupTrailer", "updates" => &$updates, "applyto" => $updates["GroupTrailerCustom"]) );
+                    if ( isset($updates["GroupTrailerCustom_shadow"]) && $updates["GroupTrailerCustom_shadow"] != $updates["GroupTrailerCustom"] )
+                        $updates["GroupTrailerCustom"] = $updates["GroupTrailerCustom"];
+                    else
+					    $updates["GroupTrailerCustom"] = $this->query->apply_plugins("apply-section", array("type" => "GroupTrailer", "updates" => &$updates, "applyto" => $updates["GroupTrailerCustom"]) );
 					$updateitem =& $anal["item"];
 					$gr =& $anal["group"];
 					$anal["quer"]->set_group_trailer_by_number 
@@ -2496,7 +2505,10 @@ class reportico_xml_reader
 
 				case "pghd":
 					//$updates["HeaderText"] = $this->apply_pdf_styles ( "PageHeader", $updates, $updates["HeaderText"] );
-					$updates["HeaderText"] = $this->query->apply_plugins("apply-section", array("type" => "PageHeader", "updates" => &$updates, "applyto" => $updates["HeaderText"]) );
+                    if ( isset($updates["HeaderText_shadow"]) && $updates["HeaderText_shadow"] != $updates["HeaderText"] )
+                        $updates["HeaderText"] = $updates["HeaderText"];
+                    else
+					    $updates["HeaderText"] = $this->query->apply_plugins("apply-section", array("type" => "PageHeader", "updates" => &$updates, "applyto" => $updates["HeaderText"]) );
 					$updateitem =& $anal["item"];
 					$updateitem->__construct(
 							$updates["LineNumber"], $updates["HeaderText"]);
@@ -4001,6 +4013,10 @@ class reportico_xml_reader
 						)
                     {
 						$text .= $this->display_maintain_field($k, $val, $fct);
+                        if ( isset($this->field_display[$k]) && isset($this->field_display[$k]["HasChangeComparator"]) && $this->field_display[$k]["HasChangeComparator"] )
+                        {
+						    $text .= $this->display_maintain_field($k, $val, $fct, true, false, false, false, true);
+                        }
                     }
 
 
@@ -4029,7 +4045,7 @@ class reportico_xml_reader
 		return $helppage;
 	}
 
-	function & display_maintain_field($tag, $val, &$tagct, $translate = true, $overridetitle = false, $toggleclass = false, $togglestate = false)
+	function & display_maintain_field($tag, $val, &$tagct, $translate = true, $overridetitle = false, $toggleclass = false, $togglestate = false, $draw_shadow = false)
 	{
 		$text = "";
 		$striptag = preg_replace("/ .*/", "", $tag);
@@ -4050,6 +4066,10 @@ class reportico_xml_reader
                 $text .= " class=\"".$toggleclass."\" style=\"display: table-row\" ";
             else
                 $text .= " class=\"".$toggleclass."\" style=\"display: none\" ";
+        }
+        if ( $draw_shadow )
+        {
+            $text .= " style=\"display: none\" ";
         }
         $text .= '>';
 		$type = "TEXTFIELD";
@@ -4133,17 +4153,22 @@ class reportico_xml_reader
 				$text .= "";
 		$text .= '</TD>';
 
+        if ( $draw_shadow )
+            $shadow = "_shadow";
+        else
+            $shadow = "";
+
 		// Display Field Entry
 		$text .= '<TD class="swMntSetField" colspan="1">';
 		switch ( $type )
 		{
 			case "PASSWORD":
-				$text .= '<input class="'.$this->query->getBootstrapStyle('textfield').'" type="password" size="40%" name="set_'.$this->id."_".$showtag.'" value="'.htmlspecialchars($val).'"><br>';
+				$text .= '<input class="'.$this->query->getBootstrapStyle('textfield').'" type="password" size="40%" name="set_'.$this->id."_".$showtag.$shadow.'" value="'.htmlspecialchars($val).'"><br>';
 				break;
 
 			case "TEXTFIELDREADONLY":
 				$readonly = "readonly";
-				$text .= '<input class="'.$this->query->getBootstrapStyle('textfield').'" type="text" size="40%" '.$readonly.' name="set_'.$this->id."_".$showtag.'" value="'.htmlspecialchars($val).'">';
+				$text .= '<input class="'.$this->query->getBootstrapStyle('textfield').'" type="text" size="40%" '.$readonly.' name="set_'.$this->id."_".$showtag.$shadow.'" value="'.htmlspecialchars($val).'">';
 				break;
 
 			case "TEXTFIELD":
@@ -4151,14 +4176,14 @@ class reportico_xml_reader
 				$readonly = "";
 				if ( $edit_mode == "SAFE" && ( $this->query->allow_maintain == "SAFE" || $this->query->allow_maintain == "DEMO" || SW_SAFE_DESIGN_MODE ) )
 					$readonly = "readonly";
-				$text .= '<input class="'.$this->query->getBootstrapStyle('textfield').'" type="text" size="40%" '.$readonly.' name="set_'.$this->id."_".$showtag.'" value="'.htmlspecialchars($val).'">';
+				$text .= '<input class="'.$this->query->getBootstrapStyle('textfield').'" type="text" size="40%" '.$readonly.' name="set_'.$this->id."_".$showtag.$shadow.'" value="'.htmlspecialchars($val).'">';
 				break;
 
 			case "TEXTBOX":
 				$readonly = "";
 				if ( $edit_mode == "SAFE" && ( $this->query->allow_maintain == "SAFE" || $this->query->allow_maintain == "DEMO" || SW_SAFE_DESIGN_MODE ) )
 					$readonly = "readonly";
-				$text .= '<textarea class="'.$this->query->getBootstrapStyle('textfield').'" '.$readonly.' cols="70" rows="20" name="set_'.$this->id."_".$showtag.'" >';
+				$text .= '<textarea class="'.$this->query->getBootstrapStyle('textfield').'" '.$readonly.' cols="70" rows="20" name="set_'.$this->id."_".$showtag.$shadow.'" >';
 				$text .= htmlspecialchars($val);
 				$text .= '</textarea>';
 				break;
@@ -4167,20 +4192,20 @@ class reportico_xml_reader
 				$readonly = "";
 				if ( $edit_mode == "SAFE" && ( $this->query->allow_maintain == "SAFE" || $this->query->allow_maintain == "DEMO" || SW_SAFE_DESIGN_MODE ) )
 					$readonly = "readonly";
-				$text .= '<textarea class="'.$this->query->getBootstrapStyle('textfield').'" '.$readonly.' cols="70" rows="4" name="set_'.$this->id."_".$showtag.'" >';
+				$text .= '<textarea class="'.$this->query->getBootstrapStyle('textfield').'" '.$readonly.' cols="70" rows="4" name="set_'.$this->id."_".$showtag.$shadow.'" >';
 				$text .= htmlspecialchars($val);
 				$text .= '</textarea>';
 				break;
 
 			case "DROPDOWN":
-				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag, $tagvals, $val, false, $translateoptions);
+				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag.$shadow, $tagvals, $val, false, $translateoptions);
 				break;
 
 			case "CRITERIA":
 				$keys=array_keys($this->query->lookup_queries);
 				if ( !is_array($keys) )
 					$key = array();
-				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag, $keys, $val, false, $translateoptions);
+				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag.$shadow, $keys, $val, false, $translateoptions);
 				break;
 
 			case "GROUPCOLUMNS":
@@ -4195,7 +4220,7 @@ class reportico_xml_reader
 					foreach ( $q->columns as $col )
 						$keys[] = $col->query_name;
 
-				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag, $keys, $val, false, $translateoptions);
+				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag.$shadow, $keys, $val, false, $translateoptions);
 				break;
 				
 			case "REPORTLIST":
@@ -4220,7 +4245,7 @@ class reportico_xml_reader
 				else
                     trigger_error ( template_xlate("NOOPENDIR").$this->query->reports_path );
 
-				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag, $keys, $val, false, $translateoptions);
+				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag.$shadow, $keys, $val, false, $translateoptions);
 
 				break;
 		
@@ -4242,6 +4267,7 @@ class reportico_xml_reader
 								$keys[] = preg_replace("/.php/", "", $file);
                             }
         				}
+                        sort($keys);
         				closedir($dh);
     				}
 				}
@@ -4251,7 +4277,7 @@ class reportico_xml_reader
                 if( !in_array($val, $keys) )
                     $keys[] = $val;
                 
-				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag, $keys, $val, false, $translateoptions);
+				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag.$shadow, $keys, $val, false, $translateoptions);
 
 				break;
 		
@@ -4271,7 +4297,7 @@ class reportico_xml_reader
 				$keys[] = "GROUPHEADERLABEL";
 				$keys[] = "GROUPHEADERVALUE";
 				$keys[] = "GROUPTRAILER";
-				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag, $keys, $val, false, $translateoptions);
+				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag.$shadow, $keys, $val, false, $translateoptions);
 				break;
 				
 			case "FONTSTYLES":
@@ -4290,7 +4316,7 @@ class reportico_xml_reader
 				$keys[] = "STRIKETHROUGH";
 				$keys[] = "OVERLINE";
 				$keys[] = "BLINK";
-				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag, $keys, $val, false, $translateoptions);
+				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag.$shadow, $keys, $val, false, $translateoptions);
 				break;
 				
 			case "POSITIONS":
@@ -4303,7 +4329,7 @@ class reportico_xml_reader
 				$keys[] = "";
 				$keys[] = "RELATIVE";
 				$keys[] = "ABSOLUTE";
-				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag, $keys, $val, false, $translateoptions);
+				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag.$shadow, $keys, $val, false, $translateoptions);
 				break;
 				
 			case "BORDERSTYLES":
@@ -4318,7 +4344,7 @@ class reportico_xml_reader
 				$keys[] = "SOLIDLINE";
 				$keys[] = "DOTTED";
 				$keys[] = "DASHED";
-				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag, $keys, $val, false, $translateoptions);
+				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag.$shadow, $keys, $val, false, $translateoptions);
 				break;
 				
 			case "AGGREGATETYPES":
@@ -4336,7 +4362,7 @@ class reportico_xml_reader
 				$keys[] = "PREVIOUS";
 				$keys[] = "COUNT";
 				$keys[] = "SKIPLINE";
-				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag, $keys, $val, false, $translateoptions);
+				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag.$shadow, $keys, $val, false, $translateoptions);
 				break;
 				
 			case "QUERYCOLUMNS":
@@ -4350,7 +4376,7 @@ class reportico_xml_reader
 					foreach ( $q->columns as $col )
 						$keys[] = $col->query_name;
 
-				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag, $keys, $val, false, $translateoptions);
+				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag.$shadow, $keys, $val, false, $translateoptions);
 				break;
 				
 			case "QUERYCOLUMNSOPTIONAL":
@@ -4365,7 +4391,7 @@ class reportico_xml_reader
 					foreach ( $q->columns as $col )
 						$keys[] = $col->query_name;
 
-				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag, $keys, $val, false, $translateoptions);
+				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag.$shadow, $keys, $val, false, $translateoptions);
 				break;
 				
 			case "QUERYGROUPS":
@@ -4376,7 +4402,7 @@ class reportico_xml_reader
 					foreach ( $q->groups as $col )
 						$keys[] = $col->group_name;
 
-				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag, $keys, $val, false, $translateoptions);
+				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag.$shadow, $keys, $val, false, $translateoptions);
 				break;
 		}
 
