@@ -57,6 +57,9 @@ class reportico_report extends reportico_object
     var $inOverflow = false;
     var $any_trailers = false;
     var $any_custom_trailers = false;
+    var $draw_mode = "DRAW";
+
+    var $detail_started = false;
 
 	var $attributes = array (
 		"TopMargin" => "4%",
@@ -67,6 +70,8 @@ class reportico_report extends reportico_object
 		"BodyEnd" => "10%",
 		"ReportTitle" => "Set Report Title"
 		);
+
+    var $page_styles_started = false;
 
 
 	function __construct()
@@ -365,6 +370,18 @@ class reportico_report extends reportico_object
 		return;
 	}
 
+	function format_report_detail_start()
+	{
+        $this->detail_started = true;
+		return;
+	}
+
+	function format_report_detail_end()
+	{
+        $this->detail_started = false;
+		return;
+	}
+
 
 	function format_column(& $column_item)
 	{
@@ -492,16 +509,20 @@ class reportico_report extends reportico_object
 			if ( count($this->query->groups) == 0 )
 				return;
 
+            $rct = 0;
 			end($this->query->groups);
 			do
 			{
 				$group = current($this->query->groups);
 				if ( $this->query->changed($group->group_name) || $this->last_line) 
 				{
+                    if ( $rct == 1 )
+		                $this->format_report_detail_end();
+                    $rct++;
                     $group_changed = true;
 					$lev = 0;
 					$tolev = 0;
-					while ( $lev <= $tolev )
+					while ( $lev < $group->max_level )
 					{
 						if ( $lev == 0 )
 							$this->apply_format($group, "before_trailer");
@@ -515,6 +536,7 @@ class reportico_report extends reportico_object
                         // In PDF mode all trailer lines must be passed through twice
                         // to allow calculation of line height. Otherwise
                         // Only one pass through
+                                $number_group_rows = 0;
                         for ( $passno = 1; $passno <= 2; $passno++ )
                         {
                             if (  get_class($this) == "reportico_report_pdf" )
@@ -523,9 +545,9 @@ class reportico_report extends reportico_object
                                 if ( $passno == 2 ) 
                                 {
                                     $this->draw_mode = "DRAW";
-                                    $this->unapply_style_tags($this->query->output_group_trailer_styles);
+                                    $this->unapply_style_tags("GROUPTRAILER", $this->query->output_group_trailer_styles);
                                     $this->check_page_overflow();
-                                    $this->apply_style_tags($this->query->output_group_trailer_styles);
+                                    $this->apply_style_tags("GROUPTRAILER", $this->query->output_group_trailer_styles);
                                 }
                             }
                             else
@@ -533,21 +555,49 @@ class reportico_report extends reportico_object
                                 if ( $passno == 2 ) break;
                             }
                             // Column Trailers
+                            $linedrawn = false;
+                            if ( $this->draw_mode == "DRAW" && $number_group_rows == 0 )
+                            {
+                                $linedrawn = true;
+                            }
+                            else
+                                $number_group_rows = 0;
+                                                //$this->new_report_page_line("                                                            new $this->draw_mode $number_group_rows $group->group_name $lev $tolev $w->query_name");
                             foreach ( $this->query->display_order_set["column"] as $w )
                             {
                                 if ( !$this->show_column_header($w) )
                                         continue;
 
+//echo " trail $w->query_name ";
+//echo " $lev / max $group->max_level  + ";
+//if ( isset ( $group->trailers[$w->query_name]) )
+        //echo count($group->trailers[$w->query_name]);
+//else 
+        //echo "no";
+//echo " <BR>";
                                 if ( array_key_exists($w->query_name, $group->trailers) )
                                 {
+                                    $number_group_rows++;
                                     if ( count($group->trailers[$w->query_name]) >= $lev + 1 )
                                     {
                                         //$colgrp =& $group->trailers[$w->query_name][$lev];
                                         if ( !$group->trailers[$w->query_name][$lev]["GroupTrailerCustom"] )
+                                        {
+                                            if ( !$linedrawn )
+                                            {
+                                                $this->new_report_page_line("3");
+                                                $linedrawn = true;
+                                            }
                                             $this->format_column_trailer($w, $group->trailers[$w->query_name][$lev],$trailer_first);
+                                        }
                                     }
                                     else
                                     {
+                                        if ( !$linedrawn )
+                                        {
+                                           $this->new_report_page_line("2");
+                                           $linedrawn = true;
+                                        }
                                         $this->format_column_trailer($w, $junk,$trailer_first);	
                                     }
                                     $this->any_trailers = true;
@@ -559,6 +609,11 @@ class reportico_report extends reportico_object
                                 }
                                 else
                                 {
+                                    if ( !$linedrawn )
+                                    {
+                                        $this->new_report_page_line("1");
+                                        $linedrawn = true;
+                                    }
                                     $this->format_column_trailer($w, $junk, $trailer_first);	
                                 }
                             } // foreach
@@ -764,7 +819,9 @@ class reportico_report extends reportico_object
                 ( $this->query->target_format != "CSV" && $changect > 0 ) || 
                 $this->page_line_count == 0 )
 		{	
+		    $this->format_report_detail_start();
 		    $this->format_headers();
+            $this->page_styles_started = true;
 		}
 	}
 
@@ -777,6 +834,11 @@ class reportico_report extends reportico_object
 	{
 			return;
 	}
+
+    function new_report_page_line($txt = "")
+    {
+        return;
+    }
 
 
 

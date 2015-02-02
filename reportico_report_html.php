@@ -231,6 +231,107 @@ class reportico_report_html extends reportico_report
         return $txt;
     }
     
+    function extract_styles_and_text_from_string ( &$text, &$styles, &$attributes, $parent_styleset = false, $grandparent_styleset = false)
+    {
+        $outtext = "";
+        $style_arr = $this->fetch_cell_styles($text);
+
+        $widthset = false;
+
+        if ( $grandparent_styleset && is_array($grandparent_styleset) )
+            foreach ( $grandparent_styleset as $k => $v )
+            {
+                if ( $k == "width" ) $widthset = true;
+                $styles .= "$k:$v;";
+            }
+
+        if ( $parent_styleset && is_array($parent_styleset) )
+            foreach ( $parent_styleset as $k => $v )
+            {
+                if ( $k == "width" ) $widthset = true;
+                $styles .= "$k:$v;";
+            }
+
+        if ( isset ( $attributes["justify"] ) )
+        {
+            if ( $attributes["justify"] == "center" )
+                $styles .= "text-align: center;"; 
+            if ( $attributes["justify"] == "right" )
+                $styles .= "text-align: right;"; 
+        }
+
+        if ( isset ( $attributes["ColumnWidthPDF"] ) && $attributes["ColumnWidthPDF"] )
+        {
+            if ( is_numeric ($attributes["ColumnWidthPDF"]) )
+                $styles .= "width: ".$attributes["ColumnWidthPDF"]."px;"; 
+            else
+                $styles .= "width: ".$attributes["ColumnWidthPDF"].";"; 
+        }
+
+        if ( isset ( $attributes["ColumnStartPDF"] ) && $attributes["ColumnStartPDF"] )
+        {
+            if ( is_numeric ($attributes["ColumnStartPDF"]) )
+                $styles .= "margin-left: ".$attributes["ColumnStartPDF"]."px;"; 
+            else
+                $styles .= "margin-left: ".$attributes["ColumnStartPDF"]."24;"; 
+        }
+
+        if ( $style_arr )
+            foreach ( $style_arr as $k => $v )
+            {
+                if ( $k == "width" ) $widthset = true;
+                if ( $k == "background-image" )
+                    $styles .= "background: url('$v') no-repeat;";
+                else
+                    $styles .= "$k:$v;";
+            }
+
+        // If no width specified default to 100%
+        if ( !$widthset )
+            $styles .= "width:100%;";
+
+        return;
+    }
+
+    function fetch_cell_styles(&$tx)
+    {
+        $styles = false;
+        $matches = array();
+        if (preg_match("/{STYLE[ ,]*([^}].*)}/", $tx, $matches))
+        {
+            if ( isset($matches[1]))
+            {
+                $stylearr = explode(";",$matches[1]);
+                $tx = preg_replace("/{STYLE[ ,]*[^}].*}/", "", $tx);
+                foreach ($stylearr as $v )
+                {
+                    if ( !$v )
+                        continue;
+                    $style = explode(":", $v);
+                    if ( count($style) >= 2 )
+                    {
+                        $name = trim($style[0]);
+                        $value = trim($style[1]);
+//echo "$name = $value, ";
+                        if ( is_numeric($value) )
+                        {
+                            if ( $name == "width" ) $value .= "px";
+                        }
+                        $styles[$name] = $value;
+                    }
+                }
+            }
+        }
+//echo "<BR>";
+
+        $tx = $this->reportico_string_to_php($tx);
+        $tx = reportico_assignment::reportico_meta_sql_criteria($this->query, $tx);
+        $tx = preg_replace("/<\/*u>/", "", $tx);
+
+        return $styles;
+    }
+
+
     function get_style_tags ( $styleset, $parent_styleset = false, $grandparent_styleset = false)
     {
         $outtext = "";
@@ -240,7 +341,7 @@ class reportico_report_html extends reportico_report
             {
                 if ( !$outtext )
                     $outtext = "style=\"";
-                $outtext .= "$k:$v;";
+                $outtext .= "$k:$v !important;";
             }
 
         if ( $parent_styleset && is_array($parent_styleset) )
@@ -248,7 +349,7 @@ class reportico_report_html extends reportico_report
             {
                 if ( !$outtext )
                     $outtext = "style=\"";
-                $outtext .= "$k:$v;";
+                $outtext .= "$k:$v !important;";
             }
 
         if ( $styleset && is_array($styleset) )
@@ -256,7 +357,7 @@ class reportico_report_html extends reportico_report
             {
                 if ( !$outtext )
                     $outtext = "style=\"";
-                $outtext .= "$k:$v;";
+                $outtext .= "$k:$v !important;";
             }
 
         if ( $outtext )
@@ -325,6 +426,11 @@ class reportico_report_html extends reportico_report
 
 	function format_group_header(&$col, $custom) // HTML
 	{
+        if ( $custom)
+        {
+            return;
+        }
+
 		$this->text .= '<TR class="swRepGrpHdrRow">';
 		$this->text .= '<TD class="swRepGrpHdrLbl" '.$this->get_style_tags($this->query->output_group_header_label_styles).'>';
 		$qn = get_query_column($col->query_name, $this->query->columns ) ;
@@ -490,14 +596,17 @@ class reportico_report_html extends reportico_report
 			    for ($i = 0; $i < count($val->headers); $i++ )
 			    {
 				    $col =& $val->headers[$i];
-				    $this->format_group_header($col);
+                    $col =& $val->headers[$i]["GroupHeaderColumn"];
+                    $custom = $val->headers[$i]["GroupHeaderCustom"];
+                    $this->format_group_header($col, $custom, true);
 			    }
             }
+
             foreach ( $this->query->display_order_set["column"] as $k => $w )
 		    {
 		        if ( $w->attributes["column_display"] != "show")
 					    continue;
-					$this->format_group_header($w);
+					$this->format_group_header($w, false, false);
             }
 		    $this->page_line_count++;
 		    $this->line_count++;
@@ -548,6 +657,8 @@ class reportico_report_html extends reportico_report
 
 		$this->debug("HTML Begin Page\n");
 
+        // Page Headers
+		reportico_report::page_headers();
 
 		$title = $this->query->derive_attribute("ReportTitle", "Unknown");
         if ( $this->query->output_template_parameters["show_hide_report_output_title"] != "hide" )
@@ -609,15 +720,50 @@ class reportico_report_html extends reportico_report
 		$this->debug("Publish HTML");
 	}
 
+	function format_page_header_start()
+	{
+        $this->text .= "<div class=\"swPageHeaderBlock\">";
+    }
+
+	function format_page_header_end()
+	{
+        $this->text .= "</div>";
+    }
+
 	function format_page_header(&$header)
 	{
+        $styles = "";
+        $text = $header->text;
+
+        $this->extract_styles_and_text_from_string ( $text, $styles, $header->attributes, $parent_styleset = false, $grandparent_styleset = false);
 		$just = strtolower($header->get_attribute("justify"));
 
-		$this->text .= "<TR>";
-		$this->text .= '<TD colspan="10" justify="'.$just.'">';
-		$this->text .=($header->text);
-		$this->text .= "</TD>";
-		$this->text .= "</TR>";
+//echo "Value $text<BR>";
+//var_dump($header->attributes);
+//echo "Styles = $styles <BR>";
+        $img = "";
+        if ( $styles )
+        {
+            $matches = array();
+            if ( preg_match ( "/background: url\('(.*)'\).*;/", $styles, $matches ) )
+            {
+                $styles = preg_replace("/background: url\('(.*)'\).*;/", "", $styles);
+                if ( count($matches) > 1 )
+                {
+                    $img = "<img src='".$matches[1]."'/>";
+                }
+            }
+		    $this->text .= "<DIV class=\"swPageHeader\" style=\"$styles\">";
+        }
+        else
+		    $this->text .= "<DIV class=\"swPageHeader\" >";
+		$this->text .= "$img$text";
+		$this->text .= "</DIV>";
+		//$this->text .= "<TR>";
+		//$this->text .= '<TD colspan="10" justify="'.$just.'">';
+		//$this->text .=($header->text);
+		//$this->text .= "</TD>";
+		//$this->text .= "</TR>";
 
 		return;
 	}

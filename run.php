@@ -173,7 +173,7 @@
     // $q->clear_reportico_session = true;
 
     // Specify an alternative AJAX runner from the stanfdard run.php
-    //$q=>reportico_ajax_script_url = $_SERVER["SCRIPT_NAME"];
+    //$q->reportico_ajax_script_url = $_SERVER["SCRIPT_NAME"];
 
 
     // If you want to connect to a reporting database whose connection information is available in the calling
@@ -291,5 +291,8 @@
             //$reportico->create_page_header("H1", 1, "Header1{STYLE width:200;height:1cm;margin: 6cm 0cm 0cm 5cm; color: #ffee00; background-color:#000000}" );
             //$reportico->create_page_header("H2", 1, "Header2 skdfjsl dfjlskj dfksjdf sldfj lkj{STYLE width:200;height:1cm;background-color:#00aa22; margin: 4cm 0cm 0cm 1cm; }" );
             //$reportico->create_page_header("H3", 1, "Header3{STYLE width:200;height:1cm;margin: 2cm 0cm 0cm 8cm; background-color:#00aaee}" );
+            //$reportico->create_page_header("H4", 1, "{STYLE width:200;height:1cm;background-image:images/northwind.jpg;}" );
+            $reportico->create_page_header("H5", 1, "{full_address}{STYLE font-style:italic;background-color: #ffff00; text-align: left}" );
+            //$reportico->create_page_header("H6", 1, "{order_date}{STYLE font-family:times;font-weight:bold;font-style:italic;}" );
     }   
 ?>

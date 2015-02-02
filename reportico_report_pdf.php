@@ -38,6 +38,8 @@ class reportico_report_pdf extends reportico_report
     var $dbg = false;
 	var	$abs_top_margin;
 	var	$abs_bottom_margin;
+	var	$abs_row_left_margin;
+	var	$abs_col_left_margin;
 	var	$abs_left_margin;
 	var	$abs_right_margin;
     var $abs_page_width = 0;
@@ -49,6 +51,7 @@ class reportico_report_pdf extends reportico_report
 	var	$fontName;
 	var	$fontSize;
 	var	$vsize;
+	var	$columns_calculated = false;
 	var	$fillmode = false;
 	var	$justifys = array (
 		"right" => "R",
@@ -118,6 +121,16 @@ class reportico_report_pdf extends reportico_report
     var $pdfDriver = "tcpdf";
 
     var $inGroupOutput = false;
+
+    // Page and body styles in middle of page should not have thinkgs like 
+    // top margin or position applied except on first print in page/body. This is used to 
+    // hold modified page styles for mid page use
+    var $top_page_page_styles = false;
+    var $mid_page_page_styles = false;
+    var $bottom_page_page_styles = false;
+    var $top_page_reportbody_styles = false;
+    var $mid_page_reportbody_styles = false;
+    var $bottom_page_reportbody_styles = false;
 
 	function __construct ()
 	{
@@ -203,6 +216,12 @@ class reportico_report_pdf extends reportico_report
 						$this->abs_paging_width($this->query->get_attribute("RightMargin"));
 		$this->abs_left_margin = $this->abs_paging_width($this->query->get_attribute("LeftMargin"));
 		$this->abs_print_width =  $this->abs_right_margin - $this->abs_left_margin;
+		$this->abs_row_left_margin = $this->abs_left_margin;
+		$this->abs_col_left_margin = $this->abs_left_margin;
+		$this->abs_row_right_margin = $this->abs_right_margin;
+		$this->abs_col_right_margin = $this->abs_right_margin;
+		$this->abs_row_width = $this->abs_print_width;
+		$this->abs_columns_width = $this->abs_print_width;
 
         // Set up default styles
         $this->stylestack = array(
@@ -227,6 +246,7 @@ class reportico_report_pdf extends reportico_report
                 "height" => array( 0 => false ),
                 "width" => array( 0 => false ),
                 "background-image" => array( 0 => false ),
+                "type" => array( 0 => "BASE" ),
                );
 
 
@@ -283,6 +303,80 @@ class reportico_report_pdf extends reportico_report
 		$this->document->SetAuthor('Reportico');
 		$this->document->SetTitle($this->reporttitle);
 
+        //$this->calculateColumnMetrics();
+
+    }
+
+    function calculateColumnMetrics()
+    {
+        // Report Body start s a left margin with full width
+        $this->query->output_reportbody_styles["style_start"] = $this->abs_left_margin;
+        $this->query->output_reportbody_styles["style_width"] = $this->abs_print_width;
+        $margin =  $this->extract_style_tags ( "EACHLINE", $this->query->output_reportbody_styles, "margin", "left" );
+        $padding =  $this->extract_style_tags ( "EACHLINE", $this->query->output_reportbody_styles, "padding", "left" );
+        $margin_left = $this->abs_metric($margin);
+        $padding_left = $this->abs_metric($padding);
+
+        $this->top_page_reportbody_styles = $this->query->output_reportbody_styles;
+        $this->mid_page_reportbody_styles = $this->query->output_reportbody_styles;
+        $this->bottom_page_reportbody_styles = $this->query->output_reportbody_styles;
+
+        $this->remove_style_tags( "REPDETTOPPAGE", $this->top_page_reportbody_styles, "margin", "bottom");
+        $this->remove_style_tags( "REPDETMIDPAGE", $this->mid_page_reportbody_styles, "margin", "top");
+        $this->remove_style_tags( "REPDETMIDPAGE", $this->mid_page_reportbody_styles, "margin", "bottom");
+        $this->remove_style_tags( "REPDETBOTPAGE", $this->bottom_page_reportbody_styles, "margin", "top");
+        $this->remove_style_tags( "REPDETTOPPAGE", $this->top_page_reportbody_styles, "border-width", "bottom");
+        $this->remove_style_tags( "REPDETMIDPAGE", $this->mid_page_reportbody_styles, "border-width", "top");
+        $this->remove_style_tags( "REPDETMIDPAGE", $this->mid_page_reportbody_styles, "border-width", "bottom");
+        $this->remove_style_tags( "REPDETBOTPAGE", $this->bottom_page_reportbody_styles, "border-width", "top");
+        $this->remove_style_tags( "REPDETTOPPAGE", $this->top_page_reportbody_styles, "padding", "bottom");
+        $this->remove_style_tags( "REPDETMIDPAGE", $this->mid_page_reportbody_styles, "padding", "top");
+        $this->remove_style_tags( "REPDETMIDPAGE", $this->mid_page_reportbody_styles, "padding", "bottom");
+        $this->remove_style_tags( "REPDETBOTPAGE", $this->bottom_page_reportbody_styles, "padding", "top");
+
+
+        // Report Page starts from report body mrgin + padding
+        $this->query->output_page_styles["style_start"] = $this->abs_left_margin + $margin_left + $padding_left;
+        $this->query->output_page_styles["style_width"] = $this->abs_print_width - ( $margin_left + $padding_left );
+
+        // Create Page top bottom and mid styles
+        $margin =  $this->extract_style_tags ( "EACHLINE", $this->query->output_page_styles, "margin", "left" );
+        $padding =  $this->extract_style_tags ( "EACHLINE", $this->query->output_page_styles, "padding", "left" );
+        $margin_left = $this->abs_metric($margin);
+        $padding_left = $this->abs_metric($padding);
+
+        $this->top_page_page_styles = $this->query->output_page_styles;
+        $this->mid_page_page_styles = $this->query->output_page_styles;
+        $this->bottom_page_page_styles = $this->query->output_page_styles;
+
+        $this->remove_style_tags( "REPDETTOPPAGE", $this->top_page_page_styles, "margin", "bottom");
+        $this->remove_style_tags( "REPDETMIDPAGE", $this->mid_page_page_styles, "margin", "top");
+        $this->remove_style_tags( "REPDETMIDPAGE", $this->mid_page_page_styles, "margin", "bottom");
+        $this->remove_style_tags( "REPDETBOTPAGE", $this->bottom_page_page_styles, "margin", "top");
+        $this->remove_style_tags( "REPDETTOPPAGE", $this->top_page_page_styles, "border-width", "bottom");
+        $this->remove_style_tags( "REPDETMIDPAGE", $this->mid_page_page_styles, "border-width", "top");
+        $this->remove_style_tags( "REPDETMIDPAGE", $this->mid_page_page_styles, "border-width", "bottom");
+        $this->remove_style_tags( "REPDETBOTPAGE", $this->bottom_page_page_styles, "border-width", "top");
+        $this->remove_style_tags( "REPDETTOPPAGE", $this->top_page_page_styles, "padding", "bottom");
+        $this->remove_style_tags( "REPDETMIDPAGE", $this->mid_page_page_styles, "padding", "top");
+        $this->remove_style_tags( "REPDETMIDPAGE", $this->mid_page_page_styles, "padding", "bottom");
+        $this->remove_style_tags( "REPDETBOTPAGE", $this->bottom_page_page_styles, "padding", "top");
+
+        // Report Page starts from report body mrgin + padding
+        $this->query->output_row_styles["style_start"] = $this->query->output_page_styles["style_start"] + $margin_left + $padding_left;
+        $this->query->output_row_styles["style_width"] = $this->query->output_page_styles["style_width"] - ( $margin_left + $padding_left );
+        if ( $this->query->output_page_styles )
+        {
+            $margin =  $this->extract_style_tags ( "EACHLINE", $this->query->output_page_styles, "margin", "left" );
+            $padding =  $this->extract_style_tags ( "EACHLINE", $this->query->output_page_styles, "padding", "left" );
+            $margin_left = $this->abs_metric($margin);
+            $padding_left = $this->abs_metric($padding);
+            if ( $margin_left )
+                $this->abs_col_left_margin += $margin_left;
+            if ( $padding_left )
+                $this->abs_col_left_margin += $padding_left;
+        }
+
 		// Calculate column print and width poistions based on the column start attributes
 		$looping = true;
 
@@ -300,7 +394,6 @@ class reportico_report_pdf extends reportico_report
 			else
 				$col->abs_column_width = 0;
 		}
-
 
 		while ( $looping )
 		{
@@ -358,7 +451,7 @@ class reportico_report_pdf extends reportico_report
 						{
 							if ( !$frompos )
 							{
-								$col->abs_column_start = $this->abs_left_margin;
+								$col->abs_column_start = $this->abs_col_left_margin;
 								$frompos = $col->abs_column_start;
 								$fromkey = $k;
 							}
@@ -384,7 +477,7 @@ class reportico_report_pdf extends reportico_report
 			if ( !$topos )
 			{
 				$calctoend = true;
-				$topos =  $this->abs_right_margin;
+				$topos =  $this->abs_col_right_margin;
 			}
 
 			$totwidth = $topos - $frompos;
@@ -447,10 +540,11 @@ class reportico_report_pdf extends reportico_report
             //// No PDF data found just return
             //return;
 		//}
-if ( $this->dbg )
-{
-die; 
-}
+//var_dump($this->stylestack);
+//if ( $this->dbg )
+//{
+//die; 
+//}
 		$this->document->SetDisplayMode("real");
 		//$this->document->pdf_close($this->document);
 		if ( $this->report_file )
@@ -675,7 +769,7 @@ die;
 
 	function format_custom_trailer(&$trailer_col, &$value_col) // PDF
 	{
-
+echo "CUSTOMTRAILER<BR>";
         // If this is the first custom trailer break a little
 		if ( !get_reportico_session_param("target_show_group_trailers") )
 			return;
@@ -690,11 +784,12 @@ die;
             {
                 if ( !$this->any_custom_trailers || $this->any_custom_trailers == "NONE")
                 {
-                    $this->unapply_style_tags($this->query->output_page_styles);
+                    //$this->unapply_style_tags( "CUSTRAILNOPAGE", $this->mid_page_page_styles);
+		            $this->current_line_height = 0;
 		            $this->draw_cell(0, 0, "",0,1);
 	                $this->end_line();
                     $this->group_header_start = $this->document->GetY();
-                    $this->apply_style_tags($this->query->output_page_styles);
+                    //$this->apply_style_tags( "CUSTRAILNOPAGE", $this->mid_page_page_styles);
                 }
                 $this->any_custom_trailers = "PP";
             }
@@ -706,7 +801,7 @@ die;
 
             $this->yjump = 2;
             // Fetch Group Header Label Start Column + display
-            $this->unapply_style_tags($this->query->output_page_styles);
+            //$this->unapply_style_tags( "DEFAULT", $this->mid_page_page_styles);
         
             // Display group header value
 
@@ -716,7 +811,7 @@ die;
             $wd = $this->abs_print_width;
             $styles = $this->fetch_cell_styles($tx);
             $just = "L";
-	        $this->apply_style_tags($styles);
+	        $this->apply_style_tags( "CUSTOMTRAILER", $styles);
             //if ( $this->draw_mode == "DRAW" )
             //{
 			   //$this->draw_cell_container($wd, $this->vsize + 4, $tx,"PBR",0,$just);
@@ -724,7 +819,7 @@ die;
             $link = false;
 //$this->debug2("CUSTOMTRAILER2".substr($tx, 0, 10)." ");
 			$this->draw_cell($wd, $this->vsize + 4, $tx,"PBF",0,$just, "T", $link);
-	        $this->unapply_style_tags($styles);
+	        $this->unapply_style_tags( "CUSTOMTRAILER", $styles);
 
             $this->end_line();
             //$this->draw_cell($group_data_width, $this->vsize, "");    // Blank cell to continue page breaking at this size
@@ -737,7 +832,7 @@ die;
             if ( $this->yjump )
                 $this->set_position(false, $y + $this->yjump);
 
-            $this->apply_style_tags($this->query->output_page_styles);
+            //$this->apply_style_tags( "DEFAULT", $this->mid_page_page_styles);
             $this->set_position($prevx, $prevy);
 //$this->debug2("CUSTOMTRAILER 5 ".$this->group_header_end." ");
 		}
@@ -819,6 +914,7 @@ die;
     //Cell with horizontal scaling if text is too wide
     function draw_cell($w,$h=0,$txt='',$implied_styles="PBF",$ln=0,$align='',$valign="T", $link='')
     {
+if ( preg_match("/^debug/", $txt ) ) $txt .= " ".round($this->document->GetY());
         // Set custom width
         $custom_width = end( $this->stylestack["width"]);
         if ( $custom_width )
@@ -831,7 +927,6 @@ die;
         if ( $custom_height )
         {
             $h = $this->abs_metric($custom_height, "height");
-echo "CH  $custom_height $h \n";
         }
 
         // Get margins and position
@@ -914,6 +1009,10 @@ echo "CH  $custom_height $h \n";
         $borderwidth = false;
         if ( strstr($implied_styles, "B") || $this->pdfDriver == "tcpdf" )
         {
+//if ( $txt == "oooo" )
+//{
+    //var_dump($this->stylestack);
+//}
             $borderedges = end( $this->stylestack["border-edges"]);
             $borderwidth = end( $this->stylestack["border-width"]);
             $border = end( $this->stylestack["border-style"]);
@@ -1062,7 +1161,7 @@ echo "CH  $custom_height $h \n";
             $preimageX = $this->document->GetX();
             $preimageY = $this->document->GetY();
 
-echo "$background_image, $custom_height $h <BR>";
+//echo "$background_image, $custom_height $h <BR>";
             $p = $this->draw_image($background_image, $this->document->GetX() + $leftmargin, $this->document->GetY() + $topmargin, $cellvaluewidth, $h);
             
 //echo "$last_draw_end_y $storeY $background_image ".$p."<BR>";
@@ -1095,6 +1194,7 @@ echo "$background_image, $custom_height $h <BR>";
 //echo "set pad $leftpad, $toppad, $rightpad, $bottompad<BR>";
 //echo "set cel $leftmargin, $topmargin, $rightmargin, $bottommargin<BR>";
             $this->document->SetCellMargins($leftmargin, $topmargin, $rightmargin, $bottommargin);
+if ( preg_match("/^debug/", $txt ) ) $txt .= " ".round($this->document->GetY());
             //if ( $borderwidth ) $this->document->setLineWidth($borderwidth);
             $cellborder = false;
             if ( $borderedges )
@@ -1123,11 +1223,13 @@ echo "$background_image, $custom_height $h <BR>";
             }
                                             
         }
+if ( preg_match("/^debug/", $txt ) ) $txt .= " $topmargin ".round($this->document->GetY());
     
         if ( $background_image )
             $ht= $this->draw_multicell($actcellvaluewidth,$h,$txt,$cellborder,$align,false,$link);
         else
             $ht= $this->draw_multicell($actcellvaluewidth,$h,$txt,$cellborder,$align,$fill,$link);
+if ( preg_match("/^debug/", $txt ) ) $txt .= " ".round($this->document->GetY());
         if ( $borderwidth ) $this->document->setLineWidth($oldLineWidth);
         $text_cell_height = $this->document->GetY() - $cellvaluefromy;
 //echo "got $actcellvaluewidth x $toppad $bottompad $ht $txt $text_cell_height<BR>";
@@ -1152,6 +1254,7 @@ echo "$background_image, $custom_height $h <BR>";
             $this->draw_multicell($rightpad,$cell_height,"",$tmpborder1,$align,$fill,$link);
             if ( $borderwidth ) $this->document->setLineWidth($oldLineWidth);
         }
+if ( preg_match("/^debug/", $txt ) ) $txt .= " ".round($this->document->GetY());
 
         // Bottom Padding
         if ( $bottompad && $this->pdfDriver == "fpdf" )
@@ -1228,12 +1331,12 @@ echo "$background_image, $custom_height $h <BR>";
 
 	function format_page_footer_start() // PDF
 	{
-	    //$this->unapply_style_tags($this->query->output_page_styles);
+	    //$this->unapply_style_tags( "DEFAULT", $this->mid_page_page_styles);
     }
 
 	function format_page_footer_end() // PDF
 	{
-	    //$this->unapply_style_tags($this->query->output_reportbody_styles);
+	    //$this->unapply_style_tags( "DEFAULT", $this->query->output_reportbody_styles);
     }
 
 	function format_page_header_start() // PDF
@@ -1255,14 +1358,14 @@ echo "$background_image, $custom_height $h <BR>";
         }
 
         //$this->set_default_styles();
-	    //$this->apply_style_tags($this->query->output_reportbody_styles);
+	    //$this->apply_style_tags( "DEFAULT", $this->query->output_reportbody_styles);
 		return;
 	}
 
 	function format_page_header_end() // PDF
 	{
 		$this->end_line();
-	    //$this->apply_style_tags($this->query->output_page_styles);
+	    //$this->apply_style_tags( "DEFAULT", $this->mid_page_page_styles);
 		//$this->end_line();
 	}
 
@@ -1311,6 +1414,7 @@ echo "$background_image, $custom_height $h <BR>";
 	function format_group_header_start() // PDF
 	{
 //$this->debug2("GROUP HEADER START $this->inOverflow<BR>");
+ echo "GROUP HEADER START $this->inOverflow<BR>";
         if ( session_request_item("target_style", "TABLE" ) == "FORM" )
             return;
         $this->inGroupOutput = true;
@@ -1349,9 +1453,16 @@ echo "$background_image, $custom_height $h <BR>";
 //$this->debug2("GROUP HEADER END $this->inOverflow<BR>");
         $this->set_position(false, $this->group_header_end);
 //$this->debug2("group header end ".$this->document->Gety()."<BR>");
-		$this->end_line();
-		$this->end_line(2);
+	    //$this->draw_cell($group_data_width, $this->vsize, "$this->current_line_height");    // Blank cell to continue page breaking at this size
+		//$this->end_line();
+        $this->current_cell_height = 0;
+$this->draw_cell(600, $this->vsize, "");    // Blank cell to continue page breaking at this size
+		//$this->end_line();
+		//$this->end_line();
+		//$this->end_line(2);
         $this->inGroupOutput = false;
+//$this->draw_cell(600, $this->vsize, "AFTER GROUP HEADER END");
+		//$this->end_line();
 	}
 
 	function format_group_trailer_start($first=false) // PDF
@@ -1361,7 +1472,7 @@ echo "$background_image, $custom_height $h <BR>";
         // Tiny padding between group trailers and bofy detail so cell border doesnt overwrite heading underline
         if ( $first )
 		    $this->end_line(1);
-        $this->apply_style_tags($this->query->output_group_trailer_styles);
+        $this->apply_style_tags( "GROUPTRAILER", $this->query->output_group_trailer_styles);
 //echo "pplay GT<BR>";
 //var_dump($this->stylestack["border-edges"]);
 
@@ -1371,7 +1482,7 @@ echo "$background_image, $custom_height $h <BR>";
 	function format_group_trailer_end() // PDF
 	{
 //$this->debug2("GROUP TRAILER END DONE $this->inOverflow<BR>");
-        $this->unapply_style_tags($this->query->output_group_trailer_styles);
+        $this->unapply_style_tags( "GROUPTRAILER", $this->query->output_group_trailer_styles);
 //$this->debug2("GROUP TRAILER END DONE2 $this->inOverflow<BR>");
 		return;
 	}
@@ -1452,7 +1563,7 @@ echo "$background_image, $custom_height $h <BR>";
 		        $prevy = $this->document->GetY();
                 $this->yjump = 2;
                 // Fetch Group Header Label Start Column + display
-                $this->unapply_style_tags($this->query->output_page_styles);
+                //$this->unapply_style_tags( "DEFAULT", $this->mid_page_page_styles);
         
                 // Display group header value
 
@@ -1464,7 +1575,7 @@ echo "$background_image, $custom_height $h <BR>";
                 $tx = $this->reportico_string_to_php($tx);
                 $tx = reportico_assignment::reportico_meta_sql_criteria($this->query, $tx);
                 $just = "L";
-	            $this->apply_style_tags($styles);
+	            $this->apply_style_tags( "GROUPHEADER", $styles);
                 //if ( $this->draw_mode == "DRAW" )
                 //{
 				    //$this->draw_cell_container($wd, $this->vsize + 4, $tx,"PBR",0,$just);
@@ -1472,7 +1583,7 @@ echo "$background_image, $custom_height $h <BR>";
                 $link = false;
 //$this->debug2("GROUP HEADER CUSTOM DRAW $tx $this->inOverflow<BR>");
 				$this->draw_cell($wd, $this->vsize + 4, $tx,"PBF",0,$just, "T", $link);
-	            $this->unapply_style_tags($styles);
+	            $this->unapply_style_tags( "GROUPHEADER", $styles);
 
                 $this->end_line();
                 //$this->draw_cell($group_data_width, $this->vsize, "");    // Blank cell to continue page breaking at this size
@@ -1485,7 +1596,7 @@ echo "$background_image, $custom_height $h <BR>";
                 if ( $this->yjump )
                     $this->set_position(false, $y + $this->yjump);
 
-                $this->apply_style_tags($this->query->output_page_styles);
+                //$this->apply_style_tags( "DEFAULT", $this->mid_page_page_styles);
                 $this->set_position($prevx, $prevy);
 //echo "format custom header".$this->document->GetY()." ".$this->group_header_end."<BR>";
                 continue;
@@ -1517,28 +1628,32 @@ echo "$background_image, $custom_height $h <BR>";
 		    $group_label_width = $group_data_xpos - 5;
 		    $group_data_width = $this->abs_right_margin - $group_data_xpos;
 
-            if ( session_request_item("target_style", "TABLE" ) != "FORM" )
-                $this->unapply_style_tags($this->query->output_page_styles);
+            //if ( session_request_item("target_style", "TABLE" ) != "FORM" )
+                //$this->unapply_style_tags( "DEFAULT", $this->mid_page_page_styles);
 
             if ( session_request_item("target_style", "TABLE" ) != "FORM" )
-	            $this->apply_style_tags($this->query->output_group_header_label_styles);
+	            $this->apply_style_tags( "HEADERLABEL", $this->query->output_group_header_label_styles);
 		    $this->set_position($group_xpos, $y);
 		    $padstring = $group_label;
 		    $this->draw_cell( $group_label_width, $this->vsize, "$padstring");
             if ( session_request_item("target_style", "TABLE" ) != "FORM" )
-	            $this->unapply_style_tags($this->query->output_group_header_label_styles);
+	            $this->unapply_style_tags( "HEADERLABEL", $this->query->output_group_header_label_styles);
 		    $this->set_position($group_data_xpos, $y);
     
             // Display group header value
 		    $contenttype = $col->derive_attribute( "content_type",  $col->query_name);
             if ( session_request_item("target_style", "TABLE" ) != "FORM" )
-	            $this->apply_style_tags($this->query->output_group_header_value_styles);
+	            $this->apply_style_tags( "HEADERVALUE", $this->query->output_group_header_value_styles);
 
 			$qn = get_query_column($col->query_name, $this->query->columns ) ;
 		    if ( $contenttype == "graphic"  || preg_match("/imagesql=/", $qn->column_value))
 		    {
                 if ( $this->draw_mode == "CALCULATE" )
+                {
+                    if ( session_request_item("target_style", "TABLE" ) != "FORM" )
+	                    $this->unapply_style_tags( "HEADERVALUE", $this->query->output_group_header_value_styles);
                     continue;
+                }
 
 			    $qn = get_query_column($col->query_name, $this->query->columns ) ;
 			    $sql = @preg_replace("/.*imagesql=/", "", $qn->column_value);
@@ -1581,9 +1696,9 @@ echo "$background_image, $custom_height $h <BR>";
 			    $this->draw_cell($group_data_width, $this->vsize, "$padstring");
 		    }
             if ( session_request_item("target_style", "TABLE" ) != "FORM" )
-	            $this->unapply_style_tags($this->query->output_group_header_value_styles);
+	            $this->unapply_style_tags( "HEADERVALUE", $this->query->output_group_header_value_styles);
 		    $this->end_line();
-		    $this->draw_cell($group_data_width, $this->vsize, "");    // Blank cell to continue page breaking at this size
+		    $this->draw_cell($group_data_width + 200, $this->vsize, "");    // Blank cell to continue page breaking at this size
 		    $y = $this->document->GetY();
 
             // Store where group header reaches so we know where to start printing after row
@@ -1593,8 +1708,8 @@ echo "$background_image, $custom_height $h <BR>";
 		    if ( $this->yjump )
 			    $this->set_position(false, $y + $this->yjump);
 
-            if ( session_request_item("target_style", "TABLE" ) != "FORM" )
-	            $this->apply_style_tags($this->query->output_page_styles);
+            //if ( session_request_item("target_style", "TABLE" ) != "FORM" )
+	            //$this->apply_style_tags( "DEFAULT", $this->mid_page_page_styles);
         }
 //echo "format grup header".$this->document->GetY()." ".$this->group_header_end."<BR>";
 	}
@@ -1723,9 +1838,38 @@ echo "$background_image, $custom_height $h <BR>";
         return $h;
     }
 
+    /*
+     * Apply styles to report detail block
+     */
+	function format_report_detail_start() // PDF
+	{
+echo "REPORT DETAIL START<BR>";
+		reportico_report::format_report_detail_start();
+
+
+        // Top wrapper
+//var_dump($this->query->output_page_styles);
+//var_dump($this->top_page_page_styles);
+//var_dump($this->mid_page_page_styles);
+//var_dump($this->bottom_page_page_styles);
+//die;
+    }
+
+    /*
+     * Apply styles to report detail block
+     */
+	function format_report_detail_end()
+	{
+echo "REPORT DETAIL END<BR>";
+		reportico_report::format_report_detail_end();
+//$this->draw_cell(600, $this->vsize, "debugUNAPPLIED Report BLOCK");    // Blank cell to continue page breaking at this size
+        //$this->unapply_style_tags( "REPDETMIDPAGE2", $this->mid_page_page_styles);
+//$this->draw_cell(600, $this->vsize, "debugUNAPPLIED Report BLOCK");    // Blank cell to continue page breaking at this size
+    }
+
+
 	function format_headers() // PDF
 	{
-//$this->debug2("format HEADERS $this->inGroupOutput $this->inOverflow  header".$this->document->GetY()."<BR>");
         if ( $this->inOverflow )
             return;
 
@@ -1737,27 +1881,41 @@ echo "$background_image, $custom_height $h <BR>";
         $this->draw_mode = "CALCULATE";
 		foreach ( $this->columns as $w )
 		{
-            $this->apply_style_tags($this->query->output_header_styles);
+            $this->apply_style_tags( "HEADERS", $this->query->output_header_styles);
             $this->format_column_header($w);
-            $this->unapply_style_tags($this->query->output_header_styles);
+            $this->unapply_style_tags( "HEADERS", $this->query->output_header_styles);
        	}
+
    		$this->draw_mode = "DRAW";
         $this->check_page_overflow();
+
+        // Page Styles
+        $this->new_report_page_line_by_style("REPTOPPAGE", $this->top_page_page_styles, true);
+        $this->apply_style_tags( "EACHHEADMID", $this->mid_page_page_styles, false, false, "ROW");
+        $this->new_report_page_line_by_style("LINE5PAGE", $this->mid_page_page_styles, true);
+        $this->new_report_page_line_by_style("LINE5PAGE", $this->mid_page_page_styles, false);
+        $this->new_report_page_line_by_style("LINE5PAGE", $this->mid_page_page_styles, false);
+
 		foreach ( $this->columns as $w )
         {
-            $this->apply_style_tags($this->query->output_header_styles);
+            $this->apply_style_tags( "HEADERS", $this->query->output_header_styles);
             $this->format_column_header($w);
-            $this->unapply_style_tags($this->query->output_header_styles);
+            $this->unapply_style_tags( "HEADERS", $this->query->output_header_styles);
         }
-		$this->end_line();
-        $this->unapply_style_tags($this->query->output_page_styles);
-		$this->draw_cell(5, $this->vsize, "");    // Blank cell to continue page breaking at this size
-        $this->apply_style_tags($this->query->output_page_styles);
+        $this->current_line_height = 0;
 
-        // Tiny padding between column headers and rows so cell border doesnt overwrite heading underline
+        // Page Styles
+        $this->unapply_style_tags( "EACHHEADMID", $this->mid_page_page_styles);
+
+
+	    $this->unapply_style_tags( "PAGEBODY", $this->query->output_reportbody_styles);
         $this->current_line_height = 0;
         $this->max_line_height = 0;
-		$this->end_line(1);
+		$this->end_line();
+		$this->draw_cell(5, $this->vsize, "HHHHH");    // Blank cell to continue page breaking at this size
+	    $this->apply_style_tags( "PAGEBODY", $this->query->output_reportbody_styles);
+
+        // Tiny padding between column headers and rows so cell border doesnt overwrite heading underline
 	}
 
     function showXY($txt = "")
@@ -1850,8 +2008,8 @@ echo "$background_image, $custom_height $h <BR>";
 
                 $this->allcell_styles = array("border-edges" => "");
                 $this->cell_styles = array("border-edges" => "");
-			    $this->apply_style_tags($this->query->output_allcell_styles, false, false, "ALLCELLS");
-			    $this->apply_style_tags($column_item->output_cell_styles, false, false, "CELLS");
+			    $this->apply_style_tags( "COLUMNALL", $this->query->output_allcell_styles, false, false, "ALLCELLS");
+			    $this->apply_style_tags( "COLUMNCELL", $column_item->output_cell_styles, false, false, "CELLS");
                 $this->apply_row_border_to_cell ();
                 if ( $this->draw_mode == "DRAW" )
                 {
@@ -1861,8 +2019,8 @@ echo "$background_image, $custom_height $h <BR>";
                 if ( $column_item->output_hyperlinks )
                     $link = $column_item->output_hyperlinks["url"];
 				$this->draw_cell($wd, $this->max_line_height, $k,"P",0,$just, "T", $link);
-			    $this->unapply_style_tags($column_item->output_cell_styles);
-			    $this->unapply_style_tags($this->query->output_allcell_styles);
+			    $this->unapply_style_tags( "COLUMNCELL", $column_item->output_cell_styles);
+			    $this->unapply_style_tags( "COLUMNALL", $this->query->output_allcell_styles);
 				$tw = $this->abs_page_width - $this->abs_right_margin;
 			}
 		}
@@ -1914,9 +2072,284 @@ echo "$background_image, $custom_height $h <BR>";
             }
         }
     }
-        
-    function apply_style_tags ( $styleset, $parent_styleset = false, $grandparent_styleset = false, $apply_type = false )
+
+    function remove_style_tags ( $type, &$work_styleset, $want, $bit )
     {
+//echo $type." $want $bit<BR>";
+//var_dump($work_styleset);
+        if ( $work_styleset && is_array($work_styleset) )
+        {
+            foreach ( $work_styleset as $k => $v )
+            {
+                if ( $k != $want )
+                    continue;
+            
+                if ( $k == "margin" || $k == "padding" || $k == "border-width" )
+                {
+                    $tmp = array ( 0 => 0, 1 => 0, 2 => 0, 3 => 0);
+                    //$ar = explode ( ",", preg_replace("/[^0-9]+/", ",", $v));
+                    $ar = explode ( " ", $v);
+                    if ( $ar )
+                        if ( count($ar) == 1 && $ar[0] > 0 ) 
+                        {
+                            $tmp[0] = $tmp[1] = $tmp[2] = $tmp[3] = $ar[0];
+                        }
+                        else if ( count($ar) == 2 )
+                        {
+                            $tmp[0] = $tmp[2] = $ar[1];
+                            $tmp[1] = $tmp[3] = $ar[2];
+                        }
+                        else if ( count($ar) == 3 )
+                        { $tmp[0] = "0mm"; $tmp[1] = $ar[1];
+                            $tmp[2] = $ar[2];
+                            $tmp[3] = $ar[2];
+                        }
+                        else if ( count($ar) == 4 )
+                        {
+                            $tmp[0] = $ar[0];
+                            $tmp[1] = $ar[1];
+                            $tmp[2] = $ar[2];
+                            $tmp[3] = $ar[3];
+                        }
+                     if ( $bit == "top" ) $tmp[0] = "0";
+                     if ( $bit == "right" ) $tmp[1] = "0";
+                     if ( $bit == "bottom" ) $tmp[2] = "0";
+                     if ( $bit == "left" ) $tmp[3] = "0";
+                     $work_styleset[$k] = $tmp[0]." ".$tmp[1]." ".$tmp[2]." ".$tmp[3];
+                }
+                if ( $k == "margin-top" )
+                {
+                    unset($work_styleset[$k]);
+                }
+                if ( $k == "position" )
+                {
+                    unset($work_styleset[$k]);
+                }
+            }
+        }
+//echo "REMOVED: $type ";
+//var_dump($work_styleset);
+    }
+
+    function extract_style_tags ( $type, $styleset, $want, $bit )
+    {
+        $work_styleset =& $styleset;
+
+        if ( $work_styleset && is_array($work_styleset) )
+        {
+            foreach ( $work_styleset as $k => $v )
+            {
+                if ( $k != $want )
+                    continue;
+            
+                if ( isset ( $this->stylestack[$k] ) )
+                {
+                    if ( $k == "margin" )
+                    {
+                        $tmp = array ( 0 => 0, 1 => 0, 2 => 0, 3 => 0);
+                        //$ar = explode ( ",", preg_replace("/[^0-9]+/", ",", $v));
+                        $ar = explode ( " ", $v);
+                        if ( $ar )
+                            if ( count($ar) == 1 && $ar[0] > 0 ) 
+                            {
+                                $tmp[0] = $tmp[1] = $tmp[2] = $tmp[3] = $ar[0];
+                            }
+                            else if ( count($ar) == 2 )
+                            {
+                                $tmp[0] = $tmp[2] = $ar[1];
+                                $tmp[1] = $tmp[3] = $ar[2];
+                            }
+                            else if ( count($ar) == 3 )
+                            {
+                                $tmp[0] = $ar[0];
+                                $tmp[1] = $ar[1];
+                                $tmp[2] = $ar[2];
+                            }
+                            else if ( count($ar) == 4 )
+                            {
+                                $tmp[0] = $ar[0];
+                                $tmp[1] = $ar[1];
+                                $tmp[2] = $ar[2];
+                                $tmp[3] = $ar[3];
+                            }
+                        if ( $bit == "top" ) return $tmp[0];
+                        if ( $bit == "left" ) return $tmp[3];
+                        if ( $bit == "right" ) return $tmp[1];
+                        if ( $bit == "bottom" ) return $tmp[2];
+                        return $tmp;
+                    }
+
+                    if ( $k == "padding" )
+                    {
+                        $tmp = array ( 0 => 0, 1 => 0, 2 => 0, 3 => 0);
+                        //$ar = explode ( ",", preg_replace("/[^0-9]+/", ",", $v));
+                        $ar = explode ( " ", $v);
+                        if ( $ar )
+                            if ( count($ar) == 1 && $ar[0] > 0 ) 
+                            {
+                                $tmp[0] = $tmp[1] = $tmp[2] = $tmp[3] = $ar[0];
+                            }
+                            else if ( count($ar) == 2 )
+                            {
+                                $tmp[0] = $tmp[2] = $ar[1];
+                                $tmp[1] = $tmp[3] = $ar[2];
+                            }
+                            else if ( count($ar) == 3 )
+                            {
+                                $tmp[0] = $ar[0];
+                                $tmp[1] = $ar[1];
+                                $tmp[2] = $ar[2];
+                            }
+                            else if ( count($ar) == 4 )
+                            {
+                                $tmp[0] = $ar[0];
+                                $tmp[1] = $ar[1];
+                                $tmp[2] = $ar[2];
+                                $tmp[3] = $ar[3];
+                            }
+                        if ( $bit == "top" ) return $tmp[0];
+                        if ( $bit == "left" ) return $tmp[3];
+                        if ( $bit == "right" ) return $tmp[1];
+                        if ( $bit == "bottom" ) return $tmp[2];
+                        return $tmp;
+                    }
+
+                    if ( $k == "border-width" )
+                    {
+                        $tmp = "";
+                        $v = preg_replace("/px/", "", trim($v));
+                        //$ar = explode ( ",", preg_replace("/[^0-9]+/", ",", $v));
+                        $ar = explode ( " ", $v);
+                        $borderwidth = 0;
+                        if ( $ar )
+                        {
+                            foreach ( $ar as $vv )
+                            {
+                                if ( substr($vv, 0, 1) != "0" )
+                                {
+                                    $borderwidth = $vv;
+                                    break;
+                                }
+                            }
+                            if ( count($ar) == 1 && $ar[0] > 0 ) 
+                            {
+                                $tmp = "LBTR";
+                            }
+                            else if ( count($ar) == 2 )
+                            {
+                                if ( $ar[0] > 0 ) $tmp .= "TB";
+                                if ( $ar[1] > 0 ) $tmp .= "LR";
+                            }
+                            else if ( count($ar) == 3 )
+                            {
+                                if ( $ar[0] > 0 ) $tmp .= "T";
+                                if ( $ar[1] > 0 ) $tmp .= "R";
+                                if ( $ar[2] > 0 ) $tmp .= "B";
+                            }
+                            else if ( count($ar) == 4 )
+                            {
+                                if ( $ar[0] > 0 ) $tmp .= "T";
+                                if ( $ar[1] > 0 ) $tmp .= "R";
+                                if ( $ar[2] > 0 ) $tmp .= "B";
+                                if ( $ar[3] > 0 ) $tmp .= "L";
+                            }
+                        }
+                        $borderedges = $tmp;
+                        $v = $borderwidth;
+                        if ( $apply_type == "ROW" )
+                        {
+                            $this->row_styles["border-width"] = $borderwidth;
+                            $this->row_styles["border-edges"] = $v;
+                        }
+                        if ( $apply_type == "ALLCELLS" )
+                        {
+                            $this->allcell_styles["border-width"] = $borderwidth;
+                            $this->allcell_styles["border-edges"] = $v;
+                        }
+                        if ( $apply_type == "CELLS" )
+                        {
+                            $this->cell_styles["border-width"] = $borderwidth;
+                            $this->cell_styles["border-edges"] = $v;
+                        }
+                        array_push ( $this->stylestack["border-edges"], $borderedges);
+                    }
+                    if ( $k == "font-family" )
+                    {
+                        $this->document->SetFont($v);
+                    }
+                    if ( $k == "font-size" )
+                    {
+                        $sz = preg_replace("/[^0-9].*/", "", $v);
+                        $this->document->SetFontSize($sz);
+                        $v = $sz + $this->vspace;
+                        $this->vsize = $v;
+                    }
+                    if ( $k == "font-style" )
+                    {
+                        $currWeight = end( $this->stylestack["font-weight"]);
+                        $currFamily = end( $this->stylestack["font-family"]);
+                        $pdfStyle = "";
+                        switch ( $currWeight )
+                        {
+                            case "bold": $pdfStyle .= "B"; break;
+                            default: $pdfStyle .= "";
+                        }
+                        switch ( $v )
+                        {
+                            case "italic": $pdfStyle .= "I"; break;
+                            default: $pdfStyle .= "";
+                        }
+                        $this->document->SetFont($currFamily, $pdfStyle);
+                        //$v = $sz + $this->vspace;
+                        //$this->vsize = $v;
+                    }
+                    if ( $k == "font-weight" )
+                    {
+                        $currStyle = end( $this->stylestack["font-style"]);
+                        $currFamily = end( $this->stylestack["font-family"]);
+                        $pdfStyle = "";
+                            switch ( $v )
+                        {
+                            case "bold": $pdfStyle .= "B"; break;
+                            default: $pdfStyle .= "";
+                        }
+                        switch ( $currStyle )
+                        {
+                            case "italic": $pdfStyle .= "I"; break;
+                            default: $pdfStyle .= "";
+                        }
+                        $this->document->SetFont($currFamily, $pdfStyle);
+                        //$v = $sz + $this->vspace;
+                        //$this->vsize = $v;
+                    }
+                    if ( $k == "border-color" || $k == "color" || $k == "background-color" )
+                    {
+                        $v = htmltorgb($v);
+                        if ( $k == "border-color" )
+                            $this->document->SetDrawColor($v[0], $v[1], $v[2]);
+                        if ( $k == "color" )
+                        {
+                            $this->document->SetTextColor($v[0], $v[1], $v[2]);
+                        }
+                        if ( $k == "background-color" )
+                        {
+                            $this->document->SetFillColor($v[0], $v[1], $v[2]);
+                            array_push ( $this->stylestack["isfilling"], 1);
+                        }
+                    }
+
+                    array_push ( $this->stylestack[$k], $v);
+                }
+            }
+        }
+        //echo "&nbsp;&nbsp;APPLY: $type<BR> ";
+        //var_dump($this->stylestack["type"]);
+    }
+
+        
+    function apply_style_tags ( $type, $styleset, $parent_styleset = false, $grandparent_styleset = false, $apply_type = false, $applyto = false )
+    {
+        $styleset["type"] = $type;
         for ( $ct = 1; $ct < 4; $ct++ )
         {
             $work_styleset = false;
@@ -1931,6 +2364,10 @@ echo "$background_image, $custom_height $h <BR>";
             {
                 foreach ( $work_styleset as $k => $v )
                 {
+                    // Dont apply anything except the applyto specified
+                    if ( $applyto && $ct == 3 && $applyto != $k )
+                        continue;
+                
                     if ( isset ( $this->stylestack[$k] ) )
                     {
                         if ( $k == "margin" )
@@ -2082,8 +2519,8 @@ echo "$background_image, $custom_height $h <BR>";
                                 default: $pdfStyle .= "";
                             }
                             $this->document->SetFont($currFamily, $pdfStyle);
-                            $v = $sz + $this->vspace;
-                            $this->vsize = $v;
+                            //$v = $sz + $this->vspace;
+                            //$this->vsize = $v;
                         }
                         if ( $k == "font-weight" )
                         {
@@ -2101,8 +2538,8 @@ echo "$background_image, $custom_height $h <BR>";
                                 default: $pdfStyle .= "";
                             }
                             $this->document->SetFont($currFamily, $pdfStyle);
-                            $v = $sz + $this->vspace;
-                            $this->vsize = $v;
+                            //$v = $sz + $this->vspace;
+                            //$this->vsize = $v;
                         }
                         if ( $k == "border-color" || $k == "color" || $k == "background-color" )
                         {
@@ -2125,10 +2562,41 @@ echo "$background_image, $custom_height $h <BR>";
                 }
             }
         }
+        //echo "APPLY: $type ";
+if ( preg_match("/MIDPAGE/", $type) )
+        echo "&nbsp;&nbsp;APPLY: $type ";
+        //var_dump($this->stylestack["type"]);
+        //var_dump($this->stylestack["background-color"]);
     }
 
-    function unapply_style_tags ( $styleset, $parent_styleset = false, $grandparent_styleset = false, $type = "" )
+    function unapply_style_tags ( $type1, $styleset, $parent_styleset = false, $grandparent_styleset = false, $type = "", $applyto = false )
     {
+if ( !$type1 )
+{
+echo "<PRE>"; debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS); echo "</PRE>";
+die;
+}
+/*
+echo $type1;
+$val = $this->stylestack["type"][count($this->stylestack["type"]) -1 ];
+if ( $val != $type1 )
+{
+echo "<PRE>"; debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS); echo "</PRE>";
+echo " UNAPPLY $val = $type1 !!<BR>";
+    echo "DIFFERENT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!<BR>";
+}
+//if ( count($this->stylestack["type"]) < 2 )
+//{
+//echo "<PRE>"; debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS); echo "</PRE>";
+//}
+if ( count($this->stylestack["type"]) == 3  && $this->stylestack["type"][2] == "REPDETMIDPAGE")
+{
+echo "YESSSSS<PRE>";
+    debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+echo "</PRE>";
+}
+*/
+        $styleset["type"] = $type;
         for ( $ct = 1; $ct < 4; $ct++ )
         {
             $work_styleset = false;
@@ -2143,6 +2611,10 @@ echo "$background_image, $custom_height $h <BR>";
             {
                 foreach ( $work_styleset as $k => $v )
                 {
+                    // Dont apply anything except the applyto specified
+                    if ( $applyto && $ct == 3 && $applyto != $k )
+                        continue;
+                
                     if ( isset ( $this->stylestack[$k] ) )
                     {
                         $value = array_pop ( $this->stylestack[$k] );
@@ -2179,8 +2651,8 @@ echo "$background_image, $custom_height $h <BR>";
                                 default: $pdfStyle .= "";
                             }
                             $this->document->SetFont($currFamily, $pdfStyle);
-                            $v = $sz + $this->vspace;
-                            $this->vsize = $v;
+                            //$v = $sz + $this->vspace;
+                            //$this->vsize = $v;
                         }
                         if ( $k == "font-weight" )
                         {
@@ -2198,8 +2670,8 @@ echo "$background_image, $custom_height $h <BR>";
                                 default: $pdfStyle .= "";
                             }
                             $this->document->SetFont($currFamily, $pdfStyle);
-                            $v = $sz + $this->vspace;
-                            $this->vsize = $v;
+                            //$v = $sz + $this->vspace;
+                            //$this->vsize = $v;
                         }
                         if ( $k == "font-size" )
                         {
@@ -2223,13 +2695,58 @@ echo "$background_image, $custom_height $h <BR>";
                 }
             }
         }
+        //echo "UNAPPLY: $type1 ";
+if ( preg_match("/MIDPAGE/", $type1) )
+        echo "&nbsp;&nbsp;UNAPPLY: $type1<BR> ";
+        //var_dump($this->stylestack["type"]);
+        //var_dump($this->stylestack["background-color"]);
+if ( !$this->stylestack["background-color"] )
+{
+echo "NOBACK!!<BR><PRE>";
+debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+echo "NOBACK!!<BR></PRE>";
+}
+    }
+
+    function new_report_page_line($txt = "")
+    {
+        $this->new_report_page_line_by_style("LINEBODY$txt", $this->mid_page_reportbody_styles, false);
+        $this->new_report_page_line_by_style("LINEPAGE$txt", $this->mid_page_page_styles, false);
+    }
+
+    function new_report_page_line_by_style($txt = "", &$styles, $blankline = false)
+    {
+        // Line page wrapper
+echo "NEW LINE $txt <BR>";
+
+        $this->apply_style_tags( "$txt", $styles);
+        $tw = $styles["style_start"];
+        $wd = $styles["style_width"];
+        $fs = $styles["style_width"];
+        $this->set_position($tw);
+        $this->current_line_height = 0;
+        $oldSize = $this->document->GetFontSizePt();
+        $this->document->SetFontSize(0);
+        $this->draw_cell($wd, $this->max_line_height, "nl $txt $this->max_line_height");    // Blank cell to continue page breaking at this size
+        if ( $blankline )
+		    $this->end_line();
+        $this->document->SetFontSize($oldSize);
+        $this->unapply_style_tags( "$txt", $styles);
     }
 
 	function each_line($val) // PDF
 	{
 //$this->debug2(".");        
-		reportico_report::each_line($val);
+        if ( !$this->columns_calculated )
+        {
+            // Calulate position and width of column detail taking into account
+            // Report Body and Page styles
+            $this->calculateColumnMetrics();
+            $this->columns_calculated = true;
+        }
 
+
+		reportico_report::each_line($val);
         if ( session_request_item("target_style", "TABLE" ) == "FORM" )
         {
 		    $this->end_line();
@@ -2247,11 +2764,10 @@ echo "$background_image, $custom_height $h <BR>";
             $totheaderheight = 0;
             $prevheight = $this->calculated_line_height;
 
-            $this->apply_style_tags($this->query->output_before_form_row_styles);
+            $this->apply_style_tags( "ROW", $this->query->output_before_form_row_styles);
 		    $y = $this->document->GetY();
 		    $this->set_position($this->abs_left_margin, $y);
-		    $this->draw_cell(400, $this->vsize, "");    // Blank cell to continue page breaking at this size
-            $this->unapply_style_tags($this->query->output_before_form_row_styles);
+            $this->unapply_style_tags( "ROW", $this->query->output_before_form_row_styles);
 
 		    foreach ( $this->query->groups as $val )
             {
@@ -2285,11 +2801,11 @@ echo "$background_image, $custom_height $h <BR>";
             else
             {
                 $this->end_line();
-                $this->apply_style_tags($this->query->output_after_form_row_styles);
+                $this->apply_style_tags( "AFTERFORMROW", $this->query->output_after_form_row_styles);
 		        $y = $this->document->GetY();
 		        $this->set_position($this->abs_left_margin, $y);
-		        $this->draw_cell($this->abs_right_margin - $this->abs_left_margin, $this->vsize, "");    // Blank cell to continue page breaking at this size
-                $this->unapply_style_tags($this->query->output_after_form_row_styles);
+		        $this->draw_cell($this->abs_right_margin - $this->abs_left_margin, $this->vsize, "RR");    // Blank cell to continue page breaking at this size
+                $this->unapply_style_tags( "AFTERFORMROW", $this->query->output_after_form_row_styles);
                 $this->end_line();
 
             }
@@ -2299,37 +2815,44 @@ echo "$background_image, $custom_height $h <BR>";
 
 		$y = $this->document->GetY();
 		$this->check_graphic_fit();
+//$this->draw_cell(50, $this->vsize, "E");    // Blank cell to continue page breaking at this size
 		
 		$this->yjump = 0;
 		if ( $this->body_display == "show" && get_reportico_session_param("target_show_detail") )
 		{
             $this->row_styles = array();
-			$this->apply_style_tags($this->query->output_row_styles, false, false, "ROW");
+			$this->apply_style_tags( "ROW2", $this->query->output_row_styles, false, false, "ROW");
 
             $this->draw_mode = "CALCULATE";
             $this->no_columns_printed = 0;
             $this->no_columns_to_print = 0;
 			foreach ( $this->columns as $col )
 				$this->format_column($col);
-            $this->unapply_style_tags($this->query->output_row_styles);
+            $this->unapply_style_tags( "ROW2", $this->query->output_row_styles);
 
             $this->draw_mode = "DRAW";
 
             $this->check_page_overflow();
 
-			//$this->set_position($this->abs_left_margin, false);
-			//$this->draw_cell($this->abs_right_margin - $this->abs_left_margin, $this->calculated_line_height, "xx", 0, 0);
-			//$this->disable_style_tag($this->query->output_header_styles, "border-width");
-            $this->apply_style_tags($this->query->output_row_styles, false, false, "ROW");
-            
-            $this->no_columns_printed = 0;
-			foreach ( $this->columns as $col )
-            {
-				$this->format_column($col);
-            }
+            // Line page wrapper
+            $this->new_report_page_line_by_style("LINE2PAGE", $this->mid_page_page_styles, false);
 
-			$this->page_line_count++;
-            $this->unapply_style_tags($this->query->output_row_styles);
+            // Page Styles
+            $this->apply_style_tags( "EACHLINEMID", $this->mid_page_page_styles, false, false, "ROW");
+
+			    // Row Styles
+                $this->apply_style_tags( "ROW3", $this->query->output_row_styles, false, false, "ROW");
+            
+                $this->no_columns_printed = 0;
+			    foreach ( $this->columns as $col )
+			     $this->format_column($col);
+
+			    $this->page_line_count++;
+
+                $this->unapply_style_tags( "ROW3", $this->query->output_row_styles);
+
+            $this->unapply_style_tags( "EACHLINEMID", $this->mid_page_page_styles);
+
             $nextliney = $this->document->GetY() + $this->max_line_height;
 			$this->end_line();
             $this->set_position(false, $nextliney);
@@ -2361,14 +2884,15 @@ echo "$background_image, $custom_height $h <BR>";
             // Between page breaks store any current lin eparameters
             $prev_calculated_line_height = $this->calculated_line_height;
             $prev_max_line_height = $this->max_line_height;
+$this->debug2("--------------------new page", true);
 			$this->finish_page();
-//$this->debug2("--------------------throw page", true);
+$this->debug2("--------------------throw page", true);
 			$this->begin_page();
 			//$this->before_group_headers();
 			$this->page_line_count++;
             $this->calculated_line_height = $prev_calculated_line_height;
             $this->max_line_height = $prev_max_line_height;
-//$this->debug2("--------------------done page", true);
+$this->debug2("--------------------done page", true);
 		}
         $this->inOverflow = false;
     }
@@ -2434,7 +2958,7 @@ echo "$background_image, $custom_height $h <BR>";
 	}
 
 
-    function set_position( $x, $y )
+    function set_position( $x = false, $y = false )
     {
         if ( $this->draw_mode == "CALCULATE" )
             return;
@@ -2458,8 +2982,10 @@ echo "$background_image, $custom_height $h <BR>";
 
 	function begin_page()
 	{
+echo "<BR>PAGE START<BR>";
+//echo "BP<BR>";
+//var_dump($this->stylestack);
 		reportico_report::begin_page();
-
 
 //echo "begin page<BR>";
 		$this->debug2("<BR>Begin PAGE<BR>");
@@ -2471,10 +2997,12 @@ echo "$background_image, $custom_height $h <BR>";
 
 		$font = $this->document->SetFont($this->fontName, "I", 24);
 		$font = $this->document->SetFontSize($this->vsize);
+
 		$this->set_position($this->abs_left_margin, $this->abs_top_margin);
         $this->current_line_start_y = $this->document->GetY();
 
-	    $this->apply_style_tags($this->query->output_reportbody_styles);
+//$this->draw_cell(600, $this->vsize, "debug BEGIN PAGE $this->vsize");    // Blank cell to continue page breaking at this size
+	    $this->apply_style_tags( "PAGEBODY", $this->query->output_reportbody_styles);
 
 
         // Page Headers
@@ -2487,18 +3015,30 @@ echo "$background_image, $custom_height $h <BR>";
         // Page Footers
 		$this->page_footers();
 		//$this->document->SetAutoPageBreak(true, $this->abs_page_height - $this->abs_bottom_margin );
-	    $this->apply_style_tags($this->query->output_page_styles);
+
+        // PPP TEMP
+	    //$this->apply_style_tags( "DEFAULT", $this->mid_page_page_styles);
 		$this->set_position($prevx, $this->page_header_end_y  );
+
 //echo "afer throw pos ".$this->document->Gety()."<BR>";
 		$this->group_header_start = 0;
         $this->group_header_end = 0;
+echo "GOGOGOG<BR>";
 	}
 
 	function finish_page()
 	{
 		$this->debug("Finish Page");
-	    $this->unapply_style_tags($this->query->output_page_styles);
-	    $this->unapply_style_tags($this->query->output_reportbody_styles);
+
+        // if page styles on turn them off
+        if ( $this->detail_started )
+        {
+            $this->format_report_detail_end();
+        }
+
+	    //PPP$this->unapply_style_tags( "DEFAULT", $this->mid_page_page_styles);
+	    $this->unapply_style_tags( "PAGEBODY", $this->query->output_reportbody_styles);
+echo "PAGE END<BR>";
 		//$this->page_footers();
 		//$this->document->pdf_end_page($this->document);
 	}
@@ -2532,9 +3072,9 @@ echo "$background_image, $custom_height $h <BR>";
         $tx = $header->text;
 //echo "PH $tx ".$this->page_header_end_y."<BR>";
         $styles = $this->fetch_cell_styles($tx);
-	    $this->apply_style_tags($styles);
+	    $this->apply_style_tags( "PAGEHEADER", $styles);
 		$this->draw_cell($wd, $this->vsize, $tx, "PBF", 0, $just );
-	    $this->unapply_style_tags($styles);
+	    $this->unapply_style_tags( "PAGEHEADER", $styles);
 		$this->end_line();
         $y = $this->last_draw_end_y;
         if ( $y > $this->page_header_end_y )
@@ -2570,10 +3110,10 @@ echo "$background_image, $custom_height $h <BR>";
 
         $tx = $footer->text;
         $styles = $this->fetch_cell_styles($tx);
-	    $this->apply_style_tags($styles);
+	    $this->apply_style_tags( "PAGEFOOTER", $styles);
 		$this->debug2("<BR>DRAW FOOT<BR>");
 		$this->draw_cell($wd, $this->vsize, $tx, "PBF", 0, $just);
-	    $this->unapply_style_tags($styles);
+	    $this->unapply_style_tags( "PAGEFOOTER", $styles);
 		$this->end_line();
 
 		return;

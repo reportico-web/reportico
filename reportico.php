@@ -3592,8 +3592,8 @@ class reportico extends reportico_object
             {
                 $do_customize = false;
             }
-            else if ( $this->xmlintext )
-                $do_customize = false;
+            //else if ( $this->xmlintext )
+                //$do_customize = false;
 
 			$this->xmlin = new reportico_xml_reader($this, $this->xmlinput, $this->xmlintext);
 			$this->xmlin->xml2query();
@@ -5753,7 +5753,9 @@ class reportico_page_end extends reportico_object
 	var $attributes = array (
 		"ColumnStartPDF" => false,
 		"justify" => "center",
-		"ColumnWidthPDF" => false
+		"ColumnWidthPDF" => false,
+		"ShowInPDF" => "yes",
+		"ShowInHTML" => "no",
 		);
 
 	function __construct($line, $text)
@@ -7030,6 +7032,7 @@ class reportico_criteria_column extends reportico_query_column
 	{
 
 		$cls = "";
+echo $in_type;
 		switch($in_type)
 		{
 				case "RANGE1":
@@ -7692,8 +7695,14 @@ class reportico_assignment extends reportico_object
                             else
 							    $eltype = $critel[2];
 					}
+//echo "tyo 3 $crit".$eltype;
+//foreach ($in_query->lookup_queries as $k4 => $v4 )
+//{
+    //echo " k $k4";
+//}
 					if ( array_key_exists($crit, $in_query->lookup_queries) )
 					{
+//echo "yes <$eltype>";
 						switch ( $eltype )
 						{
 							case "FULL" :
@@ -7701,7 +7710,9 @@ class reportico_assignment extends reportico_object
 								break;
 	
 							case "RANGE1" :
+//echo "oollklkkk:w!";
 								$clause = $in_query->lookup_queries[$crit]->get_criteria_clause(false, false, false, true, false, $showquotes);
+//echo $clause;
 								break;
 	
 							case "RANGE2" :
