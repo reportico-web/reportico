@@ -543,7 +543,7 @@ class reportico_report_html extends reportico_report
 			$this->text .= '<TR class="swRepGrpTlrRow">';
 	}
 
-	function format_group_trailer_end()
+	function format_group_trailer_end($last_trailer = false)
 	{
 
 		$this->text .= "</TR>";

@@ -2736,6 +2736,7 @@ class TCPDF {
 		if (!is_array($brd)) {
 			return;
 		}
+$brd["mode"] = "normal";
 		// store current cell padding
 		$cp = $this->cell_padding;
 		// select border mode
@@ -2745,6 +2746,7 @@ class TCPDF {
 		} else {
 			$mode = 'normal';
 		}
+
 		// process borders
 		foreach ($brd as $border => $style) {
 			$line_width = $this->LineWidth;
@@ -2776,7 +2778,7 @@ class TCPDF {
 				$this->cell_padding['R'] = $adj;
 			}
 			if ((strpos($border,'B') !== false) AND ($this->cell_padding['B'] < $adj)) {
-				$this->cell_padding['B'] = $adj;
+				$this->cell_padding['B'] =  -$adj;
 			}
 			if ((strpos($border,'L') !== false) AND ($this->cell_padding['L'] < $adj)) {
 				$this->cell_padding['L'] = $adj;
@@ -5026,7 +5028,7 @@ class TCPDF {
 	public function Cell($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='', $stretch=0, $ignore_min_height=false, $calign='T', $valign='M') {
 		$prev_cell_margin = $this->cell_margin;
 		$prev_cell_padding = $this->cell_padding;
-		$this->adjustCellPadding($border);
+		//$this->adjustCellPadding($border);
 		if (!$ignore_min_height) {
 			$min_cell_height = $this->getCellHeight($this->FontSize);
 			if ($h < $min_cell_height) {
@@ -9053,6 +9055,7 @@ class TCPDF {
 		$fontdir = false;
 		if (!TCPDF_STATIC::empty_string($font['file'])) {
 			// A stream containing a TrueType font
+            if ( isset($this->FontFiles[$font['file']]['n']) )
 			$out .= ' /FontFile2 '.$this->FontFiles[$font['file']]['n'].' 0 R';
 			$fontdir = $this->FontFiles[$font['file']]['fontdir'];
 		}

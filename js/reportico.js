@@ -55,9 +55,29 @@ function setupDropMenu()
 * Where multiple data tables exist due to graphs
 * resize the columns of all tables to match the first
 */
+function resizeHeaders()
+{
+  // Size page header blocks to fit page headers
+  reportico_jquery(".swPageHeaderBlock").each(function() {
+    var maxheight = 0;
+    reportico_jquery(this).find(".swPageHeader").each(function() {
+        var headerheight  = reportico_jquery(this).height();
+        if ( headerheight > maxheight )
+            maxheight = headerheight;
+   });
+   reportico_jquery(this).css("height", maxheight + "px");
+  });
+
+  //reportico_jquery(".swRepForm").columnize();
+
+}
+
+/*
+* Where multiple data tables exist due to graphs
+* resize the columns of all tables to match the first
+*/
 function resizeTables()
 {
-
   var tableArr = reportico_jquery('.swRepPage');
   var tableDataRow = reportico_jquery('.swRepResultLine:first');
   var cellWidths = new Array();
@@ -107,6 +127,7 @@ reportico_jquery(document).ready(function()
 {
     setupDatePickers();
     setupDropMenu();
+    resizeHeaders();
     resizeTables();
     setupDynamicGrids();
 });
@@ -623,6 +644,7 @@ function fillDialog(results, cont) {
   setupDatePickers();
   setupDropMenu();
   setupDynamicGrids();
+  resizeHeaders();
   resizeTables();
 }
 

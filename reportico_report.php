@@ -436,7 +436,9 @@ class reportico_report extends reportico_object
 	
 	function format_column_trailer_before_line()
 	{
+        return;
 	}
+
 
 	function check_graphic_fit()
 	{
@@ -522,14 +524,15 @@ class reportico_report extends reportico_object
                     $group_changed = true;
 					$lev = 0;
 					$tolev = 0;
+//echo "<BR> $group->group_name LEVEL $lev vs $group->max_level <BR>";
 					while ( $lev < $group->max_level )
 					{
 						if ( $lev == 0 )
 							$this->apply_format($group, "before_trailer");
 
+//echo "<BR>GROUP TRAILER $group->group_name START<BR>";
 						$this->format_group_trailer_start($trailer_first);
 						$this->format_column_trailer_before_line();
-
 						$junk = 0;
 						$wc = count($this->columns);
                     
@@ -577,6 +580,7 @@ class reportico_report extends reportico_object
 //echo " <BR>";
                                 if ( array_key_exists($w->query_name, $group->trailers) )
                                 {
+//echo "  $w->query_name exists in trailers for $group->group_name ".count($group->trailers)."<BR>";
                                     $number_group_rows++;
                                     if ( count($group->trailers[$w->query_name]) >= $lev + 1 )
                                     {
@@ -585,7 +589,9 @@ class reportico_report extends reportico_object
                                         {
                                             if ( !$linedrawn )
                                             {
+                                                $this->unapply_style_tags("GROUPTRAILER", $this->query->output_group_trailer_styles);
                                                 $this->new_report_page_line("3");
+                                                $this->apply_style_tags("GROUPTRAILER", $this->query->output_group_trailer_styles);
                                                 $linedrawn = true;
                                             }
                                             $this->format_column_trailer($w, $group->trailers[$w->query_name][$lev],$trailer_first);
@@ -595,7 +601,9 @@ class reportico_report extends reportico_object
                                     {
                                         if ( !$linedrawn )
                                         {
-                                           $this->new_report_page_line("2");
+                                           $this->unapply_style_tags("GROUPTRAILER", $this->query->output_group_trailer_styles);
+                                           $this->new_report_page_line("3");
+                                           $this->apply_style_tags("GROUPTRAILER", $this->query->output_group_trailer_styles);
                                            $linedrawn = true;
                                         }
                                         $this->format_column_trailer($w, $junk,$trailer_first);	
@@ -611,7 +619,9 @@ class reportico_report extends reportico_object
                                 {
                                     if ( !$linedrawn )
                                     {
-                                        $this->new_report_page_line("1");
+                                        $this->unapply_style_tags("GROUPTRAILER", $this->query->output_group_trailer_styles);
+                                        $this->new_report_page_line("3");
+                                        $this->apply_style_tags("GROUPTRAILER", $this->query->output_group_trailer_styles);
                                         $linedrawn = true;
                                     }
                                     $this->format_column_trailer($w, $junk, $trailer_first);	
@@ -633,8 +643,16 @@ class reportico_report extends reportico_object
 
             if ( $group_changed && get_class($this) == "reportico_report_html" )
             {
+echo "<BR>GROUP TRAILER $group->group_name HTML END<BR>";
                 $this->format_group_trailer_end();
             }
+
+            if ( $group_changed && get_class($this) == "reportico_report_pdf" )
+            {
+echo "<BR>GROUP TRAILER $group->group_name END<BR>";
+                $this->end_of_page_block();
+            }
+
 
             // Custom trailers
 			end($this->query->groups);
@@ -741,7 +759,7 @@ class reportico_report extends reportico_object
 			return;
 	}
 
-	function format_group_trailer_end()
+	function format_group_trailer_end($last_trailer = false)
 	{
 			return;
 	}

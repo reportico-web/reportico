@@ -5823,9 +5823,15 @@ class reportico_group extends reportico_object
         $trailer["GroupTrailerValueColumn"] = $in_value_column;
         $trailer["GroupTrailerCustom"] = $in_custom;
 		$this->trailers[$in_trailer_column][] =& $trailer;
-		$level = count($this->trailers[$in_trailer_column]) - 1;
-		if ( $this->max_level < $level )
-			$this->max_level = $level;
+		$level = count($this->trailers[$in_trailer_column]);
+        if ( $this->max_level < $level )
+            $this->max_level = $level;
+		//$this->max_level = count($this->trailers[$in_trailer_column]);
+//if ( !$in_custom)
+//echo "trailers of $this->group_name $in_trailer_column is ".count($this->trailers[$in_trailer_column])." => $this->max_level<BR>";
+//else
+    //echo "custom<BR>";
+        
 	}			
 
 }

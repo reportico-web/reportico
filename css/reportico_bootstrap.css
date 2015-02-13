@@ -11,6 +11,7 @@
 #reportico_container
 {
     background-color: #ffffff;
+    position: relative;
 }
 
 .swPrpToolbarPane input
@@ -1087,10 +1088,30 @@ input.swAdminButton2
 }
 
 /* -------------------------- Printed Output Styles ----------------------------------*/
+.swPageHeaderBlock { display: block; width: 100%; position: relative; }
+.swPageHeader { display: block; position: absolute; }
+
+/*
+@page {
+    @top {
+        content: element(pageHeader);
+    }
+}
+
+#pageHeader {
+    background-color: #ff3333;
+    position: running(pageHeader);
+}
+*/
+
+
 
 @media print {
 
+    -webkit-print-color-adjust: exact;
+
     body { font-size: 10pt }
+    .swPageHeader { display: block; position: fixed; top: 0; }
     .swLinkMenu { display: none; }
     .swRepForm { border: none; }
     .swRepBody { width: 100%; margin: 0; border: none; }
