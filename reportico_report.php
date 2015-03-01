@@ -643,13 +643,13 @@ class reportico_report extends reportico_object
 
             if ( $group_changed && get_class($this) == "reportico_report_html" )
             {
-echo "<BR>GROUP TRAILER $group->group_name HTML END<BR>";
+//echo "<BR>GROUP TRAILER $group->group_name HTML END<BR>";
                 $this->format_group_trailer_end();
             }
 
             if ( $group_changed && get_class($this) == "reportico_report_pdf" )
             {
-echo "<BR>GROUP TRAILER $group->group_name END<BR>";
+//echo "<BR>GROUP TRAILER $group->group_name END<BR>";
                 $this->end_of_page_block();
             }
 
@@ -661,6 +661,7 @@ echo "<BR>GROUP TRAILER $group->group_name END<BR>";
 				$group = current($this->query->groups);
 				if ( $this->query->changed($group->group_name) || $this->last_line) 
 				{
+echo "GROUP CH $group->group_name <BR>";
                     $this->format_group_custom_trailer_start();
                     // In PDF mode all trailer lines must be passed through twice
                     // to allow calculation of line height. Otherwise
@@ -674,6 +675,7 @@ echo "<BR>GROUP TRAILER $group->group_name END<BR>";
                             {
                                 $this->draw_mode = "DRAW";
                                 $this->check_page_overflow();
+                                $this->custom_trailer_wrappers();
                             }
                         }
                         else

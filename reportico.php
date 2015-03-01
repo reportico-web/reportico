@@ -1,4 +1,16 @@
 <?php
+
+if ( class_exists("reportico_criteria_column") )
+{
+    echo "Reportico already loaded";
+    die;
+}
+else
+{
+    echo "Loading Reportico";
+}
+
+
 /*
  Reportico - PHP Reporting Tool
  Copyright (C) 2010-2014 Peter Deed
@@ -388,6 +400,7 @@ class reportico extends reportico_object
     var $output_page_styles = false;
     var $output_before_form_row_styles = false;
     var $output_after_form_row_styles = false;
+    var $output_group_header_styles = false;
     var $output_group_header_label_styles = false;
     var $output_group_header_value_styles = false;
     var $output_group_trailer_styles = false;
@@ -3605,9 +3618,16 @@ class reportico extends reportico_object
 		}
 
         // Custom query stuff
-        if ( $do_customize && function_exists("reportico_customize") )
+        if ( $do_customize)
         {
-            reportico_customize($this);
+            if ( file_exists(__DIR__."/reportico_customize.php" ))
+            {
+                include_once(__DIR__."/reportico_customize.php");
+            }
+            if ( function_exists("reportico_customize") )
+            {
+                reportico_customize($this);
+            }
         }
 
 	}
@@ -4766,7 +4786,7 @@ class reportico extends reportico_object
 	}
 
 	// -----------------------------------------------------------------------------
-	// Function : add_assignment
+	// Function : dd_assignment
 	// -----------------------------------------------------------------------------
 	function add_assignment
 		(
@@ -4775,7 +4795,7 @@ class reportico extends reportico_object
 			$criteria
 		)
 		{
-			//print("Added assign $query_name, $expression, $criteria\n");
+			//print("Added assign $query_name, $expression, $criteria<BR>");
 			$this->assignment[] = new reportico_assignment
 				(
 					$query_name,
@@ -4989,6 +5009,8 @@ class reportico extends reportico_object
             $this->output_reportbody_styles[$style_type] = $style_value;
         if ( $item_type == "COLUMNHEADERS" )
             $this->output_header_styles[$style_type] = $style_value;
+        if ( $item_type == "GROUPHEADER" )
+            $this->output_group_header_styles[$style_type] = $style_value;
         if ( $item_type == "GROUPHEADERLABEL" )
             $this->output_group_header_label_styles[$style_type] = $style_value;
         if ( $item_type == "GROUPHEADERVALUE" )
@@ -5737,6 +5759,31 @@ function set_project_environment($initial_project = false, $project_folder = "pr
         }
     }
 
+    function apply_styleset($type, $styles, $column = false)
+    {
+        $txt = "";
+        $usecolumn = false;
+		foreach ( $this->columns as $k => $col )
+		{
+            if ( !$column || $column == $col->query_name )
+            {
+                $usecolumn = $col->query_name;
+                break;
+            }
+		}
+        if ( !$usecolumn )
+        {
+            //echo "Apply Styleset Column $column not found<BR>";
+            return;
+        }
+        foreach ( $styles as $element => $style )
+        {
+            $txt .= "apply_style('$type', '$element', '$style');";
+        }
+
+        $this->add_assignment($usecolumn, $txt, false);
+        
+    }
 
 }
 // -----------------------------------------------------------------------------
@@ -5854,6 +5901,7 @@ class reportico_criteria extends reportico
  * information. Holds database query parameters to criteria selection
  * lists can be generated from the database when the criteria type is LOOKUP
  */
+
 class reportico_criteria_column extends reportico_query_column
 {
 	var $defaults = array();
