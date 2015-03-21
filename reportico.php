@@ -1,16 +1,5 @@
 <?php
 
-if ( class_exists("reportico_criteria_column") )
-{
-    echo "Reportico already loaded";
-    die;
-}
-else
-{
-    echo "Loading Reportico";
-}
-
-
 /*
  Reportico - PHP Reporting Tool
  Copyright (C) 2010-2014 Peter Deed
@@ -118,16 +107,20 @@ class reportico_object
 
 	function & get_attribute ( $attrib_name )
 		{
-			if ( $this->attributes[$attrib_name] )
-			{
-				$val = check_for_default($attrib_name, $this->attributes[$attrib_name]);
-				return $val;
-			}
-			else
-			{
-				$val = check_for_default($attrib_name, $this->attributes[$attrib_name]);
-				return $val;
-			}
+            $val = false;
+            if ( isset ( $this->attributes[$attrib_name] ) )
+			    if ( $this->attributes[$attrib_name] )
+			    {
+				    $val = check_for_default($attrib_name, $this->attributes[$attrib_name]);
+				    return $val;
+			    }
+			    else
+			    {
+				    $val = check_for_default($attrib_name, $this->attributes[$attrib_name]);
+				    return $val;
+			    }
+            else
+                return $val;
 		}
 		
 	// Parses a Reportico value ( e.g. criteria default, criteria value )
@@ -274,6 +267,8 @@ class reportico extends reportico_object
 	var $delete_project_url;
 	var $create_report_url;
 
+	var $version = "dev";
+
 	var $name;
 	var $rowselection="all";
 	var $parent_query=false;
@@ -355,6 +350,8 @@ class reportico extends reportico_object
 
 	var $charting_engine = "PCHART";
 	var $charting_engine_html = "NVD3";
+	var $pdf_engine = "fpdf";
+	var $pdf_engine_file = "reportico_report_fpdf";
 
     var $projects_folder = "projects";
     var $admin_projects_folder = "projects";
@@ -373,8 +370,8 @@ class reportico extends reportico_object
 			"pdfFontSize" => "",
 			"PreExecuteCode" =>  "NONE",
 			"formBetweenRows" => "solidline",
-			"bodyDisplay" => "show",
-			"graphDisplay" => "show",
+			//"bodyDisplay" => "show",
+			//"graphDisplay" => "show",
 			"gridDisplay" => ".DEFAULT",
 			"gridSortable" => ".DEFAULT",
 			"gridSearchable" => ".DEFAULT",
@@ -406,6 +403,7 @@ class reportico extends reportico_object
     var $output_group_trailer_styles = false;
     var $output_reportbody_styles = false;
 	var $admin_accessible = true;
+
 
     // Template Parameters
     var $output_template_parameters = array(
@@ -481,6 +479,12 @@ class reportico extends reportico_object
 
     // Path to frameworks assets folder
     var $url_path_to_assets = false;
+
+    // Path to public reportico site for help
+    var $url_doc_site = "http://www.reportico.org/documentation/";
+
+    // Path to public reportico site
+    var $url_site = "http://www.reportico.org/";
 
     // Path to calling script for form actions
     // In standalone mode will be the reportico runner, otherwise the
@@ -1036,6 +1040,8 @@ class reportico extends reportico_object
 	function set_page_header_attribute($query_name, $attrib_name, $attrib_value)
 	{
 
+        if ( !$query_name )
+            $query_name = count($this->page_headers) - 1;
 		$this->check_page_header_name("set_page_header_attribute", $query_name);
 		if ( array_key_exists($query_name, $this->page_headers) )
 		{
@@ -1050,6 +1056,8 @@ class reportico extends reportico_object
 	function set_page_footer_attribute($query_name, $attrib_name, $attrib_value)
 	{
 
+        if ( !$query_name )
+            $query_name = count($this->page_footers) - 1;
 		$this->check_page_footer_name("set_page_footer_attribute", $query_name);
 		if ( array_key_exists($query_name, $this->page_footers) )
 		{
@@ -1746,7 +1754,13 @@ class reportico extends reportico_object
 			    $tf = $_GET["target_format"];
 			$this->target_format = strtolower($tf);
 
-			require_once("reportico_report_".$this->target_format.".php");
+            if ( $this->target_format == "pdf" )
+            {
+                $this->pdf_engine_file = "reportico_report_{$this->pdf_engine}.php";
+			    require_once($this->pdf_engine_file);
+            }
+            else
+			    require_once("reportico_report_".$this->target_format.".php");
 			$this->target_format = strtoupper($tf);
 			switch ( $tf )
 			{
@@ -1782,7 +1796,10 @@ class reportico extends reportico_object
 
 				case "pdf" :
 				case "PDF" :
-					$rep = new reportico_report_pdf();
+                    if ( $this->pdf_engine == "tcpdf" )
+					    $rep = new reportico_report_tcpdf();
+                    else
+					    $rep = new reportico_report_fpdf();
 					$rep->page_length = 80;
 					$this->add_target($rep);
 					$rep->set_query($this);
@@ -2401,6 +2418,8 @@ class reportico extends reportico_object
 			$page_header_text
 			)
 	{
+        if ( !$page_header_name )
+            $page_header_name = count($this->page_headers);
 		$this->page_headers[$page_header_name] = new reportico_page_end($line, $page_header_text);
 	}			
 
@@ -2413,6 +2432,8 @@ class reportico extends reportico_object
 			$page_footer_text
 			)
 	{
+        if ( !$page_footer_name )
+            $page_footer_name = count($this->page_footers);
 		$this->page_footers[$page_footer_name] = new reportico_page_end($line, $page_footer_text);
 	}			
 
@@ -2954,13 +2975,14 @@ class reportico extends reportico_object
 		$smarty->compile_dir = find_best_location_in_include_path( "templates_c" );
 
 		$dummy="";
-		$version = "4.0";
+		$version = $this->version;
 
 		$forward_url_params = session_request_item('forward_url_get_parameters', $this->forward_url_get_parameters);
 		$forward_url_params_graph = session_request_item('forward_url_get_parameters_graph', $this->forward_url_get_parameters_graph);
 		$forward_url_params_dbimage = session_request_item('forward_url_get_parameters_dbimage', $this->forward_url_get_parameters_dbimage);
 
 		$smarty->assign('REPORTICO_VERSION', $version);
+		$smarty->assign('REPORTICO_SITE', $this->url_site);
 
         // Assign user parameters to template
         if ( $this->user_parameters && is_array($this->user_parameters) )
@@ -3592,8 +3614,8 @@ class reportico extends reportico_object
 		}
 
 
-        // Run customized reportico actions if not using xml text in session
-        $do_customize = true;
+        // apply default customized reportico actions if not using xml text in session
+        $do_defaults = true;
 
 		if ( $this->sqlinput )
         {
@@ -3603,10 +3625,10 @@ class reportico extends reportico_object
 		{
             if ( $this->get_execute_mode() == "MAINTAIN" )
             {
-                $do_customize = false;
+                $do_defaults = false;
             }
             //else if ( $this->xmlintext )
-                //$do_customize = false;
+                //$do_defaults = false;
 
 			$this->xmlin = new reportico_xml_reader($this, $this->xmlinput, $this->xmlintext);
 			$this->xmlin->xml2query();
@@ -3618,16 +3640,16 @@ class reportico extends reportico_object
 		}
 
         // Custom query stuff
-        if ( $do_customize)
+        if ( $do_defaults)
         {
-            if ( file_exists(__DIR__."/reportico_customize.php" ))
-            {
-                include_once(__DIR__."/reportico_customize.php");
-            }
-            if ( function_exists("reportico_customize") )
-            {
-                reportico_customize($this);
-            }
+            $custom_functions = array();
+
+            if ( file_exists(__DIR__."/projects/".$this->projects_folder."/reportico_defaults.php" ))
+                include_once(__DIR__."/projects/".$this->projects_folder."/reportico_defaults.php");
+            else if ( file_exists(__DIR__."/reportico_defaults.php" ))
+                include_once(__DIR__."/reportico_defaults.php");
+            if ( function_exists("reportico_defaults") )
+                reportico_defaults($this);
         }
 
 	}
@@ -5725,7 +5747,12 @@ function set_project_environment($initial_project = false, $project_folder = "pr
                     $plugin = $plugin_dir."/".$file;
                     if (is_dir($plugin)) 
                     {
-                        $plugin_file = $plugin."/".$file.".php";
+                        $plugin_file = $plugin."/global.php";
+                        if (is_file($plugin_file)) 
+                        {
+                            require_once($plugin_file);
+                        }
+                        $plugin_file = $plugin."/".strtolower($this->execute_mode).".php";
                         if (is_file($plugin_file)) 
                         {
                             require_once($plugin_file);
@@ -5734,6 +5761,9 @@ function set_project_environment($initial_project = false, $project_folder = "pr
                 }
             }
         }
+
+        // Call any plugin initialisation
+        $this->apply_plugins("initialize", $this);
     }
 
 	// -----------------------------------------------------------------------------
@@ -5759,7 +5789,7 @@ function set_project_environment($initial_project = false, $project_folder = "pr
         }
     }
 
-    function apply_styleset($type, $styles, $column = false)
+    function apply_styleset($type, $styles, $column = false, $mode = false)
     {
         $txt = "";
         $usecolumn = false;
@@ -5780,8 +5810,13 @@ function set_project_environment($initial_project = false, $project_folder = "pr
         {
             $txt .= "apply_style('$type', '$element', '$style');";
         }
+        $condition = false;
+        if ( $mode )
+        {   
+            $condition = "{TARGET_FORMAT} == '$mode'";
+        }
 
-        $this->add_assignment($usecolumn, $txt, false);
+        $this->add_assignment($usecolumn, $txt, $condition);
         
     }
 
@@ -6052,6 +6087,7 @@ class reportico_criteria_column extends reportico_query_column
 
 		$manual_params = array();
 		if ( ! array_key_exists("EXPANDED_".$this->query_name, $_REQUEST) )
+        {
 			if ( array_key_exists("MANUAL_".$this->query_name, $_REQUEST) )
 			{
 				$manual_params = explode(',',$_REQUEST["MANUAL_".$this->query_name]);
@@ -6059,8 +6095,11 @@ class reportico_criteria_column extends reportico_query_column
 				{
 					$hidden_params = $manual_params;
 					$manual_override = true;
+                    $this->criteria_summary .= "-";
+                    $value_string = $_REQUEST["MANUAL_".$this->query_name];
 				}
 			}
+        }
 
 		$expanded_params = array();
 		if ( array_key_exists("EXPANDED_".$this->query_name, $_REQUEST) )
@@ -7086,7 +7125,6 @@ class reportico_criteria_column extends reportico_query_column
 	{
 
 		$cls = "";
-echo $in_type;
 		switch($in_type)
 		{
 				case "RANGE1":

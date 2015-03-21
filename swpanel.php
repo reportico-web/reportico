@@ -441,8 +441,6 @@ class reportico_panel
 
 				$checked="";
 
-				//if (  $this->query->get_attribute("bodyDisplay") ) $checked="checked";
-
 				$this->smarty->assign("OUTPUT_SHOW_SHOWGRAPH", false );
 				if ( count($this->query->graphs) > 0 )
 				{
@@ -638,36 +636,33 @@ class reportico_xml_reader
         $this->current_element =& $this->data; 
 		$fontlist = array(".DEFAULT", "Vera", "Font 1", "Font 2", "Font 3", "Trebuchet", "Arial", "Times", "Verdana", "Courier", "Book", "Comic", "Script" );
     	$this->field_display = array (
-					"Expression" => array ( "Title" => "EXPRESSION", "EditMode" => "SAFE" ),
-					"Condition" => array ( "Title" => "CONDITION", "EditMode" => "SAFE" ),
+					"Expression" => array ( "Title" => "EXPRESSION", "EditMode" => "SAFE", "DocId" => "expression" ),
+					"Condition" => array ( "Title" => "CONDITION", "EditMode" => "SAFE", "DocId" => "condition" ),
 					"GroupHeaderColumn" => array ( "Title" => "GROUPHEADERCOLUMN", "Type" => "QUERYCOLUMNS"),
-                    "GroupHeaderCustom" => array ( "Title" => "GROUPHEADERCUSTOM", "Type" => "TEXTBOX", "WizardLink" => true, "HasChangeComparator" => true ),
 					"GroupTrailerDisplayColumn" => array ( "Title" => "GROUPTRAILERDISPLAYCOLUMN", "Type" => "QUERYCOLUMNS"),
 					"GroupTrailerValueColumn" => array ( "Title" => "GROUPTRAILERVALUECOLUMN", "Type" => "QUERYCOLUMNS"),
-                    "GroupTrailerCustom" => array ( "Title" => "GROUPTRAILERCUSTOM", "Type" => "TEXTBOX", "WizardLink" => true, "HasChangeComparator" => true ),
 					"ColumnType" => array ( "Type" => "HIDE"),
 					"ColumnLength" => array ( "Type" => "HIDE"),
 					"ColumnName" => array ( "Type" => "HIDE"),
 					"QueryName" => array ( "Type" => "HIDE"),
-					"Name" => array ( "Title" => "NAME", "Type" => "TEXTFIELD"),
+					"Name" => array ( "Title" => "NAME", "Type" => "TEXTFIELD", "DocId" => "name"),
 					"QueryTableName" => array ( "Type" => "HIDE", "HelpPage" => "criteria"),
-					"QueryColumnName" => array ( "Title" => "QUERYCOLUMNNAME", "HelpPage" => "criteria"),
+					"QueryColumnName" => array ( "Title" => "QUERYCOLUMNNAME", "HelpPage" => "criteria", "DocId" => "main_query_column"),
 					"TableName" => array ( "Type" => "HIDE"),
 					"TableSql" => array ( "Type" => "SHOW"),
 					"WhereSql" => array ( "Type" => "HIDE"),
 					"GroupSql" => array ( "Type" => "SHOW"),
 					"RowSelection" => array ( "Type" => "SHOW"),
-					"ReportTitle" => array ( "Title" => "REPORTTITLE"),
+					"ReportTitle" => array ( "Title" => "REPORTTITLE", "DocId" => "report_title"),
 					"LinkFrom" => array ( "Title" => "LINKFROM", "Type" => "CRITERIA"),
 					"LinkTo" => array ( "Title" => "LINKTO", "Type" => "CRITERIA"),
 					"LinkClause" => array ( "Title" => "LINKCLAUSE" ),
-					"AssignName" => array ( "Title" => "ASSIGNNAME", "Type" => "QUERYCOLUMNS"),
-					"AssignNameNew" => array ( "Title" => "ASSIGNNAMENEW"),
-					"AssignImageUrl" => array ( "Title" => "ASSIGNIMAGEURL" ),
-					"AssignHyperlinkLabel" => array ( "Title" => "ASSIGNHYPERLABEL" ),
-					"AssignHyperlinkUrl" => array ( "Title" => "ASSIGNHYPERURL" ),
+					"AssignName" => array ( "Title" => "ASSIGNNAME", "Type" => "QUERYCOLUMNS", "DocId" => "assign_to_existing_column"),
+					"AssignNameNew" => array ( "Title" => "ASSIGNNAMENEW", "DocId" => "assign_to_new_column"),
+					"AssignImageUrl" => array ( "Title" => "ASSIGNIMAGEURL", "DocId" => "image_url" ),
+					"AssignHyperlinkLabel" => array ( "Title" => "ASSIGNHYPERLABEL", "DocId" => "hyperlink_label" ),
+					"AssignHyperlinkUrl" => array ( "Title" => "ASSIGNHYPERURL", "DocId" => "hyperlink_url" ),
 
-/*
 					"GroupHeaderStyleFgColor" => array ( "Title" => "ASSIGNSTYLEFGCOLOR", "Validate" => "HTMLCOLOR" ),
 					"GroupHeaderStyleBgColor" => array ( "Title" => "ASSIGNSTYLEBGCOLOR", "Validate" => "HTMLCOLOR" ),
 					"GroupHeaderStyleBorderStyle" => array ( "Title" => "ASSIGNSTYLEBORDERSTYLE", "Type" => "BORDERSTYLES", "XlateOptions" => true ),
@@ -675,9 +670,12 @@ class reportico_xml_reader
 					"GroupHeaderStyleBorderColor" => array ( "Title" => "ASSIGNSTYLEBORDERCOLOR", "Validate" => "HTMLCOLOR" ),
 					"GroupHeaderStyleMargin" => array ( "Title" => "ASSIGNSTYLEMARGIN", "Validate" => "CSS4SIZE" ),
 					"GroupHeaderStylePadding" => array ( "Title" => "ASSIGNSTYLEPADDING", "Validate" => "CSS4SIZE" ),
+					"GroupHeaderStyleFontName" => array ( "Title" => "ASSIGNFONTNAME", "Type" => "FONTLIST" ),
 					"GroupHeaderStyleFontSize" => array ( "Title" => "ASSIGNFONTSIZE", "Validate" => "CSSFONTSIZE" ),
 					"GroupHeaderStyleFontStyle" => array ( "Title" => "ASSIGNFONTSTYLE", "Type" => "FONTSTYLES", "XlateOptions" => true ),
 					"GroupHeaderStyleWidth" => array ( "Title" => "ASSIGNWIDTH", "Validate" => "CSS1SIZE" ),
+					"GroupHeaderStyleHeight" => array ( "Title" => "ASSIGNHEIGHT", "Validate" => "CSS1SIZE" ),
+					"GroupHeaderStylePosition" => array ( "Title" => "ASSIGNSTYLEPOSITION", "Type" => "POSITIONS", "XlateOptions" => true ),
 					"GroupHeaderStyleBackgroundImage" => array ( "Title" => "ASSIGNPDFBACKGROUNDIMAGE" ),
 
 					"GroupTrailerStyleFgColor" => array ( "Title" => "ASSIGNSTYLEFGCOLOR", "Validate" => "HTMLCOLOR" ),
@@ -687,9 +685,12 @@ class reportico_xml_reader
 					"GroupTrailerStyleBorderColor" => array ( "Title" => "ASSIGNSTYLEBORDERCOLOR", "Validate" => "HTMLCOLOR" ),
 					"GroupTrailerStyleMargin" => array ( "Title" => "ASSIGNSTYLEMARGIN", "Validate" => "CSS4SIZE" ),
 					"GroupTrailerStylePadding" => array ( "Title" => "ASSIGNSTYLEPADDING", "Validate" => "CSS4SIZE" ),
+					"GroupTrailerStyleFontName" => array ( "Title" => "ASSIGNFONTNAME", "Type" => "FONTLIST" ),
 					"GroupTrailerStyleFontSize" => array ( "Title" => "ASSIGNFONTSIZE", "Validate" => "CSSFONTSIZE" ),
 					"GroupTrailerStyleFontStyle" => array ( "Title" => "ASSIGNFONTSTYLE", "Type" => "FONTSTYLES", "XlateOptions" => true ),
 					"GroupTrailerStyleWidth" => array ( "Title" => "ASSIGNWIDTH", "Validate" => "CSS1SIZE" ),
+					"GroupTrailerStyleHeight" => array ( "Title" => "ASSIGNHEIGHT", "Validate" => "CSS1SIZE" ),
+					"GroupTrailerStylePosition" => array ( "Title" => "ASSIGNSTYLEPOSITION", "Type" => "POSITIONS", "XlateOptions" => true ),
 					"GroupTrailerStyleBackgroundImage" => array ( "Title" => "ASSIGNPDFBACKGROUNDIMAGE" ),
 
 					"PageHeaderStyleFgColor" => array ( "Title" => "ASSIGNSTYLEFGCOLOR", "Validate" => "HTMLCOLOR" ),
@@ -703,6 +704,8 @@ class reportico_xml_reader
 					"PageHeaderStyleFontSize" => array ( "Title" => "ASSIGNFONTSIZE", "Validate" => "CSSFONTSIZE" ),
 					"PageHeaderStyleFontStyle" => array ( "Title" => "ASSIGNFONTSTYLE", "Type" => "FONTSTYLES", "XlateOptions" => true ),
 					"PageHeaderStyleWidth" => array ( "Title" => "ASSIGNWIDTH", "Validate" => "CSS1SIZE" ),
+					"PageHeaderStyleHeight" => array ( "Title" => "ASSIGNHEIGHT", "Validate" => "CSS1SIZE" ),
+					"PageHeaderStylePosition" => array ( "Title" => "ASSIGNSTYLEPOSITION", "Type" => "POSITIONS", "XlateOptions" => true ),
 					"PageHeaderStyleBackgroundImage" => array ( "Title" => "ASSIGNPDFBACKGROUNDIMAGE" ),
 
 					"PageFooterStyleFgColor" => array ( "Title" => "ASSIGNSTYLEFGCOLOR", "Validate" => "HTMLCOLOR" ),
@@ -712,63 +715,71 @@ class reportico_xml_reader
 					"PageFooterStyleBorderColor" => array ( "Title" => "ASSIGNSTYLEBORDERCOLOR", "Validate" => "HTMLCOLOR" ),
 					"PageFooterStyleMargin" => array ( "Title" => "ASSIGNSTYLEMARGIN", "Validate" => "CSS4SIZE" ),
 					"PageFooterStylePadding" => array ( "Title" => "ASSIGNSTYLEPADDING", "Validate" => "CSS4SIZE" ),
+					"PageFooterStyleFontName" => array ( "Title" => "ASSIGNFONTNAME", "Type" => "FONTLIST" ),
 					"PageFooterStyleFontSize" => array ( "Title" => "ASSIGNFONTSIZE", "Validate" => "CSSFONTSIZE" ),
 					"PageFooterStyleFontStyle" => array ( "Title" => "ASSIGNFONTSTYLE", "Type" => "FONTSTYLES", "XlateOptions" => true ),
+					"PageFooterStyleHeight" => array ( "Title" => "ASSIGNHEIGHT", "Validate" => "CSS1SIZE" ),
 					"PageFooterStyleWidth" => array ( "Title" => "ASSIGNWIDTH", "Validate" => "CSS1SIZE" ),
+					"PageFooterStylePosition" => array ( "Title" => "ASSIGNSTYLEPOSITION", "Type" => "POSITIONS", "XlateOptions" => true ),
 					"PageFooterBackgroundImage" => array ( "Title" => "ASSIGNPDFBACKGROUNDIMAGE" ),
-*/
-					"AssignStyleLocType" => array ( "Title" => "ASSIGNSTYLELOCTYPE", "Type" => "STYLELOCTYPES", "XlateOptions" => true),
-					"AssignStyleFgColor" => array ( "Title" => "ASSIGNSTYLEFGCOLOR", "Validate" => "HTMLCOLOR" ),
-					"AssignStyleBgColor" => array ( "Title" => "ASSIGNSTYLEBGCOLOR", "Validate" => "HTMLCOLOR" ),
-					"AssignStyleBorderStyle" => array ( "Title" => "ASSIGNSTYLEBORDERSTYLE", "Type" => "BORDERSTYLES", "XlateOptions" => true ),
-					"AssignStyleBorderSize" => array ( "Title" => "ASSIGNSTYLEBORDERSIZE", "Validate" => "CSS4SIZE" ),
-					"AssignStyleBorderColor" => array ( "Title" => "ASSIGNSTYLEBORDERCOLOR", "Validate" => "HTMLCOLOR" ),
-					"AssignStyleMargin" => array ( "Title" => "ASSIGNSTYLEMARGIN", "Validate" => "CSS4SIZE" ),
-					"AssignStylePadding" => array ( "Title" => "ASSIGNSTYLEPADDING", "Validate" => "CSS4SIZE" ),
-					"AssignStyleFontSize" => array ( "Title" => "ASSIGNFONTSIZE", "Validate" => "CSSFONTSIZE" ),
-					"AssignStyleFontStyle" => array ( "Title" => "ASSIGNFONTSTYLE", "Type" => "FONTSTYLES", "XlateOptions" => true ),
-					"AssignStyleWidth" => array ( "Title" => "ASSIGNWIDTH", "Validate" => "CSS1SIZE" ),
-					"AssignAggType" => array ( "Title" => "ASSIGNAGGTYPE", "Type" => "AGGREGATETYPES", "XlateOptions" => true),
-					"AssignAggCol" => array ( "Title" => "ASSIGNAGGCOL", "Type" => "QUERYCOLUMNS"),
-					"AssignAggGroup" => array ( "Title" => "ASSIGNAGGGROUP", "Type" => "QUERYCOLUMNSOPTIONAL"),
-					"AssignGraphicBlobCol" => array ( "Title" => "ASSIGNGRAPHICBLOBCOL"),
-					"AssignGraphicBlobTab" => array ( "Title" => "ASSIGNGRAPHICBLOBTAB"),
-					"AssignGraphicBlobMatch" => array ( "Title" => "ASSIGNGRAPHICBLOBMATCH"),
-					"AssignGraphicWidth" => array ( "Title" => "ASSIGNGRAPHICWIDTH"),
-					"AssignGraphicReportCol" => array ( "Title" => "ASSIGNGRAPHICREPORTCOL", "Type" => "QUERYCOLUMNS"),
+
+					"DetailStyle" => array ( "Title" => "DETAILSTYLE" ),
+
+                    "GroupHeaderCustom" => array ( "Title" => "GROUPHEADERCUSTOM", "Type" => "TEXTBOX", "WizardLink" => true, "HasChangeComparator" => true, "DocId" => "group_header_custom_text" ),
+                    "GroupTrailerCustom" => array ( "Title" => "GROUPTRAILERCUSTOM", "Type" => "TEXTBOX", "WizardLink" => true, "HasChangeComparator" => true, "DocId" => "group_trailer_custom_text" ),
+
+					"AssignStyleLocType" => array ( "Title" => "ASSIGNSTYLELOCTYPE", "Type" => "STYLELOCTYPES", "XlateOptions" => true, "DocId" => "apply_style_to"),
+					"AssignStyleFgColor" => array ( "Title" => "ASSIGNSTYLEFGCOLOR", "Validate" => "HTMLCOLOR", "DocId" => "text_colour" ),
+					"AssignStyleBgColor" => array ( "Title" => "ASSIGNSTYLEBGCOLOR", "Validate" => "HTMLCOLOR", "DocId" => "background_colour" ),
+					"AssignStyleBorderStyle" => array ( "Title" => "ASSIGNSTYLEBORDERSTYLE", "Type" => "BORDERSTYLES", "XlateOptions" => true, "DocId" => "border_style" ),
+					"AssignStyleBorderSize" => array ( "Title" => "ASSIGNSTYLEBORDERSIZE", "Validate" => "CSS4SIZE", "DocId" => "border_thickness" ),
+					"AssignStyleBorderColor" => array ( "Title" => "ASSIGNSTYLEBORDERCOLOR", "Validate" => "HTMLCOLOR", "DocId" => "border colour" ),
+					"AssignStyleMargin" => array ( "Title" => "ASSIGNSTYLEMARGIN", "Validate" => "CSS4SIZE", "DocId" => "margin" ),
+					"AssignStylePadding" => array ( "Title" => "ASSIGNSTYLEPADDING", "Validate" => "CSS4SIZE", "DocId" => "padding" ),
+					"AssignStyleFontName" => array ( "Title" => "ASSIGNFONTNAME", "Type" => "FONTLIST", "DocId" => "font_name" ),
+					"AssignStyleFontSize" => array ( "Title" => "ASSIGNFONTSIZE", "Validate" => "CSSFONTSIZE", "DocId" => "font_size", "DocId" => "font_size" ),
+					"AssignStyleFontStyle" => array ( "Title" => "ASSIGNFONTSTYLE", "Type" => "FONTSTYLES", "XlateOptions" => true, "DocId" => "font_style", "DocId" => "font_style" ),
+					"AssignStyleWidth" => array ( "Title" => "ASSIGNWIDTH", "Validate" => "CSS1SIZE", "DocId" => "width" ),
+					"AssignAggType" => array ( "Title" => "ASSIGNAGGTYPE", "Type" => "AGGREGATETYPES", "XlateOptions" => true, "DocId" => "aggregate_type"),
+					"AssignAggCol" => array ( "Title" => "ASSIGNAGGCOL", "Type" => "QUERYCOLUMNS", "DocId" => "aggregate_column"),
+					"AssignAggGroup" => array ( "Title" => "ASSIGNAGGGROUP", "Type" => "QUERYCOLUMNSOPTIONAL", "DocId" => "grouped_by"),
+					"AssignGraphicBlobCol" => array ( "Title" => "ASSIGNGRAPHICBLOBCOL", "DocId" => "column_containing_graphic"),
+					"AssignGraphicBlobTab" => array ( "Title" => "ASSIGNGRAPHICBLOBTAB", "DocId" => "table_containing_graphic"),
+					"AssignGraphicBlobMatch" => array ( "Title" => "ASSIGNGRAPHICBLOBMATCH", "DocId" => "column_to_match_report_graphic"),
+					"AssignGraphicWidth" => array ( "Title" => "ASSIGNGRAPHICWIDTH", "DocId" => "report_graphic_width"),
+					"AssignGraphicReportCol" => array ( "Title" => "ASSIGNGRAPHICREPORTCOL", "Type" => "QUERYCOLUMNS", "DocId" => "graphic_report_column"),
 					"LinkToElement" => array ( "Title" => "LINKTOREPORT", "Type" => "REPORTLIST"),
-					"DrilldownReport" => array ( "Title" => "DRILLDOWNREPORT", "Type" => "REPORTLIST"),
-					"DrilldownColumn" => array ( "Title" => "DRILLDOWNCOLUMN", "Type" => "QUERYCOLUMNSOPTIONAL"),
-					"GroupName" => array ( "Title" => "GROUPNAME", "Type" => "GROUPCOLUMNS"),
-					"GroupName" => array ( "Title" => "GROUPNAME", "Type" => "GROUPCOLUMNS"),
-					"GraphColumn" => array ( "Title" => "GRAPHCOLUMN", "Type" => "QUERYGROUPS"),
-					"GraphHeight" => array ( "Title" => "GRAPHHEIGHT" ),
-					"GraphWidth" => array ( "Title" => "GRAPHWIDTH" ),
+					"DrilldownReport" => array ( "Title" => "DRILLDOWNREPORT", "Type" => "REPORTLIST", "DocId" => "drilldown_report"),
+					"DrilldownColumn" => array ( "Title" => "DRILLDOWNCOLUMN", "Type" => "QUERYCOLUMNSOPTIONAL", "DocId" => "drilldown_criteria"),
+					"GroupName" => array ( "Title" => "GROUPNAME", "Type" => "GROUPCOLUMNS", "DocId" => "group_on_column"),
+					"GraphColumn" => array ( "Title" => "GRAPHCOLUMN", "Type" => "QUERYGROUPS", "DocId" => "group_column" ),
+					"GraphHeight" => array ( "Title" => "GRAPHHEIGHT", "DocId" => "graph_height" ),
+					"GraphWidth" => array ( "Title" => "GRAPHWIDTH", "DocId" => "graph_width" ),
 					"GraphColor" => array ( "Title" => "GRAPHCOLOR" ),
-					"GraphWidthPDF" => array ( "Title" => "GRAPHWIDTHPDF" ),
-					"GraphHeightPDF" => array ( "Title" => "GRAPHHEIGHTPDF" ),
-					"XTitle" => array ( "Title" => "XTITLE" ),
-					"YTitle" => array ( "Title" => "YTITLE" ),
+					"GraphWidthPDF" => array ( "Title" => "GRAPHWIDTHPDF", "DocId" => "graph_height_pdf" ),
+					"GraphHeightPDF" => array ( "Title" => "GRAPHHEIGHTPDF", "DocId" => "graph_height_pdf" ),
+					"XTitle" => array ( "Title" => "XTITLE", "DocId" => "x_axis_title" ),
+					"YTitle" => array ( "Title" => "YTITLE", "DocId" => "y_axis_title" ),
 					"GridPosition" => array ( "Title" => "GRIDPOSITION" ),
 					"PlotStyle" => array ( "Title" => "PLOTSTYLE" ),
-					"LineColor" => array ( "Title" => "LINECOLOR" ),
+					"LineColor" => array ( "Title" => "LINECOLOR", "DocId" => "line_color" ),
 					"DataType" => array ( "Title" => "DATATYPE", "Type" => "HIDE" ),
-					"Legend" => array ( "Title" => "LEGEND" ),
+					"Legend" => array ( "Title" => "LEGEND", "DocId" => "legend" ),
 					"FillColor" => array ( "Title" => "FILLCOLOR" ),
 					"XGridColor" => array ( "Title" => "XGRIDCOLOR" ),
 					"YGridColor" => array ( "Title" => "YGRIDCOLOR" ),
 					"TitleFontSize" => array ( "Title" => "TITLEFONTSIZE" ),
 					"XTickInterval" => array ( "Title" => "XTICKINTERVAL" ),
 					"YTickInterval" => array ( "Title" => "YTICKINTERVAL" ),
-					"XTickLabelInterval" => array ( "Title" => "XTICKLABELINTERVAL" ),
+					"XTickLabelInterval" => array ( "Title" => "XTICKLABELINTERVAL", "DocId" => "x_tick_label_interval" ),
 					"YTickLabelInterval" => array ( "Title" => "YTICKLABELINTERVAL" ),
 					"XTitleFontSize" => array ( "Title" => "XTITLEFONTSIZE" ),
 					"YTitleFontSize" => array ( "Title" => "YTITLEFONTSIZE" ),
-					"MarginColor" => array ( "Title" => "MARGINCOLOR" ),
-					"MarginLeft" => array ( "Title" => "MARGINLEFT" ),
-					"MarginRight" => array ( "Title" => "MARGINRIGHT" ),
-					"MarginTop" => array ( "Title" => "MARGINTOP" ),
-					"MarginBottom" => array ( "Title" => "MARGINBOTTOM" ),
+					"MarginColor" => array ( "Title" => "MARGINCOLOR", "DocId" => "margin_color" ),
+					"MarginLeft" => array ( "Title" => "MARGINLEFT", "DocId" => "margin_left" ),
+					"MarginRight" => array ( "Title" => "MARGINRIGHT", "DocId" => "margin_right" ),
+					"MarginTop" => array ( "Title" => "MARGINTOP", "DocId" => "margin_top" ),
+					"MarginBottom" => array ( "Title" => "MARGINBOTTOM", "DocId" => "margin_bottom" ),
 					"TitleColor" => array ( "Title" => "TITLECOLOR" ),
 					"XAxisColor" => array ( "Title" => "XAXISCOLOR" ),
 					"YAxisColor" => array ( "Title" => "YAXISCOLOR" ),
@@ -778,112 +789,110 @@ class reportico_xml_reader
 					"YAxisFontSize" => array ( "Title" => "YAXISFONTSIZE" ),
 					"XTitleColor" => array ( "Title" => "XTITLECOLOR" ),
 					"YTitleColor" => array ( "Title" => "YTITLECOLOR" ),
-					"PlotColumn" => array ( "Title" => "PLOTCOLUMN", "Type" => "QUERYCOLUMNS"),
-					"XLabelColumn" => array ( "Title" => "XLABELCOLUMN", "Type" => "QUERYCOLUMNS"),
+					"PlotColumn" => array ( "Title" => "PLOTCOLUMN", "Type" => "QUERYCOLUMNS", "DocId" => "column_to_plot", "DocId" => "column_to_plot"),
+					"XLabelColumn" => array ( "Title" => "XLABELCOLUMN", "Type" => "QUERYCOLUMNS", "DocId" => "column_for_x_labels"),
 					//"YLabelColumn" => array ( "Title" => "YLABELCOLUMN", "Type" => "HIDE"),
-					"ReturnColumn" => array ( "Title" => "RETURNCOLUMN", "HelpPage" => "criteria", "Type" => "QUERYCOLUMNS"),
-					"MatchColumn" => array ( "Title" => "MATCHCOLUMN", "HelpPage" => "criteria", "Type" => "QUERYCOLUMNS"),
-					"DisplayColumn" => array ( "Title" => "DISPLAYCOLUMN", "HelpPage" => "criteria", "Type" => "QUERYCOLUMNS"),
-					"OverviewColumn" => array ( "Title" => "OVERVIEWCOLUMN", "HelpPage" => "criteria", "Type" => "QUERYCOLUMNS"),
-					"content_type" => array ( "Title" => "CONTENTTYPE", "Type" => "DROPDOWN",  "XlateOptions" => true,
+					"ReturnColumn" => array ( "Title" => "RETURNCOLUMN", "HelpPage" => "criteria", "Type" => "QUERYCOLUMNS", "DocId" => "return_column"),
+					"MatchColumn" => array ( "Title" => "MATCHCOLUMN", "HelpPage" => "criteria", "Type" => "QUERYCOLUMNS", "DocId" => "match_column"),
+					"DisplayColumn" => array ( "Title" => "DISPLAYCOLUMN", "HelpPage" => "criteria", "Type" => "QUERYCOLUMNS", "DocId" => "display_column"),
+					"OverviewColumn" => array ( "Title" => "OVERVIEWCOLUMN", "HelpPage" => "criteria", "Type" => "QUERYCOLUMNS", "DocId" => "overview_column"),
+					"content_type" => array ( "Title" => "CONTENTTYPE", "Type" => "HIDE",  "XlateOptions" => true,
 								"Values" => array("plain", "graphic")),
 					"PreExecuteCode" => array ( 
 						"Title" => "CUSTOMSOURCECODE",
-						"Type" => "TEXTBOX",
+						"Type" => "TEXTBOX", "DocId" => "custom_source_code",
 				       		"EditMode" => "SAFE"),
-					"ReportDescription" => array ( 
-						"Title" => "REPORTDESCRIPTION",
-						"Type" => "TEXTBOX" ),
-					"SQLText" => array ( "Title" => "SQLTEXT", "Type" => "TEXTBOX", "EditMode" => "SAFE" ),
-					"QuerySql" => array ( "Title" => "QUERYSQL", "Type" => "TEXTBOX" ),
+					"ReportDescription" => array ( "Title" => "REPORTDESCRIPTION", "Type" => "TEXTBOX", "DocId" => "report_description" ),
+					"SQLText" => array ( "Title" => "SQLTEXT", "Type" => "TEXTBOX", "EditMode" => "SAFE", "DocId" => "pre-sql_text_entry" ),
+					"QuerySql" => array ( "Title" => "QUERYSQL", "Type" => "TEXTBOX", "DocSection" => "the_query_details_menu", "DocId" => "sql_query" ),
 					"SQLRaw" => array ( "Title" => "SQLRAW", "Type" => "HIDE" ),
 					"Password" => array ( "Type" => "PASSWORD" ),
 					"PageSize" => array ( "Title" => "PAGESIZE", "Type" => "DROPDOWN",  "XlateOptions" => true,
 									"Values" => array(".DEFAULT","B5", "A6", "A5", "A4", "A3", "A2", "A1", 
-											"US-Letter","US-Legal","US-Ledger") ),
+											"US-Letter","US-Legal","US-Ledger"), "DocId" => "page_size_pdf" ),
 					"ReportTemplate" => array ( "Title" => "REPORTTEMPLATE", "Type" => "TEMPLATELIST"),
 					"PageWidthHTML" => array ( "Title" => "PAGEWIDTHHTML" ),
 					"PageOrientation" => array ( "Title" => "PAGEORIENTATION", "Type" => "DROPDOWN", "XlateOptions" => true,
-									"Values" => array(".DEFAULT","Portrait", "Landscape") ),
-					"TopMargin" => array ( "Title" => "TOPMARGIN" ),
-					"BottomMargin" => array ( "Title" => "BOTTOMMARGIN" ),
-					"RightMargin" => array ( "Title" => "RIGHTMARGIN" ),
-					"LeftMargin" => array ( "Title" => "LEFTMARGIN" ),
-					"pdfFont" => array ( "Title" => "PDFFONT",  "Type" => "FONTLIST"),
-					"OrderNumber" => array ( "Title" => "ORDERNUMBER" ),
+									"Values" => array(".DEFAULT","Portrait", "Landscape"), "DocId" => "orientation_pdf" ),
+					"TopMargin" => array ( "Title" => "TOPMARGIN" , "DocId" => "top_margin_pdf" ),
+					"BottomMargin" => array ( "Title" => "BOTTOMMARGIN" , "DocId" => "bottom_margin_pdf" ),
+					"RightMargin" => array ( "Title" => "RIGHTMARGIN" , "DocId" => "right_margin_pdf" ),
+					"LeftMargin" => array ( "Title" => "LEFTMARGIN" , "DocId" => "left_margin_pdf" ),
+					"pdfFont" => array ( "Title" => "PDFFONT",  "Type" => "FONTLIST", "DocId" => "font_pdf" ),
+					"OrderNumber" => array ( "Title" => "ORDERNUMBER", "DocId" => "order_number" ),
 					"ReportJustify" => array ( "Type" => "HIDE" ),
 					"BeforeGroupHeader" => array ( "Title" => "BEFOREGROUPHEADER", "Type" => "DROPDOWN", "XlateOptions" => true,
-												"Values" => array("blankline", "solidline", "newpage") ),
+												"Values" => array("blankline", "solidline", "newpage"), "DocId" => "before_group_header" ),
 					"AfterGroupHeader" => array ( "Title" => "AFTERGROUPHEADER", "Type" => "DROPDOWN", "XlateOptions" => true,
-												"Values" => array("blankline", "solidline", "newpage") ),
+												"Values" => array("blankline", "solidline", "newpage"), "DocId" => "after_group_header" ),
 					"BeforeGroupTrailer" => array ( "Title" => "BEFOREGROUPTRAILER", "Type" => "DROPDOWN", "XlateOptions" => true,
-												"Values" => array("blankline", "solidline", "newpage") ),
+												"Values" => array("blankline", "solidline", "newpage"), "DocId" => "before_group_trailer" ),
 					"AfterGroupTrailer" => array ( "Title" => "AFTERGROUPTRAILER", "Type" => "DROPDOWN", "XlateOptions" => true,
-												"Values" => array("blankline", "solidline", "newpage") ),
-					"bodyDisplay" => array ( "Title" => "BODYDISPLAY", "Type" => "DROPDOWN",  "XlateOptions" => true,
-												"Values" => array("hide", "show") ),
-					"graphDisplay" => array ( "Title" => "GRAPHDISPLAY", "Type" => "DROPDOWN",  "XlateOptions" => true,
-												"Values" => array("hide", "show") ),
+												"Values" => array("blankline", "solidline", "newpage"), "DocId" => "after_group_trailer" ),
+					//"bodyDisplay" => array ( "Title" => "BODYDISPLAY", "Type" => "DROPDOWN",  "XlateOptions" => true,
+												//"Values" => array("hide", "show") ),
+					//"graphDisplay" => array ( "Title" => "GRAPHDISPLAY", "Type" => "DROPDOWN",  "XlateOptions" => true,
+												//"Values" => array("hide", "show") ),
 					"gridDisplay" => array ( "Title" => "GRIDDISPLAY", "Type" => "DROPDOWN",  "XlateOptions" => true,
-												"Values" => array(".DEFAULT", "hide", "show") ),
+												"Values" => array(".DEFAULT", "hide", "show"), "DocId" => "display_grid" ),
 					"gridSortable" => array ( "Title" => "GRIDSORTABLE", "Type" => "DROPDOWN",  "XlateOptions" => true,
-												"Values" => array(".DEFAULT", "yes", "no") ),
+												"Values" => array(".DEFAULT", "yes", "no"), "DocId" => "sortable_grid" ),
 					"gridSearchable" => array ( "Title" => "GRIDSEARCHABLE", "Type" => "DROPDOWN",  "XlateOptions" => true,
-												"Values" => array(".DEFAULT", "yes", "no") ),
+												"Values" => array(".DEFAULT", "yes", "no"), "DocId" => "searchable_grid_" ),
 					"gridPageable" => array ( "Title" => "GRIDPAGEABLE", "Type" => "DROPDOWN",  "XlateOptions" => true,
-												"Values" => array(".DEFAULT", "yes", "no") ),
-					"gridPageSize" => array ( "Title" => "GRIDPAGESIZE", "XlateOptions" => true ),
+												"Values" => array(".DEFAULT", "yes", "no"), "DocId" => "display_grid" ),
+					"gridPageSize" => array ( "Title" => "GRIDPAGESIZE", "XlateOptions" => true, "DocId" => "grid_page_size" ),
 					"formBetweenRows" => array ( "Title" => "FORMBETWEENROWS", "Type" => "DROPDOWN", "XlateOptions" => true,
-									"Values" => array("blankline", "solidline", "newpage") ),
-					"GroupHeaderColumn" => array ( "Title" => "GROUPHEADERCOLUMN", "Type" => "QUERYCOLUMNS" ),
-					"GroupTrailerDisplayColumn" => array ( "Title" => "GROUPTRAILERDISPLAYCOLUMN", "Type" => "QUERYCOLUMNS" ),
-					"GroupTrailerValueColumn" => array ( "Title" => "GROUPTRAILERVALUECOLUMN", "Type" => "QUERYCOLUMNS" ),
-					"LineNumber" => array ( "Title" => "LINENUMBER" ),
-					"HeaderText" => array ( "Title" => "HEADERTEXT", "Type" => "TEXTBOXSMALL", "WizardLink" => true, "HasChangeComparator" => true ),
-					"FooterText" => array ( "Title" => "FOOTERTEXT", "Type" => "TEXTBOXSMALL", "WizardLink" => true, "HasChangeComparator" => true ),
+									"Values" => array("blankline", "solidline", "newpage"), "DocId" => "form_style_row_separator" ),
+					"GroupHeaderColumn" => array ( "Title" => "GROUPHEADERCOLUMN", "Type" => "QUERYCOLUMNS", "DocId" => "group_header_column" ),
+					"GroupTrailerDisplayColumn" => array ( "Title" => "GROUPTRAILERDISPLAYCOLUMN", "Type" => "QUERYCOLUMNS",  "DocId" => "group_trailer_display_column" ),
+					"GroupTrailerValueColumn" => array ( "Title" => "GROUPTRAILERVALUECOLUMN", "Type" => "QUERYCOLUMNS",  "DocId" => "group_trailer_value_column" ),
+					"LineNumber" => array ( "Title" => "LINENUMBER", "DocId" => "line_number" ),
+					"HeaderText" => array ( "Title" => "HEADERTEXT", "Type" => "TEXTBOXSMALL", "WizardLink" => true, "HasChangeComparator" => true, "DocId" => "header_text" ),
+					"FooterText" => array ( "Title" => "FOOTERTEXT", "Type" => "TEXTBOXSMALL", "WizardLink" => true, "HasChangeComparator" => true, "DocId" => "footer_text" ),
 					"ShowInPDF" => array ( "Title" => "SHOWINPDF", "Type" => "DROPDOWN",  "XlateOptions" => true,
-												"Values" => array("yes", "no") ),
+												"Values" => array("yes", "no"), "DocId" => "show_in_pdf" ),
 					"ShowInHTML" => array ( "Title" => "SHOWINHTML", "Type" => "DROPDOWN",  "XlateOptions" => true,
-												"Values" => array("yes", "no") ),
-					"ColumnStartPDF" => array ( "Title" => "COLUMNSTARTPDF" ),
-					"ColumnWidthPDF" => array ( "Title" => "COLUMNWIDTHPDF" ),
-					"ColumnWidthHTML" => array ( "Title" => "COLUMNWIDTHHTML" ),
+												"Values" => array("yes", "no"), "DocId" => "show_in_html" ),
+					"ColumnStartPDF" => array ( "Title" => "COLUMNSTARTPDF", "DocId" => "column_start_pdf"),
+					"ColumnWidthPDF" => array ( "Title" => "COLUMNWIDTHPDF", "DocId" => "column_width_pdf"),
+					"ColumnWidthHTML" => array ( "Title" => "COLUMNWIDTHHTML", "DocId" => "column_width_html"),
 					"column_title" => array ( "Title" => "COLUMN_TITLE" ),
 					"tooltip" => array ( "Type" => "HIDE", "Title" => "TOOLTIP" ),
 					"group_header_label" => array ( "Title" => "GROUP_HEADER_LABEL" ),
 					"group_trailer_label" => array ( "Title" => "GROUP_TRAILER_LABEL" ),
-					"group_header_label_xpos" => array ( "Title" => "GROUP_HEADER_LABEL_XPOS" ),
-					"group_header_data_xpos" => array ( "Title" => "GROUP_HEADER_DATA_XPOS" ),
+					"group_header_label_xpos" => array ( "Title" => "GROUP_HEADER_LABEL_XPOS", "DocId" => "group_header_label_start_pdf" ),
+					"group_header_data_xpos" => array ( "Title" => "GROUP_HEADER_DATA_XPOS", "DocId" => "group_header_value_start_pdf" ),
 					"ReportJustify" => array ( "Type" => "HIDE" ),
-					"pdfFontSize" => array ( "Title" => "PDFFONTSIZE" ),
+					"pdfFontSize" => array ( "Title" => "PDFFONTSIZE", "DocId" => "font_size_pdf" ),
 					"GridPosition" => array ( "Title" => "GRIDPOSITION", "Type" => "DROPDOWN", 
 												"Values" => array(".DEFAULT", "back", "front") ),
 					"XGridDisplay" => array ( "Title" => "XGRIDDISPLAY", "Type" => "DROPDOWN", 
-												"Values" => array(".DEFAULT", "none", "major", "all") ),
+												"Values" => array(".DEFAULT", "none", "major", "all"), "DocId" => "x-grid_style" ),
 					"YGridDisplay" => array ( "Title" => "YGRIDDISPLAY", "Type" => "DROPDOWN", 
-												"Values" => array(".DEFAULT", "none", "major", "all") ),
+												"Values" => array(".DEFAULT", "none", "major", "all"), "DocId" => "y-grid_style" ),
 					"PlotType" => array ( "Title" => "PLOTSTYLE", "Type" => "DROPDOWN", 
-												"Values" => array("BAR", "STACKEDBAR", "OVERLAYBAR", "LINE", "AREACHART", "SCATTER", "PIE", "PIE3D") ),
-					"Title" => array ( "Title" => "TITLE" ), 
-					"CriteriaDefaults" => array ( "Title" => "CRITERIADEFAULTS", "HelpPage" => "criteria" ),
-					"CriteriaList" => array ( "Title" => "CRITERIALIST", "HelpPage" => "criteria" ),
+												"Values" => array("BAR", "STACKEDBAR", "OVERLAYBAR", "LINE", "AREACHART", "SCATTER", "PIE", "PIE3D"), "DocId" => "plot_style" ),
+					"Title" => array ( "Title" => "TITLE", "DocId" => "title" ), 
+					"CriteriaDefaults" => array ( "Title" => "CRITERIADEFAULTS", "HelpPage" => "criteria", "DocId" => "defaults" ),
+					"CriteriaList" => array ( "Title" => "CRITERIALIST", "HelpPage" => "criteria", "DocId" => "list_values" ),
 					"CriteriaType" => array ( "Title" => "CRITERIATYPE", "HelpPage" => "criteria", "Type" => "DROPDOWN", 
-					    "Values" => array("TEXTFIELD", "LOOKUP", "DATE", "DATERANGE", "LIST", "SQLCOMMAND" ), "XlateOptions" => true ),
+					    "Values" => array("TEXTFIELD", "LOOKUP", "DATE", "DATERANGE", "LIST", "SQLCOMMAND" ), "XlateOptions" => true, "DocId" => "criteria_type" ),
 					"CriteriaHelp" => array ( "Type" => "HIDE", "Title" => "CRITERIAHELP" ),
 					"Use" => array ( "Title" => "USE", "HelpPage" => "criteria", "Type" => "DROPDOWN", 
                                         "Values" => array("DATA-FILTER","SHOW/HIDE", "SHOW/HIDE-and-GROUPBY") ),
 					"LinkToReport" => array ( "Type" => "TEXTFIELDREADONLY", "Title" => "LINKTOREPORT" ),
 					"LinkToReportItem" => array ( "Type" => "TEXTFIELDREADONLY", "Title" => "LINKTOREPORTITEM" ),
 					"CriteriaDisplay" => array ( "Title" => "CRITERIADISPLAY", "Type" => "DROPDOWN", "HelpPage" => "criteria", "XlateOptions" => true, 
-												"Values" => array("NOINPUT", "TEXTFIELD", "DROPDOWN", "MULTI", "CHECKBOX", "RADIO", "DMYFIELD", "MDYFIELD", "YMDFIELD" ) ),
+												"Values" => array("NOINPUT", "TEXTFIELD", "DROPDOWN", "MULTI", "CHECKBOX", "RADIO", ), "DocId" => "criteria_display" ),
 					"ExpandDisplay" => array ( "Title" => "EXPANDDISPLAY", "Type" => "DROPDOWN", "HelpPage" => "criteria", "XlateOptions" => true, 
-												"Values" => array("NOINPUT", "TEXTFIELD", "TEXTBOX", "DROPDOWN", "MULTI", "CHECKBOX", "RADIO", "DMYFIELD", "MDYFIELD", "YMDFIELD" ) ),
+												"Values" => array("NOINPUT", "TEXTFIELD", "TEXTBOX", "DROPDOWN", "MULTI", "CHECKBOX", "RADIO", ), "DocId" => "expand_display" ),
 					"DatabaseType" => array ( "Title" => "DATABASETYPE", "Type" => "DROPDOWN", 
 												"Values" => array("informix", "mysql", "sqlite-2", "sqlite-3", "none" ) ),
 					"justify" => array ( "Title" => "JUSTIFY", "Type" => "DROPDOWN",  "XlateOptions" => true,
-												"Values" => array("left", "center", "right") ),
+												"Values" => array("left", "center", "right"), "DocId" => "justification" ),
 					"column_display" => array ( "Title" => "COLUMN_DISPLAY", "Type" => "DROPDOWN",  "XlateOptions" => true,
-												"Values" => array("show", "hide") ),
+												"Values" => array("show", "hide"), "DocId" => "show_or_hide" ),
 					"TitleFont" => array ( "Title" => "TITLEFONT", "Type" => "DROPDOWN", 
 								"Values" => $fontlist ),
 					"TitleFontStyle" => array ( "Title" => "TITLEFONTSTYLE", "Type" => "DROPDOWN", 
@@ -2139,6 +2148,7 @@ class reportico_xml_reader
                     $styletxt = "";
 					if ( $updates["AssignStyleFgColor"] ) $styletxt .=  "apply_style('".$updates["AssignStyleLocType"]."', 'color', '".$updates["AssignStyleFgColor"]."');";
 					if ( $updates["AssignStyleBgColor"] ) $styletxt .=  "apply_style('".$updates["AssignStyleLocType"]."', 'background-color', '".$updates["AssignStyleBgColor"]."');";
+					if ( $updates["AssignStyleFontName"] ) $styletxt .=  "apply_style('".$updates["AssignStyleLocType"]."', 'font-family', '".$updates["AssignStyleFontName"]."');";
 					if ( $updates["AssignStyleFontSize"] ) $styletxt .=  "apply_style('".$updates["AssignStyleLocType"]."', 'font-size', '".$updates["AssignStyleFontSize"]."');";
 					if ( $updates["AssignStyleWidth"] ) $styletxt .=  "apply_style('".$updates["AssignStyleLocType"]."', 'width', '".$updates["AssignStyleWidth"]."');";
 
@@ -2314,7 +2324,7 @@ class reportico_xml_reader
                     if ( isset($updates["FooterText_shadow"]) && $updates["FooterText_shadow"] != $updates["FooterText"] )
                         $updates["FooterText"] = $updates["FooterText"];
                     else
-					    $updates["FooterText"] = $this->query->apply_plugins("apply-section", array("type" => "PageFooter", "updates" => &$updates, "applyto" => $updates["FooterText"]) );
+					    $updates["FooterText"] = $this->apply_update_styles("PageFooter", $updates, $updates["FooterText"]);
 					$updateitem =& $anal["item"];
 					$updateitem->__construct(
 							$updates["LineNumber"], $updates["FooterText"]);
@@ -2367,7 +2377,6 @@ class reportico_xml_reader
 					$updateitem->criteria_type = $updates["CriteriaType"];
 					$updateitem->criteria_list = $updates["CriteriaList"];
 					$updateitem->criteria_display = $updates["CriteriaDisplay"];
-					//$updateitem->criteria_help = $updates["CriteriaHelp"];
 					$updateitem->expand_display = $updates["ExpandDisplay"];
 
 					if ( array_key_exists("ReturnColumn", $updates) )
@@ -2409,10 +2418,15 @@ class reportico_xml_reader
 
 				case "ghdr":
 					//$updates["GroupHeaderCustom"] = $this->apply_pdf_styles ( "GroupHeader", $updates, $updates["GroupHeaderCustom"] );
-                    if ( isset($updates["GroupHeaderCustom_shadow"]) && $updates["GroupHeaderCustom_shadow"] != $updates["GroupHeaderCustom"] )
-                        $updates["GroupHeaderCustom"] = $updates["GroupHeaderCustom"];
+                    if ( isset ($this->field_display["GroupHeaderCustom"] ) )
+                    {
+                        if ( isset($updates["GroupHeaderCustom_shadow"]) && $updates["GroupHeaderCustom_shadow"] != $updates["GroupHeaderCustom"] )
+                            $updates["GroupHeaderCustom"] = $updates["GroupHeaderCustom"];
+                        else
+					        $updates["GroupHeaderCustom"] = $this->apply_update_styles("GroupHeader", $updates, $updates["GroupHeaderCustom"]);
+                    }
                     else
-					    $updates["GroupHeaderCustom"] = $this->query->apply_plugins("apply-section", array("type" => "GroupHeader", "updates" => &$updates, "applyto" => $updates["GroupHeaderCustom"]) );
+                        $updates["GroupHeaderCustom"] = false;
 					$updateitem =& $anal["item"];
 					$gr =& $anal["group"];
 					$anal["quer"]->set_group_header_by_number 
@@ -2421,10 +2435,15 @@ class reportico_xml_reader
 
 				case "gtrl":
 					//$updates["GroupTrailerCustom"] = $this->apply_pdf_styles ( "GroupTrailer", $updates, $updates["GroupTrailerCustom"] );
-                    if ( isset($updates["GroupTrailerCustom_shadow"]) && $updates["GroupTrailerCustom_shadow"] != $updates["GroupTrailerCustom"] )
-                        $updates["GroupTrailerCustom"] = $updates["GroupTrailerCustom"];
+                    if ( isset ($this->field_display["GroupTrailerCustom"] ) )
+                    {
+                        if ( isset($updates["GroupTrailerCustom_shadow"]) && $updates["GroupTrailerCustom_shadow"] != $updates["GroupTrailerCustom"] )
+                            $updates["GroupTrailerCustom"] = $updates["GroupTrailerCustom"];
+                        else
+					        $updates["GroupTrailerCustom"] = $this->apply_update_styles("GroupTrailer", $updates, $updates["GroupTrailerCustom"]);
+                    }
                     else
-					    $updates["GroupTrailerCustom"] = $this->query->apply_plugins("apply-section", array("type" => "GroupTrailer", "updates" => &$updates, "applyto" => $updates["GroupTrailerCustom"]) );
+                        $updates["GroupTrailerCustom"] = false;
 					$updateitem =& $anal["item"];
 					$gr =& $anal["group"];
 					$anal["quer"]->set_group_trailer_by_number 
@@ -2512,7 +2531,7 @@ class reportico_xml_reader
                     if ( isset($updates["HeaderText_shadow"]) && $updates["HeaderText_shadow"] != $updates["HeaderText"] )
                         $updates["HeaderText"] = $updates["HeaderText"];
                     else
-					    $updates["HeaderText"] = $this->query->apply_plugins("apply-section", array("type" => "PageHeader", "updates" => &$updates, "applyto" => $updates["HeaderText"]) );
+			            $updates["HeaderText"] = $this->apply_update_styles("PageHeader", $updates, $updates["HeaderText"]);
 					$updateitem =& $anal["item"];
 					$updateitem->__construct(
 							$updates["LineNumber"], $updates["HeaderText"]);
@@ -2871,18 +2890,16 @@ class reportico_xml_reader
 		{
             if ( $this->query->url_path_to_assets )
             {
-			    $docpath = $this->query->url_path_to_assets."/doc/reportico/tutorial_reportico.".$helppage.".pkg.html";
 			    $helpimg = $this->query->url_path_to_assets."/images/help.png";
-			    $text .= '<a target="_blank" href="'.$docpath.'#'.$helppage.'.'.$striptag.'">';
+			    $text .= '<a target="_blank" href="'.$this->help_path($helppage, $striptag).'">';
 			    $text .= '<img class="swMntHelpImage" alt="tab" src="'.$helpimg.'">';
 			    $text .= '</a>&nbsp;';
             }
             else
             {
-			    $docpath = find_best_url_in_include_path( "doc/reportico/tutorial_reportico.".$helppage.".pkg.html" );
 			    $helpimg = find_best_url_in_include_path( "images/help.png" );
                 $dr = get_reportico_url_path();
-			    $text .= '<a target="_blank" href="'.$dr.$docpath.'">';
+			    $text .= '<a target="_blank" href="'.$this->help_path($helppage, $striptag).'">';
 			    $text .= '<img class="swMntHelpImage" alt="tab" src="'.$dr.$helpimg.'">';
 			    $text .= '</a>&nbsp;';
             }
@@ -2969,6 +2986,25 @@ class reportico_xml_reader
 
 		return $text;
 	}
+
+    // Generate link to help for specific field
+    function help_path($section, $field = false)
+    {
+        $fieldtag = $field;
+        if ( isset($this->field_display["$field"]) && isset($this->field_display["$field"]["DocId"] ))
+            $fieldtag = $this->field_display["$field"]["DocId"] ;
+        $path = $this->query->url_doc_site."/".$this->query->version."/"."doku.php?id=";
+
+        if ( isset($this->field_display["$field"]) && isset($this->field_display["$field"]["DocSection"] ))
+            $path .= $this->field_display["$field"]["DocSection"];
+        else if ( $section )
+            $path .= $this->get_help_link($section);
+
+
+        if ( $fieldtag )
+            $path .= "#$fieldtag";
+        return $path;
+    }
 
     // Creates select list box from a directory file list
 	function draw_select_file_list ($path, $filematch, $showtag, $preselectedvalue, $addblank, $translateoptions, $fieldtype = "set" )
@@ -3857,21 +3893,22 @@ class reportico_xml_reader
 							if ( preg_match( $match, $parent_id ) )
 							{
 								if ( $this->is_showing ( $parent_id ) )
-                                    $text .= $this->query->apply_plugins("draw-section", array("parent" => &$this, "parent_id" => &$parent_id, "type" => "PageHeader", "value" => $val, "tagct" => &$tagct));
+                                    $text .= $this->draw_style_wizard($parent_id, "PageHeader", $val, $tagct);
+                                    //$text .= $this->query->apply_plugins("draw-section", array("parent" => &$this, "parent_id" => &$parent_id, "type" => "PageHeader", "value" => $val, "tagct" => &$tagct));
 							}
 
 							$match = "/ghdr[0-9][0-9][0-9][0-9]/";
 							if ( preg_match( $match, $parent_id ) )
 							{
 								if ( $this->is_showing ( $parent_id ) )
-                                    $text .= $this->query->apply_plugins("draw-section", array("parent" => &$this, "parent_id" => &$parent_id, "type" => "GroupHeader", "value" => $val, "tagct" => &$tagct));
+                                    $text .= $this->draw_style_wizard($parent_id, "GroupHeader", $val, $tagct);
 							}
 
 							$match = "/gtrl[0-9][0-9][0-9][0-9]/";
 							if ( preg_match( $match, $parent_id ) )
 							{
 								if ( $this->is_showing ( $parent_id ) )
-                                    $text .= $this->query->apply_plugins("draw-section", array("parent" => &$this, "parent_id" => &$parent_id, "type" => "GroupTrailer", "value" => $val, "tagct" => &$tagct));
+                                    $text .= $this->draw_style_wizard($parent_id, "GroupTrailer", $val, $tagct);
 							}
 
 							$match = "/pgft[0-9][0-9][0-9][0-9]/";
@@ -4016,7 +4053,9 @@ class reportico_xml_reader
 						&& $k != "RowSelection"
 						)
                     {
-						$text .= $this->display_maintain_field($k, $val, $fct);
+                        if ( isset($this->field_display[$k] ) )
+						    $text .= $this->display_maintain_field($k, $val, $fct);
+                        //else
                         if ( isset($this->field_display[$k]) && isset($this->field_display[$k]["HasChangeComparator"]) && $this->field_display[$k]["HasChangeComparator"] )
                         {
 						    $text .= $this->display_maintain_field($k, $val, $fct, true, false, false, false, true);
@@ -4031,21 +4070,186 @@ class reportico_xml_reader
 
 	}
 
+    function draw_style_wizard(&$in_parent, $type, $val, &$tagct)
+    {
+        $parent = &$this;
+        $text = "";
+        $tagct = 1;
+        $tmpid = $parent->id;
+        $parent->id = $in_parent;
+        $blocktype = "assignTypeStyle";
+        $text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="'.$blocktype.
+        '" href="javascript:toggleLine(\''.$blocktype.'\')">+</a><b>'.template_xlate("OUTPUTSTYLESWIZARD").'</b></TD></TR>';
+        $val = false;
+                
+        // Extract existing styles into wizard elements
+        $styles = array(
+            "color" => false,
+            "background-color" => false,
+            "border-style" => false,
+            "border-width" => false,
+            "border-color" => false,
+            "margin" => false,
+            "position" => false,
+            "padding" => false,
+            "height" => false,
+            "width" => false,
+            "font-family" => false,
+            "font-size" => false,
+            "font-style" => false,
+            "background-image" => false,
+        );
+        if ( $parent->wizard_linked_to )
+        {
+            if (preg_match("/{STYLE[ ,]*([^}].*)}/", $parent->wizard_linked_to , $matches))
+            {
+                if ( isset($matches[1]))
+                {
+                    $stylearr = explode(";",$matches[1]);
+                    foreach ($stylearr as $v )
+                    {
+                        $element = explode(":",$v);
+                        if ( $element && isset($element[1]))
+                        {
+                            $styles[$element[0]] = trim($element[1]);
+                        }
+                    }
+                }
+            }
+        }
+        if ( $styles["border-style"] )
+        {
+            if ( $styles["border-style"] == "noone" ) $styles["border-style"] = "NONE";
+            if ( $styles["border-style"] == "solid" ) $styles["border-style"] = "SOLIDLINE";
+            if ( $styles["border-style"] == "dotted" ) $styles["border-style"] = "DOTTED";
+            if ( $styles["border-style"] == "dashed" ) $styles["border-style"] = "DASHED";
+        }
+
+        if ( $styles["font-style"] )
+            if ( $styles["font-style"] == "noone" ) $styles["border-style"] = "NONE";
+
+        if ( $styles["position"] )
+            if ( $styles["position"] == "absolute" ) $styles["position"] = "ABSOLUTE";
+
+
+        $text .= $parent->display_maintain_field("${type}StyleFgColor", $styles["color"], $tagct, true, false, $blocktype); $tagct++;
+        $text .= $parent->display_maintain_field("${type}StyleBgColor", $styles["background-color"], $tagct, true, false, $blocktype); $tagct++;
+        $text .= $parent->display_maintain_field("${type}StyleBorderStyle", $styles["border-style"], $tagct, true, false, $blocktype); $tagct++;
+        $text .= $parent->display_maintain_field("${type}StyleBorderSize", $styles["border-width"], $tagct, true, false, $blocktype); $tagct++;
+        $text .= $parent->display_maintain_field("${type}StyleBorderColor", $styles["border-color"], $tagct, true, false, $blocktype); $tagct++;
+        $text .= $parent->display_maintain_field("${type}StyleMargin", $styles["margin"], $tagct, true, false, $blocktype); $tagct++;
+        $text .= $parent->display_maintain_field("${type}StylePadding", $styles["padding"], $tagct, true, false, $blocktype); $tagct++;
+        $text .= $parent->display_maintain_field("${type}StyleHeight", $styles["height"], $tagct, true, false, $blocktype); $tagct++;
+        $text .= $parent->display_maintain_field("${type}StyleWidth", $styles["width"], $tagct, true, false, $blocktype); $tagct++;
+        $text .= $parent->display_maintain_field("${type}StylePosition", $styles["position"], $tagct, true, false, $blocktype); $tagct++;
+        $text .= $parent->display_maintain_field("${type}StyleFontName", $styles["font-family"], $tagct, true, false, $blocktype); $tagct++;
+        $text .= $parent->display_maintain_field("${type}StyleFontSize", $styles["font-size"], $tagct, true, false, $blocktype); $tagct++;
+        $text .= $parent->display_maintain_field("${type}StyleFontStyle", $styles["font-style"], $tagct, true, false, $blocktype); $tagct++;
+
+        if ( $type == "PageHeader" || $type == "PageFooter" || $type == "GroupHeader" || $type == "GroupTrailer" )
+        {
+            $text .= $parent->display_maintain_field("${type}StyleBackgroundImage", $styles["background-image"], $tagct, true, false, $blocktype); $tagct++;
+        }
+
+        $parent->id = $tmpid;
+    
+        return $text;
+    }
+
+    function apply_update_styles($type, &$updates, $applyto)
+    {
+        $styletxt = "";
+        if ( $updates["${type}StyleFgColor"] ) $styletxt .=  "color: ".$updates["${type}StyleFgColor"].";";
+        if ( $updates["${type}StyleBgColor"] ) $styletxt .=  "background-color:".$updates["${type}StyleBgColor"].";";
+        if ( $updates["${type}StyleFontName"] ) $styletxt .=  "font-family:".$updates["${type}StyleFontName"].";";
+        if ( $updates["${type}StyleFontSize"] ) $styletxt .=  "font-size:".$updates["${type}StyleFontSize"].";";
+        if ( $updates["${type}StyleWidth"] ) $styletxt .=  "width:".$updates["${type}StyleWidth"].";";
+        if ( $updates["${type}StyleHeight"] ) $styletxt .=  "height:".$updates["${type}StyleHeight"].";";
+
+        if ( $updates["${type}StyleFontStyle"] && $updates["${type}StyleFontStyle"] != "NONE" )
+        {
+            $stylevalue = "none";
+            if ( $updates["${type}StyleFontStyle"] == "BOLD" || $updates["${type}StyleFontStyle"] == "BOLDANDITALIC" ) 
+            if ( $updates["${type}StyleFontStyle"] ) $styletxt .=  "font-weight:bold;";
+            if ( $updates["${type}StyleFontStyle"] == "ITALIC" || $updates["${type}StyleFontStyle"] == "BOLDANDITALIC" ) 
+            if ( $updates["${type}StyleFontStyle"] ) $styletxt .=  "font-style:italic;";
+            if ( $updates["${type}StyleFontStyle"] == "NORMAL" ) 
+            if ( $updates["${type}StyleFontStyle"] ) $styletxt .=  "font-style:normal;";
+            if ( $updates["${type}StyleFontStyle"] == "UNDERLINE" ) 
+            if ( $updates["${type}StyleFontStyle"] == "UNDERLINE" ) 
+            if ( $updates["${type}StyleFontStyle"] ) $styletxt .=  "text-decoration:underline;";
+            if ( $updates["${type}StyleFontStyle"] == "OVERLINE" ) 
+            if ( $updates["${type}StyleFontStyle"] ) $styletxt .=  "text-decoration:overline;";
+            if ( $updates["${type}StyleFontStyle"] == "BLINK" ) 
+            if ( $updates["${type}StyleFontStyle"] ) $styletxt .=  "text-decoration:blink;";
+            if ( $updates["${type}StyleFontStyle"] == "STRIKETHROUGH" ) 
+            if ( $updates["${type}StyleFontStyle"] ) $styletxt .=  "text-decoration:line-through;";
+        }
+
+        if ( $updates["${type}StylePosition"] )
+        {
+            $stylevalue = "none";
+            //if ( $updates["${type}StylePosition"] == "RELATIVE" || $updates["${type}StylePosition"] == "relative" ) 
+            if ( $updates["${type}StylePosition"] == "ABSOLUTE" )
+                $styletxt .= "position: absolute;";
+        }
+
+        if ( !$updates["${type}StyleBorderStyle"] || $updates["${type}StyleBorderStyle"] == "NOBORDER" )
+        {
+            if ( $updates["${type}StyleBorderSize"] || $updates["${type}StyleBorderColor"] )
+            trigger_error ( template_xlate("SETBORDERSTYLE"), E_USER_ERROR );
+        }
+        else
+        {
+            $stylevalue = "none";
+            if ( $updates["${type}StyleBorderStyle"] == "SOLIDLINE" ) $stylevalue = "solid";
+            if ( $updates["${type}StyleBorderStyle"] == "DASHED" ) $stylevalue = "dashed";
+            if ( $updates["${type}StyleBorderStyle"] == "DOTTED" ) $stylevalue = "dotted";
+            $styletxt .=  "border-style:$stylevalue;";
+            if ( $updates["${type}StyleBorderSize"] ) $styletxt .=  "border-width:".$updates["${type}StyleBorderSize"].";";
+            if ( $updates["${type}StyleBorderColor"] ) $styletxt .=  "border-color:".$updates["${type}StyleBorderColor"].";";
+        }
+        
+        if ( $updates["${type}StylePadding"] ) 
+        {
+            $styletxt .=  "padding:".$updates["${type}StylePadding"].";";
+        }
+
+        if ( $updates["${type}StyleBackgroundImage"] ) 
+        {
+            $styletxt .=  "background-image:".$updates["${type}StyleBackgroundImage"].";";
+        }
+
+        if ( $updates["${type}StyleMargin"] ) 
+        {
+            $styletxt .=  "margin:".$updates["${type}StyleMargin"].";";
+        }
+
+        if ( $styletxt )
+        {
+            $applyto = preg_replace("/{STYLE [^}]*}/", "", $applyto);
+            $applyto .= "{STYLE $styletxt}";
+        }
+        return $applyto;
+    }
+
+
 	function get_help_link($tag)
 	{
 		$helppage = false;
 		$stub = substr($tag, 0, 12 );
 		if ( $stub == "mainquercrit" )
-			$helppage = "criteria";
+			$helppage = "the_criteria_menu";
 		else if ( $stub == "mainquerassg" )
-			$helppage = "assign";
+			$helppage = "the_assignments_menu";
 		else if ( $stub == "mainquerqury" )
-			$helppage = "qrydet";
+			$helppage = "the_query_details_menu";
 		else if ( $stub == "mainqueroutp" )
-			$helppage = "output";
+			$helppage = "the_output_menu";
 		else if ( $stub == "mainquerform" )
-			$helppage = "format";
-
+			$helppage = "the_design_format_menu";
+        else
+            $helppage = $stub;
 		return $helppage;
 	}
 
@@ -4130,18 +4334,16 @@ class reportico_xml_reader
 		{
             if ( $this->query->url_path_to_assets )
             {
-			    $docpath = $this->query->url_path_to_assets."/doc/reportico/tutorial_reportico.".$helppage.".pkg.html";
 			    $helpimg = $this->query->url_path_to_assets."/images/help.png";
-			    $text .= '<a target="_blank" href="'.$docpath.'#'.$helppage.'.'.$striptag.'">';
+                $text .= '<a target="_blank" href="'.$this->help_path($this->id, $striptag).'">';
 			    $text .= '<img class="swMntHelpImage" alt="tab" src="'.$helpimg.'">';
 			    $text .= '</a>&nbsp;';
             }
             else
             {
-			    $docpath = find_best_url_in_include_path( "doc/reportico/tutorial_reportico.".$helppage.".pkg.html" );
 			    $helpimg = find_best_url_in_include_path( "images/help.png" );
                 $dr = get_reportico_url_path();
-			    $text .= '<a target="_blank" href="'.$dr.$docpath.'#'.$helppage.'.'.$striptag.'">';
+			    $text .= '<a target="_blank" href="'.$this->help_path($this->id, $striptag).'">';
 			    $text .= '<img class="swMntHelpImage" alt="tab" src="'.$dr.$helpimg.'">';
 			    $text .= '</a>&nbsp;';
             }
@@ -4672,6 +4874,7 @@ class reportico_xml_reader
 		$text .= $this->display_maintain_field("AssignStyleMargin", false, $tagct, true, false, $blocktype); $tagct++;
 		$text .= $this->display_maintain_field("AssignStylePadding", false, $tagct, true, false, $blocktype); $tagct++;
 		$text .= $this->display_maintain_field("AssignStyleWidth", false, $tagct, true, false, $blocktype); $tagct++;
+		$text .= $this->display_maintain_field("AssignStyleFontName", false, $tagct, true, false, $blocktype); $tagct++;
 		$text .= $this->display_maintain_field("AssignStyleFontSize", false, $tagct, true, false, $blocktype); $tagct++;
 		$text .= $this->display_maintain_field("AssignStyleFontStyle", false, $tagct, true, false, $blocktype); $tagct++;
 
@@ -5575,6 +5778,8 @@ class reportico_xml_writer
 				foreach ( $val->headers as $k5 => $val2 )
 				{
 					$gphi =& $gph->add_xmlval ( "GroupHeader" );
+                    if ( !isset($val2["GroupHeaderCustom"] ))
+                        $val2["GroupHeaderCustom"] = false;
 					$el =& $gphi->add_xmlval ( "GroupHeaderColumn", $val2["GroupHeaderColumn"]->query_name );
 					$el =& $gphi->add_xmlval ( "GroupHeaderCustom", $val2["GroupHeaderCustom"]);
 				}
@@ -5586,6 +5791,8 @@ class reportico_xml_writer
 					if ( is_array ( $val2) )
 					foreach ( $val2 as $kkk => $val3 )
 					{
+                    if ( !isset($val3["GroupTrailerCustom"] ))
+                        $val3["GroupTrailerCustom"] = false;
 					$gpti =& $gpt->add_xmlval ( "GroupTrailer" );
 					$el =& $gpti->add_xmlval ( "GroupTrailerDisplayColumn", $k2 );
 					$el =& $gpti->add_xmlval ( "GroupTrailerValueColumn", $val3["GroupTrailerValueColumn"]->query_name );
