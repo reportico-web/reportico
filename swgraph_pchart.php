@@ -777,7 +777,7 @@ $graphImage->setFontProperties(PCHARTFONTS_DIR.$this->xtitlefont,$this->xtitlefo
 if ( $scalerequired )
 {
     $graphImage->setGraphArea($this->marginleft_actual,$this->margintop_actual,$this->width_pdf_actual - $this->marginright,$this->height_pdf_actual - $this->marginbottom_actual);
-    $graphImage->drawGraphAreaGradient(240,240,240,-20);   
+    //$graphImage->drawGraphAreaGradient(240,240,240,-20);   
 
     // Automatic generation of x tick interval based on number of ticks
     if ( $this->xticklabelinterval_actual == "AUTO" )
