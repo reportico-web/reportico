@@ -1089,9 +1089,8 @@ input.swAdminButton2
 
 /* -------------------------- Printed Output Styles ----------------------------------*/
 .swPageHeaderBlock { display: block; width: 100%; position: relative; }
-.swPageHeader { display: block; position: absolute; }
+.swPageHeader { position: absolute; }
 
-/*
 @page {
     @top {
         content: element(pageHeader);
@@ -1102,9 +1101,11 @@ input.swAdminButton2
     background-color: #ff3333;
     position: running(pageHeader);
 }
-*/
 
 
+/*@media screen {
+    .swPageHeaderBlock { display: none; }
+}*/
 
 @media print {
 
