@@ -119,7 +119,7 @@
 <div style="height: 78px" class="swAdminBanner">
 <div style="float: right;">
 <img height="78px" src="{$REPORTICO_URL_DIR}/images/reportico100.png"/>
-
+<div class="smallbanner">Version <a href="http://www.reportico.org/" target="_blank">{$REPORTICO_VERSION}</a></div>
 </div>
 <div style="height: 78px">
 <H1 class="swTitle" style="text-align: center; padding-top: 30px; padding-left: 200px;">{$T_ADMINTITLE}</H1>
@@ -297,7 +297,7 @@
 		
 		<TR> <TD>&nbsp;</TD> </TR>
 		<TR> 
-			<TD class="swMenuItem" style="width: 30%"><a href="{$REPORTICO_URL_DIR}/doc/li_reportico.html">{$T_DOCUMENTATION}</a>
+			<TD class="swMenuItem" style="width: 30%"><a target="_blank" href="{$REPORTICO_SITE}documentation/{$REPORTICO_VERSION}">{$T_DOCUMENTATION}</a>
 			</TD>
 		</TR>
 	</TABLE>
@@ -355,7 +355,6 @@
 
 
 
-<!--div class="smallbanner">Powered by <a href="http://www.reportico.org/" target="_blank">reportico {$REPORTICO_VERSION}</a></div-->
 </div>
 {if !$REPORTICO_AJAX_CALLED}
 {if !$EMBEDDED_REPORT} 
