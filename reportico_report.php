@@ -161,10 +161,10 @@ class reportico_report extends reportico_object
 
 	function start ()
 	{
-		$this->body_display = $this->query->derive_attribute( "bodyDisplay",  "show" );
+		$this->body_display = "show";
 		if ( get_request_item("hide_output_text") )
             $this->body_display = false;
-		$this->graph_display = $this->query->derive_attribute( "graphDisplay",  "show" );
+		$this->graph_display = "show";
 		if ( get_request_item("hide_output_graph") )
             $this->graph_display = false;
 		$this->page_line_count = 0;
@@ -221,6 +221,21 @@ class reportico_report extends reportico_object
 		return;
 	}
 
+    function format_custom_trailer(&$trailer_col, &$value_col) // PDF
+	{
+		return;
+	}
+
+	function custom_trailer_wrappers()
+	{
+		return;
+	}
+    
+	function end_of_page_block()
+	{
+		return;
+	}
+
 
 	function format_criteria_selection_set()
 	{
@@ -229,6 +244,7 @@ class reportico_report extends reportico_object
 			$this->before_format_criteria_selection();
 			foreach ( $this->query->lookup_queries as $name => $crit)
 			{
+echo "got $name <BR>";
 				$label = "";
 				$value = "";
 
@@ -236,6 +252,7 @@ class reportico_report extends reportico_object
                 {
 					$label = $crit->derive_attribute("column_title", $crit->query_name);
                     $value = $crit->criteria_summary;
+echo "sum $name $value<BR>";
                 }
                 else
                 {
@@ -310,7 +327,13 @@ class reportico_report extends reportico_object
 		$this->format_page_header_start();
 		foreach($this->query->page_headers as $ph)
 		{
-				$this->format_page_header($ph);
+                if (
+                    ( $ph->get_attribute("ShowInHTML") == "yes" && get_class($this) == "reportico_report_html" )
+                    || ( $ph->get_attribute("ShowInPDF")  == "yes"&& $this->query->target_format == "PDF" )
+                    )
+                {
+				    $this->format_page_header($ph);
+                }
 		}
 		$this->format_page_header_end();
 	}
@@ -320,7 +343,13 @@ class reportico_report extends reportico_object
 		$this->format_page_footer_start();
 		foreach($this->query->page_footers as $ph)
 		{
-				$this->format_page_footer($ph);
+                if (
+                    ( $ph->get_attribute("ShowInHTML") == "yes" && get_class($this) == "reportico_report_html" )
+                    || ( $ph->get_attribute("ShowInPDF")  == "yes"&& $this->query->target_format == "PDF" )
+                    )
+                {
+				    $this->format_page_footer($ph);
+                }
 		}
 		$this->format_page_footer_end();
 	}
@@ -542,7 +571,7 @@ class reportico_report extends reportico_object
                                 $number_group_rows = 0;
                         for ( $passno = 1; $passno <= 2; $passno++ )
                         {
-                            if (  get_class($this) == "reportico_report_pdf" )
+                            if (  $this->query->target_format == "PDF" )
                             {
                                 if ( $passno == 1 ) $this->draw_mode = "CALCULATE";
                                 if ( $passno == 2 ) 
@@ -647,7 +676,7 @@ class reportico_report extends reportico_object
                 $this->format_group_trailer_end();
             }
 
-            if ( $group_changed && get_class($this) == "reportico_report_pdf" )
+            if ( $group_changed && $this->query->target_format == "PDF" )
             {
 //echo "<BR>GROUP TRAILER $group->group_name END<BR>";
                 $this->end_of_page_block();
@@ -661,14 +690,13 @@ class reportico_report extends reportico_object
 				$group = current($this->query->groups);
 				if ( $this->query->changed($group->group_name) || $this->last_line) 
 				{
-echo "GROUP CH $group->group_name <BR>";
                     $this->format_group_custom_trailer_start();
                     // In PDF mode all trailer lines must be passed through twice
                     // to allow calculation of line height. Otherwise
                     // Only one pass through
                     for ( $passno = 1; $passno <= 2; $passno++ )
                     {
-                        if ( get_class($this) == "reportico_report_pdf" )
+                        if ( $this->query->target_format == "PDF" )
                         {
                             if ( $passno == 1 ) $this->draw_mode = "CALCULATE";
                             if ( $passno == 2 ) 
@@ -683,7 +711,7 @@ echo "GROUP CH $group->group_name <BR>";
                             if ( $passno == 2 ) break;
                         }
                         // Column Trailers
-                        if ( get_class($this) == "reportico_report_pdf" )
+                        if ( $this->query->target_format == "PDF" )
                         {
                             foreach ($group->trailers as $kk => $trailer )
                             {
@@ -804,12 +832,14 @@ echo "GROUP CH $group->group_name <BR>";
 
  
 	            if ( get_reportico_session_param("target_show_group_headers") )
+                {
 				    for ($i = 0; $i < count($group->headers); $i++ )
 				    {
 				        $col =& $group->headers[$i]["GroupHeaderColumn"];
 				        $custom = $group->headers[$i]["GroupHeaderCustom"];
 				        $this->format_group_header($col, $custom);
 				    }
+                }
 
 				if ( $graphs =& $this->query->get_graph_by_name($group->group_name) )
 				{

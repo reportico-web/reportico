@@ -287,8 +287,8 @@ class reportico_report_html extends reportico_report
             }
 
         // If no width specified default to 100%
-        if ( !$widthset )
-            $styles .= "width:100%;";
+        //if ( !$widthset )
+            //$styles .= "width:100%;";
 
         return;
     }
