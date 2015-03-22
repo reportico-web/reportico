@@ -4896,6 +4896,25 @@ class reportico extends reportico_object
 			    return $val->column_value;
 		    }
 	    }
+
+        // Extract criteria item
+        if ( substr($name, 0, 1) == "?" || substr($name, 0, 1) == "=" )
+        {
+            $field = substr($name, 1);
+            $bits=explode(",", $field);
+            if ( isset($this->lookup_queries[$bits[0]] ))
+            {
+                if ( !isset($bits[1] ) )
+                    $bits[1] = "VALUE";
+                if ( !isset($bits[2] ) )
+                    $bits[2] = false;
+                if ( $bits[1] != "RANGE1" && $bits[1] != "RANGE2" && $bits[1] != "FULL" && $bits[1] != "VALUE" )
+                    $bits[1] = "VALUE";
+
+			    $x = $this->lookup_queries[$bits[0]]->get_criteria_value($bits[1], $bits[2]);
+                return $x;
+            }
+        }
     }
 
 	// -----------------------------------------------------------------------------
