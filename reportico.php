@@ -4814,11 +4814,21 @@ class reportico extends reportico_object
 		(
 			$query_name,
 			$expression,
-			$criteria
+			$criteria,
+            $atstart = false
 		)
 		{
 			//print("Added assign $query_name, $expression, $criteria<BR>");
-			$this->assignment[] = new reportico_assignment
+            if ( $atstart )
+                array_unshift($this->assignment, new reportico_assignment
+                (  
+                    $query_name,
+                    $expression,
+                    $criteria
+                    )
+                );
+            else
+			    $this->assignment[] = new reportico_assignment
 				(
 					$query_name,
 					$expression,
@@ -5835,7 +5845,7 @@ function set_project_environment($initial_project = false, $project_folder = "pr
             $condition = "{TARGET_FORMAT} == '$mode'";
         }
 
-        $this->add_assignment($usecolumn, $txt, $condition);
+        $this->add_assignment($usecolumn, $txt, $condition, true);
         
     }
 
