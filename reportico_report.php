@@ -130,10 +130,10 @@ class reportico_report extends reportico_object
 		$out_string = preg_replace('/page\(\)/', "$this->page_count", 
 			$out_string);
 
-		$out_string = preg_replace('/{page}/', "$this->page_count", 
+		$out_string = preg_replace('/{page}/i', "$this->page_count", 
 			$out_string);
 
-		$out_string = preg_replace('/{#page}/', "$this->page_count", 
+		$out_string = preg_replace('/{#page}/i', "$this->page_count", 
 			$out_string);
 
 		$out_string = preg_replace('/report_*title\(\)/i', $this->reporttitle, 
