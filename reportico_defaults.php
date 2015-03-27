@@ -20,41 +20,36 @@
 
 
              // REPORT BODY STYLES
-            /*
             $styles = array(
-                "background-color" => "#cccccc",
+                //"background-color" => "#cccccc",
                 "border-width" => "2px 2px 2px 2px",
                 "border-style" => "solid",
                 "border-color" => "#000000",
-                "color" => "#003f00",
-                "padding" => "0 20 0 20",
-                "margin" => "0 0 0 5",
+                //"color" => "#003f00",
+                //"padding" => "0 20 0 20",
+                //"margin" => "0 0 0 5",
                 "font-family" => "trebuchet",
                 );
             $reportico->apply_styleset("BODY", $styles, false);
-            */
 
             // PAGE DETAIL BOX STYLES
-            /*
             $styles = array(
-                "background-color" => "#ddeeee",
-                "border-width" => "8px 8px 8px 8px",
-                "border-style" => "solid",
-                "border-color" => "#777777",
-                "color" => "#003f00",
                 "margin" => "0 5 0 5",
                 );
             $reportico->apply_styleset("PAGE", $styles, false);
-            */
 
             // DETAIL ROW BOX STYLES
-            /*
             $styles = array(
                 "background-color" => "#eeeeee",
                 "margin" => "0 10 0 10",
                 );
             $reportico->apply_styleset("ROW", $styles, false);
-            */
+
+            $styles = array(
+                "background-color" => "#dddddd",
+                );
+            $reportico->apply_styleset("ALLCELLS", $styles, false, "PDF", "lineno() % 2 == 0");
+
 
             // GROUP HEADER VALUE STYLES
             /*
@@ -116,12 +111,10 @@
             */
 
             // Create Report Title Page Header on every page of PDF
-            /*
-            $reportico->create_page_header("H1", 1, "{REPORT_TITLE}{STYLE border-width: 1 1 1 1; border-color: #000000; font-size: 18; border-style: solid;padding:10px 14px 0px 6px; height:1cm;margin: 1cm 0cm 0cm 4cm; color: #000000;  width: 90%}" );
+            $reportico->create_page_header("H1", 1, "{REPORT_TITLE}{STYLE border-width: 1 0 1 0; margin: 15px 0px 0px 0px; border-color: #000000; font-size: 18; border-style: solid;padding:5px 0px 5px 0px; height:1cm; background-color: #000000; color: #ffffff}" );
             $reportico->set_page_header_attribute("H1", "ShowInHTML", "no" );
             $reportico->set_page_header_attribute("H1", "ShowInPDF", "yes" );
             $reportico->set_page_header_attribute("H1", "Justify", "right" );
-            */
 
             // Create Image on every page of PDF
             /*
@@ -130,15 +123,11 @@
             */
 
             // Create Image on every page of PDF
-            /*
-            $reportico->create_page_header("H3", 1, "Time: date('Y-m-d H:i:s'){STYLE font-size: 18; text-align: right}" );
+            $reportico->create_page_header("H3", 1, "Time: date('Y-m-d H:i:s'){STYLE font-size: 10; text-align: right}" );
             $reportico->set_page_header_attribute("H3", "ShowInHTML", "no" );
             $reportico->set_page_header_attribute("H3", "Justify", "right" );
-            */
 
             // Create Page No on bottom of PDF page
-            /*
-            $reportico->create_page_footer("F1", 1, "Page: {PAGE}{STYLE margin: 2 0 0 0; }" );
-            */
+            $reportico->create_page_footer("F1", 1, "Page: {PAGE}{STYLE border-width: 1 0 0 0; margin: 40 0 0 0; }" );
     }   
 ?>

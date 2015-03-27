@@ -5818,7 +5818,7 @@ function set_project_environment($initial_project = false, $project_folder = "pr
         }
     }
 
-    function apply_styleset($type, $styles, $column = false, $mode = false)
+    function apply_styleset($type, $styles, $column = false, $mode = false, $condition = false)
     {
         $txt = "";
         $usecolumn = false;
@@ -5839,11 +5839,10 @@ function set_project_environment($initial_project = false, $project_folder = "pr
         {
             $txt .= "apply_style('$type', '$element', '$style');";
         }
-        $condition = false;
-        if ( $mode )
-        {   
+        if ( $condition && $mode )
+            $condition = "$condition && {TARGET_FORMAT} == '$mode'";
+        else if ( $mode )
             $condition = "{TARGET_FORMAT} == '$mode'";
-        }
 
         $this->add_assignment($usecolumn, $txt, $condition, true);
         

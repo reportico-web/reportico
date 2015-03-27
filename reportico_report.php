@@ -244,7 +244,6 @@ class reportico_report extends reportico_object
 			$this->before_format_criteria_selection();
 			foreach ( $this->query->lookup_queries as $name => $crit)
 			{
-echo "got $name <BR>";
 				$label = "";
 				$value = "";
 
@@ -252,7 +251,6 @@ echo "got $name <BR>";
                 {
 					$label = $crit->derive_attribute("column_title", $crit->query_name);
                     $value = $crit->criteria_summary;
-echo "sum $name $value<BR>";
                 }
                 else
                 {
