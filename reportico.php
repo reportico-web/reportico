@@ -267,7 +267,7 @@ class reportico extends reportico_object
 	var $delete_project_url;
 	var $create_report_url;
 
-	var $version = "4.3";
+	var $version = "4.3-Beta";
 
 	var $name;
 	var $rowselection="all";
