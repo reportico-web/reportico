@@ -111,9 +111,7 @@ class reportico_report extends reportico_object
 							get_reportico_session_param($crit), $out_string);
 				}
 			}
-			
 		}
-
 
 		if ( preg_match("/date\((.*)\)/", $out_string, $match) )	
 		{
