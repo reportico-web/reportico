@@ -2490,12 +2490,10 @@ class reportico extends reportico_object
 				if ( $ct == $tn )
 				{
 					array_splice($grp->trailers[$k], $k2, 1 );
-					break;
+					return;
 				}
 				$ct++;
 			}
-			if ( $ct == $tn )
-				break;
 		}
 				
 	}
@@ -2543,8 +2541,19 @@ class reportico extends reportico_object
 			{
 				if ( $ct == $tn )
 				{
-					array_splice ( $grp->trailers[$k], $k2, 1 );
-					$grp->trailers[$trailer_column][] =& $trailer;
+                    $grp->trailers[$k][$k2] = $trailer;
+                    return;
+                    $pt1 = array_slice($grp->trailers[$trailer_column], 0, $ct, true);
+                    $pt2 = array_slice($grp->trailers[$trailer_column], $ct +1, false, true);
+                    $pt1[] =& $trailer;
+                    if ( $pt2 )
+                    {
+                        $grp->trailers[$trailer_column] = array_merge($pt1, $pt2);
+                    }
+                    else
+                    {
+                        $grp->trailers[$trailer_column] = $pt1;
+                    }
 					$looping = false;
 					break;
 				}
@@ -7815,14 +7824,8 @@ class reportico_assignment extends reportico_object
                             else
 							    $eltype = $critel[2];
 					}
-//echo "tyo 3 $crit".$eltype;
-//foreach ($in_query->lookup_queries as $k4 => $v4 )
-//{
-    //echo " k $k4";
-//}
 					if ( array_key_exists($crit, $in_query->lookup_queries) )
 					{
-//echo "yes <$eltype>";
 						switch ( $eltype )
 						{
 							case "FULL" :
@@ -7830,9 +7833,7 @@ class reportico_assignment extends reportico_object
 								break;
 	
 							case "RANGE1" :
-//echo "oollklkkk:w!";
 								$clause = $in_query->lookup_queries[$crit]->get_criteria_clause(false, false, false, true, false, $showquotes);
-//echo $clause;
 								break;
 	
 							case "RANGE2" :
