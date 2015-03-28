@@ -667,6 +667,7 @@ class reportico_report_html extends reportico_report
 		if ( $forward )
 			$forward .= "&";
 
+
 	    if ( !get_request_item("printable_html") )
         {
             if ( !$this->query->access_mode || ( $this->query->access_mode != "REPORTOUTPUT" )  )
@@ -675,13 +676,11 @@ class reportico_report_html extends reportico_report
             }
 	        if ( get_reportico_session_param("show_refresh_button") )
 		        $this->text .= '<div class="swRepRefreshBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'refreshReport=1&execute_mode=EXECUTE&reportico_session_name='.reportico_session_name().'" title="'.template_xlate("GO_REFRESH").'">&nbsp;</a></div>';
-	        $this->text .= '<div class="swJSONOutput"><a class="reporticoJSONExecute1 testy" href="'.$this->query->get_action_url().'?'.$forward.'refreshReport=1&target_format=JSON&execute_mode=EXECUTE&reportico_session_name='.reportico_session_name().'" title="'.template_xlate("GO_REFRESH").'">&nbsp;JSON</a></div>';
         }
         else
         {
 	        $this->text .= '<div class="swRepPrintBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'printReport=1&execute_mode=EXECUTE&reportico_session_name='.reportico_session_name().'" title="'.template_xlate("GO_PRINT").'">'.'&nbsp;'.'</a></div>';
         }
-
 	}
 
 	function before_format_criteria_selection()
