@@ -1,7 +1,13 @@
 Reportico Open Source PHP Report Designer
 =========================================
 
-4.0 - 29th May 2015
+4.3 - 28th May 2015
+-------------------
+Default styles and properties for all reports or in a project
+Use of TCPDF 
+PDF style options for images borders etc
+
+4.0 - 29th May 2014
 -------------------
 Pass sql to reportico engine without having to create report
 Support bootstrap both as loaded within Reportico and for embedding in exsiting bootstra web page
@@ -11,7 +17,7 @@ New SQL command criteria option to allow users to type in SQL
 Dropdown menu and static menu array passable to reportico engine to create configurable report menus
 Configurable turning on and off of UI elements such a report control checkboxes, output buttons etc
 
-3.3 - 24th May 2015
+3.3 - 24th May 2014
 -------------------
 Security Fixes
 Fix passing through of external user
