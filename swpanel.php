@@ -4459,10 +4459,15 @@ class reportico_xml_reader
 			case "FONTLIST":
 				$keys = array();
 				$keys[] = "";
-                if ( is_dir ( "tcpdf/fonts" ) )
-                    $testpath = "tcpdf/fonts";
+
+                if ( $this->query->pdf_engine == "fpdf" )
+                    $fontdir = "fpdf/font";
                 else
-				        $testpath = find_best_location_in_include_path( "tcpdf/font" );
+                    $fontdir = "tcpdf/fonts";
+                if ( is_dir ( $fontdir ) )
+                    $testpath = $fontdir;
+                else
+				    $testpath = find_best_location_in_include_path( $fontdir );
 				if (is_dir($testpath)) 
 				{
     				if ($dh = opendir($testpath)) 
