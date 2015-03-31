@@ -251,8 +251,8 @@
     // To hide the static report menu
     //$q->static_menu = array ();
 
-    // Required PDF Engine
-    $q->pdf_engine = "tcpdf";
+    // Required PDF Engine set -- to tcpdf ( default ) or fpdf 
+    //$q->pdf_engine = "tcpdf";
 
     // Dropdown Menu definition
     // ========================
