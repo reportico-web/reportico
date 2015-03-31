@@ -350,7 +350,7 @@ class reportico extends reportico_object
 
 	var $charting_engine = "PCHART";
 	var $charting_engine_html = "NVD3";
-	var $pdf_engine = "fpdf";
+	var $pdf_engine = "tcpdf";
 	var $pdf_engine_file = "reportico_report_fpdf";
 
     var $projects_folder = "projects";
