@@ -116,6 +116,7 @@ class reportico_report_tcpdf extends reportico_report
     var $row_styles = array();
     var $allcell_styles = array();
     var $cell_styles = array();
+    var $criteria_styles = array();
 
     // Drawing mode, in Calculate mode we run through a line of values calculating
     // total width and height and then draw all text elements in Draw mode based
@@ -138,11 +139,16 @@ class reportico_report_tcpdf extends reportico_report
     var $mid_page_page_styles = false;
     var $bottom_page_page_styles = false;
     var $mid_row_page_styles = false;
+    var $mid_cell_criteria_styles = false;
+    var $top_page_criteria_styles = false;
+    var $mid_page_criteria_styles = false;
+    var $bottom_page_criteria_styles = false;
     var $mid_cell_reportbody_styles = false;
     var $top_page_reportbody_styles = false;
     var $mid_page_reportbody_styles = false;
     var $bottom_page_reportbody_styles = false;
     var $all_page_row_styles = false;
+    var $all_page_criteria_styles = false;
 
     var $debugFp = false;
     var $page_detail_started = false;
@@ -192,6 +198,16 @@ echo $txt;
         	$this->query->output_before_form_row_styles["border-style"] = "solid";
         	$this->query->output_before_form_row_styles["border-width"] = "0 0 0 0";
         	$this->query->output_before_form_row_styles["border-color"] = array(0, 0, 0);
+		}
+
+        if ( !$this->query->output_criteria_styles )
+		{
+        	$this->query->output_criteria_styles["border-style"] = "solid";
+        	$this->query->output_criteria_styles["background-color"] = "#aaaaaa";
+        	$this->query->output_criteria_styles["border-width"] = "1px 1px 1px 1px";
+        	$this->query->output_criteria_styles["border-color"] = array(0, 0, 0);
+        	$this->query->output_criteria_styles["margin"] = "0px 5px 10px 5px";
+        	$this->query->output_criteria_styles["padding"] = "0px 5px 0px 5px";
 		}
 
         if ( !$this->query->output_after_form_row_styles )
@@ -536,13 +552,85 @@ echo $txt;
         $this->all_page_row_styles["style_border_top"] = $this->abs_metric($border);
         $padding = $this->all_page_row_styles["style_margin_left"] + $this->all_page_row_styles["style_padding_left"] + $this->all_page_row_styles["style_border_left"];
 
-        // Set row width
-        //$this->remove_style_tags( "REPDETTOPPAGE", $this->mid_row_page_styles, "border-width");
-        //$this->remove_style_tags( "REPDETTOPPAGE", $this->all_page_row_styles, "border-width");
-        //$this->remove_style_tags( "REPDETTOPPAGE", $this->all_page_row_styles, "margin");
-        //$this->remove_style_tags( "REPDETTOPPAGE", $this->all_page_row_styles, "padding");
-        //$this->remove_style_tags( "REPDETTOPPAGE", $this->all_page_row_styles, "width");
+        // =============================================================
+        // Criteria styles start from Page start + Page margin + padding with width less that
+        $padding = $this->query->output_reportbody_styles["style_margin_left"] + $this->query->output_reportbody_styles["style_padding_left"] + $this->query->output_reportbody_styles["style_border_left"] ;
+        $rpadding = $this->query->output_reportbody_styles["style_margin_right"] + $this->query->output_reportbody_styles["style_padding_right"] + $this->query->output_reportbody_styles["style_border_right"];
 
+        $this->query->output_criteria_styles["style_start"] = $this->query->output_page_styles["style_start"] + $padding;
+        $this->query->output_criteria_styles["style_width"] = $this->query->output_page_styles["style_width"] - $padding - $rpadding;
+        $width =  $this->extract_style_tags ( "EACHLINE", $this->query->output_criteria_styles, "width" );
+        $this->query->output_criteria_styles["style_forced_width"] = $this->abs_metric($width);
+        if ( $this->query->output_criteria_styles["style_forced_width"] )
+        {
+            $this->query->all_page_criteria_styles["style_width"] = $this->query->output_criteria_styles["style_forced_width"];
+            $this->remove_style_tags( "REPDETTOPPAGE", $this->output_criteria_styles, "width");
+        }
+        $margin =  $this->extract_style_tags ( "EACHLINE", $this->query->output_criteria_styles, "margin", "left" );
+        $padding =  $this->extract_style_tags ( "EACHLINE", $this->query->output_criteria_styles, "padding", "left" );
+        $border =  $this->extract_style_tags ( "EACHLINE", $this->query->output_criteria_styles, "border-width", "left" );
+        $this->query->output_criteria_styles["style_margin_left"] = $this->abs_metric($margin);
+        $this->query->output_criteria_styles["style_padding_left"] = $this->abs_metric($padding);
+        $this->query->output_criteria_styles["style_border_left"] = $this->abs_metric($border);
+        $margin =  $this->extract_style_tags ( "EACHLINE", $this->query->output_criteria_styles, "margin", "right" );
+        $padding =  $this->extract_style_tags ( "EACHLINE", $this->query->output_criteria_styles, "padding", "right" );
+        $border =  $this->extract_style_tags ( "EACHLINE", $this->query->output_criteria_styles, "border-width", "right" );
+        $this->query->output_criteria_styles["style_margin_right"] = $this->abs_metric($margin);
+        $this->query->output_criteria_styles["style_padding_right"] = $this->abs_metric($padding);
+        $this->query->output_criteria_styles["style_border_right"] = $this->abs_metric($border);
+        $margin =  $this->extract_style_tags ( "EACHLINE", $this->query->output_criteria_styles, "margin", "top" );
+        $padding =  $this->extract_style_tags ( "EACHLINE", $this->query->output_criteria_styles, "padding", "top" );
+        $border =  $this->extract_style_tags ( "EACHLINE", $this->query->output_criteria_styles, "border-width", "top" );
+        $this->query->output_criteria_styles["style_margin_top"] = $this->abs_metric($margin);
+        $this->query->output_criteria_styles["style_padding_top"] = $this->abs_metric($padding);
+        $this->query->output_criteria_styles["style_border_top"] = $this->abs_metric($border);
+        $padding = $this->query->output_criteria_styles["style_margin_left"] + $this->query->output_criteria_styles["style_padding_left"] + $this->query->output_criteria_styles["style_border_left"];
+
+        $this->all_page_criteria_styles = $this->query->output_criteria_styles;
+
+        $width =  $this->extract_style_tags ( "EACHLINE", $this->query->output_criteria_styles, "width" );
+        $this->query->output_criteria_styles["style_forced_width"] = $this->abs_metric($width);
+        if ( $this->query->output_criteria_styles["style_forced_width"] )
+        {
+            $this->query->output_criteria_styles["style_width"] = $this->query->output_criteria_styles["style_forced_width"];
+            $this->remove_style_tags( "REPDETTOPPAGE", $this->mid_cell_criteria_styles, "width");
+            $this->remove_style_tags( "REPDETTOPPAGE", $this->top_page_criteria_styles, "width");
+            $this->remove_style_tags( "REPDETTOPPAGE", $this->mid_page_criteria_styles, "width");
+            $this->remove_style_tags( "REPDETTOPPAGE", $this->bottom_page_criteria_styles, "width");
+        }
+
+        $this->top_page_criteria_styles = $this->query->output_criteria_styles;
+        $this->mid_page_criteria_styles = $this->query->output_criteria_styles;
+        $this->mid_cell_criteria_styles = $this->query->output_criteria_styles;
+        $this->bottom_page_criteria_styles = $this->query->output_criteria_styles;
+
+        // Create top, middle, bottom report sections
+        $this->remove_style_tags( "REPDETTOPPAGE", $this->top_page_criteria_styles, "margin", "bottom");
+        $this->remove_style_tags( "REPDETMIDPAGE", $this->mid_page_criteria_styles, "margin", "top");
+        $this->remove_style_tags( "REPDETMIDPAGE", $this->mid_page_criteria_styles, "margin", "bottom");
+        $this->remove_style_tags( "REPDETBOTPAGE", $this->bottom_page_criteria_styles, "margin", "top");
+        $this->remove_style_tags( "REPDETTOPPAGE", $this->top_page_criteria_styles, "border-width", "bottom");
+        $this->remove_style_tags( "REPDETMIDPAGE", $this->mid_page_criteria_styles, "border-width", "top");
+        $this->remove_style_tags( "REPDETMIDPAGE", $this->mid_page_criteria_styles, "border-width", "bottom");
+        $this->remove_style_tags( "REPDETBOTPAGE", $this->bottom_page_criteria_styles, "border-width", "top");
+        $this->remove_style_tags( "REPDETTOPPAGE", $this->top_page_criteria_styles, "padding", "bottom");
+        $this->remove_style_tags( "REPDETMIDPAGE", $this->mid_page_criteria_styles, "padding", "top");
+        $this->remove_style_tags( "REPDETMIDPAGE", $this->mid_page_criteria_styles, "padding", "bottom");
+        $this->remove_style_tags( "REPDETTOPPAGE", $this->mid_page_criteria_styles, "background-image");
+        $this->remove_style_tags( "REPDETTOPPAGE", $this->mid_page_criteria_styles, "height");
+        //$this->remove_style_tags( "REPDETTOPPAGE", $this->mid_page_criteria_styles, "width");
+        $this->remove_style_tags( "REPDETBOTPAGE", $this->bottom_page_criteria_styles, "padding", "top");
+        $this->remove_style_tags( "REPDETTOPPAGE", $this->mid_cell_criteria_styles, "margin");
+        $this->remove_style_tags( "REPDETTOPPAGE", $this->mid_cell_criteria_styles, "border-width");
+        $this->remove_style_tags( "REPDETTOPPAGE", $this->mid_cell_criteria_styles, "padding");
+        $this->remove_style_tags( "REPDETTOPPAGE", $this->mid_cell_criteria_styles, "background-color");
+        $this->remove_style_tags( "REPDETTOPPAGE", $this->mid_cell_criteria_styles, "width");
+        $this->remove_style_tags( "REPDETTOPPAGE", $this->mid_cell_criteria_styles, "height");
+        $this->remove_style_tags( "REPDETTOPPAGE", $this->mid_cell_criteria_styles, "background-image");
+
+
+        // =============================================================
+        // Set column detail start and  width
         $this->abs_col_left_margin = $this->query->output_row_styles["style_start"]; // + $this->query->output_page_styles["style_padding_left"];
         $this->abs_col_left_margin += $this->all_page_row_styles["style_margin_left"];
         $this->abs_col_left_margin += $this->all_page_row_styles["style_border_left"];
@@ -760,11 +848,15 @@ echo $txt;
 		//if ( preg_match("/(\d*\.*(\d+)(\D*)/", $height_string, $match) )
 		if ( preg_match("/(\d+)(\D*)/", $value, $match) )
 		{
-			$height = $match[1];
+			$number = $match[1];
 			if ( isset( $match[2] ) )
 			{
 				switch ( $match[2] )
 				{
+					case "px":
+						$value = $number ;
+						break;
+
 					case "pt":
 						$value = $value;
 						break;
@@ -1629,33 +1721,131 @@ echo $txt;
 
 	function before_format_criteria_selection()
 	{
+        $this->draw_mode = "CALCULATE";
+        $this->new_report_page_line_by_style("REPTOPBODY", $this->top_page_criteria_styles, true);
+        $this->draw_mode = "DRAW";
+        $this->new_report_page_line_by_style("REPTOPPAGE", $this->mid_page_reportbody_styles, false);
+        $this->new_report_page_line_by_style("REPTOPBODY", $this->top_page_criteria_styles, true);
+
+        // If set draw a Criteria label :-
+        if ( $this->query->criteria_block_label )
+        {
+            $label = $this->query->criteria_block_label;
+            $this->draw_mode = "CALCULATE";
+            $this->apply_style_tags( "EACHHEADMID", $this->mid_cell_reportbody_styles);
+            $this->apply_style_tags( "EACHHEADMID", $this->mid_cell_criteria_styles);
+
+            $group_xpos = 
+                     $this->all_page_criteria_styles["style_start"] + 
+                     $this->all_page_criteria_styles["style_margin_left"] + 
+                     $this->all_page_criteria_styles["style_padding_left"] + 
+                     $this->all_page_criteria_styles["style_border_left"] ;
+		    $this->set_position($group_xpos, $y);
+		    $padstring = $label;
+		    $this->draw_cell( 120, $this->vsize, "$padstring");
+
+            $this->unapply_style_tags( "EACHHEADMID", $this->mid_cell_criteria_styles);
+            $this->unapply_style_tags( "EACHHEADMID", $this->mid_cell_reportbody_styles);
+
+            // -----------------------------------------------------
+            $this->draw_mode = "DRAW";
+            $this->new_report_page_line_by_style("REPTOPPAGE", $this->mid_page_reportbody_styles, false);
+            $this->new_report_page_line_by_style("REPTOPPAGE", $this->mid_page_criteria_styles, false);
+
+            $this->apply_style_tags( "EACHHEADMID", $this->mid_cell_reportbody_styles);
+            $this->apply_style_tags( "EACHHEADMID", $this->mid_cell_criteria_styles);
+
+		    $this->yjump = 0;
+		    // Fetch Group Header Label Start Column + display
+            $group_xpos = 
+                     $this->all_page_criteria_styles["style_start"] + 
+                     $this->all_page_criteria_styles["style_margin_left"] + 
+                     $this->all_page_criteria_styles["style_padding_left"] + 
+                     $this->all_page_criteria_styles["style_border_left"] ;
+		    $this->set_position($group_xpos, $y);
+		    $padstring = $label;
+		    $this->draw_cell( 120, $this->vsize, "$padstring");
+		    $this->end_line();
+            $this->unapply_style_tags( "EACHHEADMID", $this->mid_cell_criteria_styles);
+            $this->unapply_style_tags( "EACHHEADMID", $this->mid_cell_reportbody_styles);
+		    $y = $this->document->GetY();
+
+		    if ( $this->yjump )
+			    $this->set_position(false, $y + $this->yjump);
+    
+        }
 	}
 
 	function format_criteria_selection($label, $value)
 	{
 		$y = $this->document->GetY();
+        $criteria_label_start = 
+                     $this->all_page_criteria_styles["style_start"] + 
+                     $this->all_page_criteria_styles["style_margin_left"] + 
+                     $this->all_page_criteria_styles["style_padding_left"] + 
+                     $this->all_page_criteria_styles["style_border_left"] ;
+        $criteria_label_width = 120;
+        $criteria_value_width = $this->all_page_criteria_styles["style_width"] -
+                     $criteria_label_width -
+                     $this->all_page_criteria_styles["style_margin_left"] -
+                     $this->all_page_criteria_styles["style_padding_left"] -
+                     $this->all_page_criteria_styles["style_border_left"] -
+                     $this->all_page_criteria_styles["style_margin_right"] -
+                     $this->all_page_criteria_styles["style_padding_right"] -
+                     $this->all_page_criteria_styles["style_border_right"];
+        $criteria_value_start = $criteria_label_start + $criteria_label_width;
+        if ( $criteria_value_width < 120 ) $criteria_value_width = 120;
 
-		$this->yjump = 0;
-		// Fetch Group Header Label Start Column + display
+        // -----------------------------------------------------
+        $this->draw_mode = "CALCULATE";
+
+        $this->apply_style_tags( "EACHHEADMID", $this->mid_cell_reportbody_styles);
+        $this->apply_style_tags( "EACHHEADMID", $this->mid_cell_criteria_styles);
 		$group_xpos = false;
 		if ( !$group_xpos )
 			$group_xpos = $this->abs_left_margin;
 		$group_xpos = $this->abs_paging_width($group_xpos);
 
-		$this->set_position($group_xpos, $y);
-		$padstring = $label;
-		$this->draw_cell( 120, $this->vsize, "$padstring");
+        // Draw label
+		$this->set_position($criteria_label_start, $y);
+		$this->draw_cell( $criteria_label_width, $this->vsize, "$label");
 
-		// Fetch Group Header Label End Column + display
-		$group_xpos = false;
-		if ( !$group_xpos )
-			$group_xpos = $this->abs_paging_width($group_xpos) + 140;
-		$group_xpos = $this->abs_paging_width($group_xpos);
-
-		$this->set_position($group_xpos, $y);
-		$padstring = $value;
-		$this->draw_cell(400, $this->vsize, "$padstring");
+        // Set position inside group box and draw value
+	    $this->set_position($criteria_value_start, $y);
+		$this->draw_cell($criteria_value_width, $this->vsize, "$value");
 		$this->end_line();
+		$y = $this->document->GetY();
+
+        $this->unapply_style_tags( "EACHHEADMID", $this->mid_cell_criteria_styles);
+        $this->unapply_style_tags( "EACHHEADMID", $this->mid_cell_reportbody_styles);
+
+
+        // -----------------------------------------------------
+        $this->draw_mode = "DRAW";
+        $this->new_report_page_line_by_style("REPTOPPAGE", $this->mid_page_reportbody_styles, false);
+        $this->new_report_page_line_by_style("REPTOPPAGE", $this->mid_page_criteria_styles, false);
+        $this->apply_style_tags( "EACHHEADMID", $this->mid_cell_reportbody_styles);
+        $this->apply_style_tags( "EACHHEADMID", $this->mid_cell_criteria_styles);
+
+		$this->yjump = 0;
+		// Fetch Group Header Label Start Column + display
+        $group_xpos = 
+                     $this->all_page_criteria_styles["style_start"] + 
+                     $this->all_page_criteria_styles["style_margin_left"] + 
+                     $this->all_page_criteria_styles["style_padding_left"] + 
+                     $this->all_page_criteria_styles["style_border_left"] ;
+
+        // Draw label
+		$this->set_position($criteria_label_start, $y);
+		$this->draw_cell( $criteria_label_width, $this->vsize, "$label");
+
+        // Set position inside group box and draw value
+	    $this->set_position($criteria_value_start, $y);
+		$this->draw_cell($criteria_value_width, $this->vsize, "$value");
+
+		$this->end_line();
+        $this->unapply_style_tags( "EACHHEADMID", $this->mid_cell_criteria_styles);
+        $this->unapply_style_tags( "EACHHEADMID", $this->mid_cell_reportbody_styles);
 		$y = $this->document->GetY();
 
 		if ( $this->yjump )
@@ -1667,6 +1857,12 @@ echo $txt;
 
 	function after_format_criteria_selection()
 	{
+
+        $this->draw_mode = "CALCULATE";
+        $this->new_report_page_line_by_style("ENDPAGE", $this->bottom_page_criteria_styles, true);
+        $this->draw_mode = "DRAW";
+        $this->new_report_page_line_by_style("REPTOPPAGE", $this->mid_page_reportbody_styles, false);
+        $this->new_report_page_line_by_style("ENDPAGE", $this->bottom_page_criteria_styles, true);
 	}
 
 	function format_group_header_start() // PDF

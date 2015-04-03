@@ -390,6 +390,7 @@ class reportico extends reportico_object
     // Output control 
     var $output_skipline = false;
     var $output_allcell_styles = false;
+    var $output_criteria_styles = false;
     var $output_header_styles = false;
     var $output_hyperlinks = false;
     var $output_images = false;
@@ -5059,6 +5060,8 @@ class reportico extends reportico_object
 	{
         if ( $item_type == "ALLCELLS" )
             $this->output_allcell_styles[$style_type] = $style_value;
+        if ( $item_type == "CRITERIA" )
+            $this->output_criteria_styles[$style_type] = $style_value;
         if ( $item_type == "ROW" )
             $this->output_row_styles[$style_type] = $style_value;
         if ( $item_type == "CELL" )

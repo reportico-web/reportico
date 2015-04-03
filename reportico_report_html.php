@@ -685,7 +685,8 @@ class reportico_report_html extends reportico_report
 
 	function before_format_criteria_selection()
 	{
-		$this->text .= '<TABLE class="swRepCriteria">';
+	    $this->text .= '<TH>';
+		$this->text .= '<TABLE class="swRepCriteria"'. $this->get_style_tags($this->query->output_criteria_styles).'>';
 	}
 
 	function format_criteria_selection($label, $value)
