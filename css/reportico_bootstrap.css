@@ -946,7 +946,7 @@ input.swAdminButton2
     padding: 5px;
     background-color: inherit;
     color: #555;
-    width: 225px !important;
+    width: 160px !important;
     text-align: left;
     
 }
@@ -958,17 +958,19 @@ input.swAdminButton2
     padding: 5px;
     background-color: inherit;
     color: #555;
-    width: 225px !important;
+    width: 160px !important;
     text-align: left;
 }
 
 .swMntVertTabMenuCellSel
 { 
+    width: 215px !important;
 }
 
 .swMntVertTabMenuCellUnsel
 { 
     border: 1px solid #bbb;
+    width: 215px !important;
 }
 
 .swMntVertTabMenuCellSel a
