@@ -489,7 +489,6 @@ class reportico_report_html extends reportico_report
 	{
 		if ( !get_reportico_session_param("target_show_group_trailers") )
 			return;
-
 		$just = $trailer_col->derive_attribute( "justify", false);
         if ( $just && $just != "left" ) 
                 $this->query->output_group_trailer_styles["text-align"] = $just;
@@ -528,7 +527,9 @@ class reportico_report_html extends reportico_report
 				$this->text .= $group_label." ".$padstring;
 		}
 		else
+        {
 			$this->text .= "&nbsp;";
+        }
 		$this->text .= "</TD>";
 	}
 

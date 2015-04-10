@@ -5793,17 +5793,15 @@ class reportico_xml_writer
 				$gpt =& $gpi->add_xmlval ( "GroupTrailers" );
 				foreach ( $val->trailers as $k2 => $val2 )
 				{
-                    
 					if ( is_array ( $val2) )
-					foreach ( $val2 as $kkk => $val3 )
-					{
-                    if ( !isset($val3["GroupTrailerCustom"] ))
-                        $val3["GroupTrailerCustom"] = false;
-					$gpti =& $gpt->add_xmlval ( "GroupTrailer" );
-					$el =& $gpti->add_xmlval ( "GroupTrailerDisplayColumn", $k2 );
-					$el =& $gpti->add_xmlval ( "GroupTrailerValueColumn", $val3["GroupTrailerValueColumn"]->query_name );
-					$el =& $gpti->add_xmlval ( "GroupTrailerCustom", $val3["GroupTrailerCustom"]);
-					}
+                    {
+                        if ( !isset($val2["GroupTrailerCustom"] ))
+                            $val2["GroupTrailerCustom"] = false;
+					    $gpti =& $gpt->add_xmlval ( "GroupTrailer" );
+					    $el =& $gpti->add_xmlval ( "GroupTrailerDisplayColumn", $val2["GroupTrailerDisplayColumn"] );
+					    $el =& $gpti->add_xmlval ( "GroupTrailerValueColumn", $val2["GroupTrailerValueColumn"]->query_name );
+					    $el =& $gpti->add_xmlval ( "GroupTrailerCustom", $val2["GroupTrailerCustom"]);
+                    }
 				}
 			}
 

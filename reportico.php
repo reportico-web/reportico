@@ -2486,15 +2486,12 @@ class reportico extends reportico_object
 		$updtr = false;
 		foreach ( $grp->trailers as $k => $v )
 		{
-			foreach ( $v as $k2 => $v2 )
+			if ( $ct == $tn )
 			{
-				if ( $ct == $tn )
-				{
-					array_splice($grp->trailers[$k], $k2, 1 );
-					return;
-				}
-				$ct++;
+				array_splice($grp->trailers, $k, 1 );
+				return;
 			}
+			$ct++;
 		}
 				
 	}
@@ -2529,6 +2526,7 @@ class reportico extends reportico_object
 
         $trailer = array();
         $trailer["GroupTrailerValueColumn"] = $col;
+        $trailer["GroupTrailerDisplayColumn"] = $trailer_column;
         $trailer["GroupTrailerCustom"] = $trailer_custom;
 
 		$ct = 0;
@@ -2538,30 +2536,11 @@ class reportico extends reportico_object
 
 		foreach ( $grp->trailers as $k => $v )
 		{
-			foreach ( $v as $k2 => $v2 )
+			if ( $k == $tn )
 			{
-				if ( $ct == $tn )
-				{
-                    $grp->trailers[$k][$k2] = $trailer;
-                    return;
-                    $pt1 = array_slice($grp->trailers[$trailer_column], 0, $ct, true);
-                    $pt2 = array_slice($grp->trailers[$trailer_column], $ct +1, false, true);
-                    $pt1[] =& $trailer;
-                    if ( $pt2 )
-                    {
-                        $grp->trailers[$trailer_column] = array_merge($pt1, $pt2);
-                    }
-                    else
-                    {
-                        $grp->trailers[$trailer_column] = $pt1;
-                    }
-					$looping = false;
-					break;
-				}
-				$ct++;
+                   $grp->trailers[$k] = $trailer;
+				return;
 			}
-			if ( !$looping )
-				break;
 		}
 				
 	}
@@ -2769,7 +2748,7 @@ class reportico extends reportico_object
 				$cn1 = 0;
 				foreach ( $v->trailers as $k1 => $v1 )
 				{
-					if ( $k1 == $query_name )
+					if ( $v1["GroupTrailerDisplayColumn"] == $query_name )
 					{
 						array_splice ( $this->groups[$k]->trailers, $cn1, 1 );
 						$deleting = true;
@@ -5902,6 +5881,7 @@ class reportico_group extends reportico_object
 	var 	$group_column;
 	var 	$headers = array();
 	var 	$trailers = array();
+	var 	$trailers_by_column = array();
 	var 	$trailer_level_ct = 0;
 	var 	$max_level = 0;
 	var	$attributes = array(
@@ -5938,22 +5918,32 @@ class reportico_group extends reportico_object
 	function add_trailer($in_trailer_column, &$in_value_column, $in_custom)
 	{
         $trailer = array();
-		if ( !array_key_exists($in_trailer_column, $this->trailers) )
-		{
-			$this->trailers[$in_trailer_column] =  array();
-		}
+        $trailer["GroupTrailerDisplayColumn"] = $in_trailer_column;
         $trailer["GroupTrailerValueColumn"] = $in_value_column;
         $trailer["GroupTrailerCustom"] = $in_custom;
-		$this->trailers[$in_trailer_column][] =& $trailer;
-		$level = count($this->trailers[$in_trailer_column]);
+		$this->trailers[] =& $trailer;
+		$level = count($this->trailers);
         if ( $this->max_level < $level )
             $this->max_level = $level;
-		//$this->max_level = count($this->trailers[$in_trailer_column]);
-//if ( !$in_custom)
-//echo "trailers of $this->group_name $in_trailer_column is ".count($this->trailers[$in_trailer_column])." => $this->max_level<BR>";
-//else
-    //echo "custom<BR>";
-        
+	}			
+
+	function organise_trailers_by_display_column()
+	{
+        foreach ( $this->trailers as $trailer )
+        {
+            if ( !isset($this->trailers_by_column[$trailer["GroupTrailerDisplayColumn"]] ) )
+                $this->trailers_by_column[$trailer["GroupTrailerDisplayColumn"]] = array();
+
+            $this->trailers_by_column[$trailer["GroupTrailerDisplayColumn"]][] = $trailer;
+        }
+        // Calculate number of levels
+        $this->max_level = 0;
+        foreach ( $this->trailers_by_column as $k => $trailergroup )
+        {
+            $level = count($trailergroup);
+            if ( $this->max_level < $level )
+                $this->max_level = $level;
+        }
 	}			
 
 }

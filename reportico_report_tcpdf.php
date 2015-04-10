@@ -148,6 +148,7 @@ class reportico_report_tcpdf extends reportico_report
     var $mid_page_reportbody_styles = false;
     var $bottom_page_reportbody_styles = false;
     var $all_page_row_styles = false;
+    var $mid_cell_row_styles = false;
     var $all_page_criteria_styles = false;
 
     var $debugFp = false;
@@ -531,6 +532,15 @@ echo $txt;
             $this->remove_style_tags( "REPDETTOPPAGE", $this->output_row_styles, "width");
         }
         $this->all_page_row_styles = $this->query->output_row_styles;
+        $this->mid_cell_row_styles = $this->query->output_row_styles;
+
+        $this->remove_style_tags( "REPDETTOPPAGE", $this->mid_cell_row_styles, "margin");
+        $this->remove_style_tags( "REPDETTOPPAGE", $this->mid_cell_row_styles, "border-width");
+        $this->remove_style_tags( "REPDETTOPPAGE", $this->mid_cell_row_styles, "padding");
+        $this->remove_style_tags( "REPDETTOPPAGE", $this->mid_cell_row_styles, "background-color");
+        $this->remove_style_tags( "REPDETTOPPAGE", $this->mid_cell_row_styles, "width");
+        $this->remove_style_tags( "REPDETTOPPAGE", $this->mid_cell_row_styles, "height");
+        $this->remove_style_tags( "REPDETTOPPAGE", $this->mid_cell_row_styles, "background-image");
 
         $margin =  $this->extract_style_tags ( "EACHLINE", $this->all_page_row_styles, "margin", "left" );
         $padding =  $this->extract_style_tags ( "EACHLINE", $this->all_page_row_styles, "padding", "left" );
@@ -550,6 +560,12 @@ echo $txt;
         $this->all_page_row_styles["style_margin_top"] = $this->abs_metric($margin);
         $this->all_page_row_styles["style_padding_top"] = $this->abs_metric($padding);
         $this->all_page_row_styles["style_border_top"] = $this->abs_metric($border);
+        $margin =  $this->extract_style_tags ( "EACHLINE", $this->all_page_row_styles, "margin", "bottom" );
+        $padding =  $this->extract_style_tags ( "EACHLINE", $this->all_page_row_styles, "padding", "bottom" );
+        $border =  $this->extract_style_tags ( "EACHLINE", $this->all_page_row_styles, "border-width", "bottom" );
+        $this->all_page_row_styles["style_margin_bottom"] = $this->abs_metric($margin);
+        $this->all_page_row_styles["style_padding_bottom"] = $this->abs_metric($padding);
+        $this->all_page_row_styles["style_border_bottom"] = $this->abs_metric($border);
         $padding = $this->all_page_row_styles["style_margin_left"] + $this->all_page_row_styles["style_padding_left"] + $this->all_page_row_styles["style_border_left"];
 
         // =============================================================
@@ -1443,12 +1459,10 @@ echo $txt;
                 $cellheight += $bottommargin;
                 if ( $cellheight > $this->max_line_height )
                 {
-                       $dtxt .= " grown";
                        $this->max_line_height = $cellheight;
                 }
                 if ( $requiredheight > $this->required_line_height )
                 {
-                       $dtxt .= " grown";
                     $this->required_line_height = $requiredheight;
                 }
 
@@ -2461,7 +2475,7 @@ echo $txt;
                     else
                     {
 					    $h = $this->draw_image($tmpnam.".png", $x, $y, $width * $this->pdfImageDPIScale, 0 ) + 2;
-                        if ( $h > $current_line_height && !$this->ignore_height_checking)
+                        if ( $h > $this->current_line_height && !$this->ignore_height_checking)
                             $this->current_line_height = $h;
                     }
 					if ( $h > $this->yjump )
