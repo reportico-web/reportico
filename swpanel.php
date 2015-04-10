@@ -2105,7 +2105,12 @@ class reportico_xml_reader
                             $updates[$matches[1]] = $v;
                     }
 					else
-						$updates[$matches[1]] = stripslashes($v);
+                    {
+                        if ( get_magic_quotes_gpc() )
+                            $updates[$matches[1]] = stripslashes($v);
+                        else
+                            $updates[$matches[1]] = $v;
+                    }
 				}
 			}
 
