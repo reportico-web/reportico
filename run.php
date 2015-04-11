@@ -94,7 +94,7 @@
     //$q->initial_show_group_headers = "show";
     //$q->initial_show_group_trailers = "show";
     //$q->initial_show_column_headers = "show";
-    $q->initial_show_criteria = "hide";
+    //$q->initial_show_criteria = "show";
 
     // Set default output style - TABLE = one row per record, FORM = one page per record
     //$q->initial_output_style = "TABLE";
