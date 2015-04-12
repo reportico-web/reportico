@@ -2009,7 +2009,7 @@ echo $txt;
             {
                 $this->draw_mode = "DRAW";
                 $this->check_page_overflow();
-                if ( $this->group_headers_custom_drawn == 0 )
+                if ( !$custom || $this->group_headers_custom_drawn == 0 )
                     $this->new_report_page_line_by_style("REPTOPPAGE", $this->mid_page_reportbody_styles, false);
                 $this->group_headers_custom_drawn++;
             }
@@ -2159,8 +2159,8 @@ echo $txt;
             if ( $y > $this->group_header_end )
                 $this->group_header_end = $y;
 
-		    if ( $this->yjump )
-			    $this->set_position(false, $y + $this->yjump);
+		    //if ( $this->yjump )
+			    //$this->set_position(false, $y + $this->yjump);
 
         }
 	}
