@@ -243,7 +243,81 @@ class reportico_report extends reportico_object
 
 	function format_criteria_selection_set()
 	{
-		if ( get_reportico_session_param("target_show_criteria") )
+        $is_criteria = false;
+		foreach ( $this->query->lookup_queries as $name => $crit)
+		{
+			$label = "";
+			$value = "";
+
+            if ( isset($crit->criteria_summary) && $crit->criteria_summary )
+            {
+	            $label = $crit->derive_attribute("column_title", $crit->query_name);
+                $value = $crit->criteria_summary;
+            }
+            else
+            {
+			    if ( get_request_item($name."_FROMDATE_DAY", "" ) )
+			    {
+				    $label = $crit->derive_attribute("column_title", $crit->query_name);
+				    $label = sw_translate($label);
+				    $mth = get_request_item($name."_FROMDATE_MONTH","") + 1;
+				    $value = get_request_item($name."_FROMDATE_DAY","")."/".
+				    $mth."/".
+				    get_request_item($name."_FROMDATE_YEAR","");
+				    if ( get_request_item($name."_TODATE_DAY", "" ) )
+				    {
+					    $mth = get_request_item($name."_TODATE_MONTH","") + 1;
+					    $value .= "-";
+					    $value .= get_request_item($name."_TODATE_DAY","")."/".
+					    $mth."/".
+					    get_request_item($name."_TODATE_YEAR","");
+				    }
+			    }
+			    else if ( get_request_item("MANUAL_".$name."_FROMDATE", "" ) )
+			    {
+				    $label = $crit->derive_attribute("column_title", $crit->query_name);
+				    $label = sw_translate($label);
+				    $value = get_request_item("MANUAL_".$name."_FROMDATE","");
+				    if ( get_request_item("MANUAL_".$name."_TODATE", "" ) )
+				    {
+					    $value .= "-";
+					    $value .= get_request_item("MANUAL_".$name."_TODATE");
+				    }
+	    
+			    }
+			    else if ( get_request_item("HIDDEN_".$name."_FROMDATE", "" ) )
+			    {
+				    $label = $crit->derive_attribute("column_title", $crit->query_name);
+				    $label = sw_translate($label);
+				    $value = get_request_item("HIDDEN_".$name."_FROMDATE","");
+				    if ( get_request_item("HIDDEN_".$name."_TODATE", "" ) )
+				    {
+					    $value .= "-";
+					    $value .= get_request_item("HIDDEN_".$name."_TODATE");
+				    }
+	    
+			    }
+			    else if ( get_request_item("EXPANDED_".$name, "" ) )
+			    {
+				    $label = $crit->derive_attribute("column_title", $crit->query_name);
+				    $label = sw_translate($label);
+				    $value .= implode(get_request_item("EXPANDED_".$name, ""),",");
+			    }
+			    else if ( get_request_item("MANUAL_".$name, "" ) )
+			    {
+				    $label = $crit->derive_attribute("column_title", $crit->query_name);
+				    $label = sw_translate($label);
+				    $value .= get_request_item("MANUAL_".$name, "");
+	    
+			    }
+		    }
+		    if ( $label || $value )
+            {
+                $is_criteria = true;
+            }
+        }
+
+		if ( get_reportico_session_param("target_show_criteria") && $is_criteria )
 		{
 			$this->before_format_criteria_selection();
 			foreach ( $this->query->lookup_queries as $name => $crit)
