@@ -887,7 +887,7 @@ class reportico_xml_reader
 					"CriteriaDisplay" => array ( "Title" => "CRITERIADISPLAY", "Type" => "DROPDOWN", "HelpPage" => "criteria", "XlateOptions" => true, 
 												"Values" => array("NOINPUT", "TEXTFIELD", "DROPDOWN", "MULTI", "CHECKBOX", "RADIO", ), "DocId" => "criteria_display" ),
 					"ExpandDisplay" => array ( "Title" => "EXPANDDISPLAY", "Type" => "DROPDOWN", "HelpPage" => "criteria", "XlateOptions" => true, 
-												"Values" => array("NOINPUT", "TEXTFIELD", "TEXTBOX", "DROPDOWN", "MULTI", "CHECKBOX", "RADIO", ), "DocId" => "expand_display" ),
+												"Values" => array("NOINPUT", "TEXTFIELD", "DROPDOWN", "MULTI", "CHECKBOX", "RADIO", ), "DocId" => "expand_display" ),
 					"DatabaseType" => array ( "Title" => "DATABASETYPE", "Type" => "DROPDOWN", 
 												"Values" => array("informix", "mysql", "sqlite-2", "sqlite-3", "none" ) ),
 					"justify" => array ( "Title" => "JUSTIFY", "Type" => "DROPDOWN",  "XlateOptions" => true,
