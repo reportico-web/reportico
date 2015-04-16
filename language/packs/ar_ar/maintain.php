@@ -315,6 +315,20 @@ $locale_arr = array (
         "T_CSS4SIZE" => "يجب أن يكون حجم مساحة 4 بفواصل أرقام (للأعلى، اليسار، أسفل، يمين) في كل عدد يليه من 'px' أو '٪'",
         "T_NUMBER" => "يجب أن تكون القيمة عدد",
         "T_FORMBETWEENROWS" => "شكل نمط فاصل صف",
+        "T_ASSIGNHEIGHT" => "ارتفاع",
+        "T_PAGEHEADERSTYLES" => "الأساليب",
+        "T_PAGEFOOTERSTYLES" => "الأساليب",
+        "T_SHOWINPDF" => "تظهر في PDF",
+        "T_SHOWINHTML" => "تظهر في HTML",
+        "T_RELATIVE" => "قريب",
+        "T_ABSOLUTE" => "مطلق",
+        "T_GROUPHEADERCUSTOM" => "المجموعة نص رأس مخصص",
+        "T_GROUPHEADERSTYLES" => "الأساليب",
+        "T_GROUPTRAILERCUSTOM" => "المجموعة نص مقطورة مخصصة",
+        "T_GROUPTRAILERSTYLES" => "الأساليب",
+        "T_ASSIGNSTYLEPOSITION" => "بالنسبة للموقف الحالي أو الصفحة",
+        "T_ASSIGNFONTNAME" => "اسم الخط",
+        "T_ASSIGNPDFBACKGROUNDIMAGE" => "الصورة الخلفية",
         )
         );
 ?>

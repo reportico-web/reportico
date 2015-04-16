@@ -334,6 +334,20 @@ $locale_arr = array (
         "T_DELETEOKACT" => "supprimé avec succès. Définition de rapport est toujours actif. Si vous n'avez pas l'intention de supprimer rapport, vous pouvez appuyer sur le bouton Enregistrer pour le recréer",
         "T_INVALIDENTRY" => "L'entrée non valide -",
         "T_FORFIELD" => "pour le champ -",
+        "T_ASSIGNHEIGHT" => "",
+        "T_PAGEHEADERSTYLES" => "Hauteur",
+        "T_PAGEFOOTERSTYLES" => "Hauteur",
+        "T_SHOWINPDF" => "Styles",
+        "T_SHOWINHTML" => "Voir en PDF",
+        "T_RELATIVE" => "Afficher au format HTML",
+        "T_ABSOLUTE" => "Relatif",
+        "T_GROUPHEADERCUSTOM" => "Absolu",
+        "T_GROUPHEADERSTYLES" => "Hauteur",
+        "T_GROUPTRAILERCUSTOM" => "Styles",
+        "T_GROUPTRAILERSTYLES" => "Hauteur",
+        "T_ASSIGNSTYLEPOSITION" => "Styles",
+        "T_ASSIGNFONTNAME" => "Relative à la position actuelle ou la page",
+        "T_ASSIGNPDFBACKGROUNDIMAGE" => "Nom de la police",
 )
 );
 ?>

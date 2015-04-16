@@ -315,6 +315,20 @@ $locale_arr = array (
         "T_CSS4SIZE" => "Dimensione deve essere di 4 delimitati da spazi numeri (ad alto, a sinistra, in basso, a destra) ciascuno un numero seguito da 'px' o '%'",
         "T_NUMBER" => "Il valore deve essere il numero",
         "T_FORMBETWEENROWS" => "Stile forma Row separatore",
+        "T_ASSIGNHEIGHT" => "altezza",
+        "T_PAGEHEADERSTYLES" => "Styles",
+        "T_PAGEFOOTERSTYLES" => "Styles",
+        "T_SHOWINPDF" => "Mostra in PDF",
+        "T_SHOWINHTML" => "Visualizza in HTML",
+        "T_RELATIVE" => "relativo",
+        "T_ABSOLUTE" => "assoluto",
+        "T_GROUPHEADERCUSTOM" => "Intestazione gruppo Testo personalizzato",
+        "T_GROUPHEADERSTYLES" => "Styles",
+        "T_GROUPTRAILERCUSTOM" => "Group Text Trailer personalizzata",
+        "T_GROUPTRAILERSTYLES" => "Styles",
+        "T_ASSIGNSTYLEPOSITION" => "Relativa alla posizione corrente o pagina",
+        "T_ASSIGNFONTNAME" => "Nome font",
+        "T_ASSIGNPDFBACKGROUNDIMAGE" => "Immagine Di Sfondo",
         )
         );
 ?>
