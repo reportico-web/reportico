@@ -5983,6 +5983,7 @@ class reportico_criteria_column extends reportico_query_column
 	var $list_values = array();
 	var	$first_criteria_selection = true;
     var $parent_reportico = false;
+    var $criteria_summary;
     
     // For criteria that is linked to in another report
     // Specifies both the report to link to and the criteria item
@@ -6125,7 +6126,6 @@ class reportico_criteria_column extends reportico_query_column
 				{
 					$hidden_params = $manual_params;
 					$manual_override = true;
-                    $this->criteria_summary .= "-";
                     $value_string = $_REQUEST["MANUAL_".$this->query_name];
 				}
 			}
