@@ -5891,6 +5891,8 @@ class reportico_group extends reportico_object
 			"after_trailer" => "blankline"
 				);
 
+    var $change_triggered = false;
+
 	function __construct($in_name, &$in_query)
 	{
 		reportico_object::__construct();

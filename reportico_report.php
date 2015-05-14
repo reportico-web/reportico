@@ -617,11 +617,29 @@ class reportico_report extends reportico_object
 				return;
 
             $rct = 0;
+
+            // Work out which groups have triggered trailer by passing
+            // through highest to lowest level .. group changes at level cause change at lower
+            // also last line does too!!
+            $uppergroupchanged = false;
+			reset($this->query->groups);
+			do
+			{
+				$group = current($this->query->groups);
+                $group->change_triggered = false;
+				if ( $uppergroupchanged || $this->query->changed($group->group_name) || $this->last_line) 
+                {
+                    $group->change_triggered = true;
+                    $uppergroupchanged = true;
+			    }
+			}
+			while( next($this->query->groups) );
+
 			end($this->query->groups);
 			do
 			{
 				$group = current($this->query->groups);
-				if ( $this->query->changed($group->group_name) || $this->last_line) 
+				if ( $group->change_triggered )
 				{
                     if ( $rct == 1 )
 		                $this->format_report_detail_end();
@@ -873,11 +891,28 @@ class reportico_report extends reportico_object
         if ( session_request_item("target_style", "TABLE" ) == "FORM" )
             return;
 
+        // Work out which groups have triggered trailer by passing
+        // through highest to lowest level .. group changes at level cause change at lower
+        // also last line does too!!
+        $uppergroupchanged = false;
+        reset($this->query->groups);
+        do
+        {
+            $group = current($this->query->groups);
+            $group->change_triggered = false;
+            if ( $uppergroupchanged || $this->query->changed($group->group_name) || $this->last_line) 
+            {
+                $group->change_triggered = true;
+                $uppergroupchanged = true;
+            }
+        }
+        while( next($this->query->groups) );
+
 		$changect = 0;
 		reset($this->query->groups);
 		foreach ( $this->query->groups as $name => $group) 
 		{
-			if ( count($group->headers) > 0 && ( (  $group->group_name == "REPORT_BODY" && $this->line_count == 0 ) || $this->query->changed($group->group_name) )) 
+			if ( count($group->headers) > 0 && ( (  $group->group_name == "REPORT_BODY" && $this->line_count == 0 ) || $group->change_triggered) ) 
 			{
 				if ( $changect == 0 && $this->page_line_count > 0)
 				{
