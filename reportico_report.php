@@ -896,6 +896,7 @@ class reportico_report extends reportico_object
         // also last line does too!!
         $uppergroupchanged = false;
         reset($this->query->groups);
+        if ( $this->query->groups )
         do
         {
             $group = current($this->query->groups);
