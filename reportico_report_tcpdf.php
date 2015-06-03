@@ -3451,6 +3451,8 @@ echo $txt;
 
         if ( $this->page_broken_mid_page )
             $this->check_for_detail_page_start();
+        if ( $this->page_broken_mid_page )
+            $this->column_header_required = true;
 
 
 	}
