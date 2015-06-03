@@ -477,7 +477,7 @@ class TCPDF_STATIC {
 	 */
 	public static function getPageSizeFromFormat($format) {
 		// Paper cordinates are calculated in this way: (inches * 72) where (1 inch = 25.4 mm)
-		switch (strtoupper($format)) {
+		switch (strtoupper(preg_replace("/-/", "", $format))) {
 			// ISO 216 A Series + 2 SIS 014711 extensions
 			case 'A0' : {$pf = array( 2383.937, 3370.394); break;}
 			case 'A1' : {$pf = array( 1683.780, 2383.937); break;}
