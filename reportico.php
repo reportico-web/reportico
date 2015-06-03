@@ -1011,8 +1011,7 @@ class reportico extends reportico_object
 	// -----------------------------------------------------------------------------
 	function set_criteria_defaults($query_name, $in_default, $in_delimiter = false)
 	{
-
-		if ( $in_default ) // && $this->get_execute_mode() != "MAINTAIN" )
+		if ( $in_default || $in_default == "0"  )
 		{
 			$this->check_criteria_name("set_criteria_defaults", $query_name);
 			if ( array_key_exists($query_name, $this->lookup_queries) )
@@ -7069,7 +7068,7 @@ class reportico_criteria_column extends reportico_query_column
 			}
 
 			if ( $checked != "" )
-				if ( !$value_string )
+				if ( !$value_string && $value_string != "0" )
 					$value_string = $abb;
 				else
 					$value_string .= ",".$abb;

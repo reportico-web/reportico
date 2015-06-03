@@ -6196,7 +6196,7 @@ class reportico_xmlval
 
 		$this->xmltext .= ">";
 
-		if ( $this->value )
+		if ( $this->value || $this->value === "0" )
 		{
 			$this->xmltext .= $this->value;
 		}
