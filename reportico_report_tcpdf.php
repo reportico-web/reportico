@@ -51,6 +51,7 @@ class reportico_report_tcpdf extends reportico_report
 	var	$fontName;
 	var	$fontSize;
 	var	$vsize;
+    var $column_header_required = false;
 	var	$columns_calculated = false;
 	var	$fillmode = false;
 	var	$justifys = array (
@@ -2348,9 +2349,9 @@ echo $txt;
 
 
 
-	function format_headers() // PDF
+	function format_headers($force = false) // PDF
 	{
-        if ( $this->inOverflow )
+        if ( $this->inOverflow && !$force )
             return;
 
         
@@ -3222,6 +3223,23 @@ echo $txt;
 
             $this->check_page_overflow();
 
+            $prev_calculated_line_height = $this->calculated_line_height;
+            $prev_current_line_height = $this->current_line_height;
+            $prev_max_line_height = $this->max_line_height;
+
+
+            if ( $this->column_header_required )
+            {
+                $this->format_headers();
+                $this->column_header_required = false;
+            }
+
+            $this->current_line_height = $prev_current_line_height;
+            $this->calculated_line_height = $prev_calculated_line_height;
+            $this->max_line_height = $prev_max_line_height;
+
+
+
             // Line page wrapper
             $this->new_report_page_line_by_style("LINE5PAGE", $this->mid_page_reportbody_styles, false);
             $this->new_report_page_line_by_style("LINE2PAGE", $this->mid_page_page_styles, false);
@@ -3290,6 +3308,8 @@ echo $txt;
 
 			$this->finish_page();
 			$this->begin_page();
+            if ( $this->page_broken_mid_page )
+                $this->column_header_required = true;
 			//$this->before_group_headers();
 			$this->page_line_count++;
             $this->calculated_line_height = $prev_calculated_line_height;

@@ -966,7 +966,12 @@ class reportico_report extends reportico_object
                 $this->page_line_count == 0 )
 		{	
 		    $this->format_report_detail_start();
-		    $this->format_headers();
+            if ( $this->query->target_format == "PDF" )
+            {
+		        $this->column_header_required = true;
+            }
+            else
+		        $this->format_headers();
             $this->page_styles_started = true;
 		}
 	}
