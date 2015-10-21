@@ -466,13 +466,13 @@ reportico_jquery.fn.serializeObject = function() {
   reportico_jquery.each(arrayData, function() {
     var value;
 
-    if (this.value !== null) {
+    if (this.value != null) {
       value = this.value;
     } else {
       value = '';
     }
 
-    if (objectData[this.name] !== null) {
+    if (objectData[this.name] != null) {
       if (!objectData[this.name].push) {
         objectData[this.name] = [objectData[this.name]];
       }
