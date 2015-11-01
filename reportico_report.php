@@ -568,7 +568,7 @@ class reportico_report extends reportico_object
 		if ( get_reportico_session_param("target_show_group_trailers") )
 		    $this->after_group_trailers();
 //echo "each line $this->inOverflow<BR>";
-		    $this->before_group_headers();
+        $this->before_group_headers();
 
 		$this->page_line_count++;
 		$this->line_count++;

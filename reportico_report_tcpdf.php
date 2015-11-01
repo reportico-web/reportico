@@ -1217,6 +1217,7 @@ echo $txt;
     //Cell with horizontal scaling if text is too wide
     function draw_cell($w,$h=0,$txt='',$implied_styles="PBF",$ln=0,$align='',$valign="T", $link='')
     {
+//if ( $this->line_count < 3 ) $this->debugFile("======> DC $h $this->required_line_height");
         // Set custom width
         $custom_width = end( $this->stylestack["width"]);
         if ( $custom_width )
@@ -1558,8 +1559,14 @@ echo $txt;
             $preimageX = $this->document->GetX();
             $preimageY = $this->document->GetY();
 
-//echo "$background_image, $custom_height $h <BR>";
-            $p = $this->draw_image($background_image, $this->document->GetX() + $leftmargin, $this->document->GetY() + $topmargin, $cellvaluewidth, $h);
+//$this->debugFile("$this->draw_mode $margin_top t $topmargin txt <$txt> align $align image cur $cellvaluewidth / $h vs $custom_height/$custom_width $p\n");
+            // If text prvoded then background image covers text else set to custom height/width
+//$cellvaluewidth = "200";
+            //if ( $txt )
+                $p = $this->draw_image($background_image, $this->document->GetX() + $leftmargin, $this->document->GetY() + $topmargin, $cellvaluewidth, $h, false, $align);
+            //else
+                //$p = $this->draw_image($background_image, $this->document->GetX() + $leftmargin, $this->document->GetY() + $topmargin, $custom_width, $custom_height, false, $align);
+            $p += $topmargin;
             
 //echo "$last_draw_end_y $storeY $background_image ".$p."<BR>";
             //if ($this->document->GetY() + $p > $this->group_header_end )
@@ -1626,6 +1633,7 @@ echo $txt;
 
         $this->last_cell_xpos = $this->document->GetX();
         $this->last_cell_width = $actcellvaluewidth;
+
         if ( $background_image )
         {
             $ht= $this->draw_multicell($actcellvaluewidth,$h,$txt,$cellborder,$align,false,$link);
@@ -2256,14 +2264,18 @@ echo $txt;
     function draw_multicell($w, $h, $txt, $border, $align, $fill, $link = false, $keepy = false)
     {
         $oldh = $h;
+
         $storeY = $this->document->GetY();
 
         if ( $this->pdfDriver == "tcpdf" )
         {
-            if ( $keepy )
-                $this->document->Multicell($w,$h, $txt, $border, $align, $fill, 0);
+            if ( $link )
+			    $this->document->Write( $h, "$txt", $link);
             else
-                $this->document->Multicell($w,$h, $txt, $border, $align, $fill,1);
+                if ( $keepy )
+                    $this->document->Multicell($w,$h, $txt, $border, $align, $fill, 0);
+                else
+                    $this->document->Multicell($w,$h, $txt, $border, $align, $fill,1);
         }
         else
         {
@@ -2273,13 +2285,27 @@ echo $txt;
         return $h;
     }
 
-    function draw_image($file, $x, $y, $w, $h, $hidden = false)
+    function draw_image($file, $x, $y, $w, $h, $hidden = false, $halign = "")
     {
         if ( $this->pdfDriver == "tcpdf" )
         {
+                $imagehalign = "L";
+                $imagevalign = "T";
+                if ( $halign )
+                    if ( $halign == "left" ) $imagehalign = "L";
+                    else if ( $halign == "right" ) $imagehalign = "R";
+                    else if ( $halign == "center" ) $imagehalign = "C";
+                    else $imagehalign = $halign;
+
+                $align = $imagehalign . $imagevalign;
                 //$y = $this->document->GetY();
-		        $h = $this->document->Image($file, $x, $y, $w, $h, '', '', '', false, 300, '', false, false, 0, false, 0, false, $hidden);
+                //$y = $this->document->GetY();
+                //$this->debugFile("DRAW $file image $x/$y $w / $h vs ".$this->document->getImageRBY() ." align : $halign $align ");
+		        //$h = $this->document->Image($file, $x, $y, $w, $h, '', '', '', false, 300, $imagehalign, false, false, 0, false, 0, "", $hidden);
+		        $h = $this->document->Image($file, $x, $y, $w, $h, '', '', '', false, 300, "", false, false, 0, $align, $hidden);
+                //$this->debugFile("DRAW $file image $h vs ".$this->document->getImageRBY() ."");
                 $h = $this->document->getImageRBY() - $y;
+                //$this->debugFile("New eight $h");
                 if ( $h < 0 )
                     $h = 0;
         }
@@ -2415,6 +2441,7 @@ echo $txt;
 
 	function format_column(& $column_item) // PDF
 	{
+//if ( $this->line_count < 3 ) $this->debugFile("==========> FC $this->draw_mode $h =  $this->required_line_height");
 		if ( !$this->show_column_header($column_item) )
 				return;
         // Keep track of how many columns in current row to print if calculating
@@ -2507,6 +2534,7 @@ echo $txt;
                 if ( $column_item->output_hyperlinks )
                     $link = $column_item->output_hyperlinks["url"];
                 //$this->max_line_border_addition = 0;
+
 				$this->draw_cell($wd, $this->required_line_height, "$k","P",0,$just, "T", $link); //PPP
 			    $this->unapply_style_tags( "COLUMNCELL", $column_item->output_cell_styles);
 			    $this->unapply_style_tags( "COLUMNALL", $this->query->output_allcell_styles);
@@ -3118,6 +3146,7 @@ echo $txt;
 
 	function each_line($val) // PDF
 	{
+
         if ( !$this->columns_calculated )
         {
             // Calulate position and width of column detail taking into account
@@ -3226,6 +3255,7 @@ echo $txt;
             $prev_calculated_line_height = $this->calculated_line_height;
             $prev_current_line_height = $this->current_line_height;
             $prev_max_line_height = $this->max_line_height;
+            $prev_required_line_height = $this->required_line_height;
 
 
             if ( $this->column_header_required )
@@ -3237,8 +3267,7 @@ echo $txt;
             $this->current_line_height = $prev_current_line_height;
             $this->calculated_line_height = $prev_calculated_line_height;
             $this->max_line_height = $prev_max_line_height;
-
-
+            $this->required_line_height = $prev_required_line_height;
 
             // Line page wrapper
             $this->new_report_page_line_by_style("LINE5PAGE", $this->mid_page_reportbody_styles, false);
@@ -3591,7 +3620,8 @@ echo $txt;
         if ( $txt == "FINISH" )
             fclose($this->debugFp);
         else
-            fwrite ( $this->debugFp, "$txt => Max $this->max_line_height Curr $this->current_line_height \n" );
+            fwrite ( $this->debugFp, "$txt\n" );
+            //fwrite ( $this->debugFp, "$txt => Max $this->max_line_height Curr $this->current_line_height \n" );
 
     } 
 

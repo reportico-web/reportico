@@ -23,6 +23,18 @@ function setupDynamicGrids()
                 }
                 );
         });
+
+        reportico_jquery(".swRepPage").each(function(){
+            reportico_jquery(this).dataTable(
+                {
+                "retrieve" : true,
+                "searching" : reportico_dynamic_grids_searchable,
+                "ordering" : reportico_dynamic_grids_sortable,
+                "paging" : reportico_dynamic_grids_paging,
+                "iDisplayLength": reportico_dynamic_grids_page_size
+                }
+                );
+        });
     }
 }
 
@@ -59,14 +71,36 @@ function resizeHeaders()
 {
   // Size page header blocks to fit page headers
   reportico_jquery(".swPageHeaderBlock").each(function() {
+    var parenty = reportico_jquery(this).position().top;
     var maxheight = 0;
     reportico_jquery(this).find(".swPageHeader").each(function() {
-        var headerheight  = reportico_jquery(this).height();
+        var headerheight  = reportico_jquery(this).outerHeight();
+        reportico_jquery(this).find("img").each(function() {
+            var imgheight = reportico_jquery(this).prop("height");
+            if ( imgheight > headerheight )
+                headerheight = imgheight;
+        });
+        var margintop  = parseInt(reportico_jquery(this).css("margin-top"));
+        var marginbottom  = parseInt(reportico_jquery(this).css("margin-bottom"));
+        headerheight += margintop + marginbottom;
         if ( headerheight > maxheight )
             maxheight = headerheight;
    });
    reportico_jquery(this).css("height", maxheight + "px");
   });
+  //reportico_jquery(".swNewPageHeaderBlock").hide();
+        //ct = 1;
+        //hdrpos = 0;
+        //while ( reportico_jquery(".swPageFooterBlock"+ct).length )
+        //{
+            //if ( reportico_jquery(".swPageHeaderBlock"+(ct+1)).length )
+                //hdrpos = reportico_jquery(".swPageHeaderBlock"+(ct+1)).offset().top;
+            //else
+                //hdrpos = hdrpos + 1000;
+            //reportico_jquery(".swPageFooterBlock"+ct).css("top", ( hdrpos ) + "px" );
+            //ct++;
+        //}
+    
 
   //reportico_jquery(".swRepForm").columnize();
 

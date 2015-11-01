@@ -539,7 +539,8 @@ class TCPDF {
 	 * @author Nicola Asuni
 	 * @protected
 	 */
-	protected $imgscale = 1;
+	//protected $imgscale = 1;
+	protected $imgscale = 1.53;
 
 	/**
 	 * Boolean flag set to true when the input text is unicode (require unicode fonts).
@@ -6849,7 +6850,21 @@ $brd["mode"] = "normal";
 	 * @public
 	 * @since 1.1
 	 */
+    function debugFile( $txt )
+    {   
+        if ( !$this->debugFp )
+            $this->debugFp = fopen ( "/tmp/debug.pd", "w" );
+
+        if ( $txt == "FINISH" )
+            fclose($this->debugFp);
+        else
+            fwrite ( $this->debugFp, "$txt Curr $this->current_line_height \n" );
+
+    }
+
 	public function Image($file, $x='', $y='', $w=0, $h=0, $type='', $link='', $align='', $resize=false, $dpi=300, $palign='', $ismask=false, $imgmask=false, $border=0, $fitbox=false, $hidden=false, $fitonpage=false, $alt=false, $altimgs=array()) {
+//$dpi = 300;
+
 		if ($this->state != 2) {
 			return;
 		}
@@ -6875,12 +6890,16 @@ $brd["mode"] = "normal";
 			}
 			// check if is a local file
 			if (!@file_exists($file)) {
+//$this->debugFile("oo");
+//$this->debugFile(getcwd()."none".$file);
 				// try to encode spaces on filename
 				$tfile = str_replace(' ', '%20', $file);
 				if (@file_exists($tfile)) {
 					$file = $tfile;
 				}
 			}
+//else
+//$this->debugFile(getcwd()." yes".$file);
 			if (($imsize = @getimagesize($file)) === FALSE) {
 				if (in_array($file, $this->imagekeys)) {
 					// get existing image data
@@ -6896,6 +6915,7 @@ $brd["mode"] = "normal";
 			$original_file = $file;
 			$file = TCPDF_STATIC::getObjFilename('img');
 			$fp = fopen($file, 'w');
+
 			if (!$fp) {
 				$this->Error('Unable to write file: '.$file);
 			}
@@ -6922,10 +6942,12 @@ $brd["mode"] = "normal";
 		}
 		// file hash
 		$filehash = md5($this->file_id.$file);
+//$this->debugFile("$filehash ".getcwd()." $imgdata".$file);
 		// get original image width and height in pixels
 		list($pixw, $pixh) = $imsize;
+//$this->debugFile("our $w $h piccy $pixw, $pixh ");
 		// calculate image width and height on document
-		if (($w <= 0) AND ($h <= 0)) {
+		if ( ($w <= 0) AND ($h <= 0)) {
 			// convert image size to document unit
 			$w = $this->pixelsToUnits($pixw);
 			$h = $this->pixelsToUnits($pixh);
@@ -6938,8 +6960,74 @@ $brd["mode"] = "normal";
 				// set default alignment
 				$fitbox = '--';
 			}
+
+            {
+				// store current height
+				$oldh = $h;
+				// calculate new height
+                if ( $resize )
+				    $h = $w * $pixh / $pixw;
+                else
+                    $h = $pixh;
+
+				// height difference
+				$hdiff = ($oldh - $h);
+				// vertical alignment
+				switch (strtoupper($fitbox[1])) {
+					case 'T': {
+						break;
+					}
+					case 'M': {
+						$y += ($hdiff / 2);
+						break;
+					}
+					case 'B': {
+						$y += $hdiff;
+						break;
+					}
+				}
+
+				// store current width
+				$oldw = $w;
+				// calculate new width
+//$this->debugFile ( "From {$fitbox[0]} Picture $pixh $pixw {$fitbox[1]} $oldw / $oldh to $w / $h diff $wdiff ? $hdiff => $x and $y");
+                if ( $resize )
+				    $w = $h * $pixw / $pixh;
+                else
+                    $w = $pixw;
+			    $w = $this->pixelsToUnits($pixw);
+			    $h = $this->pixelsToUnits($pixh);
+				// width difference
+				$wdiff = ($oldw - $w);
+//$this->debugFile ( "From {$fitbox[0]} Picture $pixh $pixw {$fitbox[1]} $oldw / $oldh to $w / $h diff $wdiff ? $hdiff => $x and $y");
+				// horizontal alignment
+				switch (strtoupper($fitbox[0])) {
+					case 'L': {
+						if ($this->rtl) {
+							$x -= $wdiff;
+						}
+						break;
+					}
+					case 'C': {
+						if ($this->rtl) {
+							$x -= ($wdiff / 2);
+						} else {
+							$x += ($wdiff / 2);
+						}
+						break;
+					}
+					case 'R': {
+						if (!$this->rtl) {
+							$x += $wdiff;
+						}
+						break;
+					}
+				}
+////$this->debugFile ( "From $oldw / $oldh to $w / $h diff $wdiff ? $hdiff => $x and $y");
+            }
 			// scale image dimensions proportionally to fit within the ($w, $h) box
-			if ((($w * $pixh) / ($h * $pixw)) < 1) {
+			/*if ((($w * $pixh) / ($h * $pixw)) < 1) {
+//$this->debugFile("Fit box 1 $fitbox $w * $pixh /  $h * $pixw ");
 				// store current height
 				$oldh = $h;
 				// calculate new height
@@ -6961,6 +7049,7 @@ $brd["mode"] = "normal";
 					}
 				}
 			} else {
+//$this->debugFile("Fit box 2 $fitbox $w $h");
 				// store current width
 				$oldw = $w;
 				// calculate new width
@@ -6991,12 +7080,15 @@ $brd["mode"] = "normal";
 					}
 				}
 			}
+*/
 		}
 		// fit the image on available space
 		list($w, $h, $x, $y) = $this->fitBlock($w, $h, $x, $y, $fitonpage);
 		// calculate new minimum dimensions in pixels
+//$this->debugFile ( "Now $dpi vs $this->dpi $w / $h  $neww $newh");
 		$neww = round($w * $this->k * $dpi / $this->dpi);
 		$newh = round($h * $this->k * $dpi / $this->dpi);
+//$this->debugFile ( "Now2 $w / $h  $neww $newh");
 		// check if resize is necessary (resize is used only to reduce the image)
 		$newsize = ($neww * $newh);
 		$pixsize = ($pixw * $pixh);
@@ -7005,9 +7097,11 @@ $brd["mode"] = "normal";
 		} elseif ($newsize >= $pixsize) {
 			$resize = false;
 		}
+//$this->debugFile ( " $newsize vs $pixsize  $resize Now $w / $h  $neww $newh");
 		// check if image has been already added on document
 		$newimage = true;
 		if (in_array($file, $this->imagekeys)) {
+//$this->debugFile ( " 1 ");
 			$newimage = false;
 			// get existing image data
 			$info = $this->getImageBuffer($file);
@@ -7019,6 +7113,7 @@ $brd["mode"] = "normal";
 				}
 			}
 		} elseif (($ismask === false) AND ($imgmask === false) AND (strpos($file, '__tcpdf_imgmask_') === FALSE)) {
+//$this->debugFile ( " 2 ");
 			// create temp image file (without alpha channel)
 			$tempfile_plain = K_PATH_CACHE.'__tcpdf_imgmask_plain_'.$filehash;
 			// create temp alpha file
@@ -7041,6 +7136,9 @@ $brd["mode"] = "normal";
 			}
 		}
 		if ($newimage) {
+//$this->debugFile ( " NEW ");
+		// check if image has been already added on document
+
 			//First use of image, get info
 			$type = strtolower($type);
 			if ($type == '') {

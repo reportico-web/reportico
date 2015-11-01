@@ -730,7 +730,6 @@ input.swAdminButton2
     width: 38px !important;
     height: 38px;
     margin: 0px 0px 0px 0px;
-    float: left;
 }
 
 .swRepPrintBox .swLinkMenu,
@@ -1090,8 +1089,16 @@ input.swAdminButton2
 }
 
 /* -------------------------- Printed Output Styles ----------------------------------*/
-.swPageHeaderBlock { display: block; width: 100%; position: relative; }
 .swPageHeader { position: absolute; }
+.swPageHeaderBlock { display: block; width: 100%; position: relative; }
+.swNewPageHeaderBlock { display: none; }
+/*.swPageFooterBlock { display: none; width: 100%; position: absolute; bottom: 300px; }*/
+.swPageFooterBlock { display: none; width: 100%; position: absolute; bottom: -200px;}
+.swFirstPageFooterBlock { display: none; width: 100%; position: absolute; top: 100px; }
+.swLastPageFooterBlock { display: none; width: 100%; position: absolute; bottom: -200px; }
+/*.swPageFooterBlock { display: block; width: 100%; position: relative; bottom: 100%; }*/
+/*.swPageFooterBlock { display: block; width: 100%; }*/
+/*.swPageBlock { display: block; width: 100%; position: relative; margin: 0 0 100px 0 }*/
 
 @page {
     @top {
@@ -1113,12 +1120,40 @@ input.swAdminButton2
 
     -webkit-print-color-adjust: exact;
 
+    print { position: fixed; top: 0; left: 0; z-index -1; }
+
     body { font-size: 10pt }
-    .swPageHeader { display: block; position: fixed; top: 0; }
+
+    /*.swPageHeader { display: block; position: fixed; top: 0; }*/
+    .swPageHeader { display: block; }
     .swLinkMenu { display: none; }
+    .swRepBackBox { display: none; }
+    .prepareAjaxExecuteIgnore { display: none; }
     .swRepForm { border: none; }
     .swRepBody { width: 100%; margin: 0; border: none; }
-/* Column Header Label  */
+
+    .swLastPageFooterBlock { display: block; }
+    .swNewPageHeaderBlock { display: block; } 
+    .swPageBlock { padding-bottom: 200px }}
+    /*.sswPageFooterBlock { display: block; width: 100%; position: fixed; bottom: 0; }
+    .swPageFooterBlock { position: fixed; bottom: 0;}
+    .swPageBlock { padding-bottom: 200px }}*/
+
+   #whiteBg {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1; //to send it to the background
+   } 
+   #wrapper {
+      padding-bottom: (the size of the footer, to make footer visible on last page).
+   }
+   #footer {
+     position: relative;
+     bottom: 0;
+   }
+
     .swRepColHdrRow td,
     .swRepColHdrRow th
     {
@@ -1129,7 +1164,8 @@ input.swAdminButton2
         color : #000000;
     }
 
-    .swNewPage { page-break-before: always; }
+    .swNewPageHeaderBlock { page-break-before: always; }
+    /*.swNewPage { page-break-before: always; }*/
 
     .swRepTitle { font-size: 18pt; text-align: center; margin-top: 0px; border: none;}
     .swMntForm { text-align: left; margin-left: 0%; background-color: #ffffff; border: none; }

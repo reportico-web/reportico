@@ -39,6 +39,8 @@ class reportico_report_html extends reportico_report
 	var	$abs_bottom_margin;
 	var	$abs_left_margin;
 	var	$abs_right_margin;
+    var $header_count = 0;
+    var $footer_count = 0;
 	var	$graph_session_placeholder = 0;
 	
 	function __construct ()
@@ -111,6 +113,13 @@ class reportico_report_html extends reportico_report
 
         if ( $this->page_started )
 		    $this->text .= "</TBODY></TABLE>";
+
+        //$this->text .= "</footer>";
+        $this->text .= "</div>";
+        $this->footer_count++;
+        $this->text .= "<footer class=\"swPageFooterBlock swPageFooterBlock{$this->footer_count}\">";
+        $this->text .= "Page Footer";
+        $this->text .= "</footer>";
         $this->page_started = false;
 	}
 
@@ -418,8 +427,14 @@ class reportico_report_html extends reportico_report
 
 		//$this->text .= "<TR class=swRepDatRow>";
 		//$this->text .= "<TD class=swRepDatVal colspan=\"".$spanct."\">";
-        if ( $throw_page )
+        if ( $throw_page || $this->page_started )
+        {
+		    $title = $this->query->derive_attribute("ReportTitle", "Unknown");
+            $this->page_headers();
+            if ( $this->query->output_template_parameters["show_hide_report_output_title"] != "hide" )
+		        $this->text .= '<H1 class="swRepTitle">'.sw_translate($title).'</H1>';
 		    $this->text .= '<TABLE class="swRepGrpHdrBox swNewPage" cellspacing="0">';
+        }
         else
 		    $this->text .= '<TABLE class="swRepGrpHdrBox" cellspacing="0">';
 	}
@@ -656,14 +671,10 @@ class reportico_report_html extends reportico_report
 	{
 		reportico_report::begin_page();
 
+        $this->throw_page = true;
+        //$this->page_started = true;
 		$this->debug("HTML Begin Page\n");
 
-        // Page Headers
-		reportico_report::page_headers();
-
-		$title = $this->query->derive_attribute("ReportTitle", "Unknown");
-        if ( $this->query->output_template_parameters["show_hide_report_output_title"] != "hide" )
-		    $this->text .= '<H1 class="swRepTitle">'.sw_translate($title).'</H1>';
 		$forward = session_request_item('forward_url_get_parameters', '');
 		if ( $forward )
 			$forward .= "&";
@@ -677,11 +688,20 @@ class reportico_report_html extends reportico_report
             }
 	        if ( get_reportico_session_param("show_refresh_button") )
 		        $this->text .= '<div class="swRepRefreshBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'refreshReport=1&execute_mode=EXECUTE&reportico_session_name='.reportico_session_name().'" title="'.template_xlate("GO_REFRESH").'">&nbsp;</a></div>';
+
         }
         else
         {
+        //$this->text .= '<div class="prepareAjaxExecuteIgnore swPDFBox1"><a class="swLinkMenu5 swPDFBox" target="_blank" href="'.$this->query->get_action_url().'?'.$forward.'refreshReport=1&target_format=PDF&execute_mode=EXECUTE&reportico_session_name='.reportico_session_name().'" title="Print PDF">&nbsp;</a></div>';
 	        $this->text .= '<div class="swRepPrintBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'printReport=1&execute_mode=EXECUTE&reportico_session_name='.reportico_session_name().'" title="'.template_xlate("GO_PRINT").'">'.'&nbsp;'.'</a></div>';
         }
+
+        // Page Headers
+		reportico_report::page_headers();
+
+		$title = $this->query->derive_attribute("ReportTitle", "Unknown");
+        if ( $this->query->output_template_parameters["show_hide_report_output_title"] != "hide" )
+		    $this->text .= '<H1 class="swRepTitle">'.sw_translate($title).'</H1>';
 	}
 
 	function before_format_criteria_selection()
@@ -723,7 +743,23 @@ class reportico_report_html extends reportico_report
 
 	function format_page_header_start()
 	{
-        $this->text .= "<div class=\"swPageHeaderBlock\">";
+        if ( $this->line_count > 0 )
+        {
+            $this->text .= "</div>";
+            $this->footer_count++;
+            $this->text .= "<footer class=\"swPageFooterBlock swLastPageFooterBlock swPageFooterBlock{$this->footer_count}\">";
+            $this->text .= "Page Footer";
+            $this->text .= "</footer>";
+            $this->text .= "<div class=\"swPageBlock\" >";
+            $this->header_count++;
+            $this->text .= "<div class=\"swPageHeaderBlock swNewPageHeaderBlock swPageHeaderBlock{$this->header_count}\" >";
+        }
+        else
+        {
+            $this->text .= "<div class=\"swPageBlock\" >";
+            $this->header_count++;
+            $this->text .= "<div class=\"swPageHeaderBlock swPageHeaderBlock{$this->header_count}\" >";
+        }
     }
 
 	function format_page_header_end()
