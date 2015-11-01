@@ -354,7 +354,7 @@ reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenu
             }
 
 
-			params = forms.serialize();
+            params = forms.serialize();
             params += "&" + reportico_jquery(this).prop("name") + "=1";
             params += "&reportico_ajax_called=1";
 
@@ -371,15 +371,26 @@ reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenu
 
             if ( csvpdfoutput )
             {
+/*               
                 var windowSizeArray = [ "width=200,height=200",
                           "width=300,height=400,scrollbars=yes" ];
 
                 var url = ajaxaction +"?" + params;
                 var windowName = "popUp";//reportico_jquery(this).prop("name");
                 var windowSize = windowSizeArray[reportico_jquery(this).prop("rel")];
+
                 window.open(url, windowName, "width=200,height=200");
+*/                
                 reportico_jquery(expandpanel).removeClass("loading");
                 reportico_jquery(reportico_container).removeClass("loading");
+
+                var buttonName = reportico_jquery(this).prop("name");
+                var formparams = forms.serializeObject();
+                formparams['reportico_ajax_called'] = '1';
+                formparams[buttonName] = '1';
+                //iframe downloader
+                ajaxDownload(ajaxaction, formparams);
+                
                 return false;
             }
 
@@ -413,6 +424,68 @@ reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenu
     return false;
 })
 
+// MODIFIED--------------------------------
+//Hidden iframe download technique 
+function ajaxDownload(url, data) {
+    var $iframe,
+        iframe_doc,
+        iframe_html;
+
+    if (($iframe = reportico_jquery('#download_iframe')).length === 0) {       
+        $iframe = reportico_jquery("<iframe id='download_iframe'" +
+                    " style='display: none' src='about:blank'></iframe>"
+                   ).appendTo("body");
+    }
+ 
+    iframe_doc = $iframe[0].contentWindow || $iframe[0].contentDocument;
+    if (iframe_doc.document) {
+        iframe_doc = iframe_doc.document;
+    }
+
+    iframe_html = "<html><head></head><body><form method='POST' action='" +
+                  url +"'>";
+
+    Object.keys(data).forEach(function(key){
+        iframe_html += "<input type='hidden' name='"+key+"' value='"+data[key]+"'>";
+    });
+
+    iframe_html +="</form></body></html>";
+    
+    iframe_doc.open();
+    iframe_doc.write(iframe_html);
+    iframe_doc.close();//close is necessary or the forms multiply
+    reportico_jquery(iframe_doc).find('form').submit();
+}
+
+//general serializeObject function - e.g. turn a form's fields into an object
+reportico_jquery.fn.serializeObject = function() {
+  var arrayData, objectData;
+  arrayData = this.serializeArray();
+  objectData = {};
+
+  reportico_jquery.each(arrayData, function() {
+    var value;
+
+    if (this.value != null) {
+      value = this.value;
+    } else {
+      value = '';
+    }
+
+    if (objectData[this.name] != null) {
+      if (!objectData[this.name].push) {
+        objectData[this.name] = [objectData[this.name]];
+      }
+
+      objectData[this.name].push(value);
+    } else {
+      objectData[this.name] = value;
+    }
+  });
+
+  return objectData;
+};
+// ---------------------------------
 /*
 ** Called when used presses ok in expand mode to 
 ** refresh middle prepare mode section with non expand mode 
@@ -560,14 +633,24 @@ reportico_jquery(document).on('click', '.swPrintBox,.prepareAjaxExecute,#prepare
 
     if ( csvpdfoutput )
     {
+/*        
         var windowSizeArray = [ "width=200,height=200",
                   "width=300,height=400,scrollbars=yes" ];
 
         var url = ajaxaction +"?" + params;
+
         var windowName = "popUp";//reportico_jquery(this).prop("name");
         var windowSize = windowSizeArray[reportico_jquery(this).prop("rel")];
         window.open(url, windowName, "width=200,height=200");
+*/        
         reportico_jquery(expandpanel).removeClass("loading");
+      
+        var buttonName = reportico_jquery(this).prop("name");
+        var formparams = reportico_jquery(critform).serializeObject();
+        formparams['execute_mode'] = 'EXECUTE';
+        formparams[buttonName] = '1';
+        //iframe downloader
+        ajaxDownload(ajaxaction, formparams);
         return false;
     }
 
