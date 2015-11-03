@@ -1381,7 +1381,6 @@ class reportico extends reportico_object
         if ( $this->initial_show_group_trailers ) set_reportico_session_param("target_show_group_trailers",( $this->initial_show_group_trailers == "show" ));
         if ( $this->initial_show_column_headers ) set_reportico_session_param("target_show_column_headers",( $this->initial_show_column_headers == "show" ));
         if ( $this->initial_show_criteria ) set_reportico_session_param("target_show_criteria",( $this->initial_show_criteria == "show" ));
-
 	    $this->target_show_detail = session_request_item("target_show_detail", true, !isset_reportico_session_param("target_show_detail"));
 	    $this->target_show_graph = session_request_item("target_show_graph", true, !isset_reportico_session_param("target_show_graph"));
 	    $this->target_show_group_headers = session_request_item("target_show_group_headers", true, !isset_reportico_session_param("target_show_group_headers"));
@@ -1422,18 +1421,18 @@ class reportico extends reportico_object
             }
             else
             {
-                    $this->target_show_detail = true;
-                    $this->target_show_graph = true;
-                    $this->target_show_group_headers = true;
-                    $this->target_show_group_trailers = true;
-                    $this->target_show_column_headers = true;
-                    $this->target_show_criteria = false;
-                    set_reportico_session_param("target_show_detail",true);
-                    set_reportico_session_param("target_show_graph",true);
-                    set_reportico_session_param("target_show_group_headers",true);
-                    set_reportico_session_param("target_show_group_trailers",true);
-                    set_reportico_session_param("target_show_column_headers",true);
-                    set_reportico_session_param("target_show_criteria",false);
+                    //$this->target_show_detail = true;
+                    //$this->target_show_graph = true;
+                    //$this->target_show_group_headers = true;
+                    //$this->target_show_group_trailers = true;
+                    //$this->target_show_column_headers = true;
+                    //$this->target_show_criteria = false;
+                    //set_reportico_session_param("target_show_detail",true);
+                    //set_reportico_session_param("target_show_graph",true);
+                    //set_reportico_session_param("target_show_group_headers",true);
+                    //set_reportico_session_param("target_show_group_trailers",true);
+                    //set_reportico_session_param("target_show_column_headers",true);
+                    //set_reportico_session_param("target_show_criteria",false);
             }
         }
         else
@@ -3961,6 +3960,7 @@ class reportico extends reportico_object
 
 			case "MENU":
 				$this->handle_xml_query_input($mode);
+				$this->set_request_columns();
 				$this->build_menu();
 	            load_mode_language_pack("languages", $this->output_charset);
 				load_mode_language_pack("menu", $this->output_charset);
