@@ -723,11 +723,9 @@ input.swAdminButton2
 }
 .swMiniMaintain { background-image: url(../images/icons/pencil-2x.png) !important; }
 
-.swRepRefreshBox,
-.swRepPrintBox,
-.swRepBackBox
+.swRepButtons
 {
-    width: 38px !important;
+    width: 100%;
     height: 38px;
     margin: 0px 0px 0px 0px;
 }
@@ -1089,7 +1087,6 @@ input.swAdminButton2
 }
 
 /* -------------------------- Printed Output Styles ----------------------------------*/
-.swPageHeader { position: absolute; }
 .swPageHeaderBlock { display: block; width: 100%; position: relative; }
 .swNewPageHeaderBlock { display: none; }
 /*.swPageFooterBlock { display: none; width: 100%; position: absolute; bottom: 300px; }*/
@@ -1099,6 +1096,7 @@ input.swAdminButton2
 /*.swPageFooterBlock { display: block; width: 100%; position: relative; bottom: 100%; }*/
 /*.swPageFooterBlock { display: block; width: 100%; }*/
 /*.swPageBlock { display: block; width: 100%; position: relative; margin: 0 0 100px 0 }*/
+.swPageHeader { position: absolute; }
 
 @page {
     @top {
@@ -1128,6 +1126,7 @@ input.swAdminButton2
     .swPageHeader { display: block; }
     .swLinkMenu { display: none; }
     .swRepBackBox { display: none; }
+    .swRepButtons { display: none; }
     .prepareAjaxExecuteIgnore { display: none; }
     .swRepForm { border: none; }
     .swRepBody { width: 100%; margin: 0; border: none; }

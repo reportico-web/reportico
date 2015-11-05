@@ -23,18 +23,6 @@ function setupDynamicGrids()
                 }
                 );
         });
-
-        reportico_jquery(".swRepPage").each(function(){
-            reportico_jquery(this).dataTable(
-                {
-                "retrieve" : true,
-                "searching" : reportico_dynamic_grids_searchable,
-                "ordering" : reportico_dynamic_grids_sortable,
-                "paging" : reportico_dynamic_grids_paging,
-                "iDisplayLength": reportico_dynamic_grids_page_size
-                }
-                );
-        });
     }
 }
 

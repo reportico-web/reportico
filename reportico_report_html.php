@@ -78,6 +78,7 @@ class reportico_report_html extends reportico_report
 			if ( $forward )
 				$forward .= "&";
 
+            $this->text .= '<div class="swRepButtons">';
             // In printable html mode dont show back box
 		    if ( !get_request_item("printable_html") )
             {
@@ -94,6 +95,7 @@ class reportico_report_html extends reportico_report
             {
 		        $this->text .= '<div class="swRepPrintBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'printReport=1&execute_mode=EXECUTE&reportico_session_name='.reportico_session_name().'" title="'.template_xlate("GO_PRINT").'">'.template_xlate("GO_PRINT").'</a></div>';
             }
+            $this->text .= '</div>';
 
 			$this->text .= '<div class="swRepNoRows">'.template_xlate("NO_DATA_FOUND").'</div>';
 		}
@@ -684,16 +686,20 @@ class reportico_report_html extends reportico_report
         {
             if ( !$this->query->access_mode || ( $this->query->access_mode != "REPORTOUTPUT" )  )
             {
+                $this->text .= '<div class="swRepButtons">';
 			    $this->text .= '<div class="swRepBackBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'execute_mode=PREPARE&reportico_session_name='.reportico_session_name().'" title="'.template_xlate("GO_BACK").'">&nbsp;</a></div>';
             }
 	        if ( get_reportico_session_param("show_refresh_button") )
 		        $this->text .= '<div class="swRepRefreshBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'refreshReport=1&execute_mode=EXECUTE&reportico_session_name='.reportico_session_name().'" title="'.template_xlate("GO_REFRESH").'">&nbsp;</a></div>';
+            $this->text .= '</div>';
 
         }
         else
         {
         //$this->text .= '<div class="prepareAjaxExecuteIgnore swPDFBox1"><a class="swLinkMenu5 swPDFBox" target="_blank" href="'.$this->query->get_action_url().'?'.$forward.'refreshReport=1&target_format=PDF&execute_mode=EXECUTE&reportico_session_name='.reportico_session_name().'" title="Print PDF">&nbsp;</a></div>';
+            $this->text .= '<div class="swRepButtons">';
 	        $this->text .= '<div class="swRepPrintBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'printReport=1&execute_mode=EXECUTE&reportico_session_name='.reportico_session_name().'" title="'.template_xlate("GO_PRINT").'">'.'&nbsp;'.'</a></div>';
+            $this->text .= '</div>';
         }
 
         // Page Headers
