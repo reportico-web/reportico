@@ -1381,6 +1381,7 @@ class reportico extends reportico_object
         if ( $this->initial_show_group_trailers ) set_reportico_session_param("target_show_group_trailers",( $this->initial_show_group_trailers == "show" ));
         if ( $this->initial_show_column_headers ) set_reportico_session_param("target_show_column_headers",( $this->initial_show_column_headers == "show" ));
         if ( $this->initial_show_criteria ) set_reportico_session_param("target_show_criteria",( $this->initial_show_criteria == "show" ));
+
 	    $this->target_show_detail = session_request_item("target_show_detail", true, !isset_reportico_session_param("target_show_detail"));
 	    $this->target_show_graph = session_request_item("target_show_graph", true, !isset_reportico_session_param("target_show_graph"));
 	    $this->target_show_group_headers = session_request_item("target_show_group_headers", true, !isset_reportico_session_param("target_show_group_headers"));

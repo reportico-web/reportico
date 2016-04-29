@@ -40,7 +40,7 @@ class ADODB_ldap extends ADOConnection {
 	# Options configuration information
 	var $LDAP_CONNECT_OPTIONS;
 
-	function ADODB_ldap() 
+	function __construct() 
 	{		
 	}
   		
@@ -273,7 +273,7 @@ class ADORecordSet_ldap extends ADORecordSet{
 	var $canSeek = false;
 	var $_entryID; /* keeps track of the entry resource identifier */
 	
-	function ADORecordSet_ldap($queryID,$mode=false) 
+	function __construct($queryID,$mode=false) 
 	{
 		if ($mode === false) { 
 			global $ADODB_FETCH_MODE;
@@ -294,7 +294,7 @@ class ADORecordSet_ldap extends ADORecordSet{
 		break;
 		}
 	
-		$this->ADORecordSet($queryID);	
+		parent::__construct($queryID);	
 	}
 	
 	function _initrs()
