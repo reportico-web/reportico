@@ -99,9 +99,11 @@ class reportico_report extends reportico_object
 				if ( $first == "=" )
 				{
 					$crit = substr ( $match, 1 );
+                    $label = "";
+                    $value = "";
+                    $this->query->lookup_queries[$crit]->criteria_summary_text($label, $value);
 					$out_string = preg_replace("/\{$match\}/", 
-							$this->query->lookup_queries[$crit]->
-										get_criteria_clause(false,false,true),
+										$value,
 										$out_string);
 				}
 				if ( preg_match("/^session_/", $match ) )
