@@ -42,6 +42,8 @@ class reportico_report_html extends reportico_report
     var $header_count = 0;
     var $footer_count = 0;
 	var	$graph_session_placeholder = 0;
+	var	$tbody_started = false;
+	var	$tfoot_started = false;
 	
 	function __construct ()
 	{
@@ -114,7 +116,14 @@ class reportico_report_html extends reportico_report
 		}
 
         if ( $this->page_started )
-		    $this->text .= "</TBODY></TABLE>";
+        {
+            if ( $this->tbody_started )
+            {
+                $this->text .= '</TBODY>';
+                $this->tbody_started  = false;
+            }
+            $this->text .= "</TABLE>";
+        }
 
         //$this->text .= "</footer>";
         $this->text .= "</div>";
@@ -416,7 +425,13 @@ class reportico_report_html extends reportico_report
 		$this->text .="<thead><tr class='swRepColHdrRow'>";
 		foreach ( $this->query->display_order_set["column"] as $w )
 			$this->format_column_header($w);
-		$this->text .="</tr></thead><tbody>";
+        $this->text .="</tr></thead>";
+
+        if ( $this->body_display == "show" && get_reportico_session_param("target_show_detail") )
+        {
+            $this->text .="<tbody>";
+            $this->tbody_started = true;
+        }
 	}
 
 	function format_group_header_start($throw_page = false)
@@ -435,10 +450,10 @@ class reportico_report_html extends reportico_report
             $this->page_headers();
             if ( $this->query->output_template_parameters["show_hide_report_output_title"] != "hide" )
 		        $this->text .= '<H1 class="swRepTitle">'.sw_translate($title).'</H1>';
-		    $this->text .= '<TABLE class="swRepGrpHdrBox swNewPage" cellspacing="0">';
+            $this->text .= '<TABLE class="swRepGrpHdrBox swNewPage" >';
         }
         else
-		    $this->text .= '<TABLE class="swRepGrpHdrBox" cellspacing="0">';
+            $this->text .= '<TABLE class="swRepGrpHdrBox" >';
 	}
 
 	function format_group_header(&$col, $custom) // HTML
@@ -487,7 +502,14 @@ class reportico_report_html extends reportico_report
         if ( $graph_ct == 0 )
         {
             if ( $this->page_started )
-		        $this->text .= '</TBODY></TABLE>';
+            {
+                if ( $this->tbody_started )
+                {
+                    $this->text .= '</TBODY>';
+                    $this->tbody_started  = false;
+                }
+                $this->text .= '</TABLE>';
+            }
             $this->page_started = false;
         }
 		$this->graph_session_placeholder++;
@@ -554,7 +576,13 @@ class reportico_report_html extends reportico_report
 	{
 		if ( $first )
         {
-            $this->text .= "</TBODY><TFOOT>";
+            if ( $this->tbody_started )
+            {
+                $this->text .= '</TBODY>';
+                $this->tbody_started  = false;
+            }
+            $this->text .= "<TFOOT>";
+            $this->tfoot_started = true;
 			$this->text .= '<TR class="swRepGrpTlrRow1st">';
         }
 		else
@@ -564,10 +592,15 @@ class reportico_report_html extends reportico_report
 	function format_group_trailer_end($last_trailer = false)
 	{
 
-		$this->text .= "</TR>";
+		//$this->text .= "</TR>";
         if ( $this->page_started )
         {
-		    $this->text .= "</TFOOT></TABLE>";
+            if ( $this->tfoot_started )
+            {
+                $this->text .= "</TFOOT>";
+                $this->tfoot_started = false;
+            }
+            $this->text .= "</TABLE>";
         }
         $this->page_started = false;
 	}
