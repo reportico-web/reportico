@@ -3859,7 +3859,7 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 		
 			// fetch() on EOF does not delete $this->fields
 			$this->compat = !empty($ADODB_COMPAT_FETCH);
-			$this->ADORecordSet($fakeid); // fake queryID		
+            $parent::__construct($fakeid); // fake queryID
 			$this->fetchMode = $ADODB_FETCH_MODE;
 		}
 		
