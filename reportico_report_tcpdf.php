@@ -251,6 +251,7 @@ echo $txt;
 		$this->vsize = $this->fontSize + $this->vspace;
 		$this->orientation = $this->query->get_attribute("PageOrientation");
 		$this->page_type = $this->query->get_attribute("PageSize");
+
 		if ( $this->orientation == "Portrait" )
 		{
 			$this->abs_page_width = $this->page_types[$this->page_type]["width"];
