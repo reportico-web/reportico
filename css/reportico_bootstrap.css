@@ -1171,7 +1171,15 @@ input.swAdminButton2
     .swRepResultLine td a
     {
         text-decoration: underline;
-    color: #ff0000;
+        color: #ff0000;
+    }
+
+    a[href]:after {
+          content: none !important;
+    }
+
+    .swRepResultGraph {
+        page-break-inside: avoid;
     }
 }
 
