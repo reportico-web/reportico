@@ -887,7 +887,7 @@ class reportico_xml_reader
 					"CriteriaDisplay" => array ( "Title" => "CRITERIADISPLAY", "Type" => "DROPDOWN", "HelpPage" => "criteria", "XlateOptions" => true, 
 												"Values" => array("NOINPUT", "TEXTFIELD", "DROPDOWN", "MULTI", "CHECKBOX", "RADIO", ), "DocId" => "criteria_display" ),
 					"ExpandDisplay" => array ( "Title" => "EXPANDDISPLAY", "Type" => "DROPDOWN", "HelpPage" => "criteria", "XlateOptions" => true, 
-												"Values" => array("NOINPUT", "TEXTFIELD", "TEXTBOX", "DROPDOWN", "MULTI", "CHECKBOX", "RADIO", ), "DocId" => "expand_display" ),
+												"Values" => array("NOINPUT", "TEXTFIELD", "DROPDOWN", "MULTI", "CHECKBOX", "RADIO", ), "DocId" => "expand_display" ),
 					"DatabaseType" => array ( "Title" => "DATABASETYPE", "Type" => "DROPDOWN", 
 												"Values" => array("informix", "mysql", "sqlite-2", "sqlite-3", "none" ) ),
 					"justify" => array ( "Title" => "JUSTIFY", "Type" => "DROPDOWN",  "XlateOptions" => true,
@@ -2105,7 +2105,12 @@ class reportico_xml_reader
                             $updates[$matches[1]] = $v;
                     }
 					else
-						$updates[$matches[1]] = stripslashes($v);
+                    {
+                        if ( get_magic_quotes_gpc() )
+                            $updates[$matches[1]] = stripslashes($v);
+                        else
+                            $updates[$matches[1]] = $v;
+                    }
 				}
 			}
 
@@ -5793,17 +5798,15 @@ class reportico_xml_writer
 				$gpt =& $gpi->add_xmlval ( "GroupTrailers" );
 				foreach ( $val->trailers as $k2 => $val2 )
 				{
-                    
 					if ( is_array ( $val2) )
-					foreach ( $val2 as $kkk => $val3 )
-					{
-                    if ( !isset($val3["GroupTrailerCustom"] ))
-                        $val3["GroupTrailerCustom"] = false;
-					$gpti =& $gpt->add_xmlval ( "GroupTrailer" );
-					$el =& $gpti->add_xmlval ( "GroupTrailerDisplayColumn", $k2 );
-					$el =& $gpti->add_xmlval ( "GroupTrailerValueColumn", $val3["GroupTrailerValueColumn"]->query_name );
-					$el =& $gpti->add_xmlval ( "GroupTrailerCustom", $val3["GroupTrailerCustom"]);
-					}
+                    {
+                        if ( !isset($val2["GroupTrailerCustom"] ))
+                            $val2["GroupTrailerCustom"] = false;
+					    $gpti =& $gpt->add_xmlval ( "GroupTrailer" );
+					    $el =& $gpti->add_xmlval ( "GroupTrailerDisplayColumn", $val2["GroupTrailerDisplayColumn"] );
+					    $el =& $gpti->add_xmlval ( "GroupTrailerValueColumn", $val2["GroupTrailerValueColumn"]->query_name );
+					    $el =& $gpti->add_xmlval ( "GroupTrailerCustom", $val2["GroupTrailerCustom"]);
+                    }
 				}
 			}
 
@@ -6193,7 +6196,7 @@ class reportico_xmlval
 
 		$this->xmltext .= ">";
 
-		if ( $this->value )
+		if ( $this->value || $this->value === "0" )
 		{
 			$this->xmltext .= $this->value;
 		}

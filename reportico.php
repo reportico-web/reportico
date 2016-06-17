@@ -390,6 +390,7 @@ class reportico extends reportico_object
     // Output control 
     var $output_skipline = false;
     var $output_allcell_styles = false;
+    var $output_criteria_styles = false;
     var $output_header_styles = false;
     var $output_hyperlinks = false;
     var $output_images = false;
@@ -1010,8 +1011,7 @@ class reportico extends reportico_object
 	// -----------------------------------------------------------------------------
 	function set_criteria_defaults($query_name, $in_default, $in_delimiter = false)
 	{
-
-		if ( $in_default ) // && $this->get_execute_mode() != "MAINTAIN" )
+		if ( $in_default || $in_default == "0"  )
 		{
 			$this->check_criteria_name("set_criteria_defaults", $query_name);
 			if ( array_key_exists($query_name, $this->lookup_queries) )
@@ -1422,18 +1422,18 @@ class reportico extends reportico_object
             }
             else
             {
-                    $this->target_show_detail = true;
-                    $this->target_show_graph = true;
-                    $this->target_show_group_headers = true;
-                    $this->target_show_group_trailers = true;
-                    $this->target_show_column_headers = true;
-                    $this->target_show_criteria = false;
-                    set_reportico_session_param("target_show_detail",true);
-                    set_reportico_session_param("target_show_graph",true);
-                    set_reportico_session_param("target_show_group_headers",true);
-                    set_reportico_session_param("target_show_group_trailers",true);
-                    set_reportico_session_param("target_show_column_headers",true);
-                    set_reportico_session_param("target_show_criteria",false);
+                    //$this->target_show_detail = true;
+                    //$this->target_show_graph = true;
+                    //$this->target_show_group_headers = true;
+                    //$this->target_show_group_trailers = true;
+                    //$this->target_show_column_headers = true;
+                    //$this->target_show_criteria = false;
+                    //set_reportico_session_param("target_show_detail",true);
+                    //set_reportico_session_param("target_show_graph",true);
+                    //set_reportico_session_param("target_show_group_headers",true);
+                    //set_reportico_session_param("target_show_group_trailers",true);
+                    //set_reportico_session_param("target_show_column_headers",true);
+                    //set_reportico_session_param("target_show_criteria",false);
             }
         }
         else
@@ -2485,15 +2485,12 @@ class reportico extends reportico_object
 		$updtr = false;
 		foreach ( $grp->trailers as $k => $v )
 		{
-			foreach ( $v as $k2 => $v2 )
+			if ( $ct == $tn )
 			{
-				if ( $ct == $tn )
-				{
-					array_splice($grp->trailers[$k], $k2, 1 );
-					return;
-				}
-				$ct++;
+				array_splice($grp->trailers, $k, 1 );
+				return;
 			}
+			$ct++;
 		}
 				
 	}
@@ -2528,6 +2525,7 @@ class reportico extends reportico_object
 
         $trailer = array();
         $trailer["GroupTrailerValueColumn"] = $col;
+        $trailer["GroupTrailerDisplayColumn"] = $trailer_column;
         $trailer["GroupTrailerCustom"] = $trailer_custom;
 
 		$ct = 0;
@@ -2537,30 +2535,11 @@ class reportico extends reportico_object
 
 		foreach ( $grp->trailers as $k => $v )
 		{
-			foreach ( $v as $k2 => $v2 )
+			if ( $k == $tn )
 			{
-				if ( $ct == $tn )
-				{
-                    $grp->trailers[$k][$k2] = $trailer;
-                    return;
-                    $pt1 = array_slice($grp->trailers[$trailer_column], 0, $ct, true);
-                    $pt2 = array_slice($grp->trailers[$trailer_column], $ct +1, false, true);
-                    $pt1[] =& $trailer;
-                    if ( $pt2 )
-                    {
-                        $grp->trailers[$trailer_column] = array_merge($pt1, $pt2);
-                    }
-                    else
-                    {
-                        $grp->trailers[$trailer_column] = $pt1;
-                    }
-					$looping = false;
-					break;
-				}
-				$ct++;
+                   $grp->trailers[$k] = $trailer;
+				return;
 			}
-			if ( !$looping )
-				break;
 		}
 				
 	}
@@ -2768,7 +2747,7 @@ class reportico extends reportico_object
 				$cn1 = 0;
 				foreach ( $v->trailers as $k1 => $v1 )
 				{
-					if ( $k1 == $query_name )
+					if ( $v1["GroupTrailerDisplayColumn"] == $query_name )
 					{
 						array_splice ( $this->groups[$k]->trailers, $cn1, 1 );
 						$deleting = true;
@@ -3982,6 +3961,7 @@ class reportico extends reportico_object
 
 			case "MENU":
 				$this->handle_xml_query_input($mode);
+				$this->set_request_columns();
 				$this->build_menu();
 	            load_mode_language_pack("languages", $this->output_charset);
 				load_mode_language_pack("menu", $this->output_charset);
@@ -5059,6 +5039,8 @@ class reportico extends reportico_object
 	{
         if ( $item_type == "ALLCELLS" )
             $this->output_allcell_styles[$style_type] = $style_value;
+        if ( $item_type == "CRITERIA" )
+            $this->output_criteria_styles[$style_type] = $style_value;
         if ( $item_type == "ROW" )
             $this->output_row_styles[$style_type] = $style_value;
         if ( $item_type == "CELL" )
@@ -5899,6 +5881,7 @@ class reportico_group extends reportico_object
 	var 	$group_column;
 	var 	$headers = array();
 	var 	$trailers = array();
+	var 	$trailers_by_column = array();
 	var 	$trailer_level_ct = 0;
 	var 	$max_level = 0;
 	var	$attributes = array(
@@ -5907,6 +5890,8 @@ class reportico_group extends reportico_object
 			"before_trailer" => "blankline",
 			"after_trailer" => "blankline"
 				);
+
+    var $change_triggered = false;
 
 	function __construct($in_name, &$in_query)
 	{
@@ -5935,22 +5920,32 @@ class reportico_group extends reportico_object
 	function add_trailer($in_trailer_column, &$in_value_column, $in_custom)
 	{
         $trailer = array();
-		if ( !array_key_exists($in_trailer_column, $this->trailers) )
-		{
-			$this->trailers[$in_trailer_column] =  array();
-		}
+        $trailer["GroupTrailerDisplayColumn"] = $in_trailer_column;
         $trailer["GroupTrailerValueColumn"] = $in_value_column;
         $trailer["GroupTrailerCustom"] = $in_custom;
-		$this->trailers[$in_trailer_column][] =& $trailer;
-		$level = count($this->trailers[$in_trailer_column]);
+		$this->trailers[] =& $trailer;
+		$level = count($this->trailers);
         if ( $this->max_level < $level )
             $this->max_level = $level;
-		//$this->max_level = count($this->trailers[$in_trailer_column]);
-//if ( !$in_custom)
-//echo "trailers of $this->group_name $in_trailer_column is ".count($this->trailers[$in_trailer_column])." => $this->max_level<BR>";
-//else
-    //echo "custom<BR>";
-        
+	}			
+
+	function organise_trailers_by_display_column()
+	{
+        foreach ( $this->trailers as $trailer )
+        {
+            if ( !isset($this->trailers_by_column[$trailer["GroupTrailerDisplayColumn"]] ) )
+                $this->trailers_by_column[$trailer["GroupTrailerDisplayColumn"]] = array();
+
+            $this->trailers_by_column[$trailer["GroupTrailerDisplayColumn"]][] = $trailer;
+        }
+        // Calculate number of levels
+        $this->max_level = 0;
+        foreach ( $this->trailers_by_column as $k => $trailergroup )
+        {
+            $level = count($trailergroup);
+            if ( $this->max_level < $level )
+                $this->max_level = $level;
+        }
 	}			
 
 }
@@ -5990,6 +5985,7 @@ class reportico_criteria_column extends reportico_query_column
 	var $list_values = array();
 	var	$first_criteria_selection = true;
     var $parent_reportico = false;
+    var $criteria_summary;
     
     // For criteria that is linked to in another report
     // Specifies both the report to link to and the criteria item
@@ -6062,6 +6058,77 @@ class reportico_criteria_column extends reportico_query_column
 		$g_code_area = "";
 	}
 
+
+    // -----------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------
+	function criteria_summary_text(&$label, &$value)
+    {
+        $label = "";
+        $value = "";
+
+        if ( isset($this->criteria_summary) && $this->criteria_summary )
+        {
+            $label = $this->derive_attribute("column_title", $this->query_name);
+            $value = $this->criteria_summary;
+        }
+        else
+        {
+        if ( get_request_item($name."_FROMDATE_DAY", "" ) )
+        {
+            $label = $this->derive_attribute("column_title", $this->query_name);
+            $label = sw_translate($label);
+            $mth = get_request_item($name."_FROMDATE_MONTH","") + 1;
+            $value = get_request_item($name."_FROMDATE_DAY","")."/".
+            $mth."/".
+            get_request_item($name."_FROMDATE_YEAR","");
+            if ( get_request_item($name."_TODATE_DAY", "" ) )
+            {
+                $mth = get_request_item($name."_TODATE_MONTH","") + 1;
+                $value .= "-";
+                $value .= get_request_item($name."_TODATE_DAY","")."/".
+                $mth."/".
+                get_request_item($name."_TODATE_YEAR","");
+            }
+        }
+        else if ( get_request_item("MANUAL_".$name."_FROMDATE", "" ) )
+        {
+            $label = $this->derive_attribute("column_title", $this->query_name);
+            $label = sw_translate($label);
+            $value = get_request_item("MANUAL_".$name."_FROMDATE","");
+            if ( get_request_item("MANUAL_".$name."_TODATE", "" ) )
+            {
+                $value .= "-";
+                $value .= get_request_item("MANUAL_".$name."_TODATE");
+            }
+
+        }
+        else if ( get_request_item("HIDDEN_".$name."_FROMDATE", "" ) )
+        {
+            $label = $this->derive_attribute("column_title", $this->query_name);
+            $label = sw_translate($label);
+            $value = get_request_item("HIDDEN_".$name."_FROMDATE","");
+            if ( get_request_item("HIDDEN_".$name."_TODATE", "" ) )
+            {
+                $value .= "-";
+                $value .= get_request_item("HIDDEN_".$name."_TODATE");
+            }
+
+        }
+        else if ( get_request_item("EXPANDED_".$name, "" ) )
+        {
+            $label = $this->derive_attribute("column_title", $this->query_name);
+            $label = sw_translate($label);
+            $value .= implode(get_request_item("EXPANDED_".$name, ""),",");
+        }
+        else if ( get_request_item("MANUAL_".$name, "" ) )
+        {
+            $label = $this->derive_attribute("column_title", $this->query_name);
+            $label = sw_translate($label);
+            $value .= get_request_item("MANUAL_".$name, "");
+        }
+        }
+    }
+
 	// -----------------------------------------------------------------------------
 	// Function : criteria_summary_display
     //
@@ -6132,7 +6199,6 @@ class reportico_criteria_column extends reportico_query_column
 				{
 					$hidden_params = $manual_params;
 					$manual_override = true;
-                    $this->criteria_summary .= "-";
                     $value_string = $_REQUEST["MANUAL_".$this->query_name];
 				}
 			}
@@ -7074,7 +7140,7 @@ class reportico_criteria_column extends reportico_query_column
 			}
 
 			if ( $checked != "" )
-				if ( !$value_string )
+				if ( !$value_string && $value_string != "0" )
 					$value_string = $abb;
 				else
 					$value_string .= ",".$abb;
@@ -7792,8 +7858,10 @@ class reportico_assignment extends reportico_object
 				{
 					$crit = substr ( $crit, 1 );
 					$critexp = $crit;
+                    $clause = ""; 
+                    $label = ""; 
 					if ( array_key_exists($crit, $in_query->lookup_queries) )
-						$clause = $in_query->lookup_queries[$crit]->get_criteria_clause(false, false, true);
+						$clause = $in_query->lookup_queries[$crit]->criteria_summary_text($label,$clause);
 					else if ( $cl = get_query_column($crit, $this->query->columns ) )
 						if ( $prev_col_value )
 							$clause = $cl->old_column_value;

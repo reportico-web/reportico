@@ -94,7 +94,7 @@
     //$q->initial_show_group_headers = "show";
     //$q->initial_show_group_trailers = "show";
     //$q->initial_show_column_headers = "show";
-    $q->initial_show_criteria = "hide";
+    //$q->initial_show_criteria = "show";
 
     // Set default output style - TABLE = one row per record, FORM = one page per record
     //$q->initial_output_style = "TABLE";
@@ -187,7 +187,7 @@
 
     // For passing external user parameters, can be referenced in SQL with {USER_PARAM,parameter_name}
     // and can be referenced in custom SQL with $this->user_parameters
-    //$q->user_parameters["hello"] = "peter";
+    //$q->user_parameters["your_parameter_name"] = "your parameter value";
 
     // Jquery already included?
     //$q->jquery_preloaded = false;
@@ -225,6 +225,9 @@
     //$q->output_template_parameters["show_hide_prepare_print_html_button"] = "show";
     //$q->output_template_parameters["show_hide_prepare_csv_button"] = "show";
     //$q->output_template_parameters["show_hide_prepare_page_style"] = "show";
+
+    // Label for criteria section if required
+    // $q->criteria_block_label = "Report Criteria:";
 
     // Static Menu definition
     // ======================

@@ -27,12 +27,23 @@
                     "border-width" => "2px 2px 2px 2px",
                     "border-style" => "solid",
                     "border-color" => "#000000",
-                    //"color" => "#003f00",
+                    //"background-color" => "#eeeeee",
                     //"padding" => "0 20 0 20",
                     //"margin" => "0 0 0 5",
                     "font-family" => "freesans",
                     );
                 $reportico->apply_styleset("BODY", $styles, false, "PDF");
+
+                // CRITERIA BOX STYLES
+                $styles = array(
+                    "background-color" => "#eeeeee",
+                    "border-style" => "solid",
+                    "border-width" => "1px 1px 1px 1px",
+                    "border-color" => "#888888",
+                    //"margin" => "0px 5px 10px 5px",
+                    //"padding" => "0px 5px 0px 5px",
+                    );
+                $reportico->apply_styleset("CRITERIA", $styles, false, false);
             }
 
             // PAGE DETAIL BOX STYLES

@@ -38,7 +38,7 @@
    var $CacheFolder = "Cache/";
 
    /* Create the pCache object */
-   function pCache($CacheFolder="Cache/")
+   function __construct($CacheFolder="Cache/")
     {
      $this->CacheFolder = $CacheFolder;
     }

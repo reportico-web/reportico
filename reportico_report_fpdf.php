@@ -1258,7 +1258,7 @@ class reportico_report_fpdf extends reportico_report
                 if ( $this->draw_mode == "DRAW" )
                 {
                         
-				    $this->draw_cell_container($wd, $this->vsize + 4, $k,"PBR",0,$just);
+				    $this->draw_cell_container($wd, $this->vsize + 10, $k,"PBR",0,$just);
                 }
                 $link = false;
                 if ( $column_item->output_hyperlinks )

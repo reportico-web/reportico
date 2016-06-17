@@ -39,7 +39,11 @@ class reportico_report_html extends reportico_report
 	var	$abs_bottom_margin;
 	var	$abs_left_margin;
 	var	$abs_right_margin;
+    var $header_count = 0;
+    var $footer_count = 0;
 	var	$graph_session_placeholder = 0;
+	var	$tbody_started = false;
+	var	$tfoot_started = false;
 	
 	function __construct ()
 	{
@@ -76,6 +80,7 @@ class reportico_report_html extends reportico_report
 			if ( $forward )
 				$forward .= "&";
 
+            $this->text .= '<div class="swRepButtons">';
             // In printable html mode dont show back box
 		    if ( !get_request_item("printable_html") )
             {
@@ -92,6 +97,7 @@ class reportico_report_html extends reportico_report
             {
 		        $this->text .= '<div class="swRepPrintBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'printReport=1&execute_mode=EXECUTE&reportico_session_name='.reportico_session_name().'" title="'.template_xlate("GO_PRINT").'">'.template_xlate("GO_PRINT").'</a></div>';
             }
+            $this->text .= '</div>';
 
 			$this->text .= '<div class="swRepNoRows">'.template_xlate("NO_DATA_FOUND").'</div>';
 		}
@@ -110,7 +116,21 @@ class reportico_report_html extends reportico_report
 		}
 
         if ( $this->page_started )
-		    $this->text .= "</TBODY></TABLE>";
+        {
+            if ( $this->tbody_started )
+            {
+                $this->text .= '</TBODY>';
+                $this->tbody_started  = false;
+            }
+            $this->text .= "</TABLE>";
+        }
+
+        //$this->text .= "</footer>";
+        $this->text .= "</div>";
+        $this->footer_count++;
+        $this->text .= "<footer class=\"swPageFooterBlock swPageFooterBlock{$this->footer_count}\">";
+        $this->text .= "Page Footer";
+        $this->text .= "</footer>";
         $this->page_started = false;
 	}
 
@@ -405,7 +425,13 @@ class reportico_report_html extends reportico_report
 		$this->text .="<thead><tr class='swRepColHdrRow'>";
 		foreach ( $this->query->display_order_set["column"] as $w )
 			$this->format_column_header($w);
-		$this->text .="</tr></thead><tbody>";
+        $this->text .="</tr></thead>";
+
+        if ( $this->body_display == "show" && get_reportico_session_param("target_show_detail") )
+        {
+            $this->text .="<tbody>";
+            $this->tbody_started = true;
+        }
 	}
 
 	function format_group_header_start($throw_page = false)
@@ -418,10 +444,16 @@ class reportico_report_html extends reportico_report
 
 		//$this->text .= "<TR class=swRepDatRow>";
 		//$this->text .= "<TD class=swRepDatVal colspan=\"".$spanct."\">";
-        if ( $throw_page )
-		    $this->text .= '<TABLE class="swRepGrpHdrBox swNewPage" cellspacing="0">';
+        if ( $throw_page || $this->page_started )
+        {
+		    $title = $this->query->derive_attribute("ReportTitle", "Unknown");
+            $this->page_headers();
+            if ( $this->query->output_template_parameters["show_hide_report_output_title"] != "hide" )
+		        $this->text .= '<H1 class="swRepTitle">'.sw_translate($title).'</H1>';
+            $this->text .= '<TABLE class="swRepGrpHdrBox swNewPage" >';
+        }
         else
-		    $this->text .= '<TABLE class="swRepGrpHdrBox" cellspacing="0">';
+            $this->text .= '<TABLE class="swRepGrpHdrBox" >';
 	}
 
 	function format_group_header(&$col, $custom) // HTML
@@ -470,7 +502,14 @@ class reportico_report_html extends reportico_report
         if ( $graph_ct == 0 )
         {
             if ( $this->page_started )
-		        $this->text .= '</TBODY></TABLE>';
+            {
+                if ( $this->tbody_started )
+                {
+                    $this->text .= '</TBODY>';
+                    $this->tbody_started  = false;
+                }
+                $this->text .= '</TABLE>';
+            }
             $this->page_started = false;
         }
 		$this->graph_session_placeholder++;
@@ -489,7 +528,6 @@ class reportico_report_html extends reportico_report
 	{
 		if ( !get_reportico_session_param("target_show_group_trailers") )
 			return;
-
 		$just = $trailer_col->derive_attribute( "justify", false);
         if ( $just && $just != "left" ) 
                 $this->query->output_group_trailer_styles["text-align"] = $just;
@@ -528,7 +566,9 @@ class reportico_report_html extends reportico_report
 				$this->text .= $group_label." ".$padstring;
 		}
 		else
+        {
 			$this->text .= "&nbsp;";
+        }
 		$this->text .= "</TD>";
 	}
 
@@ -536,7 +576,13 @@ class reportico_report_html extends reportico_report
 	{
 		if ( $first )
         {
-            $this->text .= "</TBODY><TFOOT>";
+            if ( $this->tbody_started )
+            {
+                $this->text .= '</TBODY>';
+                $this->tbody_started  = false;
+            }
+            $this->text .= "<TFOOT>";
+            $this->tfoot_started = true;
 			$this->text .= '<TR class="swRepGrpTlrRow1st">';
         }
 		else
@@ -546,10 +592,15 @@ class reportico_report_html extends reportico_report
 	function format_group_trailer_end($last_trailer = false)
 	{
 
-		$this->text .= "</TR>";
+		//$this->text .= "</TR>";
         if ( $this->page_started )
         {
-		    $this->text .= "</TFOOT></TABLE>";
+            if ( $this->tfoot_started )
+            {
+                $this->text .= "</TFOOT>";
+                $this->tfoot_started = false;
+            }
+            $this->text .= "</TABLE>";
         }
         $this->page_started = false;
 	}
@@ -655,14 +706,10 @@ class reportico_report_html extends reportico_report
 	{
 		reportico_report::begin_page();
 
+        $this->throw_page = true;
+        //$this->page_started = true;
 		$this->debug("HTML Begin Page\n");
 
-        // Page Headers
-		reportico_report::page_headers();
-
-		$title = $this->query->derive_attribute("ReportTitle", "Unknown");
-        if ( $this->query->output_template_parameters["show_hide_report_output_title"] != "hide" )
-		    $this->text .= '<H1 class="swRepTitle">'.sw_translate($title).'</H1>';
 		$forward = session_request_item('forward_url_get_parameters', '');
 		if ( $forward )
 			$forward .= "&";
@@ -672,20 +719,34 @@ class reportico_report_html extends reportico_report
         {
             if ( !$this->query->access_mode || ( $this->query->access_mode != "REPORTOUTPUT" )  )
             {
+                $this->text .= '<div class="swRepButtons">';
 			    $this->text .= '<div class="swRepBackBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'execute_mode=PREPARE&reportico_session_name='.reportico_session_name().'" title="'.template_xlate("GO_BACK").'">&nbsp;</a></div>';
             }
 	        if ( get_reportico_session_param("show_refresh_button") )
 		        $this->text .= '<div class="swRepRefreshBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'refreshReport=1&execute_mode=EXECUTE&reportico_session_name='.reportico_session_name().'" title="'.template_xlate("GO_REFRESH").'">&nbsp;</a></div>';
+            $this->text .= '</div>';
+
         }
         else
         {
+        //$this->text .= '<div class="prepareAjaxExecuteIgnore swPDFBox1"><a class="swLinkMenu5 swPDFBox" target="_blank" href="'.$this->query->get_action_url().'?'.$forward.'refreshReport=1&target_format=PDF&execute_mode=EXECUTE&reportico_session_name='.reportico_session_name().'" title="Print PDF">&nbsp;</a></div>';
+            $this->text .= '<div class="swRepButtons">';
 	        $this->text .= '<div class="swRepPrintBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'printReport=1&execute_mode=EXECUTE&reportico_session_name='.reportico_session_name().'" title="'.template_xlate("GO_PRINT").'">'.'&nbsp;'.'</a></div>';
+            $this->text .= '</div>';
         }
+
+        // Page Headers
+		reportico_report::page_headers();
+
+		$title = $this->query->derive_attribute("ReportTitle", "Unknown");
+        if ( $this->query->output_template_parameters["show_hide_report_output_title"] != "hide" )
+		    $this->text .= '<H1 class="swRepTitle">'.sw_translate($title).'</H1>';
 	}
 
 	function before_format_criteria_selection()
 	{
-		$this->text .= '<TABLE class="swRepCriteria">';
+	    $this->text .= '<TH>';
+		$this->text .= '<TABLE class="swRepCriteria"'. $this->get_style_tags($this->query->output_criteria_styles).'>';
 	}
 
 	function format_criteria_selection($label, $value)
@@ -721,7 +782,23 @@ class reportico_report_html extends reportico_report
 
 	function format_page_header_start()
 	{
-        $this->text .= "<div class=\"swPageHeaderBlock\">";
+        if ( $this->line_count > 0 )
+        {
+            $this->text .= "</div>";
+            $this->footer_count++;
+            $this->text .= "<footer class=\"swPageFooterBlock swLastPageFooterBlock swPageFooterBlock{$this->footer_count}\">";
+            $this->text .= "Page Footer";
+            $this->text .= "</footer>";
+            $this->text .= "<div class=\"swPageBlock\" >";
+            $this->header_count++;
+            $this->text .= "<div class=\"swPageHeaderBlock swNewPageHeaderBlock swPageHeaderBlock{$this->header_count}\" >";
+        }
+        else
+        {
+            $this->text .= "<div class=\"swPageBlock\" >";
+            $this->header_count++;
+            $this->text .= "<div class=\"swPageHeaderBlock swPageHeaderBlock{$this->header_count}\" >";
+        }
     }
 
 	function format_page_header_end()

@@ -29,9 +29,9 @@ class  ADODB_ado_access extends ADODB_ado {
 	var $hasTransactions = false;
 	var $upperCase = 'ucase';
 	
-	function ADODB_ado_access()
+	function __construct()
 	{
-		$this->ADODB_ado();
+        parent::__construct();
 	}
 	
 	function BeginTrans() { return false;}
@@ -47,9 +47,9 @@ class  ADORecordSet_ado_access extends ADORecordSet_ado {
 	
 	var $databaseType = "ado_access";		
 	
-	function ADORecordSet_ado_access($id,$mode=false)
+	function __construct($id,$mode=false)
 	{
-		return $this->ADORecordSet_ado($id,$mode);
+		return parent::__construct($id,$mode);
 	}
 }
 ?>

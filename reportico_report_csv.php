@@ -140,7 +140,7 @@ class reportico_report_csv extends reportico_report
 			if ( count($group->headers) > 0  )
 			foreach ($group->headers as $gphk => $col )
 			{
-				$qn = get_query_column($col->query_name, $this->query->columns ) ;
+				$qn = get_query_column($col["GroupHeaderColumn"]->query_name, $this->query->columns ) ;
 				$padstring = $qn->column_value;
 				echo "\"".$padstring."\"";
 				echo ",";
@@ -196,7 +196,7 @@ class reportico_report_csv extends reportico_report
 		{
 			for ($i = 0; $i < count($group->headers); $i++ )
 			{
-				$col =& $group->headers[$i];
+				$col =& $group->headers[$i]["GroupHeaderColumn"];
 				$qn = get_query_column($col->query_name, $this->query->columns ) ;
 				$tempstring = str_replace("_", " ", $col->query_name);
 				$tempstring = ucwords(strtolower($tempstring));
@@ -210,7 +210,7 @@ class reportico_report_csv extends reportico_report
 		echo "\n";
 	}
 
-	function format_group_header(&$col) // CSV
+	function format_group_header(&$col, $custom)
 	{
 		// Excel requires group headers are printed as the first columns in the spreadsheet against
 		// the detail. 
@@ -251,17 +251,17 @@ class reportico_report_csv extends reportico_report
 	{
 		if ( $value_col )
 		{
-			$group_label = $value_col->get_attribute("group_trailer_label" );
+			$group_label = $value_col["GroupTrailerValueColumn"]->get_attribute("group_trailer_label" );
 			if ( !$group_label )
-				$group_label = $value_col->get_attribute("column_title" );
+				$group_label = $value_col["GroupTrailerValueColumn"]->get_attribute("column_title" );
 			if ( !$group_label )
 			{
-				$group_label = $value_col->query_name;
+				$group_label = $value_col["GroupTrailerValueColumn"]->query_name;
 				$group_label = str_replace("_", " ", $group_label);
 				$group_label = ucwords(strtolower($group_label));
 			}
 			$group_label = sw_translate($group_label);
-			$padstring = $value_col->old_column_value;
+			$padstring = $value_col["GroupTrailerValueColumn"]->old_column_value;
 			echo $group_label.":".$padstring;
 		}
 		echo ",";

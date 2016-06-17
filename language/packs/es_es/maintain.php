@@ -397,7 +397,20 @@ $locale_arr = array (
         "T_DELETEOKACT" => "eliminado con éxito. Definición de informe todavía está activo. Si usted no tenía la intención de eliminar el informe, puede pulsar el botón Guardar para volver a crearlo",
         "T_INVALIDENTRY" => "Entrada no válida -",
         "T_FORFIELD" => "para el campo -",
-
+        "T_ASSIGNHEIGHT" => "Altura",
+        "T_PAGEHEADERSTYLES" => "Estilos",
+        "T_PAGEFOOTERSTYLES" => "Estilos",
+        "T_SHOWINPDF" => "Mostrar en PDF",
+        "T_SHOWINHTML" => "Mostrar en HTML",
+        "T_RELATIVE" => "Relativo",
+        "T_ABSOLUTE" => "Absoluto",
+        "T_GROUPHEADERCUSTOM" => "Grupo Texto de la Cabecera personalizada",
+        "T_GROUPHEADERSTYLES" => "Estilos",
+        "T_GROUPTRAILERCUSTOM" => "Grupo Custom Remolque texto",
+        "T_GROUPTRAILERSTYLES" => "Estilos",
+        "T_ASSIGNSTYLEPOSITION" => "Relativa a la posición o la página actual",
+        "T_ASSIGNFONTNAME" => "Nombre de la Fuente",
+        "T_ASSIGNPDFBACKGROUNDIMAGE" => "Imagen De Fondo",
     )
 );
 ?>

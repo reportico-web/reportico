@@ -21,9 +21,10 @@ class ADODB_firebird extends ADODB_ibase {
 	
 	var $sysTimeStamp = "CURRENT_TIMESTAMP"; //"cast('NOW' as timestamp)";
 	
-	function ADODB_firebird()
+	function __construct()
 	{	
-		$this->ADODB_ibase();
+        parent::__construct();
+
 	}
 	
 	function ServerInfo()
@@ -69,9 +70,9 @@ class  ADORecordSet_firebird extends ADORecordSet_ibase {
 	
 	var $databaseType = "firebird";		
 	
-	function ADORecordSet_firebird($id,$mode=false)
+	function __construct($id,$mode=false)
 	{
-		$this->ADORecordSet_ibase($id,$mode);
+		parent::__construct($id,$mode);
 	}
 }
 ?>

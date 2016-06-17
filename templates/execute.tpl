@@ -102,7 +102,7 @@
 {literal}
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/nvd3/d3.min.js"></script>
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/nvd3/nv.d3.js"></script>
-<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{/literal}{$JSPATH}{literal}/nvd3/nv.d3.css">
+<LINK id="nvd3_css" REL="stylesheet" TYPE="text/css" HREF="{/literal}{$JSPATH}{literal}/nvd3/nv.d3.css">
 {/literal}
 {/if}
 {/if}
@@ -110,7 +110,7 @@
 {literal}
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/jquery.dataTables.min.js"></script>
 {/literal}
-<LINK id="PRP_StyleSheet" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/jquery.dataTables.css">
+<LINK id="datatable_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/jquery.dataTables.css">
 {/if}
 {if $PRINTABLE_HTML}
 {literal}
@@ -197,7 +197,6 @@ function resizeOutputTables(window)
 <script type="text/javascript">var reportico_dynamic_grids = false;</script>
 {/if}
 {$CONTENT}
-</div>
 </div>
 {if !$REPORTICO_AJAX_CALLED}
 {if !$EMBEDDED_REPORT}

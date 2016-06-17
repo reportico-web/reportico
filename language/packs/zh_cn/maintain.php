@@ -330,6 +330,20 @@ $locale_arr = array (
         "T_INVALIDENTRY" => "无效的项目 -",
         "T_FORFIELD" => "字段 - ",
         "T_FORMBETWEENROWS" => "表格样式的行分隔符",
+        "T_ASSIGNHEIGHT" => "高度",
+        "T_PAGEHEADERSTYLES" => "样式",
+        "T_PAGEFOOTERSTYLES" => "样式",
+        "T_SHOWINPDF" => "展PDF",
+        "T_SHOWINHTML" => "显示HTML",
+        "T_RELATIVE" => "相对的",
+        "T_ABSOLUTE" => "绝对",
+        "T_GROUPHEADERCUSTOM" => "组头自定义文本",
+        "T_GROUPHEADERSTYLES" => "样式",
+        "T_GROUPTRAILERCUSTOM" => "集团拖车自定义文本",
+        "T_GROUPTRAILERSTYLES" => "样式",
+        "T_ASSIGNSTYLEPOSITION" => "相对于当前位置或页",
+        "T_ASSIGNFONTNAME" => "字体名称",
+        "T_ASSIGNPDFBACKGROUNDIMAGE" => "背景图像",
 
 )
 );

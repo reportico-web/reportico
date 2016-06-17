@@ -51,7 +51,7 @@ class ADODB_mysqli extends ADOConnection {
 	var $nameQuote = '`';		/// string to use to quote identifiers and names
 	var $optionFlags = array(array(MYSQLI_READ_DEFAULT_GROUP,0));
 	
-	function ADODB_mysqli() 
+	function __construct() 
 	{			
 	 // if(!extension_loaded("mysqli"))
 	      ;//trigger_error("You must have the mysqli extension installed.", E_USER_ERROR);
@@ -759,7 +759,7 @@ class ADORecordSet_mysqli extends ADORecordSet{
 	var $databaseType = "mysqli";
 	var $canSeek = true;
 	
-	function ADORecordSet_mysqli($queryID, $mode = false) 
+	function __construct($queryID, $mode = false) 
 	{
 	  if ($mode === false) 
 	   { 
@@ -782,7 +782,7 @@ class ADORecordSet_mysqli extends ADORecordSet{
 	      break;
 	    }
 	  $this->adodbFetchMode = $mode;
-	  $this->ADORecordSet($queryID);	
+	  parent::__construct($queryID);	
 	}
 	
 	function _initrs()

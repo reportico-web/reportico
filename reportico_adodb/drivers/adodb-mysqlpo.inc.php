@@ -25,7 +25,7 @@ class ADODB_mysqlt extends ADODB_mysql {
 	var $hasTransactions = true;
 	var $autoRollback = true; // apparently mysql does not autorollback properly 
 	
-	function ADODB_mysqlt() 
+	function __construct() 
 	{			
 	global $ADODB_EXTENSION; if ($ADODB_EXTENSION) $this->rsPrefix .= 'ext_';
 	}
@@ -72,7 +72,7 @@ class ADODB_mysqlt extends ADODB_mysql {
 class ADORecordSet_mysqlt extends ADORecordSet_mysql{	
 	var $databaseType = "mysqlt";
 	
-	function ADORecordSet_mysqlt($queryID,$mode=false) 
+	function __construct($queryID,$mode=false) 
 	{
 		if ($mode === false) { 
 			global $ADODB_FETCH_MODE;
@@ -90,7 +90,7 @@ class ADORecordSet_mysqlt extends ADORecordSet_mysql{
 		}
 	
 		$this->adodbFetchMode = $mode;
-		$this->ADORecordSet($queryID);	
+		parent::__construct($queryID);	
 	}
 	
 	function MoveNext()
@@ -109,7 +109,7 @@ class ADORecordSet_mysqlt extends ADORecordSet_mysql{
 
 class ADORecordSet_ext_mysqlt extends ADORecordSet_mysqlt {	
 
-	function ADORecordSet_ext_mysqlt($queryID,$mode=false) 
+	function __construct($queryID,$mode=false) 
 	{
 		if ($mode === false) { 
 			global $ADODB_FETCH_MODE;
@@ -126,7 +126,7 @@ class ADORecordSet_ext_mysqlt extends ADORecordSet_mysqlt {
 			$this->fetchMode = MYSQL_BOTH; break;
 		}
 		$this->adodbFetchMode = $mode;
-		$this->ADORecordSet($queryID);	
+		parent::__construct($queryID);	
 	}
 	
 	function MoveNext()
