@@ -834,6 +834,20 @@ class reportico extends reportico_object
 			handle_error("$in_scope: Column $in_column_name unknown");
 		}
 	}
+
+	// -----------------------------------------------------------------------------
+	// Function : get_criteria_by_name
+	// -----------------------------------------------------------------------------
+	function get_criteria_by_name($in_criteria_name)
+	{
+		if ( !array_key_exists($in_criteria_name, $this->lookup_queries) )
+		{
+			return false;
+		}
+        else
+            return $this->lookup_queries[$in_criteria_name];
+	}
+
 	// -----------------------------------------------------------------------------
 	// Function : check_criteria_name
 	// -----------------------------------------------------------------------------
@@ -844,6 +858,7 @@ class reportico extends reportico_object
 			handle_error("$in_scope: Column $in_column_name unknown");
 		}
 	}
+
 	// -----------------------------------------------------------------------------
 	// Function : check_criteria_name_r
 	// -----------------------------------------------------------------------------
@@ -1196,6 +1211,12 @@ class reportico extends reportico_object
 			$this->execute_mode = "PREPARE";
 		}
 
+		// User clicked Design Mode Button
+		if ( array_key_exists('submit_criteria_mode', $_REQUEST) )
+		{
+			$this->execute_mode = "CRITERIA";
+		}
+
 		if ( array_key_exists('execute_mode', $_REQUEST) )
 		{
 			if ( $_REQUEST["execute_mode"] == "MAINTAIN" && $this->allow_maintain != "SAFE" 
@@ -1284,7 +1305,9 @@ class reportico extends reportico_object
         if ( $this->initial_execute_mode && get_reportico_session_param("awaiting_initial_defaults") )
             $this->execute_mode = $this->initial_execute_mode;
 
-		set_reportico_session_param("execute_mode",$this->execute_mode);
+        // Maintain execute mode through except for CRITERIA
+        if ( $this->execute_mode != "CRITERIA" )
+		    set_reportico_session_param("execute_mode",$this->execute_mode);
 		return($this->execute_mode);
 	}
 	
@@ -1492,7 +1515,10 @@ class reportico extends reportico_object
 
 			if ( array_key_exists($crit_name, $_REQUEST) )
 			{
-				$crit_value = $_REQUEST[$crit_name];
+                // Since using Select2, we find unselected list boxes still send an empty array with a single character which we dont want to include
+                // as a criteria selection
+                if ( !(is_array($_REQUEST[$col->query_name]) && count($col->query_name) == 1 && $_REQUEST[$col->query_name][0] == "" ))
+				    $crit_value = $_REQUEST[$crit_name];
 			}
 
 			if ( array_key_exists("HIDDEN_" . $crit_name, $_REQUEST) )
@@ -1614,11 +1640,12 @@ class reportico extends reportico_object
             // Fetch the criteria value summary if required for displaying
             // the criteria entry summary at top of report
 			if ( $execute_mode && $this->target_show_criteria &&
-                    ( array_key_exists($col->query_name, $_REQUEST) 
+                    ( ( array_key_exists($col->query_name, $_REQUEST) && !(is_array($_REQUEST[$col->query_name]) && count($col->query_name) == 1 && $_REQUEST[$col->query_name][0] == "" ))
 			        || array_key_exists("MANUAL_".$col->query_name, $_REQUEST) 
 			        || array_key_exists("HIDDEN_".$col->query_name, $_REQUEST) 
                     ) )
 			{
+
 				$lq =&	$this->lookup_queries[$col->query_name] ;
                 if ( $lq->criteria_type == "LOOKUP" )
 				    $lq->execute_criteria_lookup();
@@ -1628,8 +1655,14 @@ class reportico extends reportico_object
 
 			if ( array_key_exists($col->query_name, $_REQUEST) )
 			{
-				$this->lookup_queries[$col->query_name]->column_value =
-					$_REQUEST[$col->query_name];
+                // Since using Select2, we find unselected list boxes still send an empty array with a single character which we dont want to include
+                // as a criteria selection
+                if ( !(is_array($_REQUEST[$col->query_name]) && count($col->query_name) == 1 && $_REQUEST[$col->query_name][0] == "") )
+				    $this->lookup_queries[$col->query_name]->column_value =
+					    $_REQUEST[$col->query_name];
+//var_dump( "$this->lookup_queries[$col->query_name]->column_value");
+//var_dump($_REQUEST[$col->query_name]);
+//die;
 			}
 
 			if ( array_key_exists("MANUAL_".$col->query_name, $_REQUEST) )
@@ -1640,6 +1673,7 @@ class reportico extends reportico_object
 				$lq =&	$this->lookup_queries[$col->query_name] ;
 				if ( $lq->criteria_type == "LOOKUP" && $_REQUEST["MANUAL_".$col->query_name])
 				{
+                    if ( array_key_exists("MANUAL_".$col->query_name, $_REQUEST) )
 					foreach ( $lq->lookup_query->columns as $k => $col1 )
 					{
 						if ( $col1->lookup_display_flag )
@@ -2186,6 +2220,10 @@ class reportico extends reportico_object
 				$str = ' AND '.$this->match_column.' LIKE "%'.$expval.'%"';
 			}
 		}
+        else if ( $expval = get_request_item("reportico_criteria_match", false) )
+        {
+            $str = ' AND '.$this->match_column.' LIKE "%'.$expval.'%"';
+        }
 
 		return $str;
 	}
@@ -2406,7 +2444,7 @@ class reportico extends reportico_object
 	    {
 		    $this->query_statement = reportico_assignment::reportico_meta_sql_criteria($this->parent_query, $this->query_statement);
 	    }
-			
+//echo $this->query_statement ;
 	}			
 
 	// -----------------------------------------------------------------------------
@@ -3923,7 +3961,22 @@ class reportico extends reportico_object
 
 		switch ($mode) 
 		{
-
+            case "CRITERIA":
+				load_mode_language_pack("languages", $this->output_charset);
+				$this->initialize_panels($mode);
+				$this->handle_xml_query_input($mode);
+				$this->set_request_columns();
+                if ( !isset($_REQUEST['reportico_criteria'] ))
+                    echo "{ Success: false, Message: \"You must specify a criteria\" }";
+                else if ( !$criteria = $this->get_criteria_by_name($_REQUEST['reportico_criteria']) )
+                    echo "{ Success: false, Message: \"Criteria {$_REQUEST['reportico_criteria']} unknown in this report\" }";
+                else
+                {
+                    echo $criteria->execute_criteria_lookup();
+                    echo $criteria->lookup_ajax();
+                }
+                die;
+                
 			case "MODIFY":
                 require_once("swmodify.php");
 				$this->initialize_panels($mode);
@@ -4462,7 +4515,6 @@ class reportico extends reportico_object
 	// -----------------------------------------------------------------------------
 	function execute_query($in_criteria_name)
 	{
-
 		global $g_code_area;
 		global $g_code_source;
 		global $g_error_status;
@@ -4624,6 +4676,7 @@ class reportico extends reportico_object
         $recordSet = false;
         $errorCode = false;
         $errorMessage = false;
+
         try {
 		    if ( !$g_error_status && $conn != false )
 			    $recordSet = $conn->Execute($this->query_statement) ;
@@ -6043,6 +6096,12 @@ class reportico_criteria_column extends reportico_query_column
 	// -----------------------------------------------------------------------------
 	function execute_criteria_lookup($in_is_expanding = false)
 	{
+//echo "<BR>";
+//echo "<PRE>";
+//debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+//echo "ex $this->query_name <BR>";
+//echo "</PRE>";
+
 		global $g_code_area;
 		require_once("reportico_report_array.php");
 
@@ -6709,6 +6768,8 @@ class reportico_criteria_column extends reportico_query_column
 		
 	}
 
+
+
 	// -----------------------------------------------------------------------------
 	// Function : list_display
 	// -----------------------------------------------------------------------------
@@ -6804,6 +6865,23 @@ class reportico_criteria_column extends reportico_query_column
  						$text .= '<SELECT class="'.$this->lookup_query->getBootstrapStyle('design_dropdown').'swPrpDropSelect" name="'.$tag_pref.$this->query_name.'[]" size="'.$multisize.'" multiple>';
 						break;
 
+				case "SELECT2MULTIPLE":
+				case "SELECT2SINGLE":
+						$res =& $this->lookup_query->targets[0]->results;
+						$k = key($res);
+						$multisize = 4;
+						if ( $res && count($res[$k]) > 4 )
+							$multisize = count($res[$k]);
+                        if ( isset ( $res[$k] ) )
+						    if ( count($res[$k]) >= 10 )
+							    $multisize = 10;
+                        if ( $type == "SELECT2MULTIPLE" )
+ 						    $text .= '<SELECT class="'.$this->lookup_query->getBootstrapStyle('design_dropdown').'swPrpDropSelect2" name="'.$tag_pref.$this->query_name.'[]" size="'.$multisize.'" multiple>';
+                        else
+ 						    $text .= '<SELECT class="'.$this->lookup_query->getBootstrapStyle('design_dropdown').'swPrpDropSelect2" name="'.$tag_pref.$this->query_name.'[]" size="'.$multisize.'" >';
+					    $text .= '<OPTION></OPTION>';
+						break;
+
 				case "CHECKBOX":
 				case "RADIO":
 						break;
@@ -6879,6 +6957,11 @@ class reportico_criteria_column extends reportico_query_column
 					$text .= '<OPTION label="'.$lab.'" value="'.$ret.'" '.$checked.'>'.$lab.'</OPTION>';
 					break;
 
+				case "SELECT2MULTIPLE":
+				case "SELECT2SINGLE":
+					$text .= '<OPTION label="'.$lab.'" value="'.$ret.'" '.$checked.'>'.$lab.'</OPTION>';
+					break;
+
 				case "RADIO":
     				$text .= '<INPUT type="radio" name="'.$tag_pref.$this->query_name.'" value="'.$ret.'" '.$checked.'>'.sw_translate($lab).'<BR>';
 					break;
@@ -6897,6 +6980,11 @@ class reportico_criteria_column extends reportico_query_column
 
 		switch ( $type )
 		{
+				case "SELECT2MULTIPLE":
+				case "SELECT2SINGLE":
+ 						$text .= '</SELECT>';
+						break;
+
 				case "MULTI":
  						$text .= '</SELECT>';
 						break;
@@ -6950,9 +7038,9 @@ class reportico_criteria_column extends reportico_query_column
 		return $text;
 	}
 	// -----------------------------------------------------------------------------
-	// Function : lookup_display
+	// Function : lookup_ajax
 	// -----------------------------------------------------------------------------
-	function & lookup_display($in_is_expanding)
+	function & lookup_ajax($in_is_expanding)
 	{
 
 		$text = "";
@@ -7035,6 +7123,11 @@ class reportico_criteria_column extends reportico_query_column
 				case "ANYCHAR":
 				case "TEXTFIELD":
  						$text .= '<SELECT style="display:none" name="'."HIDDEN_".$this->query_name.'[]" size="0" multiple>';
+						break;
+
+				case "SELECT2MULTIPLE":
+				case "SELECT2SINGLE":
+						$text .= '{"items": [';
 						break;
 
 				case "MULTI":
@@ -7151,6 +7244,13 @@ class reportico_criteria_column extends reportico_query_column
    					$text .= '<OPTION label="'.$lab.'" value="'.$ret.'" '.$checked.'>'.$lab.'</OPTION>';
 					break;
 
+				case "SELECT2MULTIPLE":
+				case "SELECT2SINGLE":
+                    if ( $i > 0 )
+                        $text .= ",";
+   					$text .= "{\"id\":\"$ret\", \"text\":\"$lab\"}";
+					break;
+
 				case "RADIO":
     				$text .= '<INPUT type="radio" name="'.$tag_pref.$this->query_name.'" value="'.$ret.'" '.$checked.'>'.$lab.'<BR>';
 					break;
@@ -7172,6 +7272,303 @@ class reportico_criteria_column extends reportico_query_column
 		switch ( $type )
 		{
 				case "MULTI":
+ 						$text .= '</SELECT>';
+						break;
+
+				case "SELECT2MULTIPLE":
+				case "SELECT2SINGLE":
+ 						$text .= ']}';
+						break;
+
+				case "CHECKBOX":
+				case "RADIO":
+						break;
+
+				default:
+ 						$text .= '</SELECT>';
+						break;
+		}
+
+		if ( !$in_is_expanding )
+		{
+		
+			if ( array_key_exists("EXPAND_".$this->query_name, $_REQUEST) ||
+				array_key_exists("EXPANDCLEAR_".$this->query_name, $_REQUEST) ||
+				array_key_exists("EXPANDSELECTALL_".$this->query_name, $_REQUEST) ||
+				array_key_exists("EXPANDSEARCH_".$this->query_name, $_REQUEST) ||
+				$this->criteria_display == "NOINPUT" )
+			//if ( $this->criteria_display == "NOINPUT" )
+			{
+				$tag = $value_string;
+				if ( strlen($tag) > 40 )
+					$tag = substr($tag, 0, 40)."...";
+	
+				if ( !$tag )
+					$tag = "ANY";
+	
+				$text .= $tag;
+			}
+			else if ( $this->criteria_display == "ANYCHAR" || $this->criteria_display == "TEXTFIELD" )
+			{
+				if ( $manual_override && !$value_string )
+                {
+					$value_string = $_REQUEST["MANUAL_".$this->query_name];
+                }
+
+				$tag = "";
+				$tag .= '<input  type="text" class="'.$this->lookup_query->getBootstrapStyle('textfield').'swPrpTextField" name="MANUAL_'.$this->query_name.'"';
+				$tag .= ' value="'.$value_string.'">';
+				$text .= $tag;
+			}
+		}
+
+		return $text;
+	}
+	// -----------------------------------------------------------------------------
+	// Function : lookup_display
+	// -----------------------------------------------------------------------------
+	function & lookup_display($in_is_expanding)
+	{
+
+		$text = "";
+		if ( $in_is_expanding )
+		{	
+			$tag_pref = "EXPANDED_";
+			$type = $this->expand_display;
+		}
+		else
+		{	
+			$tag_pref = "";
+			$type = $this->criteria_display;
+		}
+
+		$value_string = "";
+
+		$params = array();
+		$manual_params = array();
+		$hidden_params = array();
+		$expanded_params = array();
+		$manual_override = false;
+
+		if ( !array_key_exists("clearform", $_REQUEST) )
+		{
+			if ( ! array_key_exists("EXPANDED_".$this->query_name, $_REQUEST) )
+				if ( array_key_exists($this->query_name, $_REQUEST) )
+				{
+						$params = $_REQUEST[$this->query_name];
+						if ( !is_array($params) )
+							$params = array ( $params );
+				}
+
+			$hidden_params = array();
+			if ( ! array_key_exists("EXPANDED_".$this->query_name, $_REQUEST) )
+				if ( array_key_exists("HIDDEN_".$this->query_name, $_REQUEST) )
+				{
+						$hidden_params = $_REQUEST["HIDDEN_".$this->query_name];
+						if ( !is_array($hidden_params) )
+							$hidden_params = array ( $hidden_params );
+				}
+
+			$manual_params = array();
+			if ( ! array_key_exists("EXPANDED_".$this->query_name, $_REQUEST) )
+				if ( array_key_exists("MANUAL_".$this->query_name, $_REQUEST) )
+				{
+					$manual_params = explode(',',$_REQUEST["MANUAL_".$this->query_name]);
+					if ( $manual_params )
+					{
+						$hidden_params = $manual_params;
+						$manual_override = true;
+					}
+				}
+
+			// If this is first time into screen and we have defaults then
+			// use these instead
+			if ( !$hidden_params && get_reportico_session_param("firstTimeIn") )
+			{
+				$hidden_params = $this->defaults;
+				$manual_params = $this->defaults;
+			}
+
+			$expanded_params = array();
+			if ( array_key_exists("EXPANDED_".$this->query_name, $_REQUEST) )
+			{
+					$expanded_params = $_REQUEST["EXPANDED_".$this->query_name];
+					if ( !is_array($expanded_params) )
+						$expanded_params = array ( $expanded_params );
+			}
+		}
+		else
+		{
+			$hidden_params = $this->defaults;
+			$manual_params = $this->defaults;
+			$params = $this->defaults;
+		}
+
+		switch ( $type )
+		{
+				case "NOINPUT":
+				case "ANYCHAR":
+				case "TEXTFIELD":
+ 						$text .= '<SELECT style="display:none" name="'."HIDDEN_".$this->query_name.'[]" size="0" multiple>';
+						break;
+
+				case "SELECT2MULTIPLE":
+				case "SELECT2SINGLE":
+                        if ( $type == "SELECT2SINGLE" )
+						    $text .= '<SELECT id="select2_dropdown_'.$this->query_name.'" class="'.$this->lookup_query->getBootstrapStyle('design_dropdown').'swPrpDropSelect" name="'.$tag_pref.$this->query_name.'[]" >';
+                        else
+						    $text .= '<SELECT id="select2_dropdown_'.$this->query_name.'" class="'.$this->lookup_query->getBootstrapStyle('design_dropdown').'swPrpDropSelect" name="'.$tag_pref.$this->query_name.'[]" multiple>';
+					    $text .= '<OPTION></OPTION>';
+						break;
+
+				case "MULTI":
+						$multisize = 12;
+						$res =& $this->lookup_query->targets[0]->results;
+						$k = key($res);
+						$multisize = 4;
+						if ( $res && count($res[$k]) > 4 )
+							$multisize = count($res[$k]);
+                        if ( isset ( $res[$k] ) )
+						    if ( count($res[$k]) >= 10 )
+							    $multisize = 10;
+						if ( $in_is_expanding )
+							$multisize = 12;
+						$text .= '<SELECT class="'.$this->lookup_query->getBootstrapStyle('design_dropdown').'swPrpDropSelect" name="'.$tag_pref.$this->query_name.'[]" size="'.$multisize.'" multiple>';
+						break;
+
+				case "CHECKBOX":
+				case "RADIO":
+						break;
+
+				default:
+ 						$text .= '<SELECT class="'.$this->lookup_query->getBootstrapStyle('design_dropdown').'swPrpDropSelectRegular" name="'.$tag_pref.$this->query_name.'">';
+						break;
+		}
+
+		$check_text = "";
+		switch ( $type )
+		{
+			case "MULTI":
+			case "DROPDOWN":
+			case "ANYCHAR":
+			case "TEXTFIELD":
+			case "NOINPUT":
+				$check_text = "selected";
+				break;
+
+			default:
+				$check_text = "checked";
+				break;
+		}
+
+		// If clear has been pressed we dont want any list items selected
+		if ( $this->submitted('EXPANDCLEAR_'.$this->query_name) ) 
+			$check_text = "";
+			
+		// If select all has been pressed we want all highlighted
+		$selectall = false;
+		if ( $this->submitted('EXPANDSELECTALL_'.$this->query_name) ) 
+			$selectall = true;
+
+		$res =& $this->lookup_query->targets[0]->results;
+		if ( !$res )
+		{
+			$res = array();
+			$k = 0;
+		}
+		else
+		{
+			reset($res);
+			$k = key($res);
+		for ($i = 0; $i < count($res[$k]); $i++ )
+		{
+			$line =&$res[$i];
+			foreach ( $this->lookup_query->columns as $ky => $col )
+			{
+				if ( $col->lookup_display_flag )
+				{
+					$lab = $res[$col->query_name][$i];
+				}
+				if ( $col->lookup_return_flag )
+					$ret = $res[$col->query_name][$i];
+				if ( $col->lookup_abbrev_flag )
+					$abb = $res[$col->query_name][$i];
+				
+			}
+       			//$text .= '<OPTION label="'.$ret.'" value="'.$ret.'">'.$lab.'</OPTION>';
+			$checked="";
+
+			if ( in_array($ret, $params) )
+			{
+				$checked = $check_text;
+			}
+
+			if ( in_array($ret, $hidden_params) && !$manual_override )
+			{
+				$checked = $check_text;
+			}
+
+			if ( in_array($ret, $expanded_params) )
+			{
+				$checked = $check_text;
+			}
+
+			if ( in_array($abb, $hidden_params) && $manual_override )
+			{
+				$checked = $check_text;
+			}
+
+			if ( $selectall )
+			{
+				$checked = $check_text;
+			}
+
+			if ( $checked != "" )
+				if ( !$value_string && $value_string != "0" )
+					$value_string = $abb;
+				else
+					$value_string .= ",".$abb;
+
+			switch ( $type )
+			{
+				case "MULTI":
+   					$text .= '<OPTION label="'.$lab.'" value="'.$ret.'" '.$checked.'>'.$lab.'</OPTION>';
+					break;
+
+				case "SELECT2MULTIPLE":
+				case "SELECT2SINGLE":
+                    ////if ( $checked )
+                        //$checked = "checked=1";
+//echo "oo $checked $lab $ret<BR>";
+   					$text .= '<OPTION label="'.$lab.'" value="'.$ret.'" '.$checked.'>'.$lab.'</OPTION>';
+					break;
+
+				case "RADIO":
+    				$text .= '<INPUT type="radio" name="'.$tag_pref.$this->query_name.'" value="'.$ret.'" '.$checked.'>'.$lab.'<BR>';
+					break;
+
+				case "CHECKBOX":
+    					$text .= '<INPUT type="checkbox" name="'.$tag_pref.$this->query_name.'[]" value="'.$ret.'" '.$checked.'>'.$lab.'<BR>';
+					break;
+
+				default:
+                    if ( $i == 0 )
+			            $text .= '<OPTION label="" value=""></OPTION>';
+   					$text .= '<OPTION label="'.$lab.'" value="'.$ret.'" '.$checked.'>'.$lab.'</OPTION>';
+					break;
+				}
+
+		}
+		}
+
+		switch ( $type )
+		{
+				case "MULTI":
+ 						$text .= '</SELECT>';
+						break;
+
+				case "SELECT2MULTIPLE":
+				case "SELECT2SINGLE":
  						$text .= '</SELECT>';
 						break;
 
@@ -7489,7 +7886,6 @@ class reportico_criteria_column extends reportico_query_column
 			case "LOOKUP":
 				if ( $add_del )
 					$del = $this->get_value_delimiter();
-
 				if ( !is_array($this->column_value) )
 					$this->column_value = explode(',', $this->column_value);
 
@@ -7720,6 +8116,7 @@ class reportico_criteria_column extends reportico_query_column
 					)
 				{
 
+                    // Dont bother running select ofr criteria lookup if criteria item is a dynamic
 					$this->execute_criteria_lookup();
 				}
 				$text .= $this->lookup_display(false);
@@ -7809,7 +8206,7 @@ class reportico_assignment extends reportico_object
 	static function reportico_meta_sql_criteria(&$in_query, $in_string, $prev_col_value = false)
 	{
         // Replace user parameters with values
-
+//echo "<BR>++++++++++++++++++in $in_string<BR>";
         $external_param1 = get_reportico_session_param("external_param1");
         $external_param2 = get_reportico_session_param("external_param2");
         $external_param3 = get_reportico_session_param("external_param3");
@@ -7965,6 +8362,7 @@ class reportico_assignment extends reportico_object
 		
 		//if ( $cmd )
 			//eval($cmd);
+//echo "<BR>++++++++++++++++++out $out_string<BR>";
 		return $out_string;
 	}
 

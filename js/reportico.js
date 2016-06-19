@@ -33,6 +33,102 @@ function setupDatePickers()
     });
 }
 
+// Sets jQuery attributes for dynamic criteria
+function setupCriteriaItems()
+{
+
+    for ( i in reportico_criteria_items )
+    {
+        j = reportico_criteria_items[i];
+
+        // Already checked values for prepopulation
+        preselected =[];
+        reportico_jquery("#select2_dropdown_" + j).find("option").each(function() {
+            lab = reportico_jquery(this).prop("label");
+            value = reportico_jquery(this).prop("value");
+            checked = reportico_jquery(this).attr("checked");
+            if ( checked )
+            {
+                preselected.push(value);
+            }
+        });
+        
+        //reportico_jquery("#select2_dropdown_" + j).select2(
+        reportico_jquery("#select2_dropdown_" + j).select2({
+          ajax: {
+            url: reportico_ajax_script + "?execute_mode=CRITERIA&reportico_criteria=" + j,
+            type: 'POST',
+            error: function(data, status) {
+                return {
+                    results: [{ id: 'error', text: 'Unable to autocomplete', disabled: true }]
+                }
+            },
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                forms = reportico_jquery('#reportico_container').find(".swPrpForm");
+	            formparams = forms.serialize();
+                //params += "&" + reportico_jquery(this).prop("name") + "=1";
+                formparams += "&reportico_ajax_called=1";
+                formparams += "&execute_mode=CRITERIA";
+                //formparams += "&MANUAL_country=?" + params.term;;
+                formparams += "&reportico_criteria_match=" + params.term;;
+              return formparams;
+              return {
+                q: params.term, // search term
+                formparams: formparams,
+                page: params.page
+              };
+            },
+            processResults: function (data, params) {
+              // parse the results into the format expected by Select2
+              // since we are using custom formatting functions we do not need to
+              // alter the remote JSON data, except to indicate that infinite
+              // scrolling can be used
+
+console.log("got res" + data);
+              params.page = params.page || 1;
+
+              return {
+                results: data.items,
+                pagination: {
+                  more: (params.page * 30) < data.total_count
+                }
+              };
+            },
+            cache: false,
+            placeholder: "hello",
+            allowClear: true
+          },
+          escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+          minimumInputLength: 1
+          //templateResult: select2FormatResult, // omitted for brevity, see the source of this page
+          //templateSelection: select2FormatSelection // omitted for brevity, see the source of this page
+        })
+        reportico_jquery("#select2_dropdown_" + j).val(preselected).trigger("change");
+    };
+
+}
+
+function select2FormatResult(data)
+{
+    return data;
+}
+
+function select2FormatSelection(data)
+{
+    return data.name;
+}
+
+function formatState (state) {
+  if (!state.id) { return state.text; }
+  var $state = $(
+    '<span><img src="vendor/images/flags/' + state.element.value.toLowerCase() + '.png" class="img-flag" /> ' + state.text + '</span>'
+  );
+  return $state;
+};
+
+
 function setupModals()
 {
 var options = {
@@ -152,6 +248,9 @@ reportico_jquery(document).ready(function()
     resizeHeaders();
     resizeTables();
     setupDynamicGrids();
+    setupCriteriaItems();
+    //reportico_jquery('#select2_dropdown_country').select2();
+
 });
 
 reportico_jquery(document).on('click', '.reportico-bootstrap-modal-close', function(event) 
@@ -538,6 +637,7 @@ reportico_jquery(document).on('click', '#returnFromExpand', function() {
         reportico_jquery(expandpanel).removeClass("loading");
         reportico_jquery(fillPoint).html(data);
         setupDatePickers();
+alert("oo");
         setupDropMenu();
         },
         error: function(xhr, desc, err) {
@@ -750,6 +850,7 @@ function fillDialog(results, cont) {
   setupDropMenu();
   setupDynamicGrids();
   resizeHeaders();
+  setupCriteriaItems();
   resizeTables();
 }
 
