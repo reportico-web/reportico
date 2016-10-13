@@ -637,7 +637,6 @@ reportico_jquery(document).on('click', '#returnFromExpand', function() {
         reportico_jquery(expandpanel).removeClass("loading");
         reportico_jquery(fillPoint).html(data);
         setupDatePickers();
-alert("oo");
         setupDropMenu();
         },
         error: function(xhr, desc, err) {
