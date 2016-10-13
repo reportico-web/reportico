@@ -214,6 +214,14 @@ class reportico_panel
 							$crittitle = $col->derive_attribute("column_title", $col->query_name);
 
 						$critsel = $col->format_form_column();
+                        if ( $col->hidden == "yes" )
+                            $crithidden = true;
+                        else
+                            $crithidden = false;
+                        if ( $col->required == "yes" )
+                            $critrequired = true;
+                        else
+                            $critrequired = false;
 						$critexp = false;
 
 						if ( $col->expand_display && $col->expand_display != "NOINPUT" )
@@ -223,6 +231,9 @@ class reportico_panel
 									"name" => $col->query_name,
 									"title" => sw_translate($crittitle),
 									"entry" => $critsel,
+									"entry" => $critsel,
+									"hidden" => $crithidden,
+									"required" => $critrequired,
 									"expand" => $critexp
 									);
 					}
@@ -344,10 +355,15 @@ class reportico_panel
 					$forward = session_request_item('forward_url_get_parameters', '');
 					if ( $forward )
 						$forward .= "&";
+
+                    if ( preg_match("/\?/", $this->query->get_action_url()) )
+                        $url_join_char = "&";
+                    else
+                        $url_join_char = "?";
 						
 					$this->query->projectitems[] = array (
 						"label" => $this->text,
-						"url" => $this->query->get_action_url()."?".$forward."execute_mode=MENU&project=".$this->program."&amp;reportico_session_name=".reportico_session_name()
+						"url" => $this->query->get_action_url().$url_join_char.$forward."execute_mode=MENU&project=".$this->program."&amp;reportico_session_name=".reportico_session_name()
 							);
 				}
 				break;
@@ -356,10 +372,14 @@ class reportico_panel
 				$forward = session_request_item('forward_url_get_parameters', '');
 				if ( $forward )
 					$forward .= "&";
+                if ( preg_match("/\?/", $this->query->get_action_url()) )
+                    $url_join_char = "&";
+                else
+                    $url_join_char = "?";
 						
 				$this->query->menuitems[] = array (
 						"label" => $this->text,
-						"url" => $this->query->get_action_url()."?".$forward."execute_mode=PREPARE&xmlin=".$this->program."&amp;reportico_session_name=".reportico_session_name()
+						"url" => $this->query->get_action_url().$url_join_char.$forward."execute_mode=PREPARE&xmlin=".$this->program."&amp;reportico_session_name=".reportico_session_name()
 							);
 				break;
 
@@ -794,6 +814,10 @@ class reportico_xml_reader
 					"XLabelColumn" => array ( "Title" => "XLABELCOLUMN", "Type" => "QUERYCOLUMNS", "DocId" => "column_for_x_labels"),
 					//"YLabelColumn" => array ( "Title" => "YLABELCOLUMN", "Type" => "HIDE"),
 					"ReturnColumn" => array ( "Title" => "RETURNCOLUMN", "HelpPage" => "criteria", "Type" => "QUERYCOLUMNS", "DocId" => "return_column"),
+					"CriteriaHidden" => array ( "Title" => "CRITERIAHIDDEN", "Type" => "DROPDOWN",  "XlateOptions" => true,
+												"Values" => array(".DEFAULT", "yes", "no"), "HelpPage" => "criteria", "DocId" => "criteria_hidden" ),
+					"CriteriaRequired" => array ( "Title" => "CRITERIAREQUIRED", "Type" => "DROPDOWN",  "XlateOptions" => true,
+												"Values" => array(".DEFAULT", "yes", "no"), "HelpPage" => "criteria", "DocId" => "criteria_required" ),
 					"MatchColumn" => array ( "Title" => "MATCHCOLUMN", "HelpPage" => "criteria", "Type" => "QUERYCOLUMNS", "DocId" => "match_column"),
 					"DisplayColumn" => array ( "Title" => "DISPLAYCOLUMN", "HelpPage" => "criteria", "Type" => "QUERYCOLUMNS", "DocId" => "display_column"),
 					"OverviewColumn" => array ( "Title" => "OVERVIEWCOLUMN", "HelpPage" => "criteria", "Type" => "QUERYCOLUMNS", "DocId" => "overview_column"),
@@ -2266,6 +2290,7 @@ class reportico_xml_reader
 					{
 							$this->query->drilldown_report = $updates["DrilldownReport"];
 							$q = new reportico();
+                            $q->projects_folder = $this->query->projects_folder;
 							global $g_project;
 							$q->reports_path = $q->projects_folder."/".$g_project;
 							$reader = new reportico_xml_reader($q, $updates["DrilldownReport"], false);
@@ -2384,7 +2409,9 @@ class reportico_xml_reader
 					$updateitem->criteria_list = $updates["CriteriaList"];
 					$updateitem->criteria_display = $updates["CriteriaDisplay"];
 					$updateitem->expand_display = $updates["ExpandDisplay"];
-
+					$updateitem->required = $updates["CriteriaRequired"];
+                    //var_dump($updates);
+					$updateitem->hidden = $updates["CriteriaHidden"];
 					if ( array_key_exists("ReturnColumn", $updates) )
 					{
 						$updateitem->lookup_query->set_lookup_return($updates["ReturnColumn"]);
@@ -2393,6 +2420,8 @@ class reportico_xml_reader
 						$updateitem->lookup_query->set_lookup_expand_match(
 								$updates["MatchColumn"]);
 					}
+					$updateitem->set_criteria_required($updates["CriteriaRequired"]);
+					$updateitem->set_criteria_hidden($updates["CriteriaHidden"]);
 					$updateitem->set_criteria_defaults(
 								$updates["CriteriaDefaults"]);
 					$updateitem->set_criteria_list(
@@ -4917,6 +4946,7 @@ class reportico_xml_reader
 		if ( $this->query->drilldown_report )
 		{
 				$q = new reportico();
+                $q->projects_folder = $this->query->projects_folder;
 				global $g_project;
 				$q->reports_path = $q->projects_folder."/".$g_project;
 				$reader = new reportico_xml_reader($q, $this->query->drilldown_report, false);
@@ -5378,6 +5408,8 @@ class reportico_xml_reader
 				$critmatch = $this->get_array_element($ci, "MatchColumn") ;
 				$critdefault = $this->get_array_element($ci, "CriteriaDefaults") ;
 				$crittitle = $this->get_array_element($ci, "Title") ;
+				$crit_required = $this->get_array_element($ci, "CriteriaRequired");
+				$crit_hidden = $this->get_array_element($ci, "CriteriaHidden");
 				$crit_lookup_return = $this->get_array_element($ci, "ReturnColumn");
 				$crit_lookup_display = $this->get_array_element($ci, "DisplayColumn");
 				$crit_criteria_display = $this->get_array_element($ci, "OverviewColumn");
@@ -5469,7 +5501,11 @@ class reportico_xml_reader
 				$this->query->set_criteria_lookup($critnm, $critquery, $crittb, $critcl);
 				$this->query->set_criteria_input($critnm, $crittp, $critds, $critexp, $crituse);
 				$this->query->set_criteria_link_report($critnm, $linked_report, $linked_report_item);
+//echo "SET $critnm $crit_required<BR>";
 				$this->query->set_criteria_list($critnm, $critlt);
+                //var_dump($crit_required);
+				$this->query->set_criteria_required($critnm, $crit_required);
+				$this->query->set_criteria_hidden($critnm, $crit_hidden);
 				//$this->query->set_criteria_help($critnm, $crithelp);
 				$this->query->set_criteria_attribute($critnm, "column_title", $crittitle);
 				
@@ -5672,6 +5708,9 @@ class reportico_xml_writer
 			//$el =& $ci->add_xmlval ( "CriteriaHelp", $lq->criteria_help );
 			$el =& $ci->add_xmlval ( "CriteriaDisplay", $lq->criteria_display );
 			$el =& $ci->add_xmlval ( "ExpandDisplay", $lq->expand_display );
+//echo "XML $lq->query_name $lq->criteria_display $lq->required $lq->criteria_list<BR>";
+			$el =& $ci->add_xmlval ( "CriteriaRequired", $lq->required );
+			$el =& $ci->add_xmlval ( "CriteriaHidden", $lq->hidden );
 			$el =& $ci->add_xmlval ( "ReturnColumn", $lookup_return_col );
 			$el =& $ci->add_xmlval ( "DisplayColumn", $lookup_display_col );
 			$el =& $ci->add_xmlval ( "OverviewColumn", $lookup_abbrev_col );

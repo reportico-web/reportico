@@ -539,6 +539,7 @@ class reportico extends reportico_object
     var $force_reportico_mini_maintains = false;
 
     // Array to hold plugins
+    var $csrfToken;
     var $plugins = array();
 
 
@@ -940,6 +941,32 @@ class reportico extends reportico_object
 	}
 
 	// -----------------------------------------------------------------------------
+	// Function : set_criteria_required
+	// -----------------------------------------------------------------------------
+	function set_criteria_required($query_name, $criteria_required)
+	{
+		//$this->check_column_name("set_criteria_lrequired", $query_name);
+		if ( ($cl =get_query_column($query_name, $this->lookup_queries )) )
+		{
+			$cl->set_criteria_required($criteria_required);
+		}
+        else
+            echo "fail<BR>";
+	}
+
+	// -----------------------------------------------------------------------------
+	// Function : set_criteria_hidden
+	// -----------------------------------------------------------------------------
+	function set_criteria_hidden($query_name, $criteria_hidden)
+	{
+        //$this->check_column_name("set_criteria_lhidden", $query_name);
+        if ( ($cl =get_query_column($query_name, $this->lookup_queries )) )
+        {   
+            $cl->set_criteria_hidden($criteria_hidden);
+        }
+	}
+
+	// -----------------------------------------------------------------------------
 	// Function : set_criteria_help
 	// -----------------------------------------------------------------------------
 	function set_criteria_help($query_name, $criteria_help)
@@ -1151,10 +1178,17 @@ class reportico extends reportico_object
 					$this->debug("exists");
 					$colval = $result_line[$assoc_key];
 
+                    if ( is_array($colval) )
+                    {
+                        continue;
+                        //var_dump($colval);
+                        //die;
+                    }
+
 					if ( is_string($colval) )
 						$colval = trim($colval);
 
-					$this->debug("$colval");
+					//$this->debug("$colval");
 				}
 				else
 				if ( array_key_exists(strtoupper($assoc_key), $result_line ) )
@@ -1660,9 +1694,6 @@ class reportico extends reportico_object
                 if ( !(is_array($_REQUEST[$col->query_name]) && count($col->query_name) == 1 && $_REQUEST[$col->query_name][0] == "") )
 				    $this->lookup_queries[$col->query_name]->column_value =
 					    $_REQUEST[$col->query_name];
-//var_dump( "$this->lookup_queries[$col->query_name]->column_value");
-//var_dump($_REQUEST[$col->query_name]);
-//die;
 			}
 
 			if ( array_key_exists("MANUAL_".$col->query_name, $_REQUEST) )
@@ -2444,7 +2475,7 @@ class reportico extends reportico_object
 	    {
 		    $this->query_statement = reportico_assignment::reportico_meta_sql_criteria($this->parent_query, $this->query_statement);
 	    }
-//echo $this->query_statement ;
+
 	}			
 
 	// -----------------------------------------------------------------------------
@@ -3009,6 +3040,7 @@ class reportico extends reportico_object
 
 		$smarty->assign('REPORTICO_VERSION', $version);
 		$smarty->assign('REPORTICO_SITE', $this->url_site);
+		$smarty->assign('REPORTICO_CSRF_TOKEN', $this->csrfToken);
 
         // Assign user parameters to template
         if ( $this->user_parameters && is_array($this->user_parameters) )
@@ -3233,12 +3265,17 @@ class reportico extends reportico_object
 
 		// Store any menu page URL, in ajax mode links go through the general ajax link, otherwise go through calling script
         $calling_script = $this->get_action_url();
-		$this->prepare_url =  $calling_script."?execute_mode=PREPARE&amp;reportico_session_name=".reportico_session_name();
-		$this->menu_url =  $calling_script."?execute_mode=MENU&amp;reportico_session_name=".reportico_session_name();
-		$this->admin_menu_url =  $calling_script."?project=admin&amp;execute_mode=MENU&amp;reportico_session_name=".reportico_session_name();
-		$this->configure_project_url =  $calling_script."?execute_mode=PREPARE&amp;xmlin=configureproject.xml&amp;reportico_session_name=".reportico_session_name();
-		$this->delete_project_url =  $calling_script."?execute_mode=PREPARE&amp;xmlin=deleteproject.xml&amp;reportico_session_name=".reportico_session_name();
-		$this->create_report_url =  $calling_script."?execute_mode=MAINTAIN&amp;xmlin=&amp;reportico_session_name=".reportico_session_name();
+        if ( preg_match("/\?/", $this->get_action_url()) )
+            $url_join_char = "&";
+        else
+            $url_join_char = "?";
+
+		$this->prepare_url =  $calling_script."{$url_join_char}execute_mode=PREPARE&amp;reportico_session_name=".reportico_session_name();
+		$this->menu_url =  $calling_script."{$url_join_char}execute_mode=MENU&amp;reportico_session_name=".reportico_session_name();
+		$this->admin_menu_url =  $calling_script."{$url_join_char}project=admin&amp;execute_mode=MENU&amp;reportico_session_name=".reportico_session_name();
+		$this->configure_project_url =  $calling_script."{$url_join_char}execute_mode=PREPARE&amp;xmlin=configureproject.xml&amp;reportico_session_name=".reportico_session_name();
+		$this->delete_project_url =  $calling_script."{$url_join_char}execute_mode=PREPARE&amp;xmlin=deleteproject.xml&amp;reportico_session_name=".reportico_session_name();
+		$this->create_report_url =  $calling_script."{$url_join_char}execute_mode=MAINTAIN&amp;xmlin=&amp;reportico_session_name=".reportico_session_name();
 
 		if ( $forward_url_params )
 		{
@@ -3489,6 +3526,36 @@ class reportico extends reportico_object
 	}
 
 	// -----------------------------------------------------------------------------
+	// Function : check_criteria_validity
+    // Ensures that Mandatory criteria is met
+	// -----------------------------------------------------------------------------
+	function check_criteria_validity()
+    {
+		foreach ( $this->lookup_queries as $col )
+		{
+            if ( $col->required )
+            {
+				//handle_error( "Mandatory" );
+				if ( !$this->lookup_queries[$col->query_name]->column_value )
+                {
+                    if ( get_request_item("new_reportico_window",  false ) )
+                    {
+                        header("HTTP/1.0 404 Not Found", true);
+                        $response_array = array();
+                        $response_array["errno"] = 100;
+                        $response_array["errmsg"] = template_xlate("REQUIRED_CRITERIA")." - ".sw_translate($this->lookup_queries[$col->query_name]->derive_attribute("column_title", ""));
+                        echo json_encode($response_array);
+                        die;
+                    }
+                    else
+			        handle_error(template_xlate("REQUIRED_CRITERIA")." - ".sw_translate($this->lookup_queries[$col->query_name]->derive_attribute("column_title", ""))
+                        , E_USER_NOTICE);
+                }
+            }
+        }
+    }
+
+	// -----------------------------------------------------------------------------
 	// Function : handle_xml_input
 	// -----------------------------------------------------------------------------
 	function handle_xml_query_input($mode=false)
@@ -3563,17 +3630,16 @@ class reportico extends reportico_object
 		}
 
         // Set template from request if specified
-		//if ( array_key_exists("template", $_SESSION[reportico_namespace()]) )
-		//{
-			//$this->user_template = get_reportico_session_param("template");
-			//set_reportico_session_param("template",$this->user_template);
-		//}
-
-		//if ( array_key_exists("template", $_REQUEST) )
-		//{
-			//$this->user_template =  $_REQUEST["template"];
-			//set_reportico_session_param("template",$this->user_template);
-		//}
+		if ( array_key_exists("template", $_SESSION[reportico_namespace()]) )
+		{
+			$this->user_template = get_reportico_session_param("template");
+			set_reportico_session_param("template",$this->user_template);
+		}
+		if ( array_key_exists("template", $_REQUEST) )
+		{
+			$this->user_template =  $_REQUEST["template"];
+			set_reportico_session_param("template",$this->user_template);
+		}
 
         if ( $this->xmlinput && !preg_match ("/\.xml$/", $this->xmlinput) )
         {
@@ -3905,7 +3971,7 @@ class reportico extends reportico_object
 					break;
 		}
 
-		// If xml file is used to genearate the reportico_query, either by the xmlin session variable
+		// If xml file is used to generate the reportico_query, either by the xmlin session variable
 		// or the xmlin request variable then process this before executing
 		if ( $mode == "EXECUTE" )
 		{
@@ -3951,10 +4017,10 @@ class reportico extends reportico_object
 			}
 			set_reportico_session_param('latestRequest',"");
 		}
+
         // Derive URL call of the calling script so it can be recalled in form actions when not running in AJAX mode
         if ( !$this->url_path_to_calling_script )
             $this->url_path_to_calling_script = $_SERVER["SCRIPT_NAME"];
-
 
         // Work out we are in AJAX mode
         $this->derive_ajax_operation();
@@ -4086,6 +4152,7 @@ class reportico extends reportico_object
 				load_mode_language_pack("languages", $this->output_charset);
 				$this->initialize_panels($mode);
 				$this->handle_xml_query_input($mode);
+	            //$this->check_criteria_validity();
 
                 // Set Grid display options based on report and session defaults
 		        if ( $this->attributes["gridDisplay"] != ".DEFAULT" ) $this->dynamic_grids =  ( $this->attributes["gridDisplay"] == "show" ) ;
@@ -4093,6 +4160,7 @@ class reportico extends reportico_object
 		        if ( $this->attributes["gridSearchable"] != ".DEFAULT" ) $this->dynamic_grids_searchable =  ( $this->attributes["gridSearchable"] == "yes" ) ;
 		        if ( $this->attributes["gridPageable"] != ".DEFAULT" ) $this->dynamic_grids_paging =  ( $this->attributes["gridPageable"] == "yes" ) ;
 		        if ( $this->attributes["gridPageSize"] != ".DEFAULT" && $this->attributes["gridPageSize"] ) $this->dynamic_grids_page_size =  $this->attributes["gridPageSize"];
+
 
                 $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
                 $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
@@ -4105,6 +4173,7 @@ class reportico extends reportico_object
 				$g_code_area = false;
 				load_mode_language_pack("execute", $this->output_charset);
                 localise_template_strings($this->panels["MAIN"]->smarty);
+	            $this->check_criteria_validity();
 
                 if ( $this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml" || $this->xmlinput == "createproject.xml" )
                 {
@@ -4124,7 +4193,7 @@ class reportico extends reportico_object
 					return;
 				}
 
-                // Situtations where we dont want to swithc results page - no data found, debug mode, not logged in
+                // Situtations where we dont want to switch results page - no data found, debug mode, not logged in
 				if ( ( count($g_system_errors) > 0 || $g_debug_mode || count($g_system_debug) > 0 || !get_reportico_session_param("loggedin") ) )
 				{
                     // If errors and this is an ajax request return json ajax response for first message
@@ -4421,6 +4490,13 @@ class reportico extends reportico_object
             $this->static_menu = $g_menu;
         }
 
+        // In admin mode static_menu shows all reports
+		if (isset_reportico_session_param('admin_password'))
+        {
+            $this->static_menu = array ( array ( "report" => ".*\.xml", "title" => "<AUTO>" ) );
+        }
+
+
 		$p = new reportico_panel($this, "MENU");
 		$this->initialize_panels("MENU");
 		$this->set_attribute("ReportTitle", $g_menu_title);
@@ -4594,72 +4670,74 @@ class reportico extends reportico_object
 			$g_code_area = "";
 		}
 
-		// Execute Any Pre Execute Code, if not specified then
-        // attempt to pick up code automatically from a file "projects/project/report.xml.php"
-		$code = $this->get_attribute("PreExecuteCode");
-		if ( !$code || $code == "NONE" || $code == "XX" )
+        if ( !$in_criteria_name )
         {
-		    global $g_project;
-	        $source_path = find_best_location_in_include_path( $this->projects_folder."/projects/".$g_project."/".$this->xmloutfile.".php" );
-            if ( is_file($source_path) )
+		    // Execute Any Pre Execute Code, if not specified then
+            // attempt to pick up code automatically from a file "projects/project/report.xml.php"
+		    $code = $this->get_attribute("PreExecuteCode");
+		    if ( !$code || $code == "NONE" || $code == "XX" )
             {
-                $code = file_get_contents($source_path);
+		        global $g_project;
+	            $source_path = find_best_location_in_include_path( $this->projects_folder."/".$g_project."/".get_reportico_session_param("xmlin").".xml.php" );
+                if ( is_file($source_path) )
+                {
+                    $code = file_get_contents($source_path);
+                }
+                else
+                    $code = false;
             }
-            else
-                $code = false;
+		    if ( $code )
+		    {
+			    $g_code_area = "";
+			    $code = "\$lk =& \$this->lookup_queries;". $code;
+			    $code = "\$ds =& \$this->datasource->ado_connection;". $code;
+			    $code = "\$_criteria =& \$this->lookup_queries;". $code;
+			    $code = "\$_pdo =& \$_connection->_connectionID;". $code;
+			    $code = "if ( \$_connection )". $code;
+			    $code = "\$_pdo = false;". $code;
+			    $code = "\$_connection =& \$this->datasource->ado_connection;". $code;
+    
+			    // set to the user defined error handler
+			    global $g_eval_code;
+			    $g_eval_code = $code;
+			    // If parse error in eval code then use output buffering contents to show user the error
+			    $ob_level =  ob_get_level();
+			    if ( $ob_level > 0 )
+				    ob_start();
+			    eval($code);
+			    $eval_output = ob_get_contents();	
+			    if ( $ob_level > 0 )
+			        ob_end_clean();
+
+                // Check for parse error
+			    if ( preg_match ( "/.*Parse error.*on line <b>(.*)<.b>/", $eval_output, $parseerrors ) )
+			    {
+				    // There is a parse error in the evaluated code .. find the relevant line
+				    $errtext = "Parse Error in custom report code: <br><hr>$eval_output<PRE>";
+				    foreach(preg_split("/(\r?\n)/", $code) as $lno => $line){
+    					    // do stuff with $line
+					    if ( $lno > $parseerrors[1] - 3 && $lno < $parseerrors[1] + 3 )
+					    {
+						    if ( $lno == $parseerrors[1] )
+							    $errtext .= ">>>  ";	
+						    else
+							    $errtext .= "     ";	
+						    $errtext .= $line;
+						    $errtext .= "\n";
+					    }
+				    }
+				    $errtext .= "</PRE>";
+				    trigger_error($errtext, E_USER_ERROR);
+
+			    }
+			    else
+			    {
+                    echo $eval_output;
+			    }
+			    $g_code_area = "";
+			    $g_code_source = "";
+		    }
         }
-
-		if ( $code )
-		{
-			$g_code_area = "";
-			$code = "\$lk =& \$this->lookup_queries;". $code;
-			$code = "\$ds =& \$this->datasource->ado_connection;". $code;
-			$code = "\$_criteria =& \$this->lookup_queries;". $code;
-			$code = "\$_pdo =& \$_connection->_connectionID;". $code;
-			$code = "if ( \$_connection )". $code;
-			$code = "\$_pdo = false;". $code;
-			$code = "\$_connection =& \$this->datasource->ado_connection;". $code;
-
-			// set to the user defined error handler
-			global $g_eval_code;
-			$g_eval_code = $code;
-			// If parse error in eval code then use output buffering contents to show user the error
-			$ob_level =  ob_get_level();
-			if ( $ob_level > 0 )
-				ob_start();
-			eval($code);
-			$eval_output = ob_get_contents();	
-			if ( $ob_level > 0 )
-			    ob_end_clean();
-
-            // Check for parse error
-			if ( preg_match ( "/.*Parse error.*on line <b>(.*)<.b>/", $eval_output, $parseerrors ) )
-			{
-				// There is a parse error in the evaluated code .. find the relevant line
-				$errtext = "Parse Error in custom report code: <br><hr>$eval_output<PRE>";
-				foreach(preg_split("/(\r?\n)/", $code) as $lno => $line){
-    					// do stuff with $line
-					if ( $lno > $parseerrors[1] - 3 && $lno < $parseerrors[1] + 3 )
-					{
-						if ( $lno == $parseerrors[1] )
-							$errtext .= ">>>  ";	
-						else
-							$errtext .= "     ";	
-						$errtext .= $line;
-						$errtext .= "\n";
-					}
-				}
-				$errtext .= "</PRE>";
-				trigger_error($errtext, E_USER_ERROR);
-
-			}
-			else
-			{
-                echo $eval_output;
-			}
-			$g_code_area = "";
-			$g_code_source = "";
-		}
 		$recordSet = false;
 
 		if ( $in_criteria_name )
@@ -4677,15 +4755,24 @@ class reportico extends reportico_object
         $errorCode = false;
         $errorMessage = false;
 
-        try {
-		    if ( !$g_error_status && $conn != false )
-			    $recordSet = $conn->Execute($this->query_statement) ;
-        }
-        catch ( PDOException $ex)
+
+        // If the source is an array then dont try to run SQL
+        if ( get_class($conn) == "reportico_db_array" )
         {
-            $errorCode = $ex->getCode();
-            $errorMessage = $ex->getMessage();
-            $g_error_status = 1;
+            $recordSet = $conn;
+        }
+        else
+        {
+            try {
+		        if ( !$g_error_status && $conn != false )
+			        $recordSet = $conn->Execute($this->query_statement) ;
+            }
+            catch ( PDOException $ex)
+            {
+                $errorCode = $ex->getCode();
+                $errorMessage = $ex->getMessage();
+                $g_error_status = 1;
+            }
         }
         if ( $conn && !$recordSet )
         {
@@ -4713,6 +4800,11 @@ class reportico extends reportico_object
 		while (!$recordSet->EOF) {
 
 			$line = $recordSet->FetchRow();
+            if ( $line == null )
+            {
+                $recordSet->EOF = true;
+                continue;
+            }
 			$this->query_count++;
 
 			$g_code_area = "Build Column";
@@ -5464,6 +5556,7 @@ class reportico extends reportico_object
         foreach ( $menu as $k => $v )
         {
             $project = $v["project"];
+            $initproject = $v["project"];
             $projtitle = "<AUTO>";
             if ( isset ( $v["title"] ) )
                 $projtitle = $v["title"];
@@ -5477,6 +5570,10 @@ class reportico extends reportico_object
                         $proj_parent = $this->projects_folder;
                     else
                         $proj_parent = find_best_location_in_include_path( $this->projects_folder );
+                    $project = $initproject;
+                    if ( isset ($menuitem["project"] ) )
+                        $project = $menuitem["project"];
+
                     $filename = $proj_parent."/".$project."/".$menuitem["reportfile"];
                     if ( !preg_match("/\.xml/", $filename ) ) $filename .= ".xml";
                     if (is_file($filename)) 
@@ -5484,6 +5581,7 @@ class reportico extends reportico_object
                         $query = false;
                         $repxml = new reportico_xml_reader($query, $filename, false, "ReportTitle");
                         $menu[$k]["items"][$k1]["reportname"] = sw_translate($repxml->search_response);
+                        $menu[$k]["items"][$k1]["project"] = $project;
                     }
                 }
             }
@@ -6034,6 +6132,8 @@ class reportico_criteria_column extends reportico_query_column
 	var $criteria_display;
 	var $criteria_help;
 	var $expand_display;
+	var $required;
+	var $hidden;
 	var $order_type;
 	var $list_values = array();
 	var	$first_criteria_selection = true;
@@ -6096,12 +6196,6 @@ class reportico_criteria_column extends reportico_query_column
 	// -----------------------------------------------------------------------------
 	function execute_criteria_lookup($in_is_expanding = false)
 	{
-//echo "<BR>";
-//echo "<PRE>";
-//debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-//echo "ex $this->query_name <BR>";
-//echo "</PRE>";
-
 		global $g_code_area;
 		require_once("reportico_report_array.php");
 
@@ -6474,6 +6568,22 @@ class reportico_criteria_column extends reportico_query_column
 		$this->lookup_query = $lookup_query;
 	}
 
+	// -----------------------------------------------------------------------------
+	// Function : set_criteria_required
+	// -----------------------------------------------------------------------------
+	function set_criteria_required($criteria_required)
+	{
+		$this->required = $criteria_required;
+	}
+
+	// -----------------------------------------------------------------------------
+	// Function : set_criteria_hidden
+	// -----------------------------------------------------------------------------
+	function set_criteria_hidden($criteria_hidden)
+	{
+		$this->hidden = $criteria_hidden;
+	}
+
 
 	// -----------------------------------------------------------------------------
 	// Function : set_criteria_type
@@ -6767,8 +6877,6 @@ class reportico_criteria_column extends reportico_query_column
 		return $text;
 		
 	}
-
-
 
 	// -----------------------------------------------------------------------------
 	// Function : list_display
@@ -7539,7 +7647,6 @@ class reportico_criteria_column extends reportico_query_column
 				case "SELECT2SINGLE":
                     ////if ( $checked )
                         //$checked = "checked=1";
-//echo "oo $checked $lab $ret<BR>";
    					$text .= '<OPTION label="'.$lab.'" value="'.$ret.'" '.$checked.'>'.$lab.'</OPTION>';
 					break;
 
@@ -8206,7 +8313,7 @@ class reportico_assignment extends reportico_object
 	static function reportico_meta_sql_criteria(&$in_query, $in_string, $prev_col_value = false)
 	{
         // Replace user parameters with values
-//echo "<BR>++++++++++++++++++in $in_string<BR>";
+
         $external_param1 = get_reportico_session_param("external_param1");
         $external_param2 = get_reportico_session_param("external_param2");
         $external_param3 = get_reportico_session_param("external_param3");
@@ -8275,6 +8382,13 @@ class reportico_assignment extends reportico_object
 					$eltype = "VALUE";
                     $showquotes = true;
 					if ( preg_match ( "/(.*),(.*),(.*)/", $crit, $critel ) )
+					{
+							$crit = $critel[1];
+							$eltype = $critel[2];
+							if ( $critel[3] == "false" )
+                                $showquotes = false;
+					}
+					if ( preg_match ( "/(.*);(.*);(.*)/", $crit, $critel ) )
 					{
 							$crit = $critel[1];
 							$eltype = $critel[2];
@@ -8362,7 +8476,6 @@ class reportico_assignment extends reportico_object
 		
 		//if ( $cmd )
 			//eval($cmd);
-//echo "<BR>++++++++++++++++++out $out_string<BR>";
 		return $out_string;
 	}
 
@@ -8524,6 +8637,8 @@ class reportico_query_column extends reportico_object
 	var $reset_flag = false;
 	var $criteria_type = "";
 	var $criteria_list = "";
+	var $required = false;
+	var $hidden = false;
 	var $match_column = "";
 	var $lookup_query;
 

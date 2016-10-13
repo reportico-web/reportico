@@ -307,6 +307,8 @@ $locale_arr = array (
         "T_ASSIGNIMAGEURL" => "Image URL",
         "T_DRILLDOWNCOLUMN" => "Drilldown Column for Criteria",
         "T_ASSIGNPDFBACKGROUNDIMAGE" => "Background Image",
+        "T_CRITERIAHIDDEN" => "Hide Criteria",
+        "T_CRITERIAREQUIRED" => "Criteria Required",
 
         // Miscellaneous
         "T_ENTERSQL" => "Enter SQL",
