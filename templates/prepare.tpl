@@ -7,9 +7,9 @@
 <LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEET}">
 {if $BOOTSTRAP_STYLES}
 {if $BOOTSTRAP_STYLES == "2"}
-<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/bootstrap2/bootstrap.min.css">
+<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$JSPATH}/bootstrap2/css/bootstrap.min.css">
 {else}
-<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/bootstrap3/bootstrap.min.css">
+<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$JSPATH}/bootstrap3/css/bootstrap.min.css">
 {/if}
 {/if}
 {$OUTPUT_ENCODING}
@@ -20,9 +20,9 @@
 {if $BOOTSTRAP_STYLES}
 {if !$REPORTICO_BOOTSTRAP_PRELOADED}
 {if $BOOTSTRAP_STYLES == "2"}
-<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/bootstrap2/bootstrap.min.css">
+<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$JSPATH}/bootstrap2/css/bootstrap.min.css">
 {else}
-<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/bootstrap3/bootstrap.min.css">
+<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$JSPATH}/bootstrap3/css/bootstrap.min.css">
 {/if}
 {/if}
 {/if}
@@ -59,9 +59,9 @@
 {if $BOOTSTRAP_STYLES}
 {if !$REPORTICO_BOOTSTRAP_PRELOADED}
 {if $BOOTSTRAP_STYLES == "2"}
-<script type="text/javascript" src="{$JSPATH}/bootstrap2/bootstrap.min.js"></script>
+<script type="text/javascript" src="{$JSPATH}/bootstrap2/js/bootstrap.min.js"></script>
 {else}
-<script type="text/javascript" src="{$JSPATH}/bootstrap3/bootstrap.min.js"></script>
+<script type="text/javascript" src="{$JSPATH}/bootstrap3/js/bootstrap.min.js"></script>
 {/if}
 {/if}
 {/if}
@@ -505,6 +505,21 @@ $loopct = 0;
                     <tr class="swPrpCritLine" id="criteria_{$CRITERIA_ITEMS[critno].name}">
 {/if}
                         <td class='swPrpCritTitle'>
+{if $CRITERIA_ITEMS[critno].tooltip }
+{if $BOOTSTRAP_STYLES}
+{if $BOOTSTRAP_STYLES == "3" }
+                            <a class='reportico_tooltip' data-toggle="tooltip" data-placement="right" title="{$CRITERIA_ITEMS[critno].tooltip}">
+                                    <span class="glyphicon glyphicon-question-sign"></span>
+                            </a>
+{else}
+                            <a class='reportico_tooltip' data-toggle="tooltip" data-placement="right" title="{$CRITERIA_ITEMS[critno].tooltip}">
+                                    <span class="icon-question-sign"></span>
+                            </a>
+{/if}
+{else}
+                            <div class="swHelpIcon" alt="tab" title = "{$CRITERIA_ITEMS[critno].tooltip}"><img class="swHelpIcon"></img></div>
+{/if}
+{/if}
 {php}
 $itemval = str_pad($loopct, 4, '0', STR_PAD_LEFT);
 $this->assign('criterianumber', $itemval);

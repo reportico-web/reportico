@@ -172,6 +172,11 @@ class reportico_report extends reportico_object
 		$this->page_count = 0;
 		$this->debug("Base Start **");
 		$this->reporttitle = $this->query->derive_attribute("ReportTitle", "Set Report Title");
+        if ( isset ( $this->query->user_parameters["custom_title"] ) )
+        {
+            $this->reporttitle = $this->query->user_parameters["title"] ;
+            $this->query->set_attribute("ReportTitle", $this->reporttitle);
+        }
 		$this->reportfilename = $this->reporttitle;
 		$pos = 5;
 

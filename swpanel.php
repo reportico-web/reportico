@@ -234,7 +234,8 @@ class reportico_panel
 									"entry" => $critsel,
 									"hidden" => $crithidden,
 									"required" => $critrequired,
-									"expand" => $critexp
+									"expand" => $critexp,
+                                    "tooltip" => sw_translate($col->criteria_help)
 									);
 					}
 					$this->smarty->assign("CRITERIA_ITEMS", $dispcrit);
@@ -818,6 +819,8 @@ class reportico_xml_reader
 												"Values" => array(".DEFAULT", "yes", "no"), "HelpPage" => "criteria", "DocId" => "criteria_hidden" ),
 					"CriteriaRequired" => array ( "Title" => "CRITERIAREQUIRED", "Type" => "DROPDOWN",  "XlateOptions" => true,
 												"Values" => array(".DEFAULT", "yes", "no"), "HelpPage" => "criteria", "DocId" => "criteria_required" ),
+					"CriteriaHelp" => array ( "Title" => "CRITERIAHELP", "Type" => "TEXTBOXSMALL", "DocId" => "criteria_help" ),
+					"MatchColumn" => array ( "Title" => "MATCHCOLUMN", "HelpPage" => "criteria", "Type" => "QUERYCOLUMNS", "DocId" => "match_column"),
 					"MatchColumn" => array ( "Title" => "MATCHCOLUMN", "HelpPage" => "criteria", "Type" => "QUERYCOLUMNS", "DocId" => "match_column"),
 					"DisplayColumn" => array ( "Title" => "DISPLAYCOLUMN", "HelpPage" => "criteria", "Type" => "QUERYCOLUMNS", "DocId" => "display_column"),
 					"OverviewColumn" => array ( "Title" => "OVERVIEWCOLUMN", "HelpPage" => "criteria", "Type" => "QUERYCOLUMNS", "DocId" => "overview_column"),
@@ -903,7 +906,6 @@ class reportico_xml_reader
 					"CriteriaList" => array ( "Title" => "CRITERIALIST", "HelpPage" => "criteria", "DocId" => "list_values" ),
 					"CriteriaType" => array ( "Title" => "CRITERIATYPE", "HelpPage" => "criteria", "Type" => "DROPDOWN", 
 					    "Values" => array("TEXTFIELD", "LOOKUP", "DATE", "DATERANGE", "LIST", "SQLCOMMAND" ), "XlateOptions" => true, "DocId" => "criteria_type" ),
-					"CriteriaHelp" => array ( "Type" => "HIDE", "Title" => "CRITERIAHELP" ),
 					"Use" => array ( "Title" => "USE", "HelpPage" => "criteria", "Type" => "DROPDOWN", 
                                         "Values" => array("DATA-FILTER","SHOW/HIDE", "SHOW/HIDE-and-GROUPBY") ),
 					"LinkToReport" => array ( "Type" => "TEXTFIELDREADONLY", "Title" => "LINKTOREPORT" ),
@@ -2424,6 +2426,8 @@ class reportico_xml_reader
 					$updateitem->set_criteria_hidden($updates["CriteriaHidden"]);
 					$updateitem->set_criteria_defaults(
 								$updates["CriteriaDefaults"]);
+					$updateitem->set_criteria_help(
+								$updates["CriteriaHelp"]);
 					$updateitem->set_criteria_list(
 								$updates["CriteriaList"]);
 					break;
@@ -5402,11 +5406,11 @@ class reportico_xml_reader
 				$crittp = $this->get_array_element($ci, "CriteriaType") ;
 				$critlt = $this->get_array_element($ci, "CriteriaList") ;
 				$crituse = $this->get_array_element($ci, "Use") ;
-				//$crithelp = $this->get_array_element($ci, "CriteriaHelp") ;
 				$critds = $this->get_array_element($ci, "CriteriaDisplay") ;
 				$critexp = $this->get_array_element($ci, "ExpandDisplay") ;
 				$critmatch = $this->get_array_element($ci, "MatchColumn") ;
 				$critdefault = $this->get_array_element($ci, "CriteriaDefaults") ;
+				$crithelp = $this->get_array_element($ci, "CriteriaHelp") ;
 				$crittitle = $this->get_array_element($ci, "Title") ;
 				$crit_required = $this->get_array_element($ci, "CriteriaRequired");
 				$crit_hidden = $this->get_array_element($ci, "CriteriaHidden");
@@ -5510,6 +5514,7 @@ class reportico_xml_reader
 				$this->query->set_criteria_attribute($critnm, "column_title", $crittitle);
 				
 				$this->query->set_criteria_defaults($critnm, $critdefault);
+				$this->query->set_criteria_help($critnm, $crithelp);
 					
 			} // End Criteria Item
 
@@ -5705,7 +5710,7 @@ class reportico_xml_writer
 			$el =& $ci->add_xmlval ( "CriteriaType", $lq->criteria_type );
 			if ( defined("SW_DYNAMIC_ORDER_GROUP" ) )
 				$el =& $ci->add_xmlval ( "Use", $lq->_use );
-			//$el =& $ci->add_xmlval ( "CriteriaHelp", $lq->criteria_help );
+			$el =& $ci->add_xmlval ( "CriteriaHelp", $lq->criteria_help );
 			$el =& $ci->add_xmlval ( "CriteriaDisplay", $lq->criteria_display );
 			$el =& $ci->add_xmlval ( "ExpandDisplay", $lq->expand_display );
 //echo "XML $lq->query_name $lq->criteria_display $lq->required $lq->criteria_list<BR>";

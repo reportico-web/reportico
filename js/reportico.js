@@ -1,6 +1,7 @@
 reportico_jquery = jQuery.noConflict();
 
 var reportico_ajax_script = "index.php";
+
 /*
 ** Reportico Javascript functions
 */
@@ -30,6 +31,13 @@ function setupDatePickers()
 {
     reportico_jquery(".swDateField").each(function(){
         reportico_jquery(this).datepicker({dateFormat: reportico_datepicker_language});
+    });
+}
+
+function setupTooltips()
+{
+    reportico_jquery(".reportico_tooltip").each(function(){
+        reportico_jquery(this).tooltip();
     });
 }
 
@@ -244,6 +252,7 @@ reportico_jquery(document).on('click', 'a.reportico-dropdown-item, ul li.r1eport
 reportico_jquery(document).ready(function()
 {
     setupDatePickers();
+    setupTooltips();
     setupDropMenu();
     resizeHeaders();
     resizeTables();
@@ -637,6 +646,7 @@ reportico_jquery(document).on('click', '#returnFromExpand', function() {
         reportico_jquery(expandpanel).removeClass("loading");
         reportico_jquery(fillPoint).html(data);
         setupDatePickers();
+        setupTooltips();
         setupDropMenu();
         },
         error: function(xhr, desc, err) {
@@ -846,6 +856,7 @@ function fillDialog(results, cont) {
   x = reportico_jquery(cont).closest("#reportico_container");
   reportico_jquery(cont).closest("#reportico_container").replaceWith(results);
   setupDatePickers();
+  setupTooltips();
   setupDropMenu();
   setupDynamicGrids();
   resizeHeaders();
