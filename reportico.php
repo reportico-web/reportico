@@ -347,6 +347,7 @@ class reportico extends reportico_object
 
 	var $framework_parent = false;
 	var $framework_type = false;
+    var $return_output_to_caller = false;
 
 	var $charting_engine = "PCHART";
 	var $charting_engine_html = "NVD3";
@@ -4071,11 +4072,24 @@ class reportico extends reportico_object
 
                 restore_error_handler();
 
+                // Some calling frameworks require output to be returned
+                // for rendering inside web pages .. in this case
+                // return_output_to_caller will be set to true
 				if ( $this->user_template )
-				    $this->panels["MAIN"]->smarty->display($this->user_template.'_admin.tpl');
-				else
-				    $this->panels["MAIN"]->smarty->display('admin.tpl');
-		        $old_error_handler = set_error_handler("ErrorHandler");
+                    $template = $this->user_template."_admin.tpl";
+                else
+                    $template = "admin.tpl";
+                if ( $this->return_output_to_caller )
+                {
+				    $txt = $this->panels["MAIN"]->smarty->fetch($template);
+		            $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+                    return $txt;
+                }
+                else
+                {
+				    $this->panels["MAIN"]->smarty->display($template);
+		            $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+                }
 				break;
 
 			case "MENU":
@@ -4097,11 +4111,24 @@ class reportico extends reportico_object
                 $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
 
                 restore_error_handler();
+                // Some calling frameworks require output to be returned
+                // for rendering inside web pages .. in this case
+                // return_output_to_caller will be set to true
 				if ( $this->user_template )
-				    $this->panels["MAIN"]->smarty->display($this->user_template.'_menu.tpl');
-				else
-				    $this->panels["MAIN"]->smarty->display('menu.tpl');
-		        $old_error_handler = set_error_handler("ErrorHandler");
+                    $template = $this->user_template."_menu.tpl";
+                else
+                    $template = "menu.tpl";
+                if ( $this->return_output_to_caller )
+                {
+				    $txt = $this->panels["MAIN"]->smarty->fetch($template);
+		            $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+                    return $txt;
+                }
+                else
+                {
+				    $this->panels["MAIN"]->smarty->display($template);
+		            $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+                }
 				break;
 
 			case "PREPARE":
@@ -4135,16 +4162,27 @@ class reportico extends reportico_object
 
 				$reportname = preg_replace("/.xml/", "", $this->xmloutfile.'_prepare.tpl');
                 restore_error_handler();
+
+                // Some calling frameworks require output to be returned
+                // for rendering inside web pages .. in this case
+                // return_output_to_caller will be set to true
 				if (preg_match("/$reportname/", find_best_location_in_include_path( "templates/". $reportname )))
-				{
-					$this->panels["MAIN"]->smarty->display($reportname);
-				}
-				else
-				if ( $this->user_template )
-				        $this->panels["MAIN"]->smarty->display($this->user_template.'_prepare.tpl');
-				else
-				        $this->panels["MAIN"]->smarty->display('prepare.tpl');
-		        $old_error_handler = set_error_handler("ErrorHandler");
+                    $template = $reportname;
+				else if ( $this->user_template )
+                    $template = $this->user_template."_prepare.tpl";
+                else
+                    $template = "prepare.tpl";
+                if ( $this->return_output_to_caller )
+                {
+				    $txt = $this->panels["MAIN"]->smarty->fetch($template);
+		            $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+                    return $txt;
+                }
+                else
+                {
+				    $this->panels["MAIN"]->smarty->display($template);
+		            $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+                }
 				break;
 				 
 			
@@ -4228,16 +4266,27 @@ class reportico extends reportico_object
                     localise_template_strings($this->panels["MAIN"]->smarty);
 					$reportname = preg_replace("/.xml/", "", $this->xmloutfile.'_prepare.tpl');
                     restore_error_handler();
-					if (preg_match("/$reportname/", find_best_location_in_include_path( "templates/". $reportname )))
-					{
-						$this->panels["MAIN"]->smarty->display($reportname);
-					}
-					else
-						if ( $this->user_template )
-							$this->panels["MAIN"]->smarty->display($this->user_template.'_prepare.tpl');
-						else
-							$this->panels["MAIN"]->smarty->display('prepare.tpl');
-	                $old_error_handler = set_error_handler("ErrorHandler");
+
+                    // Some calling frameworks require output to be returned
+                    // for rendering inside web pages .. in this case
+                    // return_output_to_caller will be set to true
+                    if (preg_match("/$reportname/", find_best_location_in_include_path( "templates/". $reportname )))
+                        $template = $reportname;
+                    else if ( $this->user_template )
+                        $template = $this->user_template."_prepare.tpl";
+                    else
+                        $template = "prepare.tpl";
+                    if ( $this->return_output_to_caller )
+                    {
+				        $txt = $this->panels["MAIN"]->smarty->fetch($template);
+		                $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+                        return $txt;
+                    }
+                    else
+                    {
+				        $this->panels["MAIN"]->smarty->display($template);
+		                $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+                    }
                 }
                 else
                 {	
@@ -4296,18 +4345,27 @@ class reportico extends reportico_object
 						    $reportname = preg_replace("/.xml/", "", $this->xmloutfile.'_execute.tpl');
                             restore_error_handler();
 
-						    if (preg_match("/$reportname/", find_best_location_in_include_path( "templates/". $reportname )))
-						    {
-							    $this->panels["MAIN"]->smarty->display($reportname);
-						    }
-						    else
-							    if ( $this->user_template )
-								    $this->panels["MAIN"]->smarty->display($this->user_template.'_execute.tpl');
-							    else
-							    {
-								    $this->panels["MAIN"]->smarty->display('execute.tpl');
-							    }
-	                        $old_error_handler = set_error_handler("ErrorHandler");
+                            // Some calling frameworks require output to be returned
+                            // for rendering inside web pages .. in this case
+                            // return_output_to_caller will be set to true
+                            if (preg_match("/$reportname/", find_best_location_in_include_path( "templates/". $reportname )))
+                                $template = $reportname;
+                            else if ( $this->user_template )
+                                $template = $this->user_template."_execute.tpl";
+                            else
+                                $template = "execute.tpl";
+                            if ( $this->return_output_to_caller )
+                            {
+                                $txt = $this->panels["MAIN"]->smarty->fetch($template);
+                                $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+                                return $txt;
+                            }
+                            else
+                            {
+                                $this->panels["MAIN"]->smarty->display($template);
+                                $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+                            }
+
 						}
 					}
 				}
