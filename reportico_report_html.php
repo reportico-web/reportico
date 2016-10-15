@@ -72,6 +72,11 @@ class reportico_report_html extends reportico_report
 		reportico_report::finish();
 		$this->debug("HTML End **");
 
+        if ( preg_match("/\?/", $this->query->get_action_url()) )
+            $url_join_char = "&";
+        else
+            $url_join_char = "?"; 
+
 		if ( $this->line_count < 1 )
 		{
 			$title = $this->query->derive_attribute("ReportTitle", "Unknown");
@@ -87,15 +92,15 @@ class reportico_report_html extends reportico_report
                 // Show Go Back Button ( if user is not in "SINGLE REPORT RUN " )
                 if ( !$this->query->access_mode || ( $this->query->access_mode != "REPORTOUTPUT" )  )
                 {
-			        $this->text .= '<div class="swRepBackBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'execute_mode=PREPARE&reportico_session_name='.reportico_session_name().'" title="'.template_xlate("GO_BACK").'">&nbsp;</a></div>';
+			        $this->text .= '<div class="swRepBackBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().$url_join_char.$forward.'execute_mode=PREPARE&reportico_session_name='.reportico_session_name().'" title="'.template_xlate("GO_BACK").'">&nbsp;</a></div>';
                 }
 		        if ( get_reportico_session_param("show_refresh_button") )
-			        $this->text .= '<div class="swRepRefreshBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'refreshReport=1&execute_mode=EXECUTE&reportico_session_name='.reportico_session_name().'" title="'.template_xlate("GO_REFRESH").'">&nbsp;</a></div>';
-		        $this->text .= '<div class="reporticoJSONExecute"><a class="swJSONExecute1 testy" href="'.$this->query->get_action_url().'?'.$forward.'refreshReport=1&target_format=JSON&execute_mode=EXECUTE&reportico_session_name='.reportico_session_name().'" title="'.template_xlate("GO_REFRESH").'">&nbsp;</a></div>';
+			        $this->text .= '<div class="swRepRefreshBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().$url_join_char.$forward.'refreshReport=1&execute_mode=EXECUTE&reportico_session_name='.reportico_session_name().'" title="'.template_xlate("GO_REFRESH").'">&nbsp;</a></div>';
+		        $this->text .= '<div class="reporticoJSONExecute"><a class="swJSONExecute1 testy" href="'.$this->query->get_action_url().$url_join_char.$forward.'refreshReport=1&target_format=JSON&execute_mode=EXECUTE&reportico_session_name='.reportico_session_name().'" title="'.template_xlate("GO_REFRESH").'">&nbsp;</a></div>';
             }
             else
             {
-		        $this->text .= '<div class="swRepPrintBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'printReport=1&execute_mode=EXECUTE&reportico_session_name='.reportico_session_name().'" title="'.template_xlate("GO_PRINT").'">'.template_xlate("GO_PRINT").'</a></div>';
+		        $this->text .= '<div class="swRepPrintBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().$url_join_char.$forward.'printReport=1&execute_mode=EXECUTE&reportico_session_name='.reportico_session_name().'" title="'.template_xlate("GO_PRINT").'">'.template_xlate("GO_PRINT").'</a></div>';
             }
             $this->text .= '</div>';
 
@@ -458,7 +463,7 @@ class reportico_report_html extends reportico_report
 
 	function format_group_header(&$col, $custom) // HTML
 	{
-        if ( $custom)
+        if ( $custom || !$col)
         {
             return;
         }
@@ -714,16 +719,21 @@ class reportico_report_html extends reportico_report
 		if ( $forward )
 			$forward .= "&";
 
+        if ( preg_match("/\?/", $this->query->get_action_url()) )
+            $url_join_char = "&";
+        else
+            $url_join_char = "?"; 
+
 
 	    if ( !get_request_item("printable_html") )
         {
             if ( !$this->query->access_mode || ( $this->query->access_mode != "REPORTOUTPUT" )  )
             {
                 $this->text .= '<div class="swRepButtons">';
-			    $this->text .= '<div class="swRepBackBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'execute_mode=PREPARE&reportico_session_name='.reportico_session_name().'" title="'.template_xlate("GO_BACK").'">&nbsp;</a></div>';
+			    $this->text .= '<div class="swRepBackBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().$url_join_char.$forward.'execute_mode=PREPARE&reportico_session_name='.reportico_session_name().'" title="'.template_xlate("GO_BACK").'">&nbsp;</a></div>';
             }
 	        if ( get_reportico_session_param("show_refresh_button") )
-		        $this->text .= '<div class="swRepRefreshBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'refreshReport=1&execute_mode=EXECUTE&reportico_session_name='.reportico_session_name().'" title="'.template_xlate("GO_REFRESH").'">&nbsp;</a></div>';
+		        $this->text .= '<div class="swRepRefreshBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().$url_join_char.$forward.'refreshReport=1&execute_mode=EXECUTE&reportico_session_name='.reportico_session_name().'" title="'.template_xlate("GO_REFRESH").'">&nbsp;</a></div>';
             $this->text .= '</div>';
 
         }
@@ -731,7 +741,7 @@ class reportico_report_html extends reportico_report
         {
         //$this->text .= '<div class="prepareAjaxExecuteIgnore swPDFBox1"><a class="swLinkMenu5 swPDFBox" target="_blank" href="'.$this->query->get_action_url().'?'.$forward.'refreshReport=1&target_format=PDF&execute_mode=EXECUTE&reportico_session_name='.reportico_session_name().'" title="Print PDF">&nbsp;</a></div>';
             $this->text .= '<div class="swRepButtons">';
-	        $this->text .= '<div class="swRepPrintBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().'?'.$forward.'printReport=1&execute_mode=EXECUTE&reportico_session_name='.reportico_session_name().'" title="'.template_xlate("GO_PRINT").'">'.'&nbsp;'.'</a></div>';
+	        $this->text .= '<div class="swRepPrintBox"><a class="swLinkMenu" href="'.$this->query->get_action_url().$url_join_char.$forward.'printReport=1&execute_mode=EXECUTE&reportico_session_name='.reportico_session_name().'" title="'.template_xlate("GO_PRINT").'">'.'&nbsp;'.'</a></div>';
             $this->text .= '</div>';
         }
 

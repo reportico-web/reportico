@@ -53,6 +53,9 @@
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/reportico.js"></script>
 {/literal}
 {/if}
+{if $REPORTICO_CSRF_TOKEN}
+<script type="text/javascript">var reportico_csrf_token = "{$REPORTICO_CSRF_TOKEN}";</script>
+{/if}
 {if $BOOTSTRAP_STYLES}
 {if !$REPORTICO_BOOTSTRAP_PRELOADED}
 {if $BOOTSTRAP_STYLES == "2"}
@@ -150,6 +153,14 @@ function resizeOutputTables(window)
 {/literal}
 {/if}
 <div id="reportico_container">
+    <script>
+        reportico_criteria_items = [];
+{if isset($CRITERIA_ITEMS)}
+{section name=critno loop=$CRITERIA_ITEMS}
+        reportico_criteria_items.push("{$CRITERIA_ITEMS[critno].name}");
+{/section}
+{/if}
+    </script>
 <div class="swRepForm">
 {if strlen($ERRORMSG)>0}
             <TABLE class="swError">

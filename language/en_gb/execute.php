@@ -7,6 +7,7 @@ $locale_arr = array (
 		"T_GO_BACK" => "Return",
 		"T_GO_REFRESH" => "Refresh",
 		"T_NO_DATA_FOUND" => "No data was found matching your criteria",
+		"T_REQUIRED_CRITERIA" => "You must provide a value for criteria item ",
 		"T_UNABLE_TO_CONTINUE" => "Unable To Continue",
 		"T_INFORMATION" => "Information",
         )

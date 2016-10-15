@@ -232,6 +232,8 @@ $locale_arr = array (
         "T_NOINPUT" => "No Entry",
         "T_DROPDOWN" => "Drop Down List",
         "T_MULTI" => "Multiple Selection List Box",
+        "T_SELECT2SINGLE" => "Searchable Single List Box",
+        "T_SELECT2MULTIPLE" => "Searchable Multiple List Box",
         "T_MULTI" => "Multiple Selection List Box",
         "T_CHECKBOX" => "Checkboxes",
         "T_RADIO" => "Radio Buttons",
@@ -305,6 +307,8 @@ $locale_arr = array (
         "T_ASSIGNIMAGEURL" => "Image URL",
         "T_DRILLDOWNCOLUMN" => "Drilldown Column for Criteria",
         "T_ASSIGNPDFBACKGROUNDIMAGE" => "Background Image",
+        "T_CRITERIAHIDDEN" => "Hide Criteria",
+        "T_CRITERIAREQUIRED" => "Criteria Required",
 
         // Miscellaneous
         "T_ENTERSQL" => "Enter SQL",

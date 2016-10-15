@@ -53,6 +53,9 @@
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/reportico.js"></script>
 {/literal}
 {/if}
+{if $REPORTICO_CSRF_TOKEN}
+<script type="text/javascript">var reportico_csrf_token = "{$REPORTICO_CSRF_TOKEN}";</script>
+{/if}
 {if $BOOTSTRAP_STYLES}
 {if !$REPORTICO_BOOTSTRAP_PRELOADED}
 {if $BOOTSTRAP_STYLES == "2"}
@@ -84,6 +87,7 @@
 {else}
 <script type="text/javascript">var reportico_bootstrap_modal = false;</script>
 {/if}
+
 {if $REPORTICO_DYNAMIC_GRIDS}
 <script type="text/javascript">var reportico_dynamic_grids = true;</script>
 {if $REPORTICO_DYNAMIC_GRIDS_SORTABLE}
@@ -108,9 +112,11 @@
 {/if}
 {if !$REPORTICO_AJAX_PRELOADED}
 {literal}
+<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/select2/js/select2.min.js"></script>
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/jquery.dataTables.js"></script>
 {/literal}
-<LINK id="PRP_StyleSheet" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/jquery.dataTables.css">
+<LINK id="PRP_StyleSheet_s2" REL="stylesheet" TYPE="text/css" HREF="{$JSPATH}/select2/css/select2.min.css">
+<LINK id="PRP_StyleSheet_dt" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/jquery.dataTables.css">
 {/if}
 {if $REPORTICO_CHARTING_ENGINE == "NVD3" }
 {if !$REPORTICO_AJAX_PRELOADED}
@@ -122,11 +128,21 @@
 {/if}
 {/if}
 <div id="reportico_container">
+    <script>
+        reportico_criteria_items = [];
+{if isset($CRITERIA_ITEMS)}
+{section name=critno loop=$CRITERIA_ITEMS}
+        reportico_criteria_items.push("{$CRITERIA_ITEMS[critno].name}");
+{/section}
+{/if}
+    </script>
+
 
 <script type="text/javascript">var reportico_datepicker_language = "{$AJAX_DATEPICKER_FORMAT}";</script>
 <script type="text/javascript">var reportico_ajax_mode = "{$REPORTICO_AJAX_MODE}";</script>
 <FORM class="swPrpForm" id="criteriaform" name="topmenu" method="POST" action="{$SCRIPT_SELF}">
 <input type="hidden" name="reportico_session_name" value="{$SESSION_ID}" />
+
 
 {if $BOOTSTRAP_STYLES}
 {if $BOOTSTRAP_STYLES == "2" || $BOOTSTRAP_STYLES == "3" }
@@ -169,7 +185,7 @@
               <ul class="dropdown-menu reportico-dropdown">
 {section name=menuitem loop=$DROPDOWN_MENU_ITEMS[menu].items}
 {if isset($DROPDOWN_MENU_ITEMS[menu].items[menuitem].reportname)}
-<li ><a class="reportico-dropdown-item" href="{$RUN_REPORT_URL}&project={$DROPDOWN_MENU_ITEMS[menu].project}&xmlin={$DROPDOWN_MENU_ITEMS[menu].items[menuitem].reportfile}">{$DROPDOWN_MENU_ITEMS[menu].items[menuitem].reportname}</a></li>
+<li ><a class="reportico-dropdown-item" href="{$RUN_REPORT_URL}&project={$DROPDOWN_MENU_ITEMS[menu].items[menuitem].project}&xmlin={$DROPDOWN_MENU_ITEMS[menu].items[menuitem].reportfile}">{$DROPDOWN_MENU_ITEMS[menu].items[menuitem].reportname}</a></li>
 {/if}
 {/section}
 
@@ -482,7 +498,12 @@ $loopct = 0;
 {/php}
 {if isset($CRITERIA_ITEMS)}
 {section name=critno loop=$CRITERIA_ITEMS}
+{if $CRITERIA_ITEMS[critno].hidden }
+                    <tr class="swPrpCritLine" id="criteria_{$CRITERIA_ITEMS[critno].name}" style="display:none">
+                    <!tr class="swPrpCritLine" id="criteria_{$CRITERIA_ITEMS[critno].name}"-->
+{else}
                     <tr class="swPrpCritLine" id="criteria_{$CRITERIA_ITEMS[critno].name}">
+{/if}
                         <td class='swPrpCritTitle'>
 {php}
 $itemval = str_pad($loopct, 4, '0', STR_PAD_LEFT);
