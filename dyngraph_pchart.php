@@ -95,8 +95,10 @@ if ( $graphid )
 	while ($i < count($a)) 
 	{
     	$b = preg_split('/=/', $a[$i]);
-		$_REQUEST[$b[0]] = $b[1];
-		$tx=$b[0]."=".$b[1];
+        if ( isset($b[1]) )
+		    $_REQUEST[$b[0]] = $b[1];
+        if ( isset($b[1]) )
+		    $tx=$b[0]."=".$b[1];
     	$i++;
 	}
 	
