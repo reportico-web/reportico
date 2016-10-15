@@ -3534,7 +3534,7 @@ class reportico extends reportico_object
     {
 		foreach ( $this->lookup_queries as $col )
 		{
-            if ( $col->required )
+            if ( $col->required == "yes" )
             {
 				//handle_error( "Mandatory" );
 				if ( !$this->lookup_queries[$col->query_name]->column_value )
@@ -3549,7 +3549,7 @@ class reportico extends reportico_object
                         die;
                     }
                     else
-			        handle_error(template_xlate("REQUIRED_CRITERIA")." - ".sw_translate($this->lookup_queries[$col->query_name]->derive_attribute("column_title", ""))
+			            handle_error(template_xlate("REQUIRED_CRITERIA")." - ".sw_translate($this->lookup_queries[$col->query_name]->derive_attribute("column_title", ""))
                         , E_USER_NOTICE);
                 }
             }
