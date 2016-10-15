@@ -971,7 +971,7 @@ class reportico extends reportico_object
 	// -----------------------------------------------------------------------------
 	function set_criteria_help($query_name, $criteria_help)
 	{
-		$this->check_criteria_name("set_criteria_defaults", $query_name);
+		$this->check_criteria_name("set_criteria_help", $query_name);
 		if ( array_key_exists($query_name, $this->lookup_queries) )
 		{
 			$col =& $this->lookup_queries[$query_name] ;

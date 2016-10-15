@@ -654,6 +654,8 @@ a:visited
 {
 }
 
+.swHelpIcon { float: left;height: 20px; width: 14px; background-image: url(../images/help.png) !important; }
+
 .swCSVBox, .swHTMLBox, .swPDFBox, .swPrintBox, .swXMLBox, .swJSONBox
 {
     width: 30px !important;

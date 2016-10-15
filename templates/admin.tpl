@@ -7,9 +7,9 @@
 <LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEET}">
 {if $BOOTSTRAP_STYLES}
 {if $BOOTSTRAP_STYLES == "2"}
-<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/bootstrap2/bootstrap.min.css">
+<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$JSPATH}/bootstrap2/css/bootstrap.min.css">
 {else}
-<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/bootstrap3/bootstrap.min.css">
+<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$JSPATH}/bootstrap3/css/bootstrap.min.css">
 {/if}
 {/if}
 {$OUTPUT_ENCODING}
@@ -19,9 +19,9 @@
 {if $BOOTSTRAP_STYLES}
 {if !$REPORTICO_BOOTSTRAP_PRELOADED}
 {if $BOOTSTRAP_STYLES == "2"}
-<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/bootstrap2/bootstrap.min.css">
+<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$JSPATH}/bootstrap2/css/bootstrap.min.css">
 {else}
-<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEETDIR}/bootstrap3/bootstrap.min.css">
+<LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{$JSPATH}/bootstrap3/css/bootstrap.min.css">
 {/if}
 {/if}
 {/if}
@@ -47,9 +47,9 @@
 {if $BOOTSTRAP_STYLES}
 {if !$REPORTICO_BOOTSTRAP_PRELOADED}
 {if $BOOTSTRAP_STYLES == "2"}
-<script type="text/javascript" src="{$JSPATH}/bootstrap2/bootstrap.min.js"></script>
+<script type="text/javascript" src="{$JSPATH}/bootstrap2/js/bootstrap.min.js"></script>
 {else}
-<script type="text/javascript" src="{$JSPATH}/bootstrap3/bootstrap.min.js"></script>
+<script type="text/javascript" src="{$JSPATH}/bootstrap3/js/bootstrap.min.js"></script>
 {/if}
 {/if}
 {/if}
