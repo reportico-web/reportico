@@ -4190,7 +4190,6 @@ class reportico extends reportico_object
 				load_mode_language_pack("languages", $this->output_charset);
 				$this->initialize_panels($mode);
 				$this->handle_xml_query_input($mode);
-	            //$this->check_criteria_validity();
 
                 // Set Grid display options based on report and session defaults
 		        if ( $this->attributes["gridDisplay"] != ".DEFAULT" ) $this->dynamic_grids =  ( $this->attributes["gridDisplay"] == "show" ) ;
