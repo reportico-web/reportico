@@ -390,7 +390,7 @@
    
     </div>
 	<TABLE class="swPrpCritBox" id="critbody">
-{if $SHOW_OUTPUT}
+{if $SHOW_OUTPUT && !$IS_ADMIN_SCREEN}
         <TR>
             <td>  
 {if $SHOW_HIDE_PREPARE_PAGE_STYLE == "show"}

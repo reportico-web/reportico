@@ -3102,6 +3102,7 @@ class reportico extends reportico_object
 		$smarty->assign('SHOW_REPORT_MENU', false);
 		$smarty->assign('SHOW_SET_ADMIN_PASSWORD', false);
 		$smarty->assign('SHOW_OUTPUT', false);
+		$smarty->assign('IS_ADMIN_SCREEN', false);
 		$smarty->assign('SHOW_DESIGN_BUTTON', false);
 		$smarty->assign('SHOW_ADMIN_BUTTON', true);
 	    $smarty->assign('PROJ_PASSWORD_ERROR', "");
@@ -4146,6 +4147,7 @@ class reportico extends reportico_object
                     // found in projects/admin/lang.php
                     load_project_language_pack("admin", $this->output_charset);
 				    $this->panels["MAIN"]->smarty->assign('SHOW_MINIMAINTAIN', false);
+				    $this->panels["MAIN"]->smarty->assign('IS_ADMIN_SCREEN', true);
                 }
 				load_mode_language_pack("prepare", $this->output_charset);
                 localise_template_strings($this->panels["MAIN"]->smarty);
