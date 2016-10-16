@@ -4140,7 +4140,6 @@ class reportico extends reportico_object
 
                 global $g_translations;
                 global $g_report_desc;
-
                 if ( $this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml" || $this->xmlinput == "createproject.xml" )
                 {
                     // If configuring project then use project language strings from admin project
@@ -4261,6 +4260,7 @@ class reportico extends reportico_object
                         // found in projects/admin/lang.php
                         load_project_language_pack("admin", $this->output_charset);
 				        $this->panels["MAIN"]->smarty->assign('SHOW_MINIMAINTAIN', false);
+				        $this->panels["MAIN"]->smarty->assign('IS_ADMIN_SCREEN', true);
                     }
 				    load_mode_language_pack("languages", $this->output_charset, true);
 					load_mode_language_pack("prepare", $this->output_charset);
