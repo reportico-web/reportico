@@ -384,8 +384,8 @@
 											<INPUT type="radio" id="rpt_format_pdf" name="target_format" value="PDF" {$OUTPUT_TYPES[1]}>PDF
 											<INPUT type="radio" id="rpt_format_csv" name="target_format" value="CSV" {$OUTPUT_TYPES[2]}>CSV
 {if $SHOW_DESIGN_BUTTON}
-											<INPUT type="radio" id="rpt_format_xml" name="target_format" value="XML" {$OUTPUT_TYPES[3]}>XML
-											<INPUT type="radio" id="rpt_format_json" name="target_format" value="JSON" {$OUTPUT_TYPES[4]}>JSON
+											<!--INPUT type="radio" id="rpt_format_xml" name="target_format" value="XML" {$OUTPUT_TYPES[3]}>XML-->
+											<!--INPUT type="radio" id="rpt_format_json" name="target_format" value="JSON" {$OUTPUT_TYPES[4]}>JSON-->
 {/if}
    
     </div>
@@ -404,8 +404,8 @@
 			</div>
 			<div class="swPrpToolbarPane" style="width: 30%; float: left; vertical-align: bottom;text-align: right">
 {if $SHOW_DESIGN_BUTTON}
-    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareAjaxExecute swJSONBox" title="{$T_PRINT_JSON}" id="prepareAjaxExecute" name="submitPrepare" value="">
-    				<input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareAjaxExecute swXMLBox" style="margin-left: 20px" title="{$T_PRINT_XML}" id="prepareAjaxExecute" name="submitPrepare" value="">
+    				<!--input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareAjaxExecute swJSONBox" title="{$T_PRINT_JSON}" id="prepareAjaxExecute" name="submitPrepare" value=""-->
+    				<!--input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareAjaxExecute swXMLBox" style="margin-left: 20px" title="{$T_PRINT_XML}" id="prepareAjaxExecute" name="submitPrepare" value=""-->
 {/if}
 
 {if $SHOW_HIDE_PREPARE_CSV_BUTTON == "show"}
