@@ -41,7 +41,7 @@
 {/if}
 {if $AJAX_ENABLED}
 {if !$REPORTICO_AJAX_PRELOADED}
-{if !$REPORTICO_JQUERY_PRELOADED}
+{if !$REPORTICO_JQUERY_PRELOADED || $REPORTICO_STANDALONE_WINDOW}
 {literal}
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/jquery.js"></script>
 {/literal}
