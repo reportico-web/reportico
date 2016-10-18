@@ -7585,10 +7585,15 @@ class reportico_criteria_column extends reportico_query_column
 
 				case "SELECT2MULTIPLE":
 				case "SELECT2SINGLE":
-                        if ( $type == "SELECT2SINGLE" )
-						    $text .= '<SELECT id="select2_dropdown_'.$this->query_name.'" class="'.$this->lookup_query->getBootstrapStyle('design_dropdown').'swPrpDropSelect" name="'.$tag_pref.$this->query_name.'[]" >';
+                        if ( $in_is_expanding )
+                            $widget_id = "select2_dropdown_expanded_";
                         else
-						    $text .= '<SELECT id="select2_dropdown_'.$this->query_name.'" class="'.$this->lookup_query->getBootstrapStyle('design_dropdown').'swPrpDropSelect" name="'.$tag_pref.$this->query_name.'[]" multiple>';
+                            $widget_id = "select2_dropdown_";
+
+                        if ( $type == "SELECT2SINGLE" )
+						    $text .= '<SELECT id="'.$widget_id.$this->query_name.'" class="'.$this->lookup_query->getBootstrapStyle('design_dropdown').'swPrpDropSelect" name="'.$tag_pref.$this->query_name.'[]" >';
+                        else
+						    $text .= '<SELECT id="'.$widget_id.$this->query_name.'" class="'.$this->lookup_query->getBootstrapStyle('design_dropdown').'swPrpDropSelect" name="'.$tag_pref.$this->query_name.'[]" multiple>';
 					    $text .= '<OPTION></OPTION>';
 						break;
 
