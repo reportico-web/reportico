@@ -155,9 +155,22 @@
 {/if}
 {if $SHOW_LOGOUT}
 			<TD width="15%" align="right" class="swPrpTopMenuCell">
-				<input class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swPrpSubmit reporticoSubmit" type="submit" name="adminlogout" value="{$T_LOGOFF}">
+				<input class="{$BOOTSTRAP_STYLE_PRIMARY_BUTTON}swPrpSubmit reporticoSubmit" type="submit" name="adminlogout" value="{$T_LOGOFF}">
 			</TD>
 {/if}
+{if $SHOW_OPEN_LOGIN}
+			<TD width="50%"></TD>
+			<TD width="98%" align="right" class="swPrpTopMenuCell">
+{$T_OPEN_ADMIN_INSTRUCTIONS}
+				<br><input class="{$BOOTSTRAP_STYLE_TEXTFIELD}" style="display: none" type="password" name="admin_password" value="__OPENACCESS__">
+				<input class="{$BOOTSTRAP_STYLE_PRIMARY_BUTTON}swPrpSubmit reporticoSubmit" type="submit" name="login" value="{$T_OPEN_LOGIN}">
+{if strlen($ADMIN_PASSWORD_ERROR) > 0}
+				<div style="color: #ff0000;">{$T_ADMIN_PASSWORD_ERROR}</div>
+{/if}
+			</TD>
+			<TD width="15%" align="right" class="swPrpTopMenuCell">
+			</TD>
+{else}
 {if $SHOW_LOGIN}
 			<TD width="50%"></TD>
 			<TD width="35%" align="right" class="swPrpTopMenuCell">
@@ -170,6 +183,7 @@
 			</TD>
 			<TD width="15%" align="right" class="swPrpTopMenuCell">
 			</TD>
+{/if}
 {/if}
 		</TR>
 	</TABLE>

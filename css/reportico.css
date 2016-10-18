@@ -18,7 +18,7 @@ form,table,input,a,div
     float: right;
     font-weight: 700;
     margin: 10px 5px 0px 0px;
-    border: 1px solid #888888;
+    border: none;
     text-decoration: none;
     background-color: #ffffff;
     height: 32px;

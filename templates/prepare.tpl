@@ -284,7 +284,9 @@
 {/if}
 		<TR>
 			<TD style="width: 50%; text-align:left">
+{if $SHOW_HIDE_PREPARE_GO_BUTTONS == "show"}
     				<input type="submit" style="width: 0px; color: transparent; background-color: transparent; border-color: transparent; cursor: default;" class="prepareAjaxExecute swHTMLGoBox" id="prepareAjaxExecute" name="submitPrepare" value="{$T_GO}">
+{/if}
 {if ($SHOW_ADMIN_BUTTON)}
 {if strlen($ADMIN_MENU_URL)>0} 
                 <a class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swLinkMenu" href="{$ADMIN_MENU_URL}">{$T_ADMIN_MENU}</a>
@@ -394,15 +396,27 @@
         <TR>
             <td>  
 {if $SHOW_HIDE_PREPARE_PAGE_STYLE == "show"}
-			<div style="width: 20%; padding-top: 15px;float: left;vertical-align: bottom;text-align: center">
+			<div style="padding: 10px 15px; float: left;vertical-align: bottom;text-align: center; border-right: solid 1px #bbb">
 {else}
 			<div style="display:none; width: 20%; padding-top: 15px;float: left;vertical-align: bottom;text-align: center">
 {/if}
                 <b>{$T_REPORT_STYLE}</b>
-                <INPUT type="radio" id="rpt_style_detail" name="target_style" value="TABLE" {$OUTPUT_STYLES[0]}>{$T_TABLE}
-                <INPUT type="radio" id="rpt_style_form" name="target_style" value="FORM" {$OUTPUT_STYLES[1]}>{$T_FORM}
+
+{if $BOOTSTRAP_STYLES}
+<div class="btn-group" data-toggle="buttons">
+  <label class="btn btn-primary active" style="padding: 2px 4px">
+    <input type="radio" name="target_style" id="rpt_style_detail" autocomplete="off" value="TABLE" {$OUTPUT_STYLES[0]}>{$T_TABLE}
+  </label>
+  <label class="btn btn-primary" style="padding: 2px 4px">
+    <input type="radio" name="target_style" id="rpt_style_form" autocomplete="off" value="FORM" {$OUTPUT_STYLES[1]}>{$T_FORM}
+  </label>
+</div>
+{else}
+<INPUT type="radio" id="rpt_style_detail" name="target_style" value="TABLE" {$OUTPUT_STYLES[0]}>{$T_TABLE}
+<INPUT type="radio" id="rpt_style_form" name="target_style" value="FORM" {$OUTPUT_STYLES[1]}>{$T_FORM}
+{/if}
 			</div>
-			<div class="swPrpToolbarPane" style="width: 30%; float: left; vertical-align: bottom;text-align: right">
+			<div class="swPrpToolbarPane" style="padding: 0px 5px; float: left;vertical-align: bottom;text-align: center; border-right: solid 1px #bbb">
 {if $SHOW_DESIGN_BUTTON}
     				<!--input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareAjaxExecute swJSONBox" title="{$T_PRINT_JSON}" id="prepareAjaxExecute" name="submitPrepare" value=""-->
     				<!--input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareAjaxExecute swXMLBox" style="margin-left: 20px" title="{$T_PRINT_XML}" id="prepareAjaxExecute" name="submitPrepare" value=""-->
@@ -429,16 +443,39 @@
     				<input style="display:none" type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareAjaxExecute swPrintBox" style="margin-right: 30px" title="{$T_PRINTABLE}" id="prepareAjaxExecute" name="submitPrepare" value="">
 {/if}
 			</div>
+
 {if $SHOW_HIDE_PREPARE_SECTION_BOXES == "show"}
-			<div style="width: 50%; padding-top: 15px;float: left;vertical-align: bottom;text-align: center">
+{if $BOOTSTRAP_STYLES && $BOOTSTRAP_STYLES == "3" }
+			<div style="width: auto; padding: 5px; float: right;vertical-align: bottom;text-align: right">
+                <div class="input-group" style="margin-bottom: 0px; margin-left: 10px; width:160px; float: right">
+                    <span class="input-group-addon">
+                        <input type="checkbox" name="target_show_criteria" value="1" {$OUTPUT_SHOWCRITERIA}>
+                    </span>
+                    <label class="form-control" aria-label="Text input with checkbox">{$T_SHOW_CRITERIA}</label>
+                </div><!-- /input-group -->
 {else}
+			<div style="width: auto; padding: 5px; float: right;vertical-align: bottom;text-align: right">
+				<span style="margin-right: 20px"> <INPUT type="checkbox" name="target_show_criteria" value="1" {$OUTPUT_SHOWCRITERIA}>{$T_SHOW_CRITERIA}</span>
+{/if}
+{else}
+{if $BOOTSTRAP_STYLES && $BOOTSTRAP_STYLES == "3" }
+			<div style="width: auto; padding-top: 8px;float: right;vertical-align: bottom;text-align: center">
+                <div class="input-group" style="margin-bottom: 0px; width:160px; float: right">
+                    <span class="input-group-addon">
+                        <input type="checkbox" name="target_show_criteria" value="1" {$OUTPUT_SHOWCRITERIA}>
+                    </span>
+                    <label class="form-control" aria-label="Text input with checkbox">{$T_SHOW_CRITERIA}</label>
+                </div><!-- /input-group -->
+			</div>
+{else}
+				<span style="margin-right: 20px; float: right"> <INPUT type="checkbox" name="target_show_criteria" value="1" {$OUTPUT_SHOWCRITERIA}>{$T_SHOW_CRITERIA}</span>
+{/if}
 			<div style="display:none; width: 50%; padding-top: 15px;float: left;vertical-align: bottom;text-align: center">
 {/if}
                                   <b>{$T_SHOW}</b>
 				<INPUT type="checkbox" style="display:none" name="user_criteria_entered" value="1" checked="1">
 {if $BOOTSTRAP_STYLES}
 {if $BOOTSTRAP_STYLES == "2" }
-				<label style="display:inline-block" class="{$BOOTSTRAP_STYLE_CHECKBOX_BUTTON}"><INPUT type="checkbox" name="target_show_criteria" value="1" {$OUTPUT_SHOWCRITERIA}>{$T_SHOW_CRITERIA}</label>
 				<label style="display:inline-block" class="{$BOOTSTRAP_STYLE_CHECKBOX_BUTTON}"><INPUT type="checkbox" name="target_show_group_headers" value="1" {$OUTPUT_SHOWGROUPHEADERS}>{$T_SHOW_GRPHEADERS}</label>
 				<label style="display:inline-block" class="{$BOOTSTRAP_STYLE_CHECKBOX_BUTTON}"><INPUT type="checkbox" name="target_show_detail" value="1" {$OUTPUT_SHOWDETAIL}>{$T_SHOW_DETAIL}</label>
 				<label style="display:inline-block" class="{$BOOTSTRAP_STYLE_CHECKBOX_BUTTON}"><INPUT type="checkbox" name="target_show_group_trailers" value="1" {$OUTPUT_SHOWGROUPTRAILERS}>{$T_SHOW_GRPTRAILERS}</label>
@@ -447,7 +484,6 @@
 				<label style="display:inline-block" class="{$BOOTSTRAP_STYLE_CHECKBOX_BUTTON}"><INPUT type="checkbox" name="target_show_graph" value="1" {$OUTPUT_SHOWGRAPH}>{$T_SHOW_GRAPH}</label>
 {/if}
 {else}
-				<label class="{$BOOTSTRAP_STYLE_CHECKBOX_BUTTON}"><INPUT type="checkbox" name="target_show_criteria" value="1" {$OUTPUT_SHOWCRITERIA}>{$T_SHOW_CRITERIA}</label>
 				<label class="{$BOOTSTRAP_STYLE_CHECKBOX_BUTTON}"><INPUT type="checkbox" name="target_show_group_headers" value="1" {$OUTPUT_SHOWGROUPHEADERS}>{$T_SHOW_GRPHEADERS}</label>
 				<label class="{$BOOTSTRAP_STYLE_CHECKBOX_BUTTON}"><INPUT type="checkbox" name="target_show_detail" value="1" {$OUTPUT_SHOWDETAIL}>{$T_SHOW_DETAIL}</label>
 				<label class="{$BOOTSTRAP_STYLE_CHECKBOX_BUTTON}"><INPUT type="checkbox" name="target_show_group_trailers" value="1" {$OUTPUT_SHOWGROUPTRAILERS}>{$T_SHOW_GRPTRAILERS}</label>
@@ -457,7 +493,7 @@
 {/if}
 {/if}
 {else}
-				<INPUT type="checkbox" name="target_show_criteria" value="1" {$OUTPUT_SHOWCRITERIA}>{$T_SHOW_CRITERIA}
+				<!--INPUT type="checkbox" name="target_show_criteria" value="1" {$OUTPUT_SHOWCRITERIA}>{$T_SHOW_CRITERIA}-->
 				<INPUT type="checkbox" name="target_show_group_headers" value="1" {$OUTPUT_SHOWGROUPHEADERS}>{$T_SHOW_GRPHEADERS}
 				<INPUT type="checkbox" name="target_show_detail" value="1" {$OUTPUT_SHOWDETAIL}>{$T_SHOW_DETAIL}
 				<INPUT type="checkbox" name="target_show_group_trailers" value="1" {$OUTPUT_SHOWGROUPTRAILERS}>{$T_SHOW_GRPTRAILERS}
@@ -479,10 +515,16 @@
 			<TD class="swPrpCritEntry">
 			<div id="swPrpSubmitPane">
 {if !$IS_ADMIN_SCREEN}
+{if $SHOW_HIDE_PREPARE_GO_BUTTONS == "show"}
     				<input type="submit" class="{$BOOTSTRAP_STYLE_GO_BUTTON}prepareAjaxExecute swHTMLGoBox" id="prepareAjaxExecute" name="submitPrepare" value="{$T_GO}">
+{/if}
+{if $SHOW_HIDE_PREPARE_RESET_BUTTONS == "show"}
     				<input type="submit" class="{$BOOTSTRAP_STYLE_RESET_BUTTON}reporticoSubmit" name="clearform" value="{$T_RESET}">
+{/if}
 {else}
+{if $SHOW_HIDE_PREPARE_GO_BUTTONS == "show"}
     				<input type="submit" class="{$BOOTSTRAP_STYLE_GO_BUTTON}prepareAjaxExecute swHTMLGoBox" id="prepareAjaxExecute" name="submitPrepare" value="{$T_GO}">
+{/if}
 {/if}
 {if $SHOW_MINIMAINTAIN} 
 <div style="float: left">

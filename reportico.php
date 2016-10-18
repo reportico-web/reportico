@@ -267,7 +267,7 @@ class reportico extends reportico_object
 	var $delete_project_url;
 	var $create_report_url;
 
-	var $version = "4.4";
+	var $version = "4.5";
 
 	var $name;
 	var $rowselection="all";
@@ -412,12 +412,14 @@ class reportico extends reportico_object
         "show_hide_navigation_menu" => "show",
         "show_hide_dropdown_menu" => "show",
         "show_hide_report_output_title" => "show",
-        "show_hide_prepare_section_boxes" => "show",
+        "show_hide_prepare_section_boxes" => "hide",
         "show_hide_prepare_pdf_button" => "show",
         "show_hide_prepare_html_button" => "show",
         "show_hide_prepare_print_html_button" => "show",
         "show_hide_prepare_csv_button" => "show",
         "show_hide_prepare_page_style" => "show",
+        "show_hide_prepare_reset_buttons" => "hide",
+        "show_hide_prepare_go_buttons" => "hide",
         );
         // Template Parameters
 
@@ -507,6 +509,7 @@ class reportico extends reportico_object
 	var $bootstrap_styling_button_go = "btn btn-success";
 	var $bootstrap_styling_button_reset = "btn btn-default";
 	var $bootstrap_styling_button_admin = "btn";
+	var $bootstrap_styling_button_primary = "btn btn-primary";
 	var $bootstrap_styling_button_delete = "btn btn-danger";
 	var $bootstrap_styling_dropdown = "form-control";
 	//var $bootstrap_styling_checkbox_button = "btn btn-default btn-xs";
@@ -3178,6 +3181,7 @@ class reportico extends reportico_object
 		$smarty->assign('BOOTSTRAP_STYLES', $this->bootstrap_styles);
 		$smarty->assign('REPORTICO_BOOTSTRAP_PRELOADED', $this->bootstrap_preloaded);
 		$smarty->assign('BOOTSTRAP_STYLE_GO_BUTTON', $this->getBootstrapStyle('button_go'));
+		$smarty->assign('BOOTSTRAP_STYLE_PRIMARY_BUTTON', $this->getBootstrapStyle('button_primary'));
 		$smarty->assign('BOOTSTRAP_STYLE_RESET_BUTTON', $this->getBootstrapStyle('button_reset'));
 		$smarty->assign('BOOTSTRAP_STYLE_ADMIN_BUTTON', $this->getBootstrapStyle('button_admin'));
 		$smarty->assign('BOOTSTRAP_STYLE_DROPDOWN', $this->getBootstrapStyle('dropdown'));

@@ -19,7 +19,7 @@
     float: right;
     font-weight: 700;
     margin: 10px 5px 0px 0px;
-    border: 1px solid #888888;
+    border: 0px solid #888888;
     text-decoration: none;
     background-color: #ffffff;
     height: 32px !important;
@@ -691,8 +691,8 @@ input.swAdminButton2
 
 .swCSVBox, .swHTMLBox, .swPDFBox, .swPrintBox, .swXMLBox, .swJSONBox
 {
-    width: 30px !important;
-    height: 30px !important;
+    width: 32px !important;
+    height: 32px !important;
     text-align: left;
     padding: 0px;
     margin-bottom: 5px !important;
@@ -719,7 +719,7 @@ input.swAdminButton2
     text-decoration: none;
     border:none !important;
     background-position: 0px 0px !important;
-    background-repeat: no-repeat !important;
+    backgrou6d-repeat: no-repeat !important;
 }
 .swMiniMaintain { background-image: url(../images/icons/pencil-2x.png) !important; }
 
