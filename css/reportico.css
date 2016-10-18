@@ -57,14 +57,17 @@ form,table,input,a,div
 .swPrpCritExpandSel input
 {
     float: left;
-    margin: 0px 2px 0px 20px;
-    padding: 2px 2px 2px 2px;
-    background: #ffffff;
-    border: 1px solid #d0ccc9;
+    margin: 3px 2px 0px 20px !important;
+    padding: 5px 2px 2px 2px !important;
+    border: 5px solid #d0ccc9;
     border-width: 1px 1px 1px 1px;
     position: relative;
     color: #505050;
     cursor: pointer;
+    background: url('../images/search.png') no-repeat;   
+    background-color: #ffffff;
+    height: 22px; 
+    width: 22px;
 }
 
 .swDateField { width: 100px; }
