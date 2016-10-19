@@ -110,6 +110,12 @@ function setupCriteriaItems()
           //templateSelection: select2FormatSelection // omitted for brevity, see the source of this page
         })
         reportico_jquery("#select2_dropdown_" + j).val(preselected).trigger("change");
+
+        // If select2 exists in expand tab then hide the search box .. its not relevant
+        reportico_jquery("#select2_dropdown_expanded_" + j).each(function() {
+            reportico_jquery("#expandsearch").hide();
+            reportico_jquery("#reporticoSearchExpand").hide();
+        });
     };
 
 }

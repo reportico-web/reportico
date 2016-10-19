@@ -446,29 +446,47 @@
 
 {if $SHOW_HIDE_PREPARE_SECTION_BOXES == "show"}
 {if $BOOTSTRAP_STYLES && $BOOTSTRAP_STYLES == "3" }
-			<div style="width: auto; padding: 5px; float: right;vertical-align: bottom;text-align: right">
+			<div style="max-width: auto; padding: 5px; float: right;vertical-align: bottom;text-align: right">
                 <div class="input-group" style="margin-bottom: 0px; margin-left: 10px; width:160px; float: right">
                     <span class="input-group-addon">
-                        <input type="checkbox" name="target_show_criteria" value="1" {$OUTPUT_SHOWCRITERIA}>
+                        <input type="checkbox" name="target_show_graph" value="1" {$OUTPUT_SHOWGRAPH}>
                     </span>
-                    <label class="form-control" aria-label="Text input with checkbox">{$T_SHOW_CRITERIA}</label>
+                    <label style="min-width: 120px" class="form-control" aria-label="Text input with checkbox">{$T_SHOW_GRAPH}</label>
+{if $OUTPUT_SHOW_SHOWGRAPH}
+                    <span class="input-group-addon">
+                        <input type="checkbox" name="target_show_graph" value="1" {$OUTPUT_SHOWCRITERIA}>
+                    </span>
+                    <label style="min-width: 120px"  class="form-control" aria-label="Text input with checkbox">{$T_SHOW_CRITERIA}</label>
+{/if}
                 </div><!-- /input-group -->
 {else}
 			<div style="width: auto; padding: 5px; float: right;vertical-align: bottom;text-align: right">
 				<span style="margin-right: 20px"> <INPUT type="checkbox" name="target_show_criteria" value="1" {$OUTPUT_SHOWCRITERIA}>{$T_SHOW_CRITERIA}</span>
+{if $OUTPUT_SHOW_SHOWGRAPH}
+{/if}
+				<span style="margin-right: 20px"> <INPUT type="checkbox" name="target_show_graph" value="1" {$OUTPUT_SHOWCRITERIA}>{$T_SHOW_GRAPH}</span>
 {/if}
 {else}
 {if $BOOTSTRAP_STYLES && $BOOTSTRAP_STYLES == "3" }
-			<div style="width: auto; padding-top: 8px;float: right;vertical-align: bottom;text-align: center">
-                <div class="input-group" style="margin-bottom: 0px; width:160px; float: right">
+			<div style="max-width: 320px; padding-top: 8px;float: right;vertical-align: bottom;text-align: center">
+                <div class="input-group" style="margin-bottom: 0px; ; float: right">
+{if $OUTPUT_SHOW_SHOWGRAPH}
+                    <span class="input-group-addon">
+                        <input type="checkbox" name="target_show_graph" value="1" {$OUTPUT_SHOWGRAPH}>
+                    </span>
+                    <label style="max-width: 160px"  class="form-control" aria-label="Text input with checkbox">{$T_SHOW_GRAPH}</label>
+{/if}
                     <span class="input-group-addon">
                         <input type="checkbox" name="target_show_criteria" value="1" {$OUTPUT_SHOWCRITERIA}>
                     </span>
-                    <label class="form-control" aria-label="Text input with checkbox">{$T_SHOW_CRITERIA}</label>
+                    <label style="max-width: 160px"  class="form-control" aria-label="Text input with checkbox">{$T_SHOW_CRITERIA}</label>
                 </div><!-- /input-group -->
 			</div>
 {else}
 				<span style="margin-right: 20px; float: right"> <INPUT type="checkbox" name="target_show_criteria" value="1" {$OUTPUT_SHOWCRITERIA}>{$T_SHOW_CRITERIA}</span>
+{if $OUTPUT_SHOW_SHOWGRAPH}
+				<label class="{$BOOTSTRAP_STYLE_CHECKBOX_BUTTON}"><INPUT type="checkbox" name="target_show_graph" value="1" {$OUTPUT_SHOWGRAPH}>{$T_SHOW_GRAPH}</label>
+{/if}
 {/if}
 			<div style="display:none; width: 50%; padding-top: 15px;float: left;vertical-align: bottom;text-align: center">
 {/if}
@@ -480,7 +498,7 @@
 				<label style="display:inline-block" class="{$BOOTSTRAP_STYLE_CHECKBOX_BUTTON}"><INPUT type="checkbox" name="target_show_detail" value="1" {$OUTPUT_SHOWDETAIL}>{$T_SHOW_DETAIL}</label>
 				<label style="display:inline-block" class="{$BOOTSTRAP_STYLE_CHECKBOX_BUTTON}"><INPUT type="checkbox" name="target_show_group_trailers" value="1" {$OUTPUT_SHOWGROUPTRAILERS}>{$T_SHOW_GRPTRAILERS}</label>
 				<label style="display:inline-block" class="{$BOOTSTRAP_STYLE_CHECKBOX_BUTTON}"><INPUT type="checkbox" name="target_show_column_headers" value="1" {$OUTPUT_SHOWCOLHEADERS}>{$T_SHOW_COLHEADERS}</label>
-{if $OUTPUT_SHOW_SHOWGRAPH}
+{if $OUTPUT_SHOW_SHOWGRAPH && false}
 				<label style="display:inline-block" class="{$BOOTSTRAP_STYLE_CHECKBOX_BUTTON}"><INPUT type="checkbox" name="target_show_graph" value="1" {$OUTPUT_SHOWGRAPH}>{$T_SHOW_GRAPH}</label>
 {/if}
 {else}
@@ -488,7 +506,7 @@
 				<label class="{$BOOTSTRAP_STYLE_CHECKBOX_BUTTON}"><INPUT type="checkbox" name="target_show_detail" value="1" {$OUTPUT_SHOWDETAIL}>{$T_SHOW_DETAIL}</label>
 				<label class="{$BOOTSTRAP_STYLE_CHECKBOX_BUTTON}"><INPUT type="checkbox" name="target_show_group_trailers" value="1" {$OUTPUT_SHOWGROUPTRAILERS}>{$T_SHOW_GRPTRAILERS}</label>
 				<label class="{$BOOTSTRAP_STYLE_CHECKBOX_BUTTON}"><INPUT type="checkbox" name="target_show_column_headers" value="1" {$OUTPUT_SHOWCOLHEADERS}>{$T_SHOW_COLHEADERS}</label>
-{if $OUTPUT_SHOW_SHOWGRAPH}
+{if $OUTPUT_SHOW_SHOWGRAPH && false}
 				<label class="{$BOOTSTRAP_STYLE_CHECKBOX_BUTTON}"><INPUT type="checkbox" name="target_show_graph" value="1" {$OUTPUT_SHOWGRAPH}>{$T_SHOW_GRAPH}</label>
 {/if}
 {/if}
@@ -498,7 +516,7 @@
 				<INPUT type="checkbox" name="target_show_detail" value="1" {$OUTPUT_SHOWDETAIL}>{$T_SHOW_DETAIL}
 				<INPUT type="checkbox" name="target_show_group_trailers" value="1" {$OUTPUT_SHOWGROUPTRAILERS}>{$T_SHOW_GRPTRAILERS}
 				<INPUT type="checkbox" name="target_show_column_headers" value="1" {$OUTPUT_SHOWCOLHEADERS}>{$T_SHOW_COLHEADERS}
-{if $OUTPUT_SHOW_SHOWGRAPH}
+{if $OUTPUT_SHOW_SHOWGRAPH && false}
 				<INPUT type="checkbox" name="target_show_graph" value="1" {$OUTPUT_SHOWGRAPH}>{$T_SHOW_GRAPH}<BR>
 {/if}
 {/if}
@@ -522,9 +540,7 @@
     				<input type="submit" class="{$BOOTSTRAP_STYLE_RESET_BUTTON}reporticoSubmit" name="clearform" value="{$T_RESET}">
 {/if}
 {else}
-{if $SHOW_HIDE_PREPARE_GO_BUTTONS == "show"}
     				<input type="submit" class="{$BOOTSTRAP_STYLE_GO_BUTTON}prepareAjaxExecute swHTMLGoBox" id="prepareAjaxExecute" name="submitPrepare" value="{$T_GO}">
-{/if}
 {/if}
 {if $SHOW_MINIMAINTAIN} 
 <div style="float: left">
@@ -626,8 +642,8 @@ $loopct++;
 </div>
 <p>
 {if $SHOW_EXPANDED}
-							{$T_SEARCH} {$EXPANDED_TITLE} :<br><input  type="text" class="{$BOOTSTRAP_STYLE_TEXTFIELD}" name="expand_value" style="width: 50%;display: inline" size="30" value="{$EXPANDED_SEARCH_VALUE}"</input>
-									<input id="reporticoPerformExpand" class="{$BOOTSTRAP_STYLE_SMALL_BUTTON}swPrpSubmit" style="margin-bottom: 2px" type="submit" name="EXPANDSEARCH_{$EXPANDED_ITEM}" value="Search"><br>
+							{$T_SEARCH} {$EXPANDED_TITLE} :<br><input  id="expandsearch" type="text" class="{$BOOTSTRAP_STYLE_TEXTFIELD}" name="expand_value" style="width: 50%;display: inline" size="30" value="{$EXPANDED_SEARCH_VALUE}"</input>
+									<input id="reporticoSearchExpand" class="{$BOOTSTRAP_STYLE_SMALL_BUTTON}swPrpSubmit" style="margin-bottom: 2px" type="submit" name="EXPANDSEARCH_{$EXPANDED_ITEM}" value="Search"><br>
 
 {$CONTENT}
 							<br>
