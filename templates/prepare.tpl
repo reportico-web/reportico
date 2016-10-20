@@ -457,14 +457,18 @@
                         <input type="checkbox" name="target_show_graph" value="1" {$OUTPUT_SHOWCRITERIA}>
                     </span>
                     <label style="min-width: 120px"  class="form-control" aria-label="Text input with checkbox">{$T_SHOW_CRITERIA}</label>
+{else}
+                        <input style="display: none" type="checkbox" name="target_show_graph" value="1" {$OUTPUT_SHOWCRITERIA}>
 {/if}
                 </div><!-- /input-group -->
 {else}
 			<div style="width: auto; padding: 5px; float: right;vertical-align: bottom;text-align: right">
 				<span style="margin-right: 20px"> <INPUT type="checkbox" name="target_show_criteria" value="1" {$OUTPUT_SHOWCRITERIA}>{$T_SHOW_CRITERIA}</span>
 {if $OUTPUT_SHOW_SHOWGRAPH}
-{/if}
 				<span style="margin-right: 20px"> <INPUT type="checkbox" name="target_show_graph" value="1" {$OUTPUT_SHOWCRITERIA}>{$T_SHOW_GRAPH}</span>
+{else}
+                        <input style="display: none" type="checkbox" name="target_show_graph" value="1" {$OUTPUT_SHOWCRITERIA}>
+{/if}
 {/if}
 {else}
 {if $BOOTSTRAP_STYLES && $BOOTSTRAP_STYLES == "3" }
@@ -475,6 +479,8 @@
                         <input type="checkbox" name="target_show_graph" value="1" {$OUTPUT_SHOWGRAPH}>
                     </span>
                     <label style="max-width: 160px"  class="form-control" aria-label="Text input with checkbox">{$T_SHOW_GRAPH}</label>
+{else}
+                        <input style="display: none" type="checkbox" name="target_show_graph" value="1" {$OUTPUT_SHOWCRITERIA}>
 {/if}
                     <span class="input-group-addon">
                         <input type="checkbox" name="target_show_criteria" value="1" {$OUTPUT_SHOWCRITERIA}>
@@ -486,6 +492,8 @@
 				<span style="margin-right: 20px; float: right"> <INPUT type="checkbox" name="target_show_criteria" value="1" {$OUTPUT_SHOWCRITERIA}>{$T_SHOW_CRITERIA}</span>
 {if $OUTPUT_SHOW_SHOWGRAPH}
 				<label class="{$BOOTSTRAP_STYLE_CHECKBOX_BUTTON}"><INPUT type="checkbox" name="target_show_graph" value="1" {$OUTPUT_SHOWGRAPH}>{$T_SHOW_GRAPH}</label>
+{else}
+                        <input style="display: none" type="checkbox" name="target_show_graph" value="1" {$OUTPUT_SHOWCRITERIA}>
 {/if}
 {/if}
 			<div style="display:none; width: 50%; padding-top: 15px;float: left;vertical-align: bottom;text-align: center">
