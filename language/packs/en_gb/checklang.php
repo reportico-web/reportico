@@ -1,6 +1,6 @@
 <?php
 
-$compare="fr_fr";
+$compare="pt_br";
 $tmp=array("prepare", "admin", "maintain", "execute", "menu", "languages");
 
 foreach ( $tmp as $template )
