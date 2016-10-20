@@ -13,4 +13,3 @@ $locale_arr = array (
 )
 );
 ?>
-"T_REQUIRED_CRITERIA" => "Debe proporcionar un valor para el elemento criterios",

@@ -32,5 +32,3 @@ $locale_arr = array (
             ),
         );
 ?>
-"T_OPEN_LOGIN" => "Entrar en el modo de diseño",
-"T_OPEN_LOGOFF" => "Salir del modo diseño",

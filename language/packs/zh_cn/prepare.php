@@ -18,7 +18,7 @@ $locale_arr = array (
 		"T_DEBUG_MEDIUM" => "中等",
 		"T_DEBUG_HIGH" => "高",
 		"T_ENTER_PROJECT_PASSWORD" => "进入该项目的密码。",
-        "T_EXPAND" => ">>",
+        "T_EXPAND" => " ",
         "T_DEFAULT_REPORT_DESCRIPTION" =>
 "&nbsp<br>".
 "在这里输入你的报告标准。进入标准的适当扩大key.When的使用，你是乐意选择适当的输出格式，然后单击确定。",
