@@ -8,7 +8,7 @@ $locale_arr = array (
         "T_LOGIN" => "Enter Design Mode",
         "T_OPEN_LOGIN" => "Enter Design Mode",
         "T_LOGOFF" => "Exit Design Mode",
-        "T_OPEN_LOGOFF" => "Log Off",
+        "T_OPEN_LOGOFF" => "Exit Design Mode",
         "T_ENTER_PROJECT_PASSWORD" => "Enter the project password.",
         "T_ADMIN_INSTRUCTIONS" =>
                 "Select a report suite from the dropdown below or enter the Reportico Administrator Password to start designing Reportico reports.",

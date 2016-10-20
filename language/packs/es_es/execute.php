@@ -9,6 +9,8 @@ $locale_arr = array (
         "T_INFORMATION" => "Información",
         "T_GO_REFRESH" => "Refrescar",
         "T_GO_PRINT" => "Imprimir",
+        "T_REQUIRED_CRITERIA" => "Debe proporcionar un valor para el elemento criterios",
 )
 );
 ?>
+"T_REQUIRED_CRITERIA" => "Debe proporcionar un valor para el elemento criterios",

@@ -31,6 +31,8 @@ $locale_arr = array (
         "T_LINE" => "線",
         "T_Create A New Project" => "創建一個新項目",
         "T_Configure Tutorials" => "配置教程",
+        "T_OPEN_LOGIN" => "進入設計模式",
+        "T_OPEN_LOGOFF" => "退出設計模式",
 ),
 );
 ?>

@@ -8,6 +8,7 @@ $locale_arr = array (
         "T_INFORMATION" => "معلومات",
         "T_GO_REFRESH" => "تحديث",
         "T_GO_PRINT" => "طباعة",
+        "T_REQUIRED_CRITERIA" => "يجب توفير قيمة البند المعايير",
         )
 );
 ?>

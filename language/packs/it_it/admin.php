@@ -26,6 +26,8 @@ $locale_arr = array (
         "T_LINE" => "LINE",
         "T_Create A New Project" => "Creare un nuovo progetto",
         "T_Configure Tutorials" => "Configurare Tutorials",
+        "T_OPEN_LOGIN" => "Entrare in modalità progettazione",
+        "T_OPEN_LOGOFF" => "Esci da modalità Progettazione",
         ),
         );
 ?>
