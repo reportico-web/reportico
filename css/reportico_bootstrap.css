@@ -722,7 +722,7 @@ input.swAdminButton2
     text-decoration: none;
     border:none !important;
     background-position: 0px 0px !important;
-    backgrou6d-repeat: no-repeat !important;
+    background-repeat: no-repeat !important;
 }
 .swMiniMaintain { background-image: url(../images/icons/pencil-2x.png) !important; }
 
