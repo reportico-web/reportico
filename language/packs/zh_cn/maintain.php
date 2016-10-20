@@ -344,7 +344,10 @@ $locale_arr = array (
         "T_ASSIGNSTYLEPOSITION" => "相对于当前位置或页",
         "T_ASSIGNFONTNAME" => "字体名称",
         "T_ASSIGNPDFBACKGROUNDIMAGE" => "背景图像",
-
+        "T_SELECT2SINGLE" => "可搜索的单个列表框",
+        "T_SELECT2MULTIPLE" => "可搜索的多个列表框",
+        "T_CRITERIAHIDDEN" => "隐藏条件",
+        "T_CRITERIAREQUIRED" => "条件必需",
 )
 );
 ?>

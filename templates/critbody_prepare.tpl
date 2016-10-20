@@ -61,8 +61,8 @@
 </div>
 <p>
 {if $SHOW_EXPANDED}
-							Search {$EXPANDED_TITLE} :<br><input  type="text" name="expand_value" size="30" value="{$EXPANDED_SEARCH_VALUE}">
-									<input id="reporticoPerformExpand" class="btn btn-sm btn-default swPrpSubmit" type="button" name="EXPANDSEARCH_{$EXPANDED_ITEM}" value="Search"><br>
+							Search {$EXPANDED_TITLE} :<br><input  id="expandsearch"  type="text" name="expand_value" size="30" value="{$EXPANDED_SEARCH_VALUE}">
+									<input id="reporticoSearchExpand" class="btn btn-sm btn-default swPrpSubmit" type="button" name="EXPANDSEARCH_{$EXPANDED_ITEM}" value="Search"><br>
 
 {$CONTENT}
 							<br>

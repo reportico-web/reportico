@@ -229,6 +229,8 @@ $locale_arr = array (
 		"T_newpage" => "Nouvelle page",
         "T_SQLLIMITFIRST" => "Limite/Première",
         "T_SQLSKIPOFFSET" => "Passer/Offset",
+        "T_SELECT2SINGLE" => "Consultable Simple Listbox",
+        "T_SELECT2MULTIPLE" => "Consultable Box Liste Multiple",
 
         // Vertical Tab Labels
         "T_PAGE_HEADER" => "En-tête de page",
@@ -348,6 +350,8 @@ $locale_arr = array (
         "T_ASSIGNSTYLEPOSITION" => "Styles",
         "T_ASSIGNFONTNAME" => "Relative à la position actuelle ou la page",
         "T_ASSIGNPDFBACKGROUNDIMAGE" => "Nom de la police",
+        "T_CRITERIAHIDDEN" => "Masquer Critères",
+        "T_CRITERIAREQUIRED" => "Critère obligatoires",
 )
 );
 ?>

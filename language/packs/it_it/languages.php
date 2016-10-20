@@ -9,6 +9,7 @@ $locale_arr = array (
         "T_it_it" => "Italiano",
         "T_ar_ar" => "Arabo",
         "T_zh_cn" => "Cinese (semplificato)",
+        "T_pt_br" => "Portoghese Brasiliano",
         ),
     );
 

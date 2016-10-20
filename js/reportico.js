@@ -51,7 +51,7 @@ function setupCriteriaItems()
 
         // Already checked values for prepopulation
         preselected =[];
-        reportico_jquery("#select2_dropdown_" + j).find("option").each(function() {
+        reportico_jquery("#select2_dropdown_" + j + ",#select2_dropdown_expanded_" + j).find("option").each(function() {
             lab = reportico_jquery(this).prop("label");
             value = reportico_jquery(this).prop("value");
             checked = reportico_jquery(this).attr("checked");
@@ -61,8 +61,7 @@ function setupCriteriaItems()
             }
         });
         
-        //reportico_jquery("#select2_dropdown_" + j).select2(
-        reportico_jquery("#select2_dropdown_" + j).select2({
+        reportico_jquery("#select2_dropdown_" + j + ",#select2_dropdown_expanded_" + j).select2({
           ajax: {
             url: reportico_ajax_script + "?execute_mode=CRITERIA&reportico_criteria=" + j,
             type: 'POST',
@@ -76,10 +75,8 @@ function setupCriteriaItems()
             data: function (params) {
                 forms = reportico_jquery('#reportico_container').find(".swPrpForm");
 	            formparams = forms.serialize();
-                //params += "&" + reportico_jquery(this).prop("name") + "=1";
                 formparams += "&reportico_ajax_called=1";
                 formparams += "&execute_mode=CRITERIA";
-                //formparams += "&MANUAL_country=?" + params.term;;
                 formparams += "&reportico_criteria_match=" + params.term;;
               return formparams;
               return {
@@ -94,7 +91,6 @@ function setupCriteriaItems()
               // alter the remote JSON data, except to indicate that infinite
               // scrolling can be used
 
-console.log("got res" + data);
               params.page = params.page || 1;
 
               return {
@@ -114,6 +110,12 @@ console.log("got res" + data);
           //templateSelection: select2FormatSelection // omitted for brevity, see the source of this page
         })
         reportico_jquery("#select2_dropdown_" + j).val(preselected).trigger("change");
+
+        // If select2 exists in expand tab then hide the search box .. its not relevant
+        reportico_jquery("#select2_dropdown_expanded_" + j).each(function() {
+            reportico_jquery("#expandsearch").hide();
+            reportico_jquery("#reporticoSearchExpand").hide();
+        });
     };
 
 }
@@ -648,6 +650,7 @@ reportico_jquery(document).on('click', '#returnFromExpand', function() {
         setupDatePickers();
         setupTooltips();
         setupDropMenu();
+        setupCriteriaItems();
         },
         error: function(xhr, desc, err) {
         reportico_jquery(expandpanel).removeClass("loading");
@@ -680,6 +683,10 @@ reportico_jquery(document).on('click', '#returnFromExpand', function() {
         success: function(data, status) {
           reportico_jquery(fillPoint).removeClass("loading");
           reportico_jquery(fillPoint).html(data);
+          setupDatePickers();
+          setupTooltips();
+          setupDropMenu();
+          setupCriteriaItems();
         },
         error: function(xhr, desc, err) {
           reportico_jquery(fillPoint).removeClass("loading");

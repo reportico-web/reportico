@@ -1,6 +1,6 @@
 <?php
 
-$compare="zh_cn";
+$compare="it_it";
 $tmp=array("prepare", "admin", "maintain", "execute", "menu", "languages");
 
 foreach ( $tmp as $template )

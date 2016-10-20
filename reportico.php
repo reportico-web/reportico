@@ -267,7 +267,7 @@ class reportico extends reportico_object
 	var $delete_project_url;
 	var $create_report_url;
 
-	var $version = "4.4";
+	var $version = "4.5";
 
 	var $name;
 	var $rowselection="all";
@@ -347,6 +347,7 @@ class reportico extends reportico_object
 
 	var $framework_parent = false;
 	var $framework_type = false;
+    var $return_output_to_caller = false;
 
 	var $charting_engine = "PCHART";
 	var $charting_engine_html = "NVD3";
@@ -411,12 +412,14 @@ class reportico extends reportico_object
         "show_hide_navigation_menu" => "show",
         "show_hide_dropdown_menu" => "show",
         "show_hide_report_output_title" => "show",
-        "show_hide_prepare_section_boxes" => "show",
+        "show_hide_prepare_section_boxes" => "hide",
         "show_hide_prepare_pdf_button" => "show",
         "show_hide_prepare_html_button" => "show",
         "show_hide_prepare_print_html_button" => "show",
         "show_hide_prepare_csv_button" => "show",
         "show_hide_prepare_page_style" => "show",
+        "show_hide_prepare_reset_buttons" => "hide",
+        "show_hide_prepare_go_buttons" => "hide",
         );
         // Template Parameters
 
@@ -506,6 +509,7 @@ class reportico extends reportico_object
 	var $bootstrap_styling_button_go = "btn btn-success";
 	var $bootstrap_styling_button_reset = "btn btn-default";
 	var $bootstrap_styling_button_admin = "btn";
+	var $bootstrap_styling_button_primary = "btn btn-primary";
 	var $bootstrap_styling_button_delete = "btn btn-danger";
 	var $bootstrap_styling_dropdown = "form-control";
 	//var $bootstrap_styling_checkbox_button = "btn btn-default btn-xs";
@@ -3101,6 +3105,7 @@ class reportico extends reportico_object
 		$smarty->assign('SHOW_REPORT_MENU', false);
 		$smarty->assign('SHOW_SET_ADMIN_PASSWORD', false);
 		$smarty->assign('SHOW_OUTPUT', false);
+		$smarty->assign('IS_ADMIN_SCREEN', false);
 		$smarty->assign('SHOW_DESIGN_BUTTON', false);
 		$smarty->assign('SHOW_ADMIN_BUTTON', true);
 	    $smarty->assign('PROJ_PASSWORD_ERROR', "");
@@ -3176,6 +3181,7 @@ class reportico extends reportico_object
 		$smarty->assign('BOOTSTRAP_STYLES', $this->bootstrap_styles);
 		$smarty->assign('REPORTICO_BOOTSTRAP_PRELOADED', $this->bootstrap_preloaded);
 		$smarty->assign('BOOTSTRAP_STYLE_GO_BUTTON', $this->getBootstrapStyle('button_go'));
+		$smarty->assign('BOOTSTRAP_STYLE_PRIMARY_BUTTON', $this->getBootstrapStyle('button_primary'));
 		$smarty->assign('BOOTSTRAP_STYLE_RESET_BUTTON', $this->getBootstrapStyle('button_reset'));
 		$smarty->assign('BOOTSTRAP_STYLE_ADMIN_BUTTON', $this->getBootstrapStyle('button_admin'));
 		$smarty->assign('BOOTSTRAP_STYLE_DROPDOWN', $this->getBootstrapStyle('dropdown'));
@@ -3533,7 +3539,7 @@ class reportico extends reportico_object
     {
 		foreach ( $this->lookup_queries as $col )
 		{
-            if ( $col->required )
+            if ( $col->required == "yes" )
             {
 				//handle_error( "Mandatory" );
 				if ( !$this->lookup_queries[$col->query_name]->column_value )
@@ -3548,7 +3554,7 @@ class reportico extends reportico_object
                         die;
                     }
                     else
-			        handle_error(template_xlate("REQUIRED_CRITERIA")." - ".sw_translate($this->lookup_queries[$col->query_name]->derive_attribute("column_title", ""))
+			            handle_error(template_xlate("REQUIRED_CRITERIA")." - ".sw_translate($this->lookup_queries[$col->query_name]->derive_attribute("column_title", ""))
                         , E_USER_NOTICE);
                 }
             }
@@ -4071,11 +4077,24 @@ class reportico extends reportico_object
 
                 restore_error_handler();
 
+                // Some calling frameworks require output to be returned
+                // for rendering inside web pages .. in this case
+                // return_output_to_caller will be set to true
 				if ( $this->user_template )
-				    $this->panels["MAIN"]->smarty->display($this->user_template.'_admin.tpl');
-				else
-				    $this->panels["MAIN"]->smarty->display('admin.tpl');
-		        $old_error_handler = set_error_handler("ErrorHandler");
+                    $template = $this->user_template."_admin.tpl";
+                else
+                    $template = "admin.tpl";
+                if ( $this->return_output_to_caller )
+                {
+				    $txt = $this->panels["MAIN"]->smarty->fetch($template);
+		            $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+                    return $txt;
+                }
+                else
+                {
+				    $this->panels["MAIN"]->smarty->display($template);
+		            $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+                }
 				break;
 
 			case "MENU":
@@ -4097,11 +4116,24 @@ class reportico extends reportico_object
                 $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
 
                 restore_error_handler();
+                // Some calling frameworks require output to be returned
+                // for rendering inside web pages .. in this case
+                // return_output_to_caller will be set to true
 				if ( $this->user_template )
-				    $this->panels["MAIN"]->smarty->display($this->user_template.'_menu.tpl');
-				else
-				    $this->panels["MAIN"]->smarty->display('menu.tpl');
-		        $old_error_handler = set_error_handler("ErrorHandler");
+                    $template = $this->user_template."_menu.tpl";
+                else
+                    $template = "menu.tpl";
+                if ( $this->return_output_to_caller )
+                {
+				    $txt = $this->panels["MAIN"]->smarty->fetch($template);
+		            $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+                    return $txt;
+                }
+                else
+                {
+				    $this->panels["MAIN"]->smarty->display($template);
+		            $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+                }
 				break;
 
 			case "PREPARE":
@@ -4112,13 +4144,13 @@ class reportico extends reportico_object
 
                 global $g_translations;
                 global $g_report_desc;
-
                 if ( $this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml" || $this->xmlinput == "createproject.xml" )
                 {
                     // If configuring project then use project language strings from admin project
                     // found in projects/admin/lang.php
                     load_project_language_pack("admin", $this->output_charset);
 				    $this->panels["MAIN"]->smarty->assign('SHOW_MINIMAINTAIN', false);
+				    $this->panels["MAIN"]->smarty->assign('IS_ADMIN_SCREEN', true);
                 }
 				load_mode_language_pack("prepare", $this->output_charset);
                 localise_template_strings($this->panels["MAIN"]->smarty);
@@ -4135,16 +4167,27 @@ class reportico extends reportico_object
 
 				$reportname = preg_replace("/.xml/", "", $this->xmloutfile.'_prepare.tpl');
                 restore_error_handler();
+
+                // Some calling frameworks require output to be returned
+                // for rendering inside web pages .. in this case
+                // return_output_to_caller will be set to true
 				if (preg_match("/$reportname/", find_best_location_in_include_path( "templates/". $reportname )))
-				{
-					$this->panels["MAIN"]->smarty->display($reportname);
-				}
-				else
-				if ( $this->user_template )
-				        $this->panels["MAIN"]->smarty->display($this->user_template.'_prepare.tpl');
-				else
-				        $this->panels["MAIN"]->smarty->display('prepare.tpl');
-		        $old_error_handler = set_error_handler("ErrorHandler");
+                    $template = $reportname;
+				else if ( $this->user_template )
+                    $template = $this->user_template."_prepare.tpl";
+                else
+                    $template = "prepare.tpl";
+                if ( $this->return_output_to_caller )
+                {
+				    $txt = $this->panels["MAIN"]->smarty->fetch($template);
+		            $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+                    return $txt;
+                }
+                else
+                {
+				    $this->panels["MAIN"]->smarty->display($template);
+		            $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+                }
 				break;
 				 
 			
@@ -4152,7 +4195,6 @@ class reportico extends reportico_object
 				load_mode_language_pack("languages", $this->output_charset);
 				$this->initialize_panels($mode);
 				$this->handle_xml_query_input($mode);
-	            //$this->check_criteria_validity();
 
                 // Set Grid display options based on report and session defaults
 		        if ( $this->attributes["gridDisplay"] != ".DEFAULT" ) $this->dynamic_grids =  ( $this->attributes["gridDisplay"] == "show" ) ;
@@ -4222,22 +4264,34 @@ class reportico extends reportico_object
                         // found in projects/admin/lang.php
                         load_project_language_pack("admin", $this->output_charset);
 				        $this->panels["MAIN"]->smarty->assign('SHOW_MINIMAINTAIN', false);
+				        $this->panels["MAIN"]->smarty->assign('IS_ADMIN_SCREEN', true);
                     }
 				    load_mode_language_pack("languages", $this->output_charset, true);
 					load_mode_language_pack("prepare", $this->output_charset);
                     localise_template_strings($this->panels["MAIN"]->smarty);
 					$reportname = preg_replace("/.xml/", "", $this->xmloutfile.'_prepare.tpl');
                     restore_error_handler();
-					if (preg_match("/$reportname/", find_best_location_in_include_path( "templates/". $reportname )))
-					{
-						$this->panels["MAIN"]->smarty->display($reportname);
-					}
-					else
-						if ( $this->user_template )
-							$this->panels["MAIN"]->smarty->display($this->user_template.'_prepare.tpl');
-						else
-							$this->panels["MAIN"]->smarty->display('prepare.tpl');
-	                $old_error_handler = set_error_handler("ErrorHandler");
+
+                    // Some calling frameworks require output to be returned
+                    // for rendering inside web pages .. in this case
+                    // return_output_to_caller will be set to true
+                    if (preg_match("/$reportname/", find_best_location_in_include_path( "templates/". $reportname )))
+                        $template = $reportname;
+                    else if ( $this->user_template )
+                        $template = $this->user_template."_prepare.tpl";
+                    else
+                        $template = "prepare.tpl";
+                    if ( $this->return_output_to_caller )
+                    {
+				        $txt = $this->panels["MAIN"]->smarty->fetch($template);
+		                $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+                        return $txt;
+                    }
+                    else
+                    {
+				        $this->panels["MAIN"]->smarty->display($template);
+		                $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+                    }
                 }
                 else
                 {	
@@ -4296,18 +4350,27 @@ class reportico extends reportico_object
 						    $reportname = preg_replace("/.xml/", "", $this->xmloutfile.'_execute.tpl');
                             restore_error_handler();
 
-						    if (preg_match("/$reportname/", find_best_location_in_include_path( "templates/". $reportname )))
-						    {
-							    $this->panels["MAIN"]->smarty->display($reportname);
-						    }
-						    else
-							    if ( $this->user_template )
-								    $this->panels["MAIN"]->smarty->display($this->user_template.'_execute.tpl');
-							    else
-							    {
-								    $this->panels["MAIN"]->smarty->display('execute.tpl');
-							    }
-	                        $old_error_handler = set_error_handler("ErrorHandler");
+                            // Some calling frameworks require output to be returned
+                            // for rendering inside web pages .. in this case
+                            // return_output_to_caller will be set to true
+                            if (preg_match("/$reportname/", find_best_location_in_include_path( "templates/". $reportname )))
+                                $template = $reportname;
+                            else if ( $this->user_template )
+                                $template = $this->user_template."_execute.tpl";
+                            else
+                                $template = "execute.tpl";
+                            if ( $this->return_output_to_caller )
+                            {
+                                $txt = $this->panels["MAIN"]->smarty->fetch($template);
+                                $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+                                return $txt;
+                            }
+                            else
+                            {
+                                $this->panels["MAIN"]->smarty->display($template);
+                                $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+                            }
+
 						}
 					}
 				}
@@ -7522,10 +7585,15 @@ class reportico_criteria_column extends reportico_query_column
 
 				case "SELECT2MULTIPLE":
 				case "SELECT2SINGLE":
-                        if ( $type == "SELECT2SINGLE" )
-						    $text .= '<SELECT id="select2_dropdown_'.$this->query_name.'" class="'.$this->lookup_query->getBootstrapStyle('design_dropdown').'swPrpDropSelect" name="'.$tag_pref.$this->query_name.'[]" >';
+                        if ( $in_is_expanding )
+                            $widget_id = "select2_dropdown_expanded_";
                         else
-						    $text .= '<SELECT id="select2_dropdown_'.$this->query_name.'" class="'.$this->lookup_query->getBootstrapStyle('design_dropdown').'swPrpDropSelect" name="'.$tag_pref.$this->query_name.'[]" multiple>';
+                            $widget_id = "select2_dropdown_";
+
+                        if ( $type == "SELECT2SINGLE" )
+						    $text .= '<SELECT id="'.$widget_id.$this->query_name.'" class="'.$this->lookup_query->getBootstrapStyle('design_dropdown').'swPrpDropSelect" name="'.$tag_pref.$this->query_name.'[]" >';
+                        else
+						    $text .= '<SELECT id="'.$widget_id.$this->query_name.'" class="'.$this->lookup_query->getBootstrapStyle('design_dropdown').'swPrpDropSelect" name="'.$tag_pref.$this->query_name.'[]" multiple>';
 					    $text .= '<OPTION></OPTION>';
 						break;
 

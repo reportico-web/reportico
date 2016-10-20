@@ -9,6 +9,7 @@ $locale_arr = array (
 		"T_INFORMATION" => "信息",
         "T_GO_REFRESH" => "刷新",
         "T_GO_PRINT" => "打印",
+        "T_REQUIRED_CRITERIA" => "您必須為條件項提供值",
         )
 );
 ?>

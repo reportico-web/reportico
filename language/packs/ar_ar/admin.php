@@ -26,6 +26,8 @@ $locale_arr = array (
         "T_LINE" => "خط",
         "T_Create A New Project" => "إنشاء مشروع جديد",
         "T_Configure Tutorials" => "تشكيل نمط",
+        "T_OPEN_LOGIN" => "أدخل وضع التصميم",
+        "T_OPEN_LOGOFF" => "وضع التصميم خروج",
         ),
         );
 ?>

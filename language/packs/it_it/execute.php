@@ -8,6 +8,7 @@ $locale_arr = array (
                 "T_INFORMATION" => "Informazioni",
                 "T_GO_REFRESH" => "Rinfrescare",
                 "T_GO_PRINT" => "Stampa",
+                "T_REQUIRED_CRITERIA" => "È necessario fornire un valore per criteri voce",
         )
 );
 ?>

@@ -17,11 +17,11 @@ form,table,input,a,div
 {
     float: right;
     font-weight: 700;
-    margin: 10px 5px 0px 0px;
-    border: 1px solid #888888;
+    margin: 0px 5px 0px 0px;
+    border: 0px solid #888888;
     text-decoration: none;
     background-color: #ffffff;
-    height: 32px;
+    height: 42px !important;
     cursor: pointer;
 }
 
@@ -57,14 +57,17 @@ form,table,input,a,div
 .swPrpCritExpandSel input
 {
     float: left;
-    margin: 0px 2px 0px 20px;
-    padding: 2px 2px 2px 2px;
-    background: #ffffff;
-    border: 1px solid #d0ccc9;
+    margin: 3px 2px 0px 20px !important;
+    padding: 5px 2px 2px 2px !important;
+    border: 5px solid #d0ccc9;
     border-width: 1px 1px 1px 1px;
     position: relative;
     color: #505050;
     cursor: pointer;
+    background: url('../images/search.png') no-repeat;   
+    background-color: #ffffff;
+    height: 22px; 
+    width: 22px;
 }
 
 .swDateField { width: 100px; }
@@ -658,7 +661,7 @@ a:visited
 
 .swCSVBox, .swHTMLBox, .swPDFBox, .swPrintBox, .swXMLBox, .swJSONBox
 {
-    width: 30px !important;
+    width: 42px !important;
     text-align: left;
     padding: 0px;
     margin: 0px 0px 0px 0px;
@@ -701,7 +704,7 @@ a:visited
 .swRepRefreshBox .swLinkMenu,
 .swRepBackBox .swLinkMenu
 {
-    width: 32px;
+    width: 40px;
     text-align: left;
     padding: 0px;
     margin: 2px 5px 2px 5px;
