@@ -329,6 +329,10 @@ $locale_arr = array (
         "T_ASSIGNSTYLEPOSITION" => "بالنسبة للموقف الحالي أو الصفحة",
         "T_ASSIGNFONTNAME" => "اسم الخط",
         "T_ASSIGNPDFBACKGROUNDIMAGE" => "الصورة الخلفية",
+        "T_SELECT2SINGLE" => "مربع قائمة واحدة للبحث",
+        "T_SELECT2MULTIPLE" => "مربع قائمة متعددة للبحث",
+        "T_CRITERIAHIDDEN" => "إخفاء معايير",
+        "T_CRITERIAREQUIRED" => "المعايير المطلوبة",
         )
         );
 ?>

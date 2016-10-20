@@ -227,6 +227,10 @@ $locale_arr = array (
 		"T_blankline" => "Línea en blanco",
 		"T_solidline" => "Línea sólida",
 		"T_newpage" => "Nueva página",
+        "T_SELECT2SINGLE" => "Cuadro de lista de búsqueda individual",
+        "T_SELECT2MULTIPLE" => "Investigable cuadro de lista múltiple",
+        "T_CRITERIAHIDDEN" => "Ocultar Criterios",
+        "T_CRITERIAREQUIRED" => "criterios requeridos",
 
         // Vertical Tab Labels
 		"T_PAGE_HEADER" => "Encabezado",
