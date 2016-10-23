@@ -35,6 +35,7 @@ paste fromlang tolang | sed "s/	/|/" > mergedlang
 outfile="unknown"
 cat missing | while read i
 do
+    
     echo $i | grep "^\.\." > /dev/null
     if [ $? -eq 0 ]; then
         outfile=$i.new
@@ -60,6 +61,5 @@ do
         echo "Error in $i "
     fi
 done
-
 
 fi

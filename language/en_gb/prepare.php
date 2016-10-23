@@ -25,7 +25,6 @@ $locale_arr = array (
         "T_DEBUG_MEDIUM" => "Medium",
         "T_DEBUG_HIGH" => "High",
         "T_ENTER_PROJECT_PASSWORD" => "Enter the project password.",
-        "T_LOGIN" => "Log In",
         "T_DEFAULT_REPORT_DESCRIPTION" =>
                 "&nbsp<br>".
                 "Enter Your Report Criteria Here. To enter criteria use the appropriate expand key.".
