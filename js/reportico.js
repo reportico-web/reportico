@@ -30,8 +30,18 @@ function setupDynamicGrids()
 function setupDatePickers()
 {
     reportico_jquery(".swDateField").each(function(){
-        reportico_jquery(this).datepicker({dateFormat: reportico_datepicker_language});
-    });
+        reportico_jquery(this).datepicker(
+            {
+                dateFormat: reportico_datepicker_language,
+                onSelect: function(dateText) {              // Automatically set a to date value from a from date
+                    id = this.id;
+                    if ( id.match(/_FROMDATE/) )
+                    {
+                        todate = id.replace(/_FROMDATE/, "_TODATE");
+                        reportico_jquery("#" + todate).prop("value", this.value);
+                    }
+             }});
+        });
 }
 
 function setupTooltips()
@@ -965,3 +975,4 @@ function html_print_fix()
         reporticohtmlwindow.resizeOutputTables(reporticohtmlwindow); 
     }
 }
+
