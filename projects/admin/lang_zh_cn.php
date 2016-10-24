@@ -17,74 +17,43 @@ $g_translations = array (
             "Stylesheet" => "样式表",
             "Project Password" => "项目密码",
             "Display Date Format" => "显示的日期格式",
-            "Database Date (for MySql leave as default YYYY-MM-DD)" => "数据库日期（针对MySQL作为默认为YYYY-MM-DD离开）"
+            "Database Date (for MySql leave as default YYYY-MM-DD)" => "数据库日期（针对MySQL作为默认为YYYY-MM-DD离开）",
+            "HELP_PROJECT_NAME"=>"项目的名称，将在Reportico安装目录中的”projects“文件夹下创建具有此名称的文件夹",
+            "HELP_PROJECT_TITLE"=>"出现在报告套件菜单顶部的标题，即项目的人类可理解的名称",
+            "HELP_DATABASE_TYPE"=>"要报告的数据库类型",
+            "HELP_DATABASE_HOST"=>"数据库所在主机的IP地址或名称对于与Web服务器位于同一台机器上的数据库，使用127.0.0.1。对于SQLite数据库，保留为默认值。对于Oracle，Mysql，PostgreSQL数据库监听一个非标准端口，可以以HOSTNAME：PORT或IPADDRESS：PORT的形式指定",
+            "HELP_DATABASE_NAME"=>"要报告的数据库的名称。对于SQLite数据库，请输入数据库文件的完整路径。",
+            "HELP_DATABASE_USER"=>"连接到数据库所需的用户名",
+            "HELP_DATABASE_PASSWORD"=>"连接到数据库所需的密码",
+            "HELP_DB_ENCODING"=>"用于在数据库中存储字符的编码格式接受缺省值None通常会正常工作，否则UTF8将在英语区域和大多数其他情况下工作您可以随时返回配置页面更改在稍后点",
+            "HELP_OUTPUT_ENCODING"=>"默认是UTF8，这通常是最好的。输出数据时，输出将在转换为浏览器，PDF查看器等之前转换为此格式",
+            "HELP_PASSWORD"=>"选择用户必须输入以访问项目报告的密码。将此空白留空以允许无密码访问项目。",
+            "HELP_LANGUAGE"=>"选择此报告套件应该运行的默认语言。默认情况下，英语是唯一的选择。还有一些其他语言包，您可以在Reportico插件文件夹下面的language / packages文件夹下找到。将任何所需的文件移动到语言文件夹",
+            "HELP_DATE_FORMAT"=>"选择要用于显示和输入日期的日期格式",
+            "HELP_DB_DATE"=>"选择日期存储在数据库中的日期格式对于Mysql和大多数其他数据库，YYYY-MM-DD的设置是正确的",
+            "HELP_SAFE_MODE"=>"当打开时，设计模式将阻止输入自定义用户代码，分配和SQL语句（避免不必要地输入危险的PHP命令和SQL注入）, 关闭此功能以启​​用对这些功能的访问。",
 			)
 		);
 
 $g_report_desc = array ( 
     "zh_cn" => array (
-		"configureproject" => "
-配置项目申报套件。
-<P>
-要创建一个新的项目，提供供应所需的参数，并按下
+		"createproject" => "
+创建一个新的项目文件夹，您可以在其中创建一组报告。
 <br>
-<b>执行</b><br>按钮。
+您必须至少提供一个项目名称，该名称是用于创建报告的文件夹的名称，以及报告套件的项目标题。
+<p>
+如果您在网站上向用户提供报告套件，则可以通过设置报告密码来密码保护对报告的访问。 否则留空。
 <P>
-<b>项目名称</b><br>
-该项目的名称。将这个名字的文件夹下创建的Reportico安装指南</b>文件夹内的<b>项目
-<P>
-
-<b>项目名称</b><br>
-一个标题将出现在报告套房菜单的顶端......即该项目的人理解的名称
-<P>
-oo
-的<b>数据库类型</b><br>
-你想对报告的数据库类型
-<P>
-
-<b>主机名：端口号</b><br>
-数据库所在的主机的IP地址或名称。 127.0.0.1作为网络服务器使用同一台机器上的数据库。对于SQLite此字段不用于。对于甲骨文，MySQL和PostgreSQL数据库的非标准端口上侦听，你可以指定形式的主机名称：端口或IP地址：端口
-<P>
-
-的<b>数据库名称</b><br>参考
-报告对数据库的名称。对于SQLite数据库输入到数据库文件的完整路径。
-
-<P>
-
-的<b>用户名</b><br> <b>密码</b>参考
-登录名和密码需要连接到数据库
-<P>
-的<b>基本URL </b><br>参考
-这是相当于的reportico安装目录的URL。
-这应该离开。“/”。然而，这可能需要，改为完全pathed值后，如果从其他网页链接到reportico。在这种情况下，如果您放置您的reportico安装Web服务器的根目录下，并呼吁它<b> reportico </b>，那么你会使用http://127.0.0.1/reportico/
-<P>
-
-服务器</b>和<b>议定书“</b><br>
-报告对Informix数据库时，指定Informix服务器和连接协议，例如olsoctcp。
-<P>
-的<b>数据库字符编码</b><br>
-编码格式，用于存储在数据库中的字符。 UTF8的将Engligh发言地区和其他大多数情况下工作。
-<P>
-<b>输出字符编码</b><br>
-默认是UTF8。输出数据时，输出将被转换为这种格式之前渲染的浏览器，PDF阅读器等。
-<P>
-的<b>样式表</b><br>
-用于控制Reportico外观样式表文件。
-<P>
-<b>项目密码</b><br>
-选择一个密码必须用户必须输入访问该项目的报告。离开这个空白项目允许无密码的访问。
-<P>
-<b>显示的日期格式</b><br>
-选择日期格式，你想为显示和进入日期<P>的使用
-<b>数据库日期格式</b><br>
-您使用存储在数据库中的日期选择日期格式。 MySQL使用YYYYY-MM-DD的<P>
-<B>安全设计模式</ B>参考
-开启时，设计模式将防止用户自定义代码，分配，和SQL语句（避免不必要的侵入危险的PHP命令和SQL注入）的条目。
-关闭这个功能，以便对这些功能的访问。并不适用于在创建项目
-</DIV>
-
+当你快乐点击Go按钮。
 " )
 		);
 
-$g_report_desc["zh_cn"]["createproject"] = $g_report_desc["zh_cn"]["configureproject"];
+$g_report_desc["zh_cn"]["configureproject"] =
+"
+更改此项目的配置项。
+<br>
+您可以更改标题，默认语言，设置项目密码，字符编码和日期格式。
+<P>
+当你快乐点击Go按钮。
+";
 ?>

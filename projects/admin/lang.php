@@ -14,6 +14,7 @@ $g_translations = array (
             "HELP_OUTPUT_ENCODING" => "Default is UTF8 which is normally the best. When outputting data, output will be converted to this format before rendering the browser, PDF viewer etc.",
             "HELP_PASSWORD" => "Choose a password which must users must enter to access the project reports. Leave this blank to allow access to project without a password.",
             "HELP_LANGUAGE" => "Choose the default language this report suite should run in. By default English is the only choice. There are a few other language packs available which you will find under the language/packs folder somewhere below the Reportico plugin folder. Move any required ones to the language folder",
+            "HELP_DB_DATE" => "Choose the date format that dates are stored in your database. For Mysql and most other databases, the setting of YYYY-MM-DD is correct",
             "HELP_DATE_FORMAT" => "Choose the date format that you would like to use for displaying and entering dates",
             "HELP_SAFE_MODE" => "When turned on, design mode will prevent entry of custom user code, assignments, and SQL statements (avoiding unwanted entry of dangerous PHP commands and SQL injection ).
 Turn this off to enable access to these functions.",
