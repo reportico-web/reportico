@@ -4144,7 +4144,7 @@ class reportico extends reportico_object
 
                 global $g_translations;
                 global $g_report_desc;
-                if ( $this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml" || $this->xmlinput == "createproject.xml" )
+                if ( $this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml" || $this->xmlinput == "createproject.xml" || $this->xmlinput == "generate_tutorial.xml" )
                 {
                     // If configuring project then use project language strings from admin project
                     // found in projects/admin/lang.php
@@ -4258,7 +4258,7 @@ class reportico extends reportico_object
 					$title = sw_translate($this->derive_attribute("ReportTitle", "Unknown"));
 					$this->panels["MAIN"]->smarty->assign('TITLE', $title);
 					$this->panels["MAIN"]->smarty->assign('CONTENT', $text);
-                    if ( $this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml" || $this->xmlinput == "createproject.xml" )
+                    if ( $this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml" || $this->xmlinput == "createproject.xml" || $this->xmlinput == "generate_tutorial.xml" )
                     {
                         // If configuring project then use project language strings from admin project
                         // found in projects/admin/lang.php
