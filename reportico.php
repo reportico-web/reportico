@@ -3737,13 +3737,15 @@ class reportico extends reportico_object
 			$this->xmlin->xml2query();
 		}
 
-        // Custom query stuff
+        // Custom query stuff loaded from reportico_defaults.php. First look in project folder for 
+        // for project specific defaults
         if ( $do_defaults)
         {
             $custom_functions = array();
 
-            if ( file_exists(__DIR__."/projects/".$this->projects_folder."/reportico_defaults.php" ))
-                include_once(__DIR__."/projects/".$this->projects_folder."/reportico_defaults.php");
+		    global $g_project;
+            if ( file_exists($this->projects_folder."/$g_project/reportico_defaults.php" ))
+                include_once($this->projects_folder."/$g_project/reportico_defaults.php");
             else if ( file_exists(__DIR__."/reportico_defaults.php" ))
                 include_once(__DIR__."/reportico_defaults.php");
             if ( function_exists("reportico_defaults") )
@@ -4741,7 +4743,13 @@ class reportico extends reportico_object
 		    if ( !$code || $code == "NONE" || $code == "XX" )
             {
 		        global $g_project;
-	            $source_path = find_best_location_in_include_path( $this->projects_folder."/".$g_project."/".get_reportico_session_param("xmlin").".xml.php" );
+                if ( preg_match ( "/.xml$/", get_reportico_session_param("xmlin") ) )
+                {
+	                $source_path = find_best_location_in_include_path( $this->projects_folder."/".$g_project."/".get_reportico_session_param("xmlin").".php" );
+                }
+                else
+	                $source_path = find_best_location_in_include_path( $this->projects_folder."/".$g_project."/".get_reportico_session_param("xmlin").".xml.php" );
+
                 if ( is_file($source_path) )
                 {
                     $code = file_get_contents($source_path);
