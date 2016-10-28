@@ -408,8 +408,14 @@ class reportico_report extends reportico_object
 	function page_headers()
 	{
 		$this->format_page_header_start();
+        
 		foreach($this->query->page_headers as $ph)
 		{
+                // If one of the headers is {NOMORE} then ignore any subsequenct ones problably the default ones form the 
+                // reportico_defaults file
+                if ( $ph->text == "{NOMORE}" )
+                    break;
+
                 if (
                     ( $ph->get_attribute("ShowInHTML") == "yes" && get_class($this) == "reportico_report_html" )
                     || ( $ph->get_attribute("ShowInPDF")  == "yes"&& $this->query->target_format == "PDF" )
@@ -426,6 +432,11 @@ class reportico_report extends reportico_object
 		$this->format_page_footer_start();
 		foreach($this->query->page_footers as $ph)
 		{
+                // If one of the headers is {NOMORE} then ignore any subsequenct ones problably the default ones form the 
+                // reportico_defaults file
+                if ( $ph->text == "{NOMORE}" )
+                    break;
+
                 if (
                     ( $ph->get_attribute("ShowInHTML") == "yes" && get_class($this) == "reportico_report_html" )
                     || ( $ph->get_attribute("ShowInPDF")  == "yes"&& $this->query->target_format == "PDF" )
@@ -999,6 +1010,18 @@ class reportico_report extends reportico_object
     }
 
 
+    function debugFile( $txt )
+    { 
+        if ( !$this->debugFp )
+            $this->debugFp = fopen ( "/tmp/debug.out", "w" );
+
+        if ( $txt == "FINISH" )
+            fclose($this->debugFp);
+        else
+            fwrite ( $this->debugFp, "$txt\n" );
+            //fwrite ( $this->debugFp, "$txt => Max $this->max_line_height Curr $this->current_line_height \n" );
+
+    } 
 
 }
 ?>
