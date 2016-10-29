@@ -27,7 +27,7 @@ $admin_menu = $menu;
 
 $dropdown_menu = array(
                     array ( 
-                        "project" => "northwind",
+                        "project" => "tutorials",
                         "title" => "Inventory",
                         "items" => array (
                             array ( "reportfile" => "customer.xml" ),
@@ -37,7 +37,7 @@ $dropdown_menu = array(
                             )
                         ),
                     array ( 
-                        "project" => "northwind",
+                        "project" => "tutorials",
                         "title" => "Financial",
                         "items" => array (
                             array ( "reportfile" => "orders.xml" ),
@@ -45,7 +45,7 @@ $dropdown_menu = array(
                             )
                         ),
                     array ( 
-                        "project" => "northwind",
+                        "project" => "tutorials",
                         "title" => "Tutorials",
                         "items" => array (
                             array ( "reportfile" => "generate_tutorial.xml") ,
