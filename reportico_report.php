@@ -713,7 +713,8 @@ class reportico_report extends reportico_object
                                 if ( array_key_exists($w->query_name, $group->trailers_by_column) )
                                 {
                                     $number_group_rows++;
-                                    if ( count($group->trailers_by_column[$w->query_name]) >= $lev + 1 && !$group->trailers_by_column[$w->query_name][$lev]["GroupTrailerCustom"] )
+                                    //if ( count($group->trailers_by_column[$w->query_name]) >= $lev + 1 && !$group->trailers_by_column[$w->query_name][$lev]["GroupTrailerCustom"] && $group->trailers_by_column[$w->query_name][$lev]["ShowInHTML"] == "yes")
+                                    if ( count($group->trailers_by_column[$w->query_name]) >= $lev + 1 && $group->trailers_by_column[$w->query_name][$lev]["ShowInHTML"] == "yes")
                                     {
                                         if ( !$linedrawn )
                                         {
@@ -813,7 +814,8 @@ class reportico_report extends reportico_object
                             {
                                 foreach ( $trailer as $kk2 => $colgrp )
                                 {
-                                    $this->format_custom_trailer($w, $colgrp);
+                                    if ( $colgrp["ShowInPDF"] == "yes")
+                                        $this->format_custom_trailer($w, $colgrp);
                                 }
                             } // foreach
                         }
@@ -951,7 +953,12 @@ class reportico_report extends reportico_object
 				    {
 				        $col =& $group->headers[$i]["GroupHeaderColumn"];
 				        $custom = $group->headers[$i]["GroupHeaderCustom"];
-				        $this->format_group_header($col, $custom);
+                        if ( $group->headers[$i]["ShowInHTML" ] == "yes" && get_class($this) == "reportico_report_html" )
+				            $this->format_group_header($col, $custom);
+                        if ( $group->headers[$i]["ShowInPDF" ] == "yes" && get_class($this) == "reportico_report_tcpdf" )
+				            $this->format_group_header($col, $custom);
+                        if ( $group->headers[$i]["ShowInPDF" ] == "yes" && get_class($this) == "reportico_report_fpdf" )
+				            $this->format_group_header($col, $custom);
 				    }
                 }
 

@@ -381,7 +381,13 @@ class reportico_panel
                 else
                     $url_join_char = "?";
 						
-				$this->query->menuitems[] = array (
+                if ( $this->text == "TEXT" )
+				    $this->query->menuitems[] = array (
+						"label" => $this->text,
+						"url" => $this->program
+							);
+                else
+				    $this->query->menuitems[] = array (
 						"label" => $this->text,
 						"url" => $this->query->get_action_url().$url_join_char.$forward."execute_mode=PREPARE&xmlin=".$this->program."&amp;reportico_session_name=".reportico_session_name()
 							);
@@ -2472,7 +2478,7 @@ class reportico_xml_reader
 					$updateitem =& $anal["item"];
 					$gr =& $anal["group"];
 					$anal["quer"]->set_group_header_by_number 
-							( $anal["groupname"], $anal["number"], $updates["GroupHeaderColumn"], $updates["GroupHeaderCustom"] );
+							( $anal["groupname"], $anal["number"], $updates["GroupHeaderColumn"], $updates["GroupHeaderCustom"], $updates["ShowInHTML"],$updates["ShowInPDF"] );
 					break;
 
 				case "gtrl":
@@ -2492,7 +2498,7 @@ class reportico_xml_reader
 							( $anal["groupname"], $anal["number"], 
 										$updates["GroupTrailerDisplayColumn"],
 										$updates["GroupTrailerValueColumn"],
-										$updates["GroupTrailerCustom"]
+										$updates["GroupTrailerCustom"], $updates["ShowInHTML"],$updates["ShowInPDF"]
 							   	);
 					break;
 
@@ -5282,7 +5288,12 @@ class reportico_xml_reader
 							{
                                     if ( !isset($val["GroupHeaderCustom"]) )
                                         $val["GroupHeaderCustom"] = false;
-									$this->query->create_group_header($gpname, $val["GroupHeaderColumn"],$val["GroupHeaderCustom"]);
+                                    if ( !isset($val["ShowInHTML"]) )
+                                        $val["ShowInHTML"] = "yes";
+                                    if ( !isset($val["ShowInPDF"]) )
+                                        $val["ShowInPDF"] = "yes";
+                                        
+									$this->query->create_group_header($gpname, $val["GroupHeaderColumn"],$val["GroupHeaderCustom"],$val["ShowInHTML"],$val["ShowInPDF"]);
 							}
 
 						if ( ($gp =& $this->get_array_element($phi,"GroupTrailers")) )
@@ -5290,9 +5301,13 @@ class reportico_xml_reader
 							{
                                     if ( !isset($val["GroupTrailerCustom"]) )
                                         $val["GroupTrailerCustom"] = false;
+                                    if ( !isset($val["ShowInHTML"]) )
+                                        $val["ShowInHTML"] = "yes";
+                                    if ( !isset($val["ShowInPDF"]) )
+                                        $val["ShowInPDF"] = "yes";
 									$this->query->create_group_trailer($gpname, $val["GroupTrailerDisplayColumn"], 
 																	$val["GroupTrailerValueColumn"],
-																	$val["GroupTrailerCustom"]);
+																	$val["GroupTrailerCustom"],$val["ShowInHTML"],$val["ShowInPDF"]);
 							}
 					}
 				}
@@ -5840,6 +5855,8 @@ class reportico_xml_writer
                         $val2["GroupHeaderCustom"] = false;
 					$el =& $gphi->add_xmlval ( "GroupHeaderColumn", $val2["GroupHeaderColumn"]->query_name );
 					$el =& $gphi->add_xmlval ( "GroupHeaderCustom", $val2["GroupHeaderCustom"]);
+					$el =& $gphi->add_xmlval ( "ShowInHTML", $val2["ShowInHTML"]);
+					$el =& $gphi->add_xmlval ( "ShowInPDF", $val2["ShowInPDF"]);
 				}
 
 				$gpt =& $gpi->add_xmlval ( "GroupTrailers" );
@@ -5853,6 +5870,8 @@ class reportico_xml_writer
 					    $el =& $gpti->add_xmlval ( "GroupTrailerDisplayColumn", $val2["GroupTrailerDisplayColumn"] );
 					    $el =& $gpti->add_xmlval ( "GroupTrailerValueColumn", $val2["GroupTrailerValueColumn"]->query_name );
 					    $el =& $gpti->add_xmlval ( "GroupTrailerCustom", $val2["GroupTrailerCustom"]);
+					    $el =& $gpti->add_xmlval ( "ShowInHTML", $val2["ShowInHTML"]);
+					    $el =& $gpti->add_xmlval ( "ShowInPDF", $val2["ShowInPDF"]);
                     }
 				}
 			}

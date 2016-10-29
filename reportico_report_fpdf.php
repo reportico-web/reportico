@@ -835,8 +835,11 @@ class reportico_report_fpdf extends reportico_report
 			{
 				$col =& $val->headers[$i]["GroupHeaderColumn"];
 				$custom = $val->headers[$i]["GroupHeaderCustom"];
-				$this->format_group_header($col, $custom, true);
-                $totheaderheight += $this->calculated_line_height;
+                if ( $val->headers[$i]["ShowInPDF" ] == "yes" )
+                {
+				    $this->format_group_header($col, $custom, true);
+                    $totheaderheight += $this->calculated_line_height;
+                }
 			}
         }
         $this->calculated_line_height = $totheaderheight;

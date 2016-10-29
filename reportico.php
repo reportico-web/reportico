@@ -45,6 +45,7 @@ require_once('swpanel.php');
 $g_project = false;
 $g_language = "en_gb";
 $g_menu = false;
+$g_admin_menu = false;
 $g_menu_title = false;
 $g_dropdown_menu = false;
 $g_translations = false;
@@ -2527,7 +2528,7 @@ class reportico extends reportico_object
 	// -----------------------------------------------------------------------------
 	// Function : create_group_trailer
 	// -----------------------------------------------------------------------------
-	function create_group_trailer( $query_name, $trailer_column, $value_column, $trailer_custom = false )
+	function create_group_trailer( $query_name, $trailer_column, $value_column, $trailer_custom = false, $show_in_html = "yes", $show_in_pdf = "yes" )
 	{
 		$this->check_group_name("create_group_trailer", $query_name);
 		//$this->check_column_name("create_group_trailer", $trailer_column);
@@ -2536,7 +2537,7 @@ class reportico extends reportico_object
 		$grp = get_group_column($query_name, $this->groups );
 		$qc = get_query_column($value_column, $this->columns );
 		//$trl = get_query_column($trailer_column, $this->columns )) )
-		$grp->add_trailer($trailer_column, $qc, $trailer_custom);
+		$grp->add_trailer($trailer_column, $qc, $trailer_custom, $show_in_html, $show_in_pdf);
 	}
 
 	// -----------------------------------------------------------------------------
@@ -2570,7 +2571,7 @@ class reportico extends reportico_object
 	// -----------------------------------------------------------------------------
 	// Function : set_group_trailer_by_number
 	// -----------------------------------------------------------------------------
-	function set_group_trailer_by_number( $query_name, $trailer_number, $trailer_column, $value_column, $trailer_custom = false )
+	function set_group_trailer_by_number( $query_name, $trailer_number, $trailer_column, $value_column, $trailer_custom = false, $show_in_html, $show_in_pdf )
 	{
 		$tn = (int)$trailer_number;
 		if ( !$this->check_group_name_r("create_group_trailer", $query_name) )
@@ -2600,6 +2601,8 @@ class reportico extends reportico_object
         $trailer["GroupTrailerValueColumn"] = $col;
         $trailer["GroupTrailerDisplayColumn"] = $trailer_column;
         $trailer["GroupTrailerCustom"] = $trailer_custom;
+        $trailer["ShowInHTML"] = $show_in_html;
+        $trailer["ShowInPDF"] = $show_in_pdf;
 
 		$ct = 0;
 		$k = false;
@@ -2620,20 +2623,20 @@ class reportico extends reportico_object
 	// -----------------------------------------------------------------------------
 	// Function : create_group_header
 	// -----------------------------------------------------------------------------
-	function create_group_header ( $query_name, $header_column, $header_custom = false )
+	function create_group_header ( $query_name, $header_column, $header_custom = false, $show_in_html = "yes", $show_in_pdf = "yes" )
 	{
 		$this->check_group_name("create_group_header", $query_name);
 		$this->check_column_name("create_group_header", $header_column);
 
 		$grp = get_group_column($query_name, $this->groups );
 		$col = get_query_column($header_column, $this->columns );
-		$grp->add_header($col, $header_custom);
+		$grp->add_header($col, $header_custom, $show_in_html, $show_in_pdf);
 	}
 
 	// -----------------------------------------------------------------------------
 	// Function : set_group_header_by_number
 	// -----------------------------------------------------------------------------
-	function set_group_header_by_number ( $query_name, $header_number, $header_column, $header_custom )
+	function set_group_header_by_number ( $query_name, $header_number, $header_column, $header_custom, $show_in_html = "yes", $show_in_pdf = "yes" )
 	{
 		$hn = (int)$header_number;
 		if ( !$this->check_group_name_r("create_group_header", $query_name) )
@@ -2653,6 +2656,8 @@ class reportico extends reportico_object
 		$header = array();
         $header["GroupHeaderColumn"] = $col;
         $header["GroupHeaderCustom"] = $header_custom;
+        $header["ShowInHTML"] = $show_in_html;
+        $header["ShowInPDF"] = $show_in_pdf;
 		$grp->headers[$hn] = $header;
 		//$this->headers[] = $header;
 	}
@@ -4089,13 +4094,13 @@ class reportico extends reportico_object
                 if ( $this->return_output_to_caller )
                 {
 				    $txt = $this->panels["MAIN"]->smarty->fetch($template);
-		            $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+		            $old_error_handler = set_error_handler("ErrorHandler");
                     return $txt;
                 }
                 else
                 {
 				    $this->panels["MAIN"]->smarty->display($template);
-		            $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+		            $old_error_handler = set_error_handler("ErrorHandler");
                 }
 				break;
 
@@ -4128,13 +4133,13 @@ class reportico extends reportico_object
                 if ( $this->return_output_to_caller )
                 {
 				    $txt = $this->panels["MAIN"]->smarty->fetch($template);
-		            $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+		            $old_error_handler = set_error_handler("ErrorHandler");
                     return $txt;
                 }
                 else
                 {
 				    $this->panels["MAIN"]->smarty->display($template);
-		            $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+		            $old_error_handler = set_error_handler("ErrorHandler");
                 }
 				break;
 
@@ -4182,13 +4187,13 @@ class reportico extends reportico_object
                 if ( $this->return_output_to_caller )
                 {
 				    $txt = $this->panels["MAIN"]->smarty->fetch($template);
-		            $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+		            $old_error_handler = set_error_handler("ErrorHandler");
                     return $txt;
                 }
                 else
                 {
 				    $this->panels["MAIN"]->smarty->display($template);
-		            $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+		            $old_error_handler = set_error_handler("ErrorHandler");
                 }
 				break;
 				 
@@ -4286,13 +4291,13 @@ class reportico extends reportico_object
                     if ( $this->return_output_to_caller )
                     {
 				        $txt = $this->panels["MAIN"]->smarty->fetch($template);
-		                $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+		                $old_error_handler = set_error_handler("ErrorHandler");
                         return $txt;
                     }
                     else
                     {
 				        $this->panels["MAIN"]->smarty->display($template);
-		                $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+		                $old_error_handler = set_error_handler("ErrorHandler");
                     }
                 }
                 else
@@ -4364,13 +4369,13 @@ class reportico extends reportico_object
                             if ( $this->return_output_to_caller )
                             {
                                 $txt = $this->panels["MAIN"]->smarty->fetch($template);
-                                $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+                                $old_error_handler = set_error_handler("ErrorHandler");
                                 return $txt;
                             }
                             else
                             {
                                 $this->panels["MAIN"]->smarty->display($template);
-                                $old_error_handler = set_error_handler("\\reportico\\reportico\\components\\ErrorHandler");
+                                $old_error_handler = set_error_handler("ErrorHandler");
                             }
 
 						}
@@ -4545,6 +4550,7 @@ class reportico extends reportico_object
 	{
 
 		global $g_menu;
+		global $g_admin_menu;
 		global $g_menu_title;
 		global $g_dropdown_menu;
 		global $g_language;
@@ -4558,9 +4564,12 @@ class reportico extends reportico_object
         // In admin mode static_menu shows all reports
 		if (isset_reportico_session_param('admin_password'))
         {
-            $this->static_menu = array ( array ( "report" => ".*\.xml", "title" => "<AUTO>" ) );
+            // .. unless an admin menu has been specified
+            if ( $g_admin_menu )
+                $this->static_menu = $g_admin_menu;
+            else
+                $this->static_menu = array ( array ( "report" => ".*\.xml", "title" => "<AUTO>" ) );
         }
-
 
 		$p = new reportico_panel($this, "MENU");
 		$this->initialize_panels("MENU");
@@ -4580,7 +4589,7 @@ class reportico extends reportico_object
 						{
 							while (($file = readdir($dh)) !== false) 
 							{
-								$mtch = "/".$menuitem["report"]."/";
+								$mtch = "/^".$menuitem["report"]."/";
 								if ( preg_match ( $mtch, $file ) )
 								{
 									$repxml = new reportico_xml_reader($this, $file, false, "ReportTitle");
@@ -5754,6 +5763,7 @@ function set_project_environment($initial_project = false, $project_folder = "pr
 	global $g_projpath;
 	global $g_language;
 	global $g_translations;
+	global $g_admin_menu;
 	global $g_menu;
 	global $g_menu_title;
 	global $g_dropdown_menu;
@@ -5845,6 +5855,7 @@ function set_project_environment($initial_project = false, $project_folder = "pr
 		$g_projpath = false;
 		$g_project = false;
 		$g_menu = false;
+		$g_admin_menu = false;
 		$g_menu_title = "";
 		$g_dropdown_menu = false;
 		$old_error_handler = set_error_handler("ErrorHandler");
@@ -5900,6 +5911,7 @@ function set_project_environment($initial_project = false, $project_folder = "pr
 		$g_project = false;
 		$g_projpath = false;
 		$g_menu = false;
+		$g_admin_menu = false;
 		$g_menu_title = "";
 		$g_dropdown_menu = false;
 		$old_error_handler = set_error_handler("ErrorHandler");
@@ -5962,6 +5974,11 @@ function set_project_environment($initial_project = false, $project_folder = "pr
 
 	$g_language = $language;
 	$g_menu = $menu;
+    if ( isset($admin_menu) )
+        $g_admin_menu = $admin_menu;
+    else
+        $g_admin_menu = false;
+
 	$g_menu_title = $menu_title;
     if ( isset($dropdown_menu ) )
 	    $g_dropdown_menu = $dropdown_menu;
@@ -6130,21 +6147,25 @@ class reportico_group extends reportico_object
 				);
 	}
 
-	function add_header(&$in_value_column, $in_value_custom = false)
+	function add_header(&$in_value_column, $in_value_custom = false, $show_in_html, $show_in_pdf)
 	{
 		$header = array();
         $header["GroupHeaderColumn"] = $in_value_column;
         $header["GroupHeaderCustom"] = $in_value_custom;
+        $header["ShowInHTML"] = $show_in_html;
+        $header["ShowInPDF"] = $show_in_pdf;
 		$this->headers[] = $header;
         
 	}			
 
-	function add_trailer($in_trailer_column, &$in_value_column, $in_custom)
+	function add_trailer($in_trailer_column, &$in_value_column, $in_custom, $show_in_html, $show_in_pdf)
 	{
         $trailer = array();
         $trailer["GroupTrailerDisplayColumn"] = $in_trailer_column;
         $trailer["GroupTrailerValueColumn"] = $in_value_column;
         $trailer["GroupTrailerCustom"] = $in_custom;
+        $trailer["ShowInHTML"] = $show_in_html;
+        $trailer["ShowInPDF"] = $show_in_pdf;
 		$this->trailers[] =& $trailer;
 		$level = count($this->trailers);
         if ( $this->max_level < $level )

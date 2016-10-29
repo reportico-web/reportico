@@ -1911,8 +1911,11 @@ echo $txt;
 			{
 				$col =& $val->headers[$i]["GroupHeaderColumn"];
 				$custom = $val->headers[$i]["GroupHeaderCustom"];
-				$this->format_group_header($col, $custom, true);
-                $totheaderheight += $this->calculated_line_height;
+				if ( $val->headers[$i]["ShowInPDF"] )
+                {
+				    $this->format_group_header($col, $custom, true);
+                    $totheaderheight += $this->calculated_line_height;
+                }
 			}
         }
         $this->group_headers_custom_drawn = 0;
