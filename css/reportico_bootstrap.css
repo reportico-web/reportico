@@ -841,7 +841,7 @@ input.swAdminButton2
 
 .swMntMidSection
 {
-    width: 280px;
+    width: 216px;
     background-color: #eeeeff;
     border-right: solid black 1px;
 }
@@ -1033,7 +1033,7 @@ input.swAdminButton2
 .swMntSetField textarea
 {
     font-size: 10pt;
-    width: auto !important;
+    /*width: auto !important;*/
 }
 
 .swMntHelpLink
@@ -1067,7 +1067,7 @@ input.swAdminButton2
 .swStatus
 {
     width:          98%;
-    border: groove thin;
+    border: none;
     border-color : #DDFFDD;
     font-style:	    bold;
     margin-left: 1%;
