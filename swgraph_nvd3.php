@@ -465,6 +465,11 @@ class reportico_graph
         else
             $js .= "stacked = false;";
 
+        if ( count($this->plot) > 1 )
+            $js .= "showControls = true;";
+        else
+            $js .= "showControls = false;";
+
         if ( $showLegend )
             $js .= "showLegend = true;";
         else
@@ -625,6 +630,7 @@ class reportico_graph
             .reduceXTicks (labelInterval)
             .labelCount(labelCount)
             .stacked(stacked)
+            .showControls(showControls)
             .margin({top: ".$this->margintop_actual.", right: ".$this->marginright_actual.", bottom: ".$this->marginbottom_actual.", left: ".$this->marginleft_actual." + 10})
             .color(colorrange)
             ;
