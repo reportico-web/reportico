@@ -262,7 +262,10 @@ class reportico_report_csv extends reportico_report
 			}
 			$group_label = sw_translate($group_label);
 			$padstring = $value_col["GroupTrailerValueColumn"]->old_column_value;
-			echo $group_label.":".$padstring;
+            if ( $group_label == "BLANK" )
+			    echo "\"$padstring\"";
+            else
+			    echo "\"".$group_label.":".$padstring."\"";
 		}
 		echo ",";
 	}
