@@ -24,9 +24,9 @@
                 // REPORT BODY STYLES
                 $styles = array(
                     //"background-color" => "#cccccc",
-                    "border-width" => "2px 2px 2px 2px",
+                    "border-width" => "1px 1px 1px 1px",
                     "border-style" => "solid",
-                    "border-color" => "#000000",
+                    "border-color" => "#333333",
                     //"background-color" => "#eeeeee",
                     //"padding" => "0 20 0 20",
                     //"margin" => "0 0 0 5",
@@ -40,6 +40,7 @@
                     "border-style" => "solid",
                     "border-width" => "1px 1px 1px 1px",
                     "border-color" => "#888888",
+                    "display" => "none",
                     //"margin" => "0px 5px 10px 5px",
                     //"padding" => "0px 5px 0px 5px",
                     );
@@ -48,50 +49,36 @@
 
             // PAGE DETAIL BOX STYLES
             $styles = array(
-                "margin" => "0 5 0 5",
+                "margin" => "0 2 0 2",
                 );
             $reportico->apply_styleset("PAGE", $styles, false, "PDF");
 
             // DETAIL ROW BOX STYLES
             $styles = array(
-                "background-color" => "#cccccc",
-                "margin" => "0 10 0 10",
+                "background-color" => "#fdfdfd",
+                "margin" => "0 5 0 5",
                 );
             $reportico->apply_styleset("ROW", $styles, false, "PDF");
 
             $styles = array(
-                "background-color" => "#dddddd",
+                "background-color" => "#eeeeee",
                 );
             $reportico->apply_styleset("ALLCELLS", $styles, false, "PDF", "lineno() % 2 == 0");
 
 
-            // GROUP HEADER VALUE STYLES
-            /*
-            $styles = array(
-                "background-color" => "#000000",
-                "color" => "#ffffff",
-                "font-family" => "comic",
-                "font-size" => "18px",
-                "padding" => "0 10 0 10",
-                "requires-before" => "8cm",
-                "margin" => "0 10 0 0",
-                );
-            $reportico->apply_styleset("GROUPHEADERVALUE", $styles, "PDF");
-            */
-
             //GROUP HEADER LABEL STYLES
-            /*
             $styles = array(
-                "background-color" => "#000000",
-                "color" => "#ffffff",
-                "font-family" => "comic",
-                "font-size" => "18px",
-                "padding" => "0 10 0 10",
-                "margin" => "0 0 0 0",
+                "margin" => "0 0 0 5",
+                "width" => "3cm",
                 "requires-before" => "8cm",
                 );
-            $reportico->apply_styleset("GROUPHEADERLABEL", $styles, "PDF");
-            */
+            $reportico->apply_styleset("GROUPHEADERLABEL", $styles, false, "PDF");
+
+            // GROUP HEADER VALUE STYLES
+            $styles = array(
+                "margin" => "0 20 0 0",
+                );
+            $reportico->apply_styleset("GROUPHEADERVALUE", $styles, false, "PDF");
 
             // ALL CELL STYLES
             /*
@@ -101,7 +88,7 @@
                 "border-style" => "solid",
                 "border-color" => "#888888",
                 );
-            $reportico->apply_styleset("ALLCELLS", $styles, "PDF");
+            $reportico->apply_styleset("ALLCELLS", $styles, false, "PDF");
             */
 
             // Specific named cell styles
