@@ -51,23 +51,6 @@ class reportico_report_csv extends reportico_report
 		$this->debug("Excel Start **");
 
 		$this->page_line_count = 0;
-
-		// Start the web page
-		if ( ob_get_length() > 0 )
-		    ob_clean();	
-		header("Content-type: application/octet-stream");
-
-        $attachfile = "reportico.csv";
-        if ( $this->reporttitle )
-            $attachfile = preg_replace("/ /", "_", $this->reporttitle.".csv");
-		header('Content-Disposition: attachment; filename='.$attachfile);
-		header("Pragma: no-cache");
-		header("Expires: 0");
-
-		$this->debug("Excel Begin Page\n");
-
-		echo '"'."$this->reporttitle".'"';
-		echo "\n";
 	}
 
 	function finish ()
@@ -132,6 +115,28 @@ class reportico_report_csv extends reportico_report
 	function each_line($val)
 	{
 		reportico_report::each_line($val);
+
+        // Start setting title and headers on first line
+        // because we dont want to assume its csv unless we have some
+        // output , so we can show an html error otherwise
+        if ( $this->line_count == 1 )
+        {
+		    if ( ob_get_length() > 0 )
+		        ob_clean();	
+		    header("Content-type: application/octet-stream");
+
+            $attachfile = "reportico.csv";
+            if ( $this->reporttitle )
+                $attachfile = preg_replace("/ /", "_", $this->reporttitle.".csv");
+		    header('Content-Disposition: attachment; filename='.$attachfile);
+		    header("Pragma: no-cache");
+		    header("Expires: 0");
+
+		    $this->debug("Excel Begin Page\n");
+    
+		    echo '"'."$this->reporttitle".'"';
+		    echo "\n";
+        }
 
 		// Excel requires group headers are printed as the first columns in the spreadsheet against
 		// the detail. 

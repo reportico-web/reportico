@@ -259,6 +259,13 @@
     // Required PDF Engine set -- to tcpdf ( default ) or fpdf 
     //$q->pdf_engine = "tcpdf";
 
+    // How PDF out is delivered to the browser ( TCPDF output only )
+    // either as
+    // "INLINE" - shown inside a new  browser window making use of any existing browser PDF plugin (if not will download)
+    // "DOWNLOAD_SAME_WINDOW" - downloaded as attachment from winthin the current browser window
+    // "DOWNLOAD_NEW_WINDOW" - downloaded as attachment from winthin the current browser window
+    //$q->pdf_delivery_mode = "INLINE";
+
     // Dropdown Menu definition
     // ========================
     // Menu items for the drop down menu

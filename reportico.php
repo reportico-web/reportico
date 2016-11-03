@@ -353,6 +353,7 @@ class reportico extends reportico_object
 	var $charting_engine = "PCHART";
 	var $charting_engine_html = "NVD3";
 	var $pdf_engine = "tcpdf";
+	var $pdf_delivery_mode = "INLINE";
 	var $pdf_engine_file = "reportico_report_fpdf";
 
     var $projects_folder = "projects";
@@ -3068,6 +3069,7 @@ class reportico extends reportico_object
         global $g_language;
 		$smarty->assign('AJAX_DATEPICKER_LANGUAGE', get_datepicker_language($g_language));
 		$smarty->assign('AJAX_DATEPICKER_FORMAT', get_datepicker_format(SW_PREP_DATEFORMAT));
+		$smarty->assign('PDF_DELIVERY_MODE', $this->pdf_delivery_mode);
 		
 
 		$smarty->assign('DB_LOGGEDON', false);
@@ -4258,6 +4260,8 @@ class reportico extends reportico_object
                         echo json_encode($response_array);
                         die;
                     }
+
+                    header("HTTP/1.0 500 Not Found", true);
 					$this->initialize_panels("PREPARE");
 					$this->set_request_columns();
 					$text = $this->panels["BODY"]->draw_smarty();
@@ -4276,7 +4280,7 @@ class reportico extends reportico_object
 				    load_mode_language_pack("languages", $this->output_charset, true);
 					load_mode_language_pack("prepare", $this->output_charset);
                     localise_template_strings($this->panels["MAIN"]->smarty);
-					$reportname = preg_replace("/.xml/", "", $this->xmloutfile.'_prepare.tpl');
+					$reportname = preg_replace("/.xml/", "", $this->xmloutfile.'_execute.tpl');
                     restore_error_handler();
 
                     // Some calling frameworks require output to be returned
@@ -4285,9 +4289,10 @@ class reportico extends reportico_object
                     if (preg_match("/$reportname/", find_best_location_in_include_path( "templates/". $reportname )))
                         $template = $reportname;
                     else if ( $this->user_template )
-                        $template = $this->user_template."_prepare.tpl";
+                        $template = $this->user_template."_error.tpl";
                     else
-                        $template = "prepare.tpl";
+                        $template = "error.tpl";
+
                     if ( $this->return_output_to_caller )
                     {
 				        $txt = $this->panels["MAIN"]->smarty->fetch($template);
@@ -4924,6 +4929,7 @@ class reportico extends reportico_object
 		{
             $g_no_data = true;
 			handle_error ( template_xlate("NO_DATA_FOUND"), E_USER_WARNING );
+            return;
 		}
 
 		// Complete Target Output

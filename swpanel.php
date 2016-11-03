@@ -523,7 +523,7 @@ class reportico_panel
 
 					if ( $val["errno"] == E_USER_ERROR ||  $val["errno"] == E_USER_WARNING )
 					{
-						$msg .= "<HR>";
+						//$msg .= "<HR>";
   						if ( $val["errarea"] ) $msg .= $val["errarea"]." - ";
 						if ( $val["errtype"] ) $msg .= $val["errtype"].": ";
 						$msg .= $val["errstr"];
@@ -534,7 +534,7 @@ class reportico_panel
 					else
 					{
 						// Dont keep repeating Assignment errors
-						$msg .= "<HR>";
+						//$msg .= "<HR>";
 						//if ( $val["errct"] > 1 ) $msg .= $val["errct"]." occurrences of ";
 						// PPP Change $msg .= $val["errarea"]." - ".$val["errtype"].": ".$val["errstr"].
 						//" at line ".$val["errline"]." in ".$val["errfile"].$val["errsource"];
@@ -551,10 +551,20 @@ class reportico_panel
 				if ( $duptypect > 0 )
 					$msg .= "<BR>$duptypect more errors like this<BR>";
 
-				if ( $msg )
-				{
-					$msg = "<B>".template_xlate("UNABLE_TO_CONTINUE").":</B>".$msg;
-				}
+                if ( $msg && $this->query->reportico_ajax_called )
+                {
+                    header("HTTP/1.0 500 Not Found", true);
+                    $response_array = array();
+                    $response_array["errno"] = 100;
+                    $response_array["errmsg"] = "<div class=\"swError\">$msg</div>";
+                    echo json_encode($response_array);
+                    die;
+                }
+                else
+                {
+                    if ( $msg )
+					    $msg = "</B><div class=\"swError\">$msg</div>";
+                }
 
 				$this->smarty->assign('ERRORMSG', $msg );
 				set_reportico_session_param('latestRequest',"");

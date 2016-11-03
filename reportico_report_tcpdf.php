@@ -842,19 +842,34 @@ echo $txt;
 		{
 			$this->debug("No pdf file specified !!!");
 			//$buf = $this->document->pdf_get_buffer($this->document);
-			$buf = $this->document->Output("", "S");
-			$len = strlen($buf);
+			//$buf = $this->document->Output("", "S");
+			//$buf = base64_decode(buf);
+			//$len = strlen($buf);
+			//header("Content-Type: application/pdf");
+			//header("Content-Length: $len");
+			//header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 
 			if ( ob_get_length() > 0 )
 				ob_clean();	
 
-			header("Content-Type: application/pdf");
-			header("Content-Length: $len");
-			header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+            // Use TCPDF's mechanisms for delivering via attachment or inline
             $attachfile = "reportico.pdf";
             if ( $this->reportfilename )
                 $attachfile = preg_replace("/ /", "_", $this->reportfilename.".pdf");
-			header('Content-Disposition: attachment;filename='.$attachfile);
+                       header('Content-Disposition: attachment;filename='.$attachfile);
+
+            if ( $this->query->pdf_delivery_mode == "INLINE" )
+            {
+			    $buf = $this->document->Output($attachfile, "I"); die;
+            }
+            else
+            {
+			    //header("Content-Type: application/pdf");
+			    //header("Content-Length: $len");
+			    //header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+			    //header('Content-Disposition: attachment;filename='.$attachfile);
+			    $buf = $this->document->Output($attachfile, "D");  die;
+            }
 
 
 			print($buf);

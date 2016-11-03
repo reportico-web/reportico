@@ -82,6 +82,7 @@
 <script type="text/javascript">var reportico_datepicker_language = "{/literal}{$AJAX_DATEPICKER_FORMAT}{literal}";</script>
 <script type="text/javascript">var reportico_this_script = "{/literal}{$SCRIPT_SELF}{literal}";</script>
 <script type="text/javascript">var reportico_ajax_script = "{/literal}{$REPORTICO_AJAX_RUNNER}{literal}";</script>
+<script type="text/javascript">var pdf_delivery_mode = "{/literal}{$PDF_DELIVERY_MODE}{literal}";</script>
 {/literal}
 {if $REPORTICO_BOOTSTRAP_MODAL}
 <script type="text/javascript">var reportico_bootstrap_modal = true;</script>
@@ -163,6 +164,17 @@ function resizeOutputTables(window)
     </script>
 <div class="swRepForm">
 {if strlen($ERRORMSG)>0}
+            <div id="reporticoEmbeddedError">
+                {$ERRORMSG}
+            </div>
+{literal}
+            <script>
+                reportico_jquery(document).ready(function()
+                {
+                    showParentNoticeModal(reportico_jquery("#reporticoEmbeddedError").html());
+                });
+            </script>
+{/literal}
             <TABLE class="swError">
                 <TR>
                     <TD>{$ERRORMSG}</TD>
@@ -216,3 +228,45 @@ function resizeOutputTables(window)
 {/if}
 {/if}
 
+{if $REPORTICO_BOOTSTRAP_MODAL}
+{if $BOOTSTRAP_STYLES == "3" }
+<div class="modal fade" id="reporticoNoticeModal" tabindex="-1" role="dialog" aria-labelledby="reporticoNoticeModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+{else}
+<div class="modal fade" style="width: 500px; margin-left: -450px" id="reporticoNoticeModal" tabindex="-1" role="dialog" aria-labelledby="reporticoModal" aria-hidden="true">
+    <div class="modal-dialog">
+{/if}
+        <div class="modal-content">
+            <div class="modal-header">
+            <button type="button" data-dismiss="modal" class="close" aria-hidden="true">&times;</button>
+            <h4 class="modal-title reportico-modal-title" id="reporticoNoticeModalLabel">{$T_ERROR}</h4>
+            </div>
+            <div class="modal-body" style="padding: 0px" id="reporticoNoticeModalBody">
+                <h3>Modal Body</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                <!--button type="button" class="btn btn-primary" >Close</button-->
+        </div>
+    </div>
+  </div>
+</div>
+{else}
+<div id="reporticoModal" tabindex="-1" class="reportico-modal">
+    <div class="reportico-modal-dialog">
+        <div class="reportico-modal-content">
+            <div class="reportico-modal-header">
+            <button type="button" class="reportico-modal-close">&times;</button>
+            <h4 class="reportico-modal-title" id="reporticoModalLabel">Set Parameter</h4>
+            </div>
+            <div class="reportico-modal-body" style="padding: 0px" id="swMiniMaintain">
+                <h3>Modal Body</h3>
+            </div>
+            <div class="reportico-modal-footer">
+                <!--button type="button" class="btn btn-default" data-dismiss="modal">Close</button-->
+                <button type="button" class="swMiniMaintainSubmit" >Close</button>
+        </div>
+    </div>
+  </div>
+</div>
+{/if}
