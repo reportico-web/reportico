@@ -677,6 +677,13 @@ a:visited
 .swXMLBox { background-image: url(../images/printxml.png) !important; }
 .swPrintBox { background-image: url(../images/printablehtml.png) !important; }
 
+.reportico-notice-modal-button,
+.swMiniMaintainSubmit
+{
+    text-align: right;
+    margin: 10px;
+}
+
 .swMiniMaintain
 {
     height: 30px !important;
@@ -1127,6 +1134,7 @@ a:visited
     margin-bottom: 0px;
 }
 
+.reportico-notice-modal-title,
 .reportico-modal-title
 {
     margin: 0;
@@ -1135,6 +1143,7 @@ a:visited
     display: block;
 }
 
+.reportico-notice-modal-close,
 .reportico-modal-close
 {
 padding: 0;
@@ -1151,7 +1160,8 @@ text-shadow: 0 1px 0 #fff;
 opacity: .2;
 }
 
-.reportico-modal
+.reportico-modal,
+.reportico-notice-modal
 {
 display: none;
 overflow: auto;
@@ -1166,7 +1176,8 @@ outline: 0;
 display: none;
 }
 
-.reportico-modal-header
+.reportico-modal-header,
+.reportico-notice-modal-header
 {
 padding: 15px;
 border-bottom: 1px solid #e5e5e5;
@@ -1176,20 +1187,23 @@ line-height: 1.42857143;
 color: #333;
 }
 
-.reportico-modal-dialog
+.reportico-modal-dialog,
+.reportico-notice-modal-dialog
 {
 margin: 30px auto;
 position: relative;
 width: 900px;
 }
 
-.reportico-modal-body
+.reportico-modal-body,
+.reportico-notice-modal-body
 {
     position: relative;
     padding: 20px;
 }
 
-.reportico-modal-content
+.reportico-modal-content,
+.reportico-notice-modal-content
 {
 position: relative;
 background-color: #fff;
@@ -1203,6 +1217,7 @@ outline: none;
 }
 
 .reportico-modal-footer
+.reportico-notice-modal-footer
 {
 margin-top: 15px;
 padding: 19px 20px 20px;

@@ -709,13 +709,13 @@ $loopct++;
 <div class="modal fade" id="reporticoNoticeModal" tabindex="-1" role="dialog" aria-labelledby="reporticoNoticeModal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
 {else}
-<div class="modal fade" style="width: 500px; margin-left: -450px" id="reporticoNoticeModal" tabindex="-1" role="dialog" aria-labelledby="reporticoModal" aria-hidden="true">
+<div class="modal fade" style="pointer-events: none; width: 500px; margin-left: -450px" id="reporticoNoticeModal" tabindex="-1" role="dialog" aria-labelledby="reporticoModal" aria-hidden="true">
     <div class="modal-dialog">
 {/if}
         <div class="modal-content">
             <div class="modal-header">
             <button type="button" data-dismiss="modal" class="close" aria-hidden="true">&times;</button>
-            <h4 class="modal-title reportico-modal-title" id="reporticoNoticeModalLabel">{$T_NOTICE}</h4>
+            <h4 class="modal-title reportico-notice-modal-title" id="reporticoNoticeModalLabel">{$T_NOTICE}</h4>
             </div>
             <div class="modal-body" style="padding: 0px" id="reporticoNoticeModalBody">
                 <h3>Modal Body</h3>
@@ -741,6 +741,23 @@ $loopct++;
             <div class="reportico-modal-footer">
                 <!--button type="button" class="btn btn-default" data-dismiss="modal">Close</button-->
                 <button type="button" class="swMiniMaintainSubmit" >Close</button>
+        </div>
+    </div>
+  </div>
+</div>
+<div id="reporticoNoticeModal" tabindex="-1" class="reportico-notice-modal">
+    <div class="reportico-notice-modal-dialog">
+        <div class="reportico-notice-modal-content">
+            <div class="reportico-notice-modal-header">
+            <button type="button" class="reportico-notice-modal-close">&times;</button>
+            <h4 class="reportico-notice-modal-title" id="reporticoNoticeModalLabel">Set Parameter</h4>
+            </div>
+            <div class="reportico-notice-modal-body" id="reporticoNoticeModalBody">
+                <h3>Modal Body</h3>
+            </div>
+            <div class="reportico-notice-modal-footer">
+                <!--button type="button" class="btn btn-default" data-dismiss="modal">Close</button-->
+                <button type="button" class="reportico-notice-modal-button" >Close</button>
         </div>
     </div>
   </div>

@@ -196,7 +196,7 @@
     // Set bootstrap_styles to false for reportico classic styles, or "3" for bootstrap 3 look and feel and 2 for bootstrap 2
     // If you are embedding reportico and you have already loaded bootstrap then set bootstrap_preloaded equals true so reportico
     // doestnt load it again.
-    //$q->bootstrap_styles = "3";
+    $q->bootstrap_styles = false;
     //$q->bootstrap_preloaded = false;
 
     // In bootstrap enable pages, the bootstrap modal is by default used for the quick edit buttons
@@ -265,7 +265,6 @@
     // "INLINE" - shown inside a new  browser window making use of any existing browser PDF plugin (if not will download)
     // "DOWNLOAD_NEW_WINDOW" - downloaded as attachment from winthin the current browser window
     //$q->pdf_delivery_mode = "DOWNLOAD_SAME_WINDOW";
-    $q->pdf_delivery_mode = "INLINE";
 
     // Dropdown Menu definition
     // ========================

@@ -280,6 +280,12 @@ reportico_jquery(document).ready(function()
 
 });
 
+reportico_jquery(document).on('click', '.reportico-notice-modal-close,.reportico-notice-modal-button', function(event) 
+{
+    reportico_jquery("#swMiniMaintain").html("");
+    reportico_jquery('#reporticoNoticeModal').hide();
+});
+
 reportico_jquery(document).on('click', '.reportico-bootstrap-modal-close', function(event) 
 {
     reportico_jquery("#swMiniMaintain").html("");

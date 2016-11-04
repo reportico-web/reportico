@@ -62,7 +62,7 @@
     background: url('../images/search.png') no-repeat;   
     background-color: #ffffff;
     height: 22px; 
-    width: 22px;
+    width: 22px !important;
 }
 
 .swPrpTopMenuCell input {
