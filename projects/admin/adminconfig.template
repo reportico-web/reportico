@@ -11,6 +11,10 @@
 // Set to Blank to allow reset from browser
 define('SW_ADMIN_PASSWORD','PROMPT');
 
+define('SW_HTTP_BASEDIR', './');
+define('SW_HTTP_URLHOST', 'http://127.0.0.1');
+
+
 // Default System Language
 define('SW_LANGUAGE', 'PROMPT');
 
