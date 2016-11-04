@@ -489,10 +489,8 @@ class reportico_panel
 			case "STATUS":
 
 				$msg = "";
-
 				if ( $this->query->status_message )
 					$this->smarty->assign('STATUSMSG', $this->query->status_message );
-
 				global $g_system_debug;
 				if ( !$g_system_debug )
 					$g_system_debug = array();
@@ -518,12 +516,14 @@ class reportico_panel
 				$duptypect = 0;
 				if ( !$g_system_errors )
 					$g_system_errors = array();
+                $ct = 0;
 				foreach ( $g_system_errors as $val )
 				{
 
 					if ( $val["errno"] == E_USER_ERROR ||  $val["errno"] == E_USER_WARNING )
 					{
-						//$msg .= "<HR>";
+                        if ( $ct++ > 0 )
+						    $msg .= "<HR>";
   						if ( $val["errarea"] ) $msg .= $val["errarea"]." - ";
 						if ( $val["errtype"] ) $msg .= $val["errtype"].": ";
 						$msg .= $val["errstr"];
@@ -534,7 +534,8 @@ class reportico_panel
 					else
 					{
 						// Dont keep repeating Assignment errors
-						//$msg .= "<HR>";
+                        if ( $ct++ > 0 )
+						    $msg .= "<HR>";
 						//if ( $val["errct"] > 1 ) $msg .= $val["errct"]." occurrences of ";
 						// PPP Change $msg .= $val["errarea"]." - ".$val["errtype"].": ".$val["errstr"].
 						//" at line ".$val["errline"]." in ".$val["errfile"].$val["errsource"];
@@ -551,19 +552,37 @@ class reportico_panel
 				if ( $duptypect > 0 )
 					$msg .= "<BR>$duptypect more errors like this<BR>";
 
-                if ( $msg && $this->query->reportico_ajax_called )
+				$debugmsg = "";
+				if ( $this->query->status_message )
+					$this->smarty->assign('STATUSMSG', $this->query->status_message );
+				global $g_system_debug;
+				if ( !$g_system_debug )
+					$g_system_debug = array();
+				foreach ( $g_system_debug as $val )
+				{
+
+					$debugmsg .= "<hr>".$val["dbgarea"]." - ".$val["dbgstr"]."\n";
+				}
+
+				if ( $debugmsg )
+				{
+					$debugmsg = "<BR><B>".template_xlate("INFORMATION")."</B>".$debugmsg;
+				}
+
+
+                if ( false && $msg && $this->query->reportico_ajax_called )
                 {
                     header("HTTP/1.0 500 Not Found", true);
                     $response_array = array();
                     $response_array["errno"] = 100;
-                    $response_array["errmsg"] = "<div class=\"swError\">$msg</div>";
+                    $response_array["errmsg"] = "tt<div class=\"swError\">$msg</div>$debugmsg";
                     echo json_encode($response_array);
                     die;
                 }
                 else
                 {
                     if ( $msg )
-					    $msg = "</B><div class=\"swError\">$msg</div>";
+					    $msg = "</B><div class=\"swError\">$msg</div>$debugmsg";
                 }
 
 				$this->smarty->assign('ERRORMSG', $msg );

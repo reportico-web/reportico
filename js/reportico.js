@@ -538,8 +538,6 @@ reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenu
                 }
                 else
                 {
-                    reportico_jquery(expandpanel).removeClass("loading");
-                    reportico_jquery(reportico_container).removeClass("loading");
 
                     reportico_jquery(expandpanel).removeClass("loading");
                     var buttonName = reportico_jquery(this).prop("name");
@@ -547,8 +545,8 @@ reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenu
                     formparams['reportico_ajax_called'] = '1';
                     formparams[buttonName] = '1';
 
-                    //iframe downloader
-                    ajaxDownload(ajaxaction, formparams);
+                    // Download pdf/csv from within current window
+                    ajaxFileDownload(ajaxaction, formparams, expandpanel, reportico_container);
                 }
 
                 return false;
@@ -584,39 +582,57 @@ reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenu
     return false;
 })
 
-// MODIFIED--------------------------------
-//Hidden iframe download technique 
-function ajaxDownload(url, data) {
+/*
+ * Use ajax to return pdf or csv output and download to file.
+ * For pdf, output is received in base64. 
+ */
+function ajaxFileDownload(url, data, expandpanel, reportico_container) {
 
-    var $iframe,
-        iframe_doc,
-        iframe_html;
+    reportico_jquery.ajax({
+      type: 'POST',
+      url: url,
+      data: data,
+      dataType: 'html',
+      success: function(data, status, request) {
+        reportico_jquery(expandpanel).removeClass("loading");
+        reportico_jquery(reportico_container).removeClass("loading");
 
-    if (($iframe = reportico_jquery('#download_iframe')).length === 0) {       
-        $iframe = reportico_jquery("<iframe id='download_iframe'" +
-                    " style='display: none' src='about:blank'></iframe>"
-                   ).appendTo("body");
-    }
- 
-    iframe_doc = $iframe[0].contentWindow || $iframe[0].contentDocument;
-    if (iframe_doc.document) {
-        iframe_doc = iframe_doc.document;
-    }
+        // PDF and CSV files are received in base64
+        var contenttype = request.getResponseHeader('Content-Type');
+        if ( contenttype == "application/pdf" )
+        {
+            var saveto = request.getResponseHeader('Content-Disposition');
+            saveto = saveto.replace(/attachment;filename=/,"");
+            objurl = "data:application/pdf;base64," + data;
+            download(objurl, saveto, "application/pdf");
+        }
 
-    iframe_html = "<html><head></head><body><form method='POST' action='" +
-                  url +"'>";
+        if ( contenttype == "application/octet-stream" )
+        {
+            var saveto = request.getResponseHeader('Content-Disposition');
+            saveto = saveto.replace(/attachment;filename=/,"");
+            objurl = "data:application/octet-stream;base64," + data;
+            download(objurl, saveto, "application/pdf");
+        }
+      },
+       error: function(xhr, desc, err) {
+        reportico_jquery(expandpanel).removeClass("loading");
+        reportico_jquery(reportico_container).removeClass("loading");
+         try {
+            // a try/catch is recommended as the error handler
+            // could occur in many events and there might not be
+            // a JSON response from the server
+            var errstatus = reportico_jquery.parseJSON(xhr.responseText);
+            var msg = errstatus.errmsg;
+            //reportico_jquery(expandpanel).prop('innerHTML', msg);
+            showNoticeModal(msg);
 
-    Object.keys(data).forEach(function(key){
-        iframe_html += "<input type='hidden' name='"+key+"' value='"+data[key]+"'>";
-    });
-
-    iframe_html +="</form></body></html>";
+        } catch(e) { 
+            showNoticeModal(xhr.responseText);
+        }
+       }
     
-    iframe_doc.open();
-    iframe_doc.write(iframe_html);
-    iframe_doc.close();//close is necessary or the forms multiply
-    reportico_jquery(iframe_doc).find('form').submit();
-
+    });
 }
 
 //general serializeObject function - e.g. turn a form's fields into an object
@@ -819,15 +835,13 @@ reportico_jquery(document).on('click', '.swPrintBox,.prepareAjaxExecute,#prepare
         }
         else
         {
-            reportico_jquery(expandpanel).removeClass("loading");
-            reportico_jquery(reportico_container).removeClass("loading");
+            // Download pdf/csv from within current window
             var buttonName = reportico_jquery(this).prop("name");
             var formparams = reportico_jquery(critform).serializeObject();
             formparams['execute_mode'] = 'EXECUTE';
             formparams[buttonName] = '1';
-
-            //iframe downloader
-            ajaxDownload(ajaxaction, formparams);
+            formparams['reportico_ajax_called'] = '1';
+            ajaxFileDownload(ajaxaction, formparams, expandpanel, reportico_container);
         }
 
         return false;
@@ -894,7 +908,7 @@ function showNoticeModal(content)
 }
 
 /*
- * Shows modal window containing the passed text from within an iframe
+ * Shows modal window containing the passed text from within a child iframe
  */
 function showParentNoticeModal(content)
 {
@@ -907,6 +921,7 @@ function showParentNoticeModal(content)
         reportico_jquery("#reporticoNoticeModal",window.parent.document).show();
     reportico_jquery("#reporticoNoticeModalBody",window.parent.document).html(content);
 }
+
 
 /*
 ** Runs an AJAX reportico request from a link

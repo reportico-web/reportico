@@ -57,6 +57,7 @@ $locale_arr = array (
         "T_EDITCRITERIA" => "المعايير",
         "T_EDITCOLUMNS" => "الأعمدة",
         "T_EDIT" => "تحرير",
+        "T_NOTICE" => "إعلام",
         ),
         );
 ?>

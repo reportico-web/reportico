@@ -60,6 +60,7 @@ $locale_arr = array (
         "T_EDITCRITERIA" => "标准",
         "T_EDITCOLUMNS" => "列",
         "T_EDIT" => "编辑",
+        "T_NOTICE" => "通知",
 
 ),
 );

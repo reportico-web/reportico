@@ -60,7 +60,7 @@ $locale_arr = array (
         "T_EDITCRITERIA" => "Criteria",
         "T_EDITCOLUMNS" => "Columns",
         "T_EDIT" => "Edit",
-        "T_ERROR" => "Notice",
+        "T_NOTICE" => "Notice",
         ),
         );
 ?>

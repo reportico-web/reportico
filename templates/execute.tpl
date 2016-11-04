@@ -50,6 +50,7 @@
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/ui/jquery-ui.js"></script>
 {/literal}
 {literal}
+<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/download.js"></script>
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/reportico.js"></script>
 {/literal}
 {/if}
@@ -239,7 +240,7 @@ function resizeOutputTables(window)
         <div class="modal-content">
             <div class="modal-header">
             <button type="button" data-dismiss="modal" class="close" aria-hidden="true">&times;</button>
-            <h4 class="modal-title reportico-modal-title" id="reporticoNoticeModalLabel">{$T_ERROR}</h4>
+            <h4 class="modal-title reportico-modal-title" id="reporticoNoticeModalLabel">{$T_NOTICE}</h4>
             </div>
             <div class="modal-body" style="padding: 0px" id="reporticoNoticeModalBody">
                 <h3>Modal Body</h3>

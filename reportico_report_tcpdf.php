@@ -858,17 +858,29 @@ echo $txt;
                 $attachfile = preg_replace("/ /", "_", $this->reportfilename.".pdf");
                        header('Content-Disposition: attachment;filename='.$attachfile);
 
+
+            // INLINE output is just returned to browser window it is invoked from 
+            // with hope that browser uses plugin
             if ( $this->query->pdf_delivery_mode == "INLINE" )
             {
-			    $buf = $this->document->Output($attachfile, "I"); die;
+			    $this->document->Output($attachfile, "I"); 
+                die;
             }
+            // DOWNLOAD_SAME_WINDOW output is ajaxed back to current browser window and then downloaded
+            else if ( $this->query->pdf_delivery_mode == "DOWNLOAD_SAME_WINDOW" && $this->query->reportico_ajax_called )
+            {
+                header('Content-Disposition: attachment;filename='.$attachfile);
+                header("Content-Type: application/pdf");
+			    $buf = base64_encode($this->document->Output($attachfile, "S"));
+			    $len = strlen($buf);
+                echo $buf;
+                die;
+            }
+            // DOWNLOAD_NEW_WINDOW new browser window is opened to download file
             else
             {
-			    //header("Content-Type: application/pdf");
-			    //header("Content-Length: $len");
-			    //header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-			    //header('Content-Disposition: attachment;filename='.$attachfile);
-			    $buf = $this->document->Output($attachfile, "D");  die;
+			    $buf = $this->document->Output($attachfile, "D");  
+                die;
             }
 
 

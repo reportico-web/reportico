@@ -69,6 +69,7 @@ $locale_arr = array (
         "T_SELECT2MULTIPLE" => "Pesquisável Box Lista Múltipla",
         "T_CRITERIAHIDDEN" => "Esconder Critários",
         "T_CRITERIAREQUIRED" => "Critários exigidos",
+        "T_NOTICE" => "Notificação",
         ),
         );
 ?>

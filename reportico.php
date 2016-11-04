@@ -353,7 +353,7 @@ class reportico extends reportico_object
 	var $charting_engine = "PCHART";
 	var $charting_engine_html = "NVD3";
 	var $pdf_engine = "tcpdf";
-	var $pdf_delivery_mode = "INLINE";
+	var $pdf_delivery_mode = "DOWNLOAD_SAME_WINDOW";
 	var $pdf_engine_file = "reportico_report_fpdf";
 
     var $projects_folder = "projects";
@@ -3551,18 +3551,15 @@ class reportico extends reportico_object
 				//handle_error( "Mandatory" );
 				if ( !$this->lookup_queries[$col->query_name]->column_value )
                 {
-                    if ( get_request_item("new_reportico_window",  false ) )
+                    if ( true ||  get_request_item("new_reportico_window",  false ) )
                     {
                         header("HTTP/1.0 404 Not Found", true);
-                        $response_array = array();
-                        $response_array["errno"] = 100;
-                        $response_array["errmsg"] = template_xlate("REQUIRED_CRITERIA")." - ".sw_translate($this->lookup_queries[$col->query_name]->derive_attribute("column_title", ""));
-                        echo json_encode($response_array);
+                        echo '<div class="swError">'.template_xlate("REQUIRED_CRITERIA")." - ".sw_translate($this->lookup_queries[$col->query_name]->derive_attribute("column_title", ""))."</div>";
                         die;
                     }
                     else
 			            handle_error(template_xlate("REQUIRED_CRITERIA")." - ".sw_translate($this->lookup_queries[$col->query_name]->derive_attribute("column_title", ""))
-                        , E_USER_NOTICE);
+                        , E_USER_ERROR);
                 }
             }
         }
@@ -3740,6 +3737,11 @@ class reportico extends reportico_object
 		}
 		else
 		{
+            if ( $this->get_execute_mode() == "MAINTAIN" )
+            {
+                $do_defaults = false;
+            }
+
 			$this->xmlin = new reportico_xml_reader($this, false, "");
 			$this->xmlin->xml2query();
 		}
@@ -4250,21 +4252,24 @@ class reportico extends reportico_object
                     // If errors and this is an ajax request return json ajax response for first message
                     $runfromcriteriascreen = get_request_item("user_criteria_entered", false);
                     global $g_no_data;
-                    if ( $g_no_data && get_request_item("new_reportico_window",  false ) && !$g_debug_mode && $this->target_format == "HTML" && $runfromcriteriascreen && $this->reportico_ajax_mode && count($g_system_errors) == 1 )
-                        
-                    {
-                        header("HTTP/1.0 404 Not Found", true);
-                        $response_array = array();
-                        $response_array["errno"] = $g_system_errors[0]["errno"];
-                        $response_array["errmsg"] = $g_system_errors[0]["errstr"];
-                        echo json_encode($response_array);
-                        die;
-                    }
+                    //if ( $g_no_data && get_request_item("new_reportico_window",  false ) && !$g_debug_mode && $this->target_format == "HTML" && $runfromcriteriascreen && $this->reportico_ajax_mode && count($g_system_errors) == 1 )
+                        //
+                    //{
+                        //header("HTTP/1.0 404 Not Found", true);
+                        //$response_array = array();
+                        //$response_array["errno"] = $g_system_errors[0]["errno"];
+                        //$response_array["errmsg"] = "oo".$g_system_errors[0]["errstr"];
+                        //echo json_encode($response_array);
+                        //die;
+                    //}
 
                     header("HTTP/1.0 500 Not Found", true);
 					$this->initialize_panels("PREPARE");
-					$this->set_request_columns();
+					//$this->set_request_columns();
+
+                    $this->panels["FORM"]->set_visibility(false);
 					$text = $this->panels["BODY"]->draw_smarty();
+
 					$this->panels["MAIN"]->smarty->debugging =false;
 					$title = sw_translate($this->derive_attribute("ReportTitle", "Unknown"));
 					$this->panels["MAIN"]->smarty->assign('TITLE', $title);
@@ -4292,8 +4297,7 @@ class reportico extends reportico_object
                         $template = $this->user_template."_error.tpl";
                     else
                         $template = "error.tpl";
-
-                    if ( $this->return_output_to_caller )
+                    if ( false && $this->return_output_to_caller )
                     {
 				        $txt = $this->panels["MAIN"]->smarty->fetch($template);
 		                $old_error_handler = set_error_handler("ErrorHandler");
@@ -4675,7 +4679,6 @@ class reportico extends reportico_object
 		global $g_error_status;
 
 		$text = "";
-		$g_error_status = false;
 
 		$this->fetch_column_attributes();
 
@@ -4873,9 +4876,11 @@ class reportico extends reportico_object
 		if ( $conn != false )
 			handle_debug($this->query_statement, SW_DEBUG_LOW);
 
-		// Begin Target Output
+		// Begin Target Output 
+                //handle_error("set");
 		if (!$recordSet || $g_error_status) 
 		{
+                //handle_error("stop");
 			return;
 		}
 
@@ -4925,6 +4930,7 @@ class reportico extends reportico_object
 
         global $g_no_data;
         $g_no_data = false;
+
 		if ( $this->query_count == 0 && !$in_criteria_name && ( !$this->access_mode || $this->access_mode != "REPORTOUTPUT" ) )
 		{
             $g_no_data = true;
