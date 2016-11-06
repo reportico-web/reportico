@@ -30,10 +30,10 @@ $dropdown_menu = array(
                         "project" => "tutorials",
                         "title" => "Inventory",
                         "items" => array (
-                            array ( "reportfile" => "customer.xml" ),
-                            array ( "reportfile" => "products.xml" ),
+                            //array ( "reportfile" => "products.xml" ),
                             array ( "reportfile" => "stock.xml" ),
                             array ( "reportfile" => "suppliers.xml" ),
+                            array ( "reportfile" => "customer.xml" ),
                             )
                         ),
                     array ( 
