@@ -55,6 +55,7 @@ $dropdown_menu = array(
                             array ( "reportfile" => "tut1_4_stock.xml") ,
                             array ( "reportfile" => "tut1_5_stock.xml") ,
                             array ( "reportfile" => "tut2_1_orders.xml") ,
+                            array ( "reportfile" => "tut2_2_orders.xml") ,
                             )
                         ),
                 );
