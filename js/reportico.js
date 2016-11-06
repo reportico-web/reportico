@@ -286,19 +286,7 @@ reportico_jquery(document).on('click', '.reportico-notice-modal-close,.reportico
     reportico_jquery('#reporticoNoticeModal').hide();
 });
 
-reportico_jquery(document).on('click', '.reportico-bootstrap-modal-close', function(event) 
-{
-    reportico_jquery("#swMiniMaintain").html("");
-    reportico_jquery('#reporticoModal').modal('hide');
-});
-
-reportico_jquery(document).on('click', '.reportico-modal-close', function(event) 
-{
-    reportico_jquery("#swMiniMaintain").html("");
-    reportico_jquery('#reporticoModal').hide();
-});
-
-reportico_jquery(document).on('click', '.swMiniMaintainSubmit', function(event) 
+reportico_jquery(document).on('click', '.swMiniMaintainSubmit,.reportico-bootstrap-modal-close,.reportico-modal-close', function(event) 
 {
 
     if ( reportico_bootstrap_modal )

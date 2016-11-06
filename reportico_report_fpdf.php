@@ -888,7 +888,7 @@ class reportico_report_fpdf extends reportico_report
 		return;
 	}
 
-	function format_group_trailer_end() // PDF
+	function format_group_trailer_end($last_trailer = false) // PDF
 	{
         $this->unapply_style_tags($this->query->output_group_trailer_styles);
 		return;

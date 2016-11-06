@@ -55,6 +55,7 @@ $locale_arr = array (
         "T_EDITPAGEFOOTERS" => "页面页脚",
         "T_EDITGROUPHEADERS" => "组头",
         "T_EDITGROUPTRAILERS" => "集团拖车",
+        "T_EDITPRESQLS" => "Pre-SQLs",
         "T_EDITTITLE" => "称号",
         "T_EDITSQL" => "SQL",
         "T_EDITCRITERIA" => "标准",

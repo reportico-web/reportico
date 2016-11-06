@@ -536,15 +536,12 @@ class reportico_panel
 						// Dont keep repeating Assignment errors
                         if ( $ct++ > 0 )
 						    $msg .= "<HR>";
-						//if ( $val["errct"] > 1 ) $msg .= $val["errct"]." occurrences of ";
-						// PPP Change $msg .= $val["errarea"]." - ".$val["errtype"].": ".$val["errstr"].
-						//" at line ".$val["errline"]." in ".$val["errfile"].$val["errsource"];
-						//"\n";
+
 						if ( $val["errarea"] ) $msg .= $val["errarea"]." - ";
 						if ( $val["errtype"] ) $msg .= $val["errtype"].": ";
+                        if ( isset($val["errstr"]) && $val["errstr"] ) 
+                            $msg .= "{$val["errfile"]} Line {$val["errline"]} - ";
 						$msg .= $val["errstr"];
-						//$msg .= " at line ".$val["errline"]." in ".$val["errfile"].$val["errsource"];
-						"\n";
 						$duptypect = 0;
 					}
 					$lastval = $val;
@@ -575,7 +572,7 @@ class reportico_panel
                     header("HTTP/1.0 500 Not Found", true);
                     $response_array = array();
                     $response_array["errno"] = 100;
-                    $response_array["errmsg"] = "tt<div class=\"swError\">$msg</div>$debugmsg";
+                    $response_array["errmsg"] = "<div class=\"swError\">$msg</div>$debugmsg";
                     echo json_encode($response_array);
                     die;
                 }

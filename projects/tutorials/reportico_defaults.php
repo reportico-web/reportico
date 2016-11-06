@@ -57,13 +57,15 @@
                 );
             $reportico->apply_styleset("PAGE", $styles, false, "PDF");
 
-            // DETAIL ROW BOX STYLES
+            // DETAIL ROW BOX STYLES WITH ALTERNATING COLOURS 
+            // Default all row lines to light grey
             $styles = array(
                 "background-color" => "#fdfdfd",
                 "margin" => "0 5 0 5",
                 );
             $reportico->apply_styleset("ROW", $styles, false, "PDF");
 
+            // Darker grey on every other line
             $styles = array(
                 "background-color" => "#eeeeee",
                 );

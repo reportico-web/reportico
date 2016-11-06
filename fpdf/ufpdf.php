@@ -28,7 +28,7 @@ class UFPDF extends FPDF
 *******************************************************************************/
 function __construct($orientation='P',$unit='mm',$format='A4')
 {
-  __parent::construct($orientation, $unit, $format);
+  parent::__construct($orientation, $unit, $format);
 }
 
 function GetStringWidth($s)
@@ -74,9 +74,21 @@ function AddFont($family,$style='',$file='')
       if ( !$file )
           $file = $ofile;
   }
-  include($file);
+
+   if ( is_file($file) )
+       include($file);
+   else
+   {   
+       $file = "fpdf/font/LiberationSans-Regular.php";
+       include($file);
+   }
+
   if(!isset($name))
-    $this->Error('Could not include font definition file');
+  {
+    //$this->Error('Could not include font definition file'.$name);
+    $file = "fpdf/font/LiberationSans-Regular.php";
+    include($file);
+  }
   $i=count($this->fonts)+1;
   $this->fonts[$family.$style]=array('i'=>$i,'type'=>$type,'name'=>$name,'desc'=>$desc,'up'=>$up,'ut'=>$ut,'cw'=>$cw,'file'=>$file,'ctg'=>$ctg);
   if($file)

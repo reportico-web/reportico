@@ -52,6 +52,7 @@ $locale_arr = array (
         "T_EDITPAGEFOOTERS" => "piè di pagina",
         "T_EDITGROUPHEADERS" => "intestazioni di gruppo",
         "T_EDITGROUPTRAILERS" => "Trailers Gruppo",
+        "T_EDITPRESQLS" => "Pre-SQLs",
         "T_EDITTITLE" => "titolo",
         "T_EDITSQL" => "SQL",
         "T_EDITCRITERIA" => "Criteri",

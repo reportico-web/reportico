@@ -257,7 +257,7 @@
     //$q->static_menu = array ();
 
     // Required PDF Engine set -- to tcpdf ( default ) or fpdf 
-    //$q->pdf_engine = "tcpdf";
+    //$q->pdf_engine = "fpdf";
 
     // How CSV, PDF out is delivered to the browser ( TCPDF output only )
     // either as

@@ -63,6 +63,7 @@ $locale_arr = array (
         "T_EDITPAGEFOOTERS" => "Rodapé",
         "T_EDITGROUPHEADERS" => "Cabeçalhos de grupo",
         "T_EDITGROUPTRAILERS" => "Trailers Grupo",
+        "T_EDITPRESQLS" => "Pre-SQLs",
         "T_OPEN_LOGIN" => "Entrar no modo de design",
         "T_OPEN_LOGOFF" => "Modo Design Retire",
         "T_SELECT2SINGLE" => "Pesquisável Lista Única Box",

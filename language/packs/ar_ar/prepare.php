@@ -52,6 +52,7 @@ $locale_arr = array (
         "T_EDITPAGEFOOTERS" => "الصفحة التذييلات",
         "T_EDITGROUPHEADERS" => "رؤوس المجموعة",
         "T_EDITGROUPTRAILERS" => "مقطورة المجموعة",
+        "T_EDITPRESQLS" => "Pre-SQLs",
         "T_EDITTITLE" => "عنوان",
         "T_EDITSQL" => "SQL",
         "T_EDITCRITERIA" => "المعايير",
