@@ -51,33 +51,11 @@ class reportico_report_csv extends reportico_report
 		$this->debug("Excel Start **");
 
 		$this->page_line_count = 0;
-
-		// Start the web page
-		if ( ob_get_length() > 0 )
-		    ob_clean();	
-		header("Content-type: application/octet-stream");
-
-        $attachfile = "reportico.csv";
-        if ( $this->reporttitle )
-            $attachfile = preg_replace("/ /", "_", $this->reporttitle.".csv");
-		header('Content-Disposition: attachment; filename='.$attachfile);
-		header("Pragma: no-cache");
-		header("Expires: 0");
-
-		$this->debug("Excel Begin Page\n");
-
-		echo '"'."$this->reporttitle".'"';
-		echo "\n";
 	}
 
 	function finish ()
 	{
 		reportico_report::finish();
-		//if ( $this->line_count < 1 )
-		//{
-            //// No CSV data found just return
-            //return;
-		//}
 
 		if ( $this->report_file )
 		{
@@ -88,8 +66,28 @@ class reportico_report_csv extends reportico_report
 			$this->debug("No csv file specified !!!");
 			$buf = "";
 			$len = strlen($buf) + 1;
-	
-			print($buf);
+
+            
+            if ( $this->query->pdf_delivery_mode == "DOWNLOAD_SAME_WINDOW" && $this->query->reportico_ajax_called )
+            {   
+                $this->text = base64_encode($this->text);
+            }
+
+		    if ( ob_get_length() > 0 )
+		        ob_clean();	
+
+		    header("Content-type: application/octet-stream");
+            $attachfile = "reportico.csv";
+            if ( $this->reporttitle )
+                $attachfile = preg_replace("/ /", "_", $this->reporttitle.".csv");
+		    header('Content-Disposition: attachment;filename='.$attachfile);
+
+		    header("Pragma: no-cache");
+		    header("Expires: 0");
+
+            $len = strlen($this->text);
+            header("Content-Length: $len");
+            echo $this->text;
             die;
 		}
 
@@ -106,7 +104,7 @@ class reportico_report_csv extends reportico_report
 		$padstring = ucwords(strtolower($padstring));
 		$padstring = sw_translate($padstring);
 
-		echo '"'.$padstring.'"'.",";
+		$this->text .= '"'.$padstring.'"'.",";
 	}
 
 	function format_column(& $column_item)
@@ -125,13 +123,25 @@ class reportico_report_csv extends reportico_report
 
         // Handle double quotes by changing " to ""
         $output = str_replace("\"", "\"\"", $output);
-        echo "\"".$output."\",";
+        $this->text .= "\"".$output."\",";
 
 	}
 
 	function each_line($val)
 	{
 		reportico_report::each_line($val);
+
+        // Start setting title and headers on first line
+        // because we dont want to assume its csv unless we have some
+        // output , so we can show an html error otherwise
+        if ( $this->line_count == 1 )
+        {
+
+		    $this->debug("Excel Begin Page\n");
+    
+		    $this->text .= '"'."$this->reporttitle".'"';
+		    $this->text .= "\n";
+        }
 
 		// Excel requires group headers are printed as the first columns in the spreadsheet against
 		// the detail. 
@@ -142,8 +152,8 @@ class reportico_report_csv extends reportico_report
 			{
 				$qn = get_query_column($col["GroupHeaderColumn"]->query_name, $this->query->columns ) ;
 				$padstring = $qn->column_value;
-				echo "\"".$padstring."\"";
-				echo ",";
+				$this->text .= "\"".$padstring."\"";
+				$this->text .= ",";
 			}
 		}
 				
@@ -153,7 +163,7 @@ class reportico_report_csv extends reportico_report
 	  	{
 			$this->format_column($col);
        		}
-		echo "\n";
+		$this->text .= "\n";
 
 	}
 
@@ -170,22 +180,22 @@ class reportico_report_csv extends reportico_report
 
 	function format_criteria_selection($label, $value)
 	{
-		echo "\"".$label."\"";
-		echo ",";
-		echo "\"".$value."\"";
-		echo "\n";
+		$this->text .= "\"".$label."\"";
+		$this->text .= ",";
+		$this->text .= "\"".$value."\"";
+		$this->text .= "\n";
 	}
 
 	function after_format_criteria_selection()
 	{
-		echo "\n";
+		$this->text .= "\n";
 	}
 
 	function finish_page()
 	{
 		$this->debug("Excel Finish Page");
 		//pdf_end_page($this->document);
-		die;
+		//die;
 	}
 
 	function format_headers()
@@ -200,14 +210,14 @@ class reportico_report_csv extends reportico_report
 				$qn = get_query_column($col->query_name, $this->query->columns ) ;
 				$tempstring = str_replace("_", " ", $col->query_name);
 				$tempstring = ucwords(strtolower($tempstring));
-				echo "\"".sw_translate($col->derive_attribute("column_title",  $tempstring))."\"";
-				echo ",";
+				$this->text .= "\"".sw_translate($col->derive_attribute("column_title",  $tempstring))."\"";
+				$this->text .= ",";
 			}
 		}
 				
 		foreach ( $this->query->display_order_set["column"] as $w )
 			$this->format_column_header($w);
-		echo "\n";
+		$this->text .= "\n";
 	}
 
 	function format_group_header(&$col, $custom)
@@ -220,10 +230,10 @@ class reportico_report_csv extends reportico_report
 		$padstring = $qn->column_value;
 		$tempstring = str_replace("_", " ", $col->query_name);
 		$tempstring = ucwords(strtolower($tempstring));
-		echo sw_translate($col->derive_attribute("column_title",  $tempstring));
-		echo ": ";
-		echo "$padstring";
-		echo "\n";
+		$this->text .= sw_translate($col->derive_attribute("column_title",  $tempstring));
+		$this->text .= ": ";
+		$this->text .= "$padstring";
+		$this->text .= "\n";
 	}
 
 
@@ -242,7 +252,7 @@ class reportico_report_csv extends reportico_report
 		{
 			for ($i = 0; $i < count($group->headers); $i++ )
 			{
-				echo ",";
+				$this->text .= ",";
 			}
 		}
 	}
@@ -262,14 +272,17 @@ class reportico_report_csv extends reportico_report
 			}
 			$group_label = sw_translate($group_label);
 			$padstring = $value_col["GroupTrailerValueColumn"]->old_column_value;
-			echo $group_label.":".$padstring;
+            if ( $group_label == "BLANK" )
+			    $this->text .= "\"$padstring\"";
+            else
+			    $this->text .= "\"".$group_label.":".$padstring."\"";
 		}
-		echo ",";
+		$this->text .= ",";
 	}
 
 	function end_line()
 	{
-		echo "\n";
+		$this->text .= "\n";
 	}
 
 

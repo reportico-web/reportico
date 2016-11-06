@@ -19,7 +19,7 @@
                         </td>
                         <td class="swPrpCritExpandSel">
 {if $CRITERIA_ITEMS[critno].expand}
-                            <input class="swPrpCritExpandButton" id="reporticoPerformExpand" type="button" name="EXPAND_{$CRITERIA_ITEMS[critno].name}" value=">>">
+                            <input class="swPrpCritExpandButton" id="reporticoPerformExpand" type="button" name="EXPAND_{$CRITERIA_ITEMS[critno].name}" value="">
 {/if}
                         </td>
                     </TR>

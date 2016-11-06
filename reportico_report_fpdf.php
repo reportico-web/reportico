@@ -406,13 +406,38 @@ class reportico_report_fpdf extends reportico_report
 				ob_clean();	
 
 			header("Content-Type: application/pdf");
-			header("Content-Length: $len");
 			header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
             $attachfile = "reportico.pdf";
             if ( $this->reportfilename )
                 $attachfile = preg_replace("/ /", "_", $this->reportfilename.".pdf");
-			header('Content-Disposition: attachment;filename='.$attachfile);
 
+            // INLINE output is just returned to browser window it is invoked from
+            // with hope that browser uses plugin
+            if ( $this->query->pdf_delivery_mode == "INLINE" )
+            {   
+                $len = strlen($buf);
+			    header("Content-Length: $len");
+                echo $buf;
+                die;
+            }
+            else if ( $this->query->pdf_delivery_mode == "DOWNLOAD_SAME_WINDOW" && $this->query->reportico_ajax_called  )
+            {   
+                header('Content-Disposition: attachment;filename='.$attachfile);
+                header("Content-Type: application/pdf");
+                $buf = base64_encode($buf);
+                $len = strlen($buf);
+                echo $buf;
+                die;
+            }
+            // DOWNLOAD_NEW_WINDOW new browser window is opened to download file
+            else
+            {   
+                header('Content-Disposition: attachment;filename='.$attachfile);
+                $len = strlen($buf);
+                echo $buf;
+                die;
+            }
+			header("Content-Length: $len");
 
 			print($buf);
 			die;
@@ -835,8 +860,11 @@ class reportico_report_fpdf extends reportico_report
 			{
 				$col =& $val->headers[$i]["GroupHeaderColumn"];
 				$custom = $val->headers[$i]["GroupHeaderCustom"];
-				$this->format_group_header($col, $custom, true);
-                $totheaderheight += $this->calculated_line_height;
+                if ( $val->headers[$i]["ShowInPDF" ] == "yes" )
+                {
+				    $this->format_group_header($col, $custom, true);
+                    $totheaderheight += $this->calculated_line_height;
+                }
 			}
         }
         $this->calculated_line_height = $totheaderheight;
@@ -860,7 +888,7 @@ class reportico_report_fpdf extends reportico_report
 		return;
 	}
 
-	function format_group_trailer_end() // PDF
+	function format_group_trailer_end($last_trailer = false) // PDF
 	{
         $this->unapply_style_tags($this->query->output_group_trailer_styles);
 		return;

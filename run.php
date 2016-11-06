@@ -257,7 +257,14 @@
     //$q->static_menu = array ();
 
     // Required PDF Engine set -- to tcpdf ( default ) or fpdf 
-    //$q->pdf_engine = "tcpdf";
+    //$q->pdf_engine = "fpdf";
+
+    // How CSV, PDF out is delivered to the browser ( TCPDF output only )
+    // either as
+    // "DOWNLOAD_SAME_WINDOW" - downloaded as attachment from within the current browser window ( default )
+    // "INLINE" - shown inside a new  browser window making use of any existing browser PDF plugin (if not will download)
+    // "DOWNLOAD_NEW_WINDOW" - downloaded as attachment from winthin the current browser window
+    //$q->pdf_delivery_mode = "DOWNLOAD_SAME_WINDOW";
 
     // Dropdown Menu definition
     // ========================

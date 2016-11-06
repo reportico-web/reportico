@@ -381,7 +381,13 @@ class reportico_panel
                 else
                     $url_join_char = "?";
 						
-				$this->query->menuitems[] = array (
+                if ( $this->text == "TEXT" )
+				    $this->query->menuitems[] = array (
+						"label" => $this->text,
+						"url" => $this->program
+							);
+                else
+				    $this->query->menuitems[] = array (
 						"label" => $this->text,
 						"url" => $this->query->get_action_url().$url_join_char.$forward."execute_mode=PREPARE&xmlin=".$this->program."&amp;reportico_session_name=".reportico_session_name()
 							);
@@ -483,10 +489,8 @@ class reportico_panel
 			case "STATUS":
 
 				$msg = "";
-
 				if ( $this->query->status_message )
 					$this->smarty->assign('STATUSMSG', $this->query->status_message );
-
 				global $g_system_debug;
 				if ( !$g_system_debug )
 					$g_system_debug = array();
@@ -512,12 +516,14 @@ class reportico_panel
 				$duptypect = 0;
 				if ( !$g_system_errors )
 					$g_system_errors = array();
+                $ct = 0;
 				foreach ( $g_system_errors as $val )
 				{
 
 					if ( $val["errno"] == E_USER_ERROR ||  $val["errno"] == E_USER_WARNING )
 					{
-						$msg .= "<HR>";
+                        if ( $ct++ > 0 )
+						    $msg .= "<HR>";
   						if ( $val["errarea"] ) $msg .= $val["errarea"]." - ";
 						if ( $val["errtype"] ) $msg .= $val["errtype"].": ";
 						$msg .= $val["errstr"];
@@ -528,16 +534,14 @@ class reportico_panel
 					else
 					{
 						// Dont keep repeating Assignment errors
-						$msg .= "<HR>";
-						//if ( $val["errct"] > 1 ) $msg .= $val["errct"]." occurrences of ";
-						// PPP Change $msg .= $val["errarea"]." - ".$val["errtype"].": ".$val["errstr"].
-						//" at line ".$val["errline"]." in ".$val["errfile"].$val["errsource"];
-						//"\n";
+                        if ( $ct++ > 0 )
+						    $msg .= "<HR>";
+
 						if ( $val["errarea"] ) $msg .= $val["errarea"]." - ";
 						if ( $val["errtype"] ) $msg .= $val["errtype"].": ";
+                        if ( isset($val["errstr"]) && $val["errstr"] ) 
+                            $msg .= "{$val["errfile"]} Line {$val["errline"]} - ";
 						$msg .= $val["errstr"];
-						//$msg .= " at line ".$val["errline"]." in ".$val["errfile"].$val["errsource"];
-						"\n";
 						$duptypect = 0;
 					}
 					$lastval = $val;
@@ -545,10 +549,38 @@ class reportico_panel
 				if ( $duptypect > 0 )
 					$msg .= "<BR>$duptypect more errors like this<BR>";
 
-				if ( $msg )
+				$debugmsg = "";
+				if ( $this->query->status_message )
+					$this->smarty->assign('STATUSMSG', $this->query->status_message );
+				global $g_system_debug;
+				if ( !$g_system_debug )
+					$g_system_debug = array();
+				foreach ( $g_system_debug as $val )
 				{
-					$msg = "<B>".template_xlate("UNABLE_TO_CONTINUE").":</B>".$msg;
+
+					$debugmsg .= "<hr>".$val["dbgarea"]." - ".$val["dbgstr"]."\n";
 				}
+
+				if ( $debugmsg )
+				{
+					$debugmsg = "<BR><B>".template_xlate("INFORMATION")."</B>".$debugmsg;
+				}
+
+
+                if ( false && $msg && $this->query->reportico_ajax_called )
+                {
+                    header("HTTP/1.0 500 Not Found", true);
+                    $response_array = array();
+                    $response_array["errno"] = 100;
+                    $response_array["errmsg"] = "<div class=\"swError\">$msg</div>$debugmsg";
+                    echo json_encode($response_array);
+                    die;
+                }
+                else
+                {
+                    if ( $msg )
+					    $msg = "</B><div class=\"swError\">$msg</div>$debugmsg";
+                }
 
 				$this->smarty->assign('ERRORMSG', $msg );
 				set_reportico_session_param('latestRequest',"");
@@ -2472,7 +2504,7 @@ class reportico_xml_reader
 					$updateitem =& $anal["item"];
 					$gr =& $anal["group"];
 					$anal["quer"]->set_group_header_by_number 
-							( $anal["groupname"], $anal["number"], $updates["GroupHeaderColumn"], $updates["GroupHeaderCustom"] );
+							( $anal["groupname"], $anal["number"], $updates["GroupHeaderColumn"], $updates["GroupHeaderCustom"], $updates["ShowInHTML"],$updates["ShowInPDF"] );
 					break;
 
 				case "gtrl":
@@ -2492,7 +2524,7 @@ class reportico_xml_reader
 							( $anal["groupname"], $anal["number"], 
 										$updates["GroupTrailerDisplayColumn"],
 										$updates["GroupTrailerValueColumn"],
-										$updates["GroupTrailerCustom"]
+										$updates["GroupTrailerCustom"], $updates["ShowInHTML"],$updates["ShowInPDF"]
 							   	);
 					break;
 
@@ -5282,7 +5314,12 @@ class reportico_xml_reader
 							{
                                     if ( !isset($val["GroupHeaderCustom"]) )
                                         $val["GroupHeaderCustom"] = false;
-									$this->query->create_group_header($gpname, $val["GroupHeaderColumn"],$val["GroupHeaderCustom"]);
+                                    if ( !isset($val["ShowInHTML"]) )
+                                        $val["ShowInHTML"] = "yes";
+                                    if ( !isset($val["ShowInPDF"]) )
+                                        $val["ShowInPDF"] = "yes";
+                                        
+									$this->query->create_group_header($gpname, $val["GroupHeaderColumn"],$val["GroupHeaderCustom"],$val["ShowInHTML"],$val["ShowInPDF"]);
 							}
 
 						if ( ($gp =& $this->get_array_element($phi,"GroupTrailers")) )
@@ -5290,9 +5327,13 @@ class reportico_xml_reader
 							{
                                     if ( !isset($val["GroupTrailerCustom"]) )
                                         $val["GroupTrailerCustom"] = false;
+                                    if ( !isset($val["ShowInHTML"]) )
+                                        $val["ShowInHTML"] = "yes";
+                                    if ( !isset($val["ShowInPDF"]) )
+                                        $val["ShowInPDF"] = "yes";
 									$this->query->create_group_trailer($gpname, $val["GroupTrailerDisplayColumn"], 
 																	$val["GroupTrailerValueColumn"],
-																	$val["GroupTrailerCustom"]);
+																	$val["GroupTrailerCustom"],$val["ShowInHTML"],$val["ShowInPDF"]);
 							}
 					}
 				}
@@ -5840,6 +5881,8 @@ class reportico_xml_writer
                         $val2["GroupHeaderCustom"] = false;
 					$el =& $gphi->add_xmlval ( "GroupHeaderColumn", $val2["GroupHeaderColumn"]->query_name );
 					$el =& $gphi->add_xmlval ( "GroupHeaderCustom", $val2["GroupHeaderCustom"]);
+					$el =& $gphi->add_xmlval ( "ShowInHTML", $val2["ShowInHTML"]);
+					$el =& $gphi->add_xmlval ( "ShowInPDF", $val2["ShowInPDF"]);
 				}
 
 				$gpt =& $gpi->add_xmlval ( "GroupTrailers" );
@@ -5853,6 +5896,8 @@ class reportico_xml_writer
 					    $el =& $gpti->add_xmlval ( "GroupTrailerDisplayColumn", $val2["GroupTrailerDisplayColumn"] );
 					    $el =& $gpti->add_xmlval ( "GroupTrailerValueColumn", $val2["GroupTrailerValueColumn"]->query_name );
 					    $el =& $gpti->add_xmlval ( "GroupTrailerCustom", $val2["GroupTrailerCustom"]);
+					    $el =& $gpti->add_xmlval ( "ShowInHTML", $val2["ShowInHTML"]);
+					    $el =& $gpti->add_xmlval ( "ShowInPDF", $val2["ShowInPDF"]);
                     }
 				}
 			}

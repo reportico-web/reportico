@@ -50,6 +50,7 @@
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/ui/jquery-ui.js"></script>
 {/literal}
 {literal}
+<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/download.js"></script>
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/reportico.js"></script>
 {/literal}
 {/if}
@@ -138,6 +139,7 @@
     </script>
 
 
+<script type="text/javascript">var reportico_pdf_delivery_mode = "{$PDF_DELIVERY_MODE}";</script>
 <script type="text/javascript">var reportico_datepicker_language = "{$AJAX_DATEPICKER_FORMAT}";</script>
 <script type="text/javascript">var reportico_ajax_mode = "{$REPORTICO_AJAX_MODE}";</script>
 <FORM class="swPrpForm" id="criteriaform" name="topmenu" method="POST" action="{$SCRIPT_SELF}">
@@ -360,6 +362,7 @@
                             <ul class="dropdown-menu reportico-dropdown">
     				            <li><input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITPAGEHEADERS}" id="submit_mainqueroutppghd0000form" value="{$T_EDITPAGEHEADERS}" name="mainqueroutppghd0000form_ANY"></li>
     				            <li><input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{$T_EDIT} {$T_EDITPAGEFOOTERS}" id="submit_mainqueroutppgft0000form" value="{$T_EDITPAGEFOOTERS}" name="mainqueroutppgft0000form_ANY"></li>
+    				            <li><input type="submit" class="{$BOOTSTRAP_STYLE_TOOLBAR_BUTTON}prepareMiniMaintain swMiniMaintain" style="margin-top: 10px; margin-right: 30px" title="{$T_EDIT} {$T_EDITPRESQLS}" id="submit_mainquerqurypsql_SHOW" value="{$T_EDITPRESQLS}" name="mainquerqurypsql_ANY"></li>
                             </ul>
                         </li>
                 </ul>
@@ -680,7 +683,6 @@ $loopct++;
 			<!---->
 
 </FORM>
-{if $SHOW_MINIMAINTAIN}
 {if $REPORTICO_BOOTSTRAP_MODAL}
 {if $BOOTSTRAP_STYLES == "3" }
 <div class="modal fade" id="reporticoModal" tabindex="-1" role="dialog" aria-labelledby="reporticoModal" aria-hidden="true">
@@ -704,6 +706,28 @@ $loopct++;
     </div>
   </div>
 </div>
+{if $BOOTSTRAP_STYLES == "3" }
+<div class="modal fade" id="reporticoNoticeModal" tabindex="-1" role="dialog" aria-labelledby="reporticoNoticeModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+{else}
+<div class="modal fade" style="pointer-events: none; width: 500px; margin-left: -450px" id="reporticoNoticeModal" tabindex="-1" role="dialog" aria-labelledby="reporticoModal" aria-hidden="true">
+    <div class="modal-dialog">
+{/if}
+        <div class="modal-content">
+            <div class="modal-header">
+            <button type="button" data-dismiss="modal" class="close" aria-hidden="true">&times;</button>
+            <h4 class="modal-title reportico-notice-modal-title" id="reporticoNoticeModalLabel">{$T_NOTICE}</h4>
+            </div>
+            <div class="modal-body" style="padding: 0px" id="reporticoNoticeModalBody">
+                <h3>Modal Body</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                <!--button type="button" class="btn btn-primary" >Close</button-->
+        </div>
+    </div>
+  </div>
+</div>
 {else}
 <div id="reporticoModal" tabindex="-1" class="reportico-modal">
     <div class="reportico-modal-dialog">
@@ -722,7 +746,23 @@ $loopct++;
     </div>
   </div>
 </div>
-{/if}
+<div id="reporticoNoticeModal" tabindex="-1" class="reportico-notice-modal">
+    <div class="reportico-notice-modal-dialog">
+        <div class="reportico-notice-modal-content">
+            <div class="reportico-notice-modal-header">
+            <button type="button" class="reportico-notice-modal-close">&times;</button>
+            <h4 class="reportico-notice-modal-title" id="reporticoNoticeModalLabel">Set Parameter</h4>
+            </div>
+            <div class="reportico-notice-modal-body" id="reporticoNoticeModalBody">
+                <h3>Modal Body</h3>
+            </div>
+            <div class="reportico-notice-modal-footer">
+                <!--button type="button" class="btn btn-default" data-dismiss="modal">Close</button-->
+                <button type="button" class="reportico-notice-modal-button" >Close</button>
+        </div>
+    </div>
+  </div>
+</div>
 {/if}
 <!--div class="smallbanner">Powered by <a href="http://www.reportico.org/" target="_blank">reportico {$REPORTICO_VERSION}</a></div-->
 </div>

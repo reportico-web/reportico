@@ -408,8 +408,14 @@ class reportico_report extends reportico_object
 	function page_headers()
 	{
 		$this->format_page_header_start();
+        
 		foreach($this->query->page_headers as $ph)
 		{
+                // If one of the headers is {NOMORE} then ignore any subsequenct ones problably the default ones form the 
+                // reportico_defaults file
+                if ( $ph->text == "{NOMORE}" )
+                    break;
+
                 if (
                     ( $ph->get_attribute("ShowInHTML") == "yes" && get_class($this) == "reportico_report_html" )
                     || ( $ph->get_attribute("ShowInPDF")  == "yes"&& $this->query->target_format == "PDF" )
@@ -426,6 +432,11 @@ class reportico_report extends reportico_object
 		$this->format_page_footer_start();
 		foreach($this->query->page_footers as $ph)
 		{
+                // If one of the headers is {NOMORE} then ignore any subsequenct ones problably the default ones form the 
+                // reportico_defaults file
+                if ( $ph->text == "{NOMORE}" )
+                    break;
+
                 if (
                     ( $ph->get_attribute("ShowInHTML") == "yes" && get_class($this) == "reportico_report_html" )
                     || ( $ph->get_attribute("ShowInPDF")  == "yes"&& $this->query->target_format == "PDF" )
@@ -702,7 +713,8 @@ class reportico_report extends reportico_object
                                 if ( array_key_exists($w->query_name, $group->trailers_by_column) )
                                 {
                                     $number_group_rows++;
-                                    if ( count($group->trailers_by_column[$w->query_name]) >= $lev + 1 && !$group->trailers_by_column[$w->query_name][$lev]["GroupTrailerCustom"] )
+                                    //if ( count($group->trailers_by_column[$w->query_name]) >= $lev + 1 && !$group->trailers_by_column[$w->query_name][$lev]["GroupTrailerCustom"] && $group->trailers_by_column[$w->query_name][$lev]["ShowInHTML"] == "yes")
+                                    if ( count($group->trailers_by_column[$w->query_name]) >= $lev + 1 && $group->trailers_by_column[$w->query_name][$lev]["ShowInHTML"] == "yes")
                                     {
                                         if ( !$linedrawn )
                                         {
@@ -802,7 +814,8 @@ class reportico_report extends reportico_object
                             {
                                 foreach ( $trailer as $kk2 => $colgrp )
                                 {
-                                    $this->format_custom_trailer($w, $colgrp);
+                                    if ( $colgrp["ShowInPDF"] == "yes")
+                                        $this->format_custom_trailer($w, $colgrp);
                                 }
                             } // foreach
                         }
@@ -940,7 +953,12 @@ class reportico_report extends reportico_object
 				    {
 				        $col =& $group->headers[$i]["GroupHeaderColumn"];
 				        $custom = $group->headers[$i]["GroupHeaderCustom"];
-				        $this->format_group_header($col, $custom);
+                        if ( $group->headers[$i]["ShowInHTML" ] == "yes" && get_class($this) == "reportico_report_html" )
+				            $this->format_group_header($col, $custom);
+                        if ( $group->headers[$i]["ShowInPDF" ] == "yes" && get_class($this) == "reportico_report_tcpdf" )
+				            $this->format_group_header($col, $custom);
+                        if ( $group->headers[$i]["ShowInPDF" ] == "yes" && get_class($this) == "reportico_report_fpdf" )
+				            $this->format_group_header($col, $custom);
 				    }
                 }
 
@@ -999,6 +1017,18 @@ class reportico_report extends reportico_object
     }
 
 
+    function debugFile( $txt )
+    { 
+        if ( !$this->debugFp )
+            $this->debugFp = fopen ( "/tmp/debug.out", "w" );
+
+        if ( $txt == "FINISH" )
+            fclose($this->debugFp);
+        else
+            fwrite ( $this->debugFp, "$txt\n" );
+            //fwrite ( $this->debugFp, "$txt => Max $this->max_line_height Curr $this->current_line_height \n" );
+
+    } 
 
 }
 ?>

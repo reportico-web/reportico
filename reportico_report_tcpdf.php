@@ -302,6 +302,7 @@ echo $txt;
                 "width" => array( 0 => false ),
                 "background-image" => array( 0 => false ),
                 "type" => array( 0 => "BASE" ),
+                "display" => array( 0 => "inline" ),
                );
 
 
@@ -841,19 +842,46 @@ echo $txt;
 		{
 			$this->debug("No pdf file specified !!!");
 			//$buf = $this->document->pdf_get_buffer($this->document);
-			$buf = $this->document->Output("", "S");
-			$len = strlen($buf);
+			//$buf = $this->document->Output("", "S");
+			//$buf = base64_decode(buf);
+			//$len = strlen($buf);
+			//header("Content-Type: application/pdf");
+			//header("Content-Length: $len");
+			//header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 
 			if ( ob_get_length() > 0 )
 				ob_clean();	
 
-			header("Content-Type: application/pdf");
-			header("Content-Length: $len");
-			header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+            // Use TCPDF's mechanisms for delivering via attachment or inline
             $attachfile = "reportico.pdf";
             if ( $this->reportfilename )
                 $attachfile = preg_replace("/ /", "_", $this->reportfilename.".pdf");
-			header('Content-Disposition: attachment;filename='.$attachfile);
+                       header('Content-Disposition: attachment;filename='.$attachfile);
+
+
+            // INLINE output is just returned to browser window it is invoked from 
+            // with hope that browser uses plugin
+            if ( $this->query->pdf_delivery_mode == "INLINE" )
+            {
+			    $this->document->Output($attachfile, "I"); 
+                die;
+            }
+            // DOWNLOAD_SAME_WINDOW output is ajaxed back to current browser window and then downloaded
+            else if ( $this->query->pdf_delivery_mode == "DOWNLOAD_SAME_WINDOW" && $this->query->reportico_ajax_called )
+            {
+                header('Content-Disposition: attachment;filename='.$attachfile);
+                header("Content-Type: application/pdf");
+			    $buf = base64_encode($this->document->Output($attachfile, "S"));
+			    $len = strlen($buf);
+                echo $buf;
+                die;
+            }
+            // DOWNLOAD_NEW_WINDOW new browser window is opened to download file
+            else
+            {
+			    $buf = $this->document->Output($attachfile, "D");  
+                die;
+            }
 
 
 			print($buf);
@@ -1117,7 +1145,7 @@ echo $txt;
             $pmargin =  $this->extract_style_tags ( "EACHLINE", $this->all_page_page_styles, "margin", "left" );
             $rgmargin =  $this->extract_style_tags ( "EACHLINE", $styles, "margin", "right" );
 		    $x = $this->all_page_page_styles["style_start"];
-            $wd = $this->all_page_page_styles["style_width"] + $pmargin - $rgmargin - 50;
+            $wd = $this->all_page_page_styles["style_width"] + $pmargin - $rgmargin;
             $this->set_position($x, $this->group_header_start);
 
             $link = false;
@@ -1218,7 +1246,9 @@ echo $txt;
     //Cell with horizontal scaling if text is too wide
     function draw_cell($w,$h=0,$txt='',$implied_styles="PBF",$ln=0,$align='',$valign="T", $link='')
     {
-//if ( $this->line_count < 3 ) $this->debugFile("======> DC $h $this->required_line_height");
+        if ( end($this->stylestack["display"]) == "none" )
+            return;
+
         // Set custom width
         $custom_width = end( $this->stylestack["width"]);
         if ( $custom_width )
@@ -1911,8 +1941,11 @@ echo $txt;
 			{
 				$col =& $val->headers[$i]["GroupHeaderColumn"];
 				$custom = $val->headers[$i]["GroupHeaderCustom"];
-				$this->format_group_header($col, $custom, true);
-                $totheaderheight += $this->calculated_line_height;
+				if ( $val->headers[$i]["ShowInPDF"] )
+                {
+				    $this->format_group_header($col, $custom, true);
+                    $totheaderheight += $this->calculated_line_height;
+                }
 			}
         }
         $this->group_headers_custom_drawn = 0;
@@ -2082,10 +2115,15 @@ echo $txt;
 
 		    $this->yjump = 2;
 		    // Fetch Group Header Label Start Column + display
-            $margin =  $this->extract_style_tags ( "EACHLINE", $this->query->output_group_header_label_styles, "margin", "left" );
+            $margin =  $this->extract_style_tags ( "EACHLINE", $this->query->output_group_header_label_styles, "margin", "right" );
             $pmargin =  $this->extract_style_tags ( "EACHLINE", $this->all_page_page_styles, "margin", "left" );
             $rpmargin =  $this->extract_style_tags ( "EACHLINE", $this->all_page_page_styles, "margin", "right" );
+
+            // Default group header label to 150px unless one is specifed
             $labelwidth = 150;
+            if ( isset($this->query->output_group_header_label_styles["width"]) )
+                $labelwidth = $this->abs_metric($this->query->output_group_header_label_styles["width"]);
+
 		    $group_xpos = $this->all_page_page_styles["style_start"];
 		    $group_xpos += $pmargin;
 		    $group_label_width = $labelwidth;
@@ -2096,17 +2134,19 @@ echo $txt;
             $this->apply_style_tags( "EACHHEADMID", $this->mid_cell_reportbody_styles);
 
             if ( session_request_item("target_style", "TABLE" ) != "FORM" )
-	            $this->apply_style_tags( "HEADERLABEL", $this->query->output_group_header_label_styles);
+	            $this->apply_style_tags( "GROUPHEADERLABEL", $this->query->output_group_header_label_styles);
+
 		    $this->set_position($group_xpos, $y);
 		    $padstring = $group_label;
 		    $this->draw_cell( $group_label_width, $this->vsize, "$padstring");
+
             if ( session_request_item("target_style", "TABLE" ) != "FORM" )
-	            $this->unapply_style_tags( "HEADERLABEL", $this->query->output_group_header_label_styles);
+	            $this->unapply_style_tags( "GROUPHEADERLABEL", $this->query->output_group_header_label_styles);
     
             // Display group header value
 		    $contenttype = $col->derive_attribute( "content_type",  $col->query_name);
             if ( session_request_item("target_style", "TABLE" ) != "FORM" )
-	            $this->apply_style_tags( "HEADERVALUE", $this->query->output_group_header_value_styles);
+	            $this->apply_style_tags( "GROUPHEADERVALUE", $this->query->output_group_header_value_styles);
 
 			$qn = get_query_column($col->query_name, $this->query->columns ) ;
 		    if ( $contenttype == "graphic"  || preg_match("/imagesql=/", $qn->column_value))
@@ -2114,7 +2154,7 @@ echo $txt;
                 if ( $this->draw_mode == "CALCULATE" )
                 {
                     if ( session_request_item("target_style", "TABLE" ) != "FORM" )
-	                    $this->unapply_style_tags( "HEADERVALUE", $this->query->output_group_header_value_styles);
+	                    $this->unapply_style_tags( "GROUPHEADERVALUE", $this->query->output_group_header_value_styles);
                     $this->unapply_style_tags( "EACHHEADMID", $this->mid_cell_reportbody_styles);
                     continue;
                 }
@@ -2159,7 +2199,7 @@ echo $txt;
 			    $this->draw_cell($group_data_width, $this->vsize, "$padstring");
 		    }
             if ( session_request_item("target_style", "TABLE" ) != "FORM" )
-	            $this->unapply_style_tags( "HEADERVALUE", $this->query->output_group_header_value_styles);
+	            $this->unapply_style_tags( "GROUPHEADERVALUE", $this->query->output_group_header_value_styles);
 		    $this->end_line();
 		    //$this->draw_cell($group_data_width + 200, $this->vsize, "");    // Blank cell to continue page breaking at this size
 		    $y = $this->document->GetY();

@@ -38,6 +38,7 @@
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/ui/jquery-ui.js"></script>
 {/literal}
 {literal}
+<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/download.js"></script>
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/reportico.js"></script>
 {/literal}
 {/if}

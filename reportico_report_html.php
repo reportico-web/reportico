@@ -463,10 +463,11 @@ class reportico_report_html extends reportico_report
 
 	function format_group_header(&$col, $custom) // HTML
 	{
-        if ( $custom || !$col)
+        if ( !$col)
         {
             return;
         }
+
 
 		$this->text .= '<TR class="swRepGrpHdrRow">';
 		$this->text .= '<TD class="swRepGrpHdrLbl" '.$this->get_style_tags($this->query->output_group_header_label_styles).'>';
@@ -654,7 +655,10 @@ class reportico_report_html extends reportico_report
 				    $col =& $val->headers[$i];
                     $col =& $val->headers[$i]["GroupHeaderColumn"];
                     $custom = $val->headers[$i]["GroupHeaderCustom"];
-                    $this->format_group_header($col, $custom, true);
+                    if ( $val->headers[$i]["ShowInHTML" ] == "yes" )
+                    {
+                        $this->format_group_header($col, $custom, true);
+			        }
 			    }
             }
 

@@ -30,8 +30,18 @@ function setupDynamicGrids()
 function setupDatePickers()
 {
     reportico_jquery(".swDateField").each(function(){
-        reportico_jquery(this).datepicker({dateFormat: reportico_datepicker_language});
-    });
+        reportico_jquery(this).datepicker(
+            {
+                dateFormat: reportico_datepicker_language,
+                onSelect: function(dateText) {              // Automatically set a to date value from a from date
+                    id = this.id;
+                    if ( id.match(/_FROMDATE/) )
+                    {
+                        todate = id.replace(/_FROMDATE/, "_TODATE");
+                        reportico_jquery("#" + todate).prop("value", this.value);
+                    }
+             }});
+        });
 }
 
 function setupTooltips()
@@ -141,10 +151,16 @@ function formatState (state) {
 
 function setupModals()
 {
-var options = {
-}
+    var options = { } 
     reportico_jquery('#reporticoModal').modal(options);
 }
+
+function setupNoticeModals()
+{
+    var options = { } 
+    reportico_jquery('#reporticoNoticeModal').modal(options);
+}
+
 
 function setupDropMenu()
 {
@@ -264,19 +280,13 @@ reportico_jquery(document).ready(function()
 
 });
 
-reportico_jquery(document).on('click', '.reportico-bootstrap-modal-close', function(event) 
+reportico_jquery(document).on('click', '.reportico-notice-modal-close,.reportico-notice-modal-button', function(event) 
 {
     reportico_jquery("#swMiniMaintain").html("");
-    reportico_jquery('#reporticoModal').modal('hide');
+    reportico_jquery('#reporticoNoticeModal').hide();
 });
 
-reportico_jquery(document).on('click', '.reportico-modal-close', function(event) 
-{
-    reportico_jquery("#swMiniMaintain").html("");
-    reportico_jquery('#reporticoModal').hide();
-});
-
-reportico_jquery(document).on('click', '.swMiniMaintainSubmit', function(event) 
+reportico_jquery(document).on('click', '.swMiniMaintainSubmit,.reportico-bootstrap-modal-close,.reportico-modal-close', function(event) 
 {
 
     if ( reportico_bootstrap_modal )
@@ -503,26 +513,36 @@ reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenu
 
             if ( csvpdfoutput )
             {
-/*               
-                var windowSizeArray = [ "width=200,height=200",
+                if (typeof reportico_pdf_delivery_mode == 'undefined'
+                    || !reportico_pdf_delivery_mode || reportico_pdf_delivery_mode != "DOWNLOAD_SAME_WINDOW" 
+                    )
+                {
+                    reportico_jquery(expandpanel).removeClass("loading");
+                    reportico_jquery(reportico_container).removeClass("loading");
+                    var windowSizeArray = [ "width=200,height=200",
                           "width=300,height=400,scrollbars=yes" ];
 
-                var url = ajaxaction +"?" + params;
-                var windowName = "popUp";//reportico_jquery(this).prop("name");
-                var windowSize = windowSizeArray[reportico_jquery(this).prop("rel")];
+                    var url = ajaxaction +"?" + params;
 
-                window.open(url, windowName, "width=200,height=200");
-*/                
-                reportico_jquery(expandpanel).removeClass("loading");
-                reportico_jquery(reportico_container).removeClass("loading");
+                    var windowName = "popUp";//reportico_jquery(this).prop("name");
+                    var windowSize = windowSizeArray[reportico_jquery(this).prop("rel")];
+                    window.open(url, windowName, "width=400,height=400").focus();
+                    reportico_jquery(expandpanel).removeClass("loading");
+                    window.focus();
+                }
+                else
+                {
 
-                var buttonName = reportico_jquery(this).prop("name");
-                var formparams = forms.serializeObject();
-                formparams['reportico_ajax_called'] = '1';
-                formparams[buttonName] = '1';
-                //iframe downloader
-                ajaxDownload(ajaxaction, formparams);
-                
+                    reportico_jquery(expandpanel).removeClass("loading");
+                    var buttonName = reportico_jquery(this).prop("name");
+                    var formparams = forms.serializeObject();
+                    formparams['reportico_ajax_called'] = '1';
+                    formparams[buttonName] = '1';
+
+                    // Download pdf/csv from within current window
+                    ajaxFileDownload(ajaxaction, formparams, expandpanel, reportico_container);
+                }
+
                 return false;
             }
 
@@ -556,37 +576,57 @@ reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenu
     return false;
 })
 
-// MODIFIED--------------------------------
-//Hidden iframe download technique 
-function ajaxDownload(url, data) {
-    var $iframe,
-        iframe_doc,
-        iframe_html;
+/*
+ * Use ajax to return pdf or csv output and download to file.
+ * For pdf, output is received in base64. 
+ */
+function ajaxFileDownload(url, data, expandpanel, reportico_container) {
 
-    if (($iframe = reportico_jquery('#download_iframe')).length === 0) {       
-        $iframe = reportico_jquery("<iframe id='download_iframe'" +
-                    " style='display: none' src='about:blank'></iframe>"
-                   ).appendTo("body");
-    }
- 
-    iframe_doc = $iframe[0].contentWindow || $iframe[0].contentDocument;
-    if (iframe_doc.document) {
-        iframe_doc = iframe_doc.document;
-    }
+    reportico_jquery.ajax({
+      type: 'POST',
+      url: url,
+      data: data,
+      dataType: 'html',
+      success: function(data, status, request) {
+        reportico_jquery(expandpanel).removeClass("loading");
+        reportico_jquery(reportico_container).removeClass("loading");
 
-    iframe_html = "<html><head></head><body><form method='POST' action='" +
-                  url +"'>";
+        // PDF and CSV files are received in base64
+        var contenttype = request.getResponseHeader('Content-Type');
+        if ( contenttype == "application/pdf" )
+        {
+            var saveto = request.getResponseHeader('Content-Disposition');
+            saveto = saveto.replace(/attachment;filename=/,"");
+            objurl = "data:application/pdf;base64," + data;
+            download(objurl, saveto, "application/pdf");
+        }
 
-    Object.keys(data).forEach(function(key){
-        iframe_html += "<input type='hidden' name='"+key+"' value='"+data[key]+"'>";
-    });
+        if ( contenttype == "application/octet-stream" )
+        {
+            var saveto = request.getResponseHeader('Content-Disposition');
+            saveto = saveto.replace(/attachment;filename=/,"");
+            objurl = "data:application/octet-stream;base64," + data;
+            download(objurl, saveto, "application/pdf");
+        }
+      },
+       error: function(xhr, desc, err) {
+        reportico_jquery(expandpanel).removeClass("loading");
+        reportico_jquery(reportico_container).removeClass("loading");
+         try {
+            // a try/catch is recommended as the error handler
+            // could occur in many events and there might not be
+            // a JSON response from the server
+            var errstatus = reportico_jquery.parseJSON(xhr.responseText);
+            var msg = errstatus.errmsg;
+            //reportico_jquery(expandpanel).prop('innerHTML', msg);
+            showNoticeModal(msg);
 
-    iframe_html +="</form></body></html>";
+        } catch(e) { 
+            showNoticeModal(xhr.responseText);
+        }
+       }
     
-    iframe_doc.open();
-    iframe_doc.write(iframe_html);
-    iframe_doc.close();//close is necessary or the forms multiply
-    reportico_jquery(iframe_doc).find('form').submit();
+    });
 }
 
 //general serializeObject function - e.g. turn a form's fields into an object
@@ -771,24 +811,33 @@ reportico_jquery(document).on('click', '.swPrintBox,.prepareAjaxExecute,#prepare
 
     if ( csvpdfoutput )
     {
-/*        
-        var windowSizeArray = [ "width=200,height=200",
+        if (typeof reportico_pdf_delivery_mode == 'undefined'
+            || !reportico_pdf_delivery_mode || reportico_pdf_delivery_mode != "DOWNLOAD_SAME_WINDOW" 
+             )
+        {
+            var windowSizeArray = [ "width=200,height=200",
                   "width=300,height=400,scrollbars=yes" ];
 
-        var url = ajaxaction +"?" + params;
+            var url = ajaxaction +"?" + params;
 
-        var windowName = "popUp";//reportico_jquery(this).prop("name");
-        var windowSize = windowSizeArray[reportico_jquery(this).prop("rel")];
-        window.open(url, windowName, "width=200,height=200");
-*/        
-        reportico_jquery(expandpanel).removeClass("loading");
-      
-        var buttonName = reportico_jquery(this).prop("name");
-        var formparams = reportico_jquery(critform).serializeObject();
-        formparams['execute_mode'] = 'EXECUTE';
-        formparams[buttonName] = '1';
-        //iframe downloader
-        ajaxDownload(ajaxaction, formparams);
+            var windowName = "popUp";//reportico_jquery(this).prop("name");
+            var windowSize = windowSizeArray[reportico_jquery(this).prop("rel")];
+            window.open(url, windowName, "width=400,height=400").focus();
+            reportico_jquery(expandpanel).removeClass("loading");
+            reportico_jquery(reportico_container).removeClass("loading");
+            window.focus();
+        }
+        else
+        {
+            // Download pdf/csv from within current window
+            var buttonName = reportico_jquery(this).prop("name");
+            var formparams = reportico_jquery(critform).serializeObject();
+            formparams['execute_mode'] = 'EXECUTE';
+            formparams[buttonName] = '1';
+            formparams['reportico_ajax_called'] = '1';
+            ajaxFileDownload(ajaxaction, formparams, expandpanel, reportico_container);
+        }
+
         return false;
     }
 
@@ -827,14 +876,46 @@ reportico_jquery(document).on('click', '.swPrintBox,.prepareAjaxExecute,#prepare
             var errstatus = reportico_jquery.parseJSON(xhr.responseText);
             var msg = errstatus.errmsg;
             //reportico_jquery(expandpanel).prop('innerHTML', msg);
-            alert(msg);
+            showNoticeModal(msg);
+
         } catch(e) { 
-            reportico_jquery(expandpanel).prop('innerHTML',"Error occurred in data request. Error " + xhr.status + ": " + xhr.statusText);
+            showNoticeModal(xhr.responseText);
         }
        }
      });
      return false;
    });
+
+/*
+ * Shows modal window containing the passed text
+ */
+function showNoticeModal(content)
+{
+    reportico_jquery("#reporticoNoticeModalBody").html("");
+    if ( reportico_bootstrap_modal )
+    {
+        reportico_jquery('#reporticoNoticeModal').modal({});
+    }
+    else
+        reportico_jquery("#reporticoNoticeModal").show();
+    reportico_jquery("#reporticoNoticeModalBody").html(content);
+}
+
+/*
+ * Shows modal window containing the passed text from within a child iframe
+ */
+function showParentNoticeModal(content)
+{
+    reportico_jquery("#reporticoNoticeModalBody",window.parent.document).html("");
+    if ( reportico_bootstrap_modal )
+    {
+        reportico_jquery('#reporticoNoticeModal',window.parent.document).modal({});
+    }
+    else
+        reportico_jquery("#reporticoNoticeModal",window.parent.document).show();
+    reportico_jquery("#reporticoNoticeModalBody",window.parent.document).html(content);
+}
+
 
 /*
 ** Runs an AJAX reportico request from a link
@@ -951,6 +1032,7 @@ function html_print(title, data)
     setTimeout(html_print_fix,200);
 
     reporticohtmlwindow.focus();
+    reporticohtmlwindow.focus();
     return true;
 }
 
@@ -965,3 +1047,4 @@ function html_print_fix()
         reporticohtmlwindow.resizeOutputTables(reporticohtmlwindow); 
     }
 }
+

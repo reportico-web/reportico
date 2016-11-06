@@ -72,7 +72,6 @@ $locale_arr = array (
         "T_DRILLDOWNREPORT" => "Drilldown Report",
         "T_DRILLDOWNCOLUMN" => "Drilldown To",
         "T_GROUPNAME" => "Group On Column",
-        "T_GROUPNAME" => "Group On Column",
         "T_GRAPHCOLUMN" => "Group Column",
         "T_GRAPHHEIGHT" => "Graph Height",
         "T_GRAPHWIDTH" => "Graph Width",
@@ -119,7 +118,6 @@ $locale_arr = array (
         "T_OVERVIEWCOLUMN" => "Summary Column",
         "T_CONTENTTYPE" => "Content Type",
         "T_CUSTOMSOURCE" => "CustomSource",
-        "T_QUERYSQL" => "SQL Query<P>(* notation<br>or wildcards<br>not allowed<br>in column<br>selection)",
         "T_PAGESIZE" => "Page Size (PDF)",
         "T_PAGEWIDTHHTML" => "Page Width (HTML)",
         "T_PAGEORIENTATION" => "Orientation (PDF)",
@@ -197,12 +195,12 @@ $locale_arr = array (
         "T_.DEFAULT" => "Default",
         "T_Portrait" => "Portrait",
         "T_Landscape" => "Landscape",
-        "T_B5" => "B5", 
-        "T_A6" => "A6", 
-        "T_A5" => "A5", 
-        "T_A4" => "A4", 
-        "T_A3" => "A3", 
-        "T_A2" => "A2", 
+        "T_B5" => "B5",
+        "T_A6" => "A6",
+        "T_A5" => "A5",
+        "T_A4" => "A4",
+        "T_A3" => "A3",
+        "T_A2" => "A2",
         "T_A1" => "A1",
         "T_US-Letter" => "US Letter",
         "T_US-Legal" => "US Legal",
@@ -234,7 +232,6 @@ $locale_arr = array (
         "T_MULTI" => "Multiple Selection List Box",
         "T_SELECT2SINGLE" => "Searchable Single List Box",
         "T_SELECT2MULTIPLE" => "Searchable Multiple List Box",
-        "T_MULTI" => "Multiple Selection List Box",
         "T_CHECKBOX" => "Checkboxes",
         "T_RADIO" => "Radio Buttons",
         "T_DMYFIELD" => "Date Fields (D/M/Y)",
@@ -259,7 +256,7 @@ $locale_arr = array (
         "T_COLUMNNAME" => "Column",
         "T_CRITERIAITEM" => "Criteria",
         "T_GRAPH" => "Graph",
-        
+
         // Style Labels
         "T_BOLD" => "Bold",
         "T_ITALIC" => "Italic",
@@ -357,7 +354,6 @@ $locale_arr = array (
         "T_CSS1SIZE" => "Size must be a CSS size value, either a number followed by 'px' or '%' ",
         "T_CSS4SIZE" => "Size must be 4 space-delimited numbers (for top, left, bottom, right) each a number followed by 'px' or '%'",
         "T_NUMBER" => "Value must be number",
-
-        )
-        );
+    )
+);
 ?>

@@ -491,9 +491,19 @@ function AddFont($family,$style='',$file='')
             $file = $ofile;
     }
 
-	include($file);
+    
+    if ( is_file($file) )
+	    include($file);
+    else
+    {
+        $file = "fpdf/font/LiberationSans-Regular.php";
+	    include($file);
+    }
+    
 	if(!isset($name))
-		$this->Error('Could not include font definition file');
+    {
+		$this->Error('Could not include font definition file'.$file);
+    }
 	$i=count($this->fonts)+1;
 	$this->fonts[$family.$style]=array('i'=>$i,'type'=>$type,'name'=>$name,'desc'=>$desc,'up'=>$up,'ut'=>$ut,'cw'=>$cw,'enc'=>$enc,'file'=>$file);
 	if($diff)

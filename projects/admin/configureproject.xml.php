@@ -258,6 +258,7 @@ if ( $_configure_mode == "CREATE"  || $_configure_mode == "CREATETUTORIALS" )
 	$retval = file_put_contents($proj_lang, $txt);
 }
 
+if ( $configparams["SW_PROJECT"] != "tutorials" )
 if ( !$configparams["SW_PROJECT_PASSWORD"] ) handle_debug ("Warning - Project password not set - any user will be able to run reports in this project", 0);
 
 if ( $_configure_mode == "CREATETUTORIALS" )

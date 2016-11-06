@@ -6379,7 +6379,11 @@ $brd["mode"] = "normal";
 		$linebreak = false;
 		$pc = 0; // previous character
 		// for each character
+        $rrr = 0;
 		while ($i < $nb) {
+//file_put_contents("/tmp/debug.out", " $i $nb ppp ($maxh > 0) AND ($this->y > $maxy) \n", FILE_APPEND);
+            // break in the event there is a draw issue .. rrr shouldnot be high
+            if ( $rrr > 1000 ) break;
 			if (($maxh > 0) AND ($this->y > $maxy) ) {
 				break;
 			}
@@ -6537,6 +6541,7 @@ $brd["mode"] = "normal";
 								return (TCPDF_FONTS::UniArrSubString($uchars, $i));
 							}
 							$j = $i;
+$rrr++;
 							--$i;
 						}
 					} else {

@@ -26,6 +26,8 @@ echo "get translations from google"
 cat missing | sed "s/^.* => \"//" | sed "s/\",$//" > fromlang
 #cat missing | sed "s/^.* => \"//" > fromlang
 cat fromlang 
+cp fromlang tolang
+vi tolang
 fi
 
 if [ $stage = "2" ]; then
@@ -37,6 +39,7 @@ do
     echo $i | grep "^\.\." > /dev/null
     if [ $? -eq 0 ]; then
         outfile=$i.new
+        fn=$i
         echo $outfile
         if [ -f $outfile ]; then
             rm -f $outfile
@@ -53,6 +56,7 @@ do
     #echo -n "\t\t"
     #echo sed "s/=> \".*\"/=> \"$xlate\"/"
     echo $i | sed "s~=> \".*\"~=> \"$xlate\"~" >> $outfile
+    echo $i | sed "s~=> \".*\"~=> \"$xlate\"~" >> $fn
     if [ $? -eq 1 ]; then
         echo "Error in $i "
     fi

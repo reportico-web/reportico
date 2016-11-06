@@ -62,7 +62,7 @@
     background: url('../images/search.png') no-repeat;   
     background-color: #ffffff;
     height: 22px; 
-    width: 22px;
+    width: 22px !important;
 }
 
 .swPrpTopMenuCell input {
@@ -366,8 +366,8 @@ input.swAdminButton2
     text-align: center;
     border-bottom: 1px solid #d0ccc9;
     margin: 0px !important;
-    padding-bottom: 10px;
-    padding-top: 20px;
+    padding-bottom: 2px;
+    padding-top: 10px;
     padding-left: 20px;
 }
 
@@ -841,7 +841,7 @@ input.swAdminButton2
 
 .swMntMidSection
 {
-    width: 280px;
+    width: 216px;
     background-color: #eeeeff;
     border-right: solid black 1px;
 }
@@ -1033,7 +1033,7 @@ input.swAdminButton2
 .swMntSetField textarea
 {
     font-size: 10pt;
-    width: auto !important;
+    /*width: auto !important;*/
 }
 
 .swMntHelpLink
@@ -1067,7 +1067,7 @@ input.swAdminButton2
 .swStatus
 {
     width:          98%;
-    border: groove thin;
+    border: none;
     border-color : #DDFFDD;
     font-style:	    bold;
     margin-left: 1%;
@@ -1306,5 +1306,10 @@ margin-top: 15px;
 padding: 19px 20px 20px;
 text-align: right;
 border-top: 1px solid #e5e5e5;
+}
+
+#reporticoNoticeModalBody
+{
+    padding: 15px !important;
 }
 

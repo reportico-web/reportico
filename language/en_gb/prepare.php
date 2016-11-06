@@ -25,7 +25,6 @@ $locale_arr = array (
         "T_DEBUG_MEDIUM" => "Medium",
         "T_DEBUG_HIGH" => "High",
         "T_ENTER_PROJECT_PASSWORD" => "Enter the project password.",
-        "T_LOGIN" => "Log In",
         "T_DEFAULT_REPORT_DESCRIPTION" =>
                 "&nbsp<br>".
                 "Enter Your Report Criteria Here. To enter criteria use the appropriate expand key.".
@@ -56,11 +55,13 @@ $locale_arr = array (
         "T_EDITPAGEFOOTERS" => "Page Footers",
         "T_EDITGROUPHEADERS" => "Group Headers",
         "T_EDITGROUPTRAILERS" => "Group Trailers",
+        "T_EDITPRESQLS" => "Pre-SQLs",
         "T_EDITTITLE" => "Title",
         "T_EDITSQL" => "SQL",
         "T_EDITCRITERIA" => "Criteria",
         "T_EDITCOLUMNS" => "Columns",
         "T_EDIT" => "Edit",
+        "T_NOTICE" => "Notice",
         ),
         );
 ?>

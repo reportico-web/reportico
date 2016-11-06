@@ -38,6 +38,7 @@
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/ui/jquery-ui.js"></script>
 {/literal}
 {literal}
+<script type="text/javascript" src="{/literal}{$JSPATH}{literal}/download.js"></script>
 <script type="text/javascript" src="{/literal}{$JSPATH}{literal}/reportico.js"></script>
 {/literal}
 {/if}
@@ -326,6 +327,9 @@
 {strip}
 		<TR> 
 			<TD class="swMenuItem">
+{if $MENU_ITEMS[menuitem].label == "TEXT"}
+				{$MENU_ITEMS[menuitem].url}
+{else}
 {if $MENU_ITEMS[menuitem].label == "BLANKLINE"}
 				&nbsp;
 {else}
@@ -333,6 +337,7 @@
 				<hr>
 {else}
 				<a class="swMenuItemLink" href="{$MENU_ITEMS[menuitem].url}">{$MENU_ITEMS[menuitem].label}</a>
+{/if}
 {/if}
 {/if}
 			</TD>
