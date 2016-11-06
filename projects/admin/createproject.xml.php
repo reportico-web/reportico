@@ -11,14 +11,14 @@ $baseurl = $_criteria["baseurl"]->get_criteria_value("VALUE", false);
 $project = $_criteria["project"]->get_criteria_value("VALUE", false);
 $title = $_criteria["projtitle"]->get_criteria_value("VALUE", false);
 
-if ( !$title ) { trigger_error ( "Specify Project Title" ); return; }
-if ( !$type ) { trigger_error ( "Specify Database Type" ); return; }
-if ( !$project ) { trigger_error ( "Specify Project Name" ); return; }
-if ( !$name ) { trigger_error ( "Specify Database Name" ); return; }
-if ( !$host ) { trigger_error ( "Specify Database Host" ); return; }
-if ( !$user ) { trigger_error ( "Specify Database User" ); return; }
-//if ( !$password ) { trigger_error ( "Specify Database Type" ); return; }
-if ( !$baseurl ) { trigger_error ( "Specify Base URL" ); return; }
+if ( !$title ) { trigger_error ( "Specify Project Title", E_USER_NOTICE ); return; }
+if ( !$type ) { trigger_error ( "Specify Database Type", E_USER_NOTICE ); return; }
+if ( !$project ) { trigger_error ( "Specify Project Name", E_USER_NOTICE ); return; }
+if ( !$name ) { trigger_error ( "Specify Database Name", E_USER_NOTICE ); return; }
+if ( !$host ) { trigger_error ( "Specify Database Host", E_USER_NOTICE ); return; }
+if ( !$user ) { trigger_error ( "Specify Database User", E_USER_NOTICE ); return; }
+//if ( !$password ) { trigger_error ( "Specify Database Type", E_USER_NOTICE ); return; }
+if ( !$baseurl ) { trigger_error ( "Specify Base URL", E_USER_NOTICE ); return; }
 global $g_debug_mode;
 $g_debug_mode = true;
 ;
@@ -37,7 +37,7 @@ $test->connect(true);
 if ( $test->connected )
     handle_debug("Connection to Database succeeded", 0);
 else
-   trigger_error("Connection to Database failed");
+   trigger_error("Connection to Database failed", E_USER_NOTICE);
 
 $proj_parent = find_best_location_in_include_path( "projects" );
 $proj_dir = $proj_parent."/$project";
@@ -52,25 +52,25 @@ $lang_template = $proj_parent."/admin/lang.template";
 
 if ( !file_exists ( $proj_parent ) )
 {
-    trigger_error ("Projects area $proj_parent does not exist - cannot write project");
+    trigger_error ("Projects area $proj_parent does not exist - cannot write project", E_USER_NOTICE);
     return;
 }
 
 if ( !is_writeable ( $proj_parent  ) )
 {
-    trigger_error ("Projects area $proj_parent is not writeable - cannot write project");
+    trigger_error ("Projects area $proj_parent is not writeable - cannot write project", E_USER_NOTICE);
     return;
 }
 
 if ( file_exists ( $proj_dir ) )
 {
-    trigger_error ("Projects area $proj_dir already exists - cannot write project");
+    trigger_error ("Projects area $proj_dir already exists - cannot write project", E_USER_NOTICE);
     return;
 }
 else
 if ( !mkdir ( $proj_dir ) )
 {
-    trigger_error ("Failed to create project directory $proj_dir");
+    trigger_error ("Failed to create project directory $proj_dir", E_USER_NOTICE);
     return;
 }
 
@@ -78,7 +78,7 @@ if ( !is_writeable ( $proj_dir ) )
 {
    if ( ! chmod ( $proj_dir, "u+rwx") )
    {
-    trigger_error ("Failed to make project directory $proj_dir writeable ");
+    trigger_error ("Failed to make project directory $proj_dir writeable ", E_USER_NOTICE);
     return;
    }
 }
@@ -96,7 +96,7 @@ $txt = preg_replace ( "/<<DBUSER>>/", $user, $txt);
 echo "<PRE>";
 echo $txt;
 echo "</PRE>";
-    trigger_error ("Failed to create project directory $proj_dir");
+    trigger_error ("Failed to create project directory $proj_dir", E_USER_NOTICE);
     return;
 
 $retval = file_put_contents($proj_conf, $txt);

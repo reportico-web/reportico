@@ -3662,7 +3662,7 @@ class reportico extends reportico_object
             $this->xmlinput = "unknown.xml";
             $this->xmlin = "unknown.xml";
             $_REQUEST["xmlin"] = "unknown.xml";
-            trigger_error( "Can't find report" );
+            trigger_error( "Can't find report" , E_USER_NOTICE);
             return;
         }
 
@@ -3672,7 +3672,7 @@ class reportico extends reportico_object
             $this->xmlinput = "unknown.xml";
             $this->xmlin = "unknown.xml";
             $_REQUEST["xmlin"] = "unknown.xml";
-            trigger_error( "Can't find report" );
+            trigger_error( "Can't find report" , E_USER_NOTICE);
             return;
         }
 

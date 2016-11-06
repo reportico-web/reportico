@@ -520,7 +520,7 @@ class reportico_panel
 				foreach ( $g_system_errors as $val )
 				{
 
-					if ( $val["errno"] == E_USER_ERROR ||  $val["errno"] == E_USER_WARNING )
+					if ( $val["errno"] == E_USER_ERROR ||  $val["errno"] == E_USER_WARNING || $val["errno"] == E_USER_NOTICE )
 					{
                         if ( $ct++ > 0 )
 						    $msg .= "<HR>";
@@ -2144,7 +2144,7 @@ class reportico_xml_reader
         if ( $invalid )
         {
             $updates[$k] = false;
-            trigger_error ( template_xlate("INVALIDENTRY")."'".$current_value."' ". template_xlate("FORFIELD")." ". template_xlate( $this->field_display[$current_key]["Title"])." - ".template_xlate( $this->field_display[$current_key]["Validate"] ));
+            trigger_error ( template_xlate("INVALIDENTRY")."'".$current_value."' ". template_xlate("FORFIELD")." ". template_xlate( $this->field_display[$current_key]["Title"])." - ".template_xlate( $this->field_display[$current_key]["Validate"] ), E_USER_NOTICE);
 
         }
     }
@@ -2998,9 +2998,9 @@ class reportico_xml_reader
             // Draw report criteria items we can link to
             $q =  load_existing_report ( $this->query->reportlink_report, $this->query->projects_folder );
             if ( !$q )
-                trigger_error ( template_xlate("NOOPENLINK").$this->query->reportlink_report );
+                trigger_error ( template_xlate("NOOPENLINK").$this->query->reportlink_report , E_USER_NOTICE);
             else if ( !$q->lookup_queries || count($q->lookup_queries) == 0 )
-                trigger_error ( template_xlate("NOCRITLINK").$this->query->reportlink_report );
+                trigger_error ( template_xlate("NOCRITLINK").$this->query->reportlink_report , E_USER_NOTICE);
             else
             {
                 if ( $link_or_import == "LINK" )
@@ -3107,7 +3107,7 @@ class reportico_xml_reader
             }
         }
         else
-            trigger_error ( template_xlate("NOOPENDIR").$this->query->reports_path );
+            trigger_error ( template_xlate("NOOPENDIR").$this->query->reports_path , E_USER_NOTICE);
 
         $text = $this->draw_array_dropdown($fieldtype."_".$this->id.$showtag, $keys, $preselectedvalue, true, false);
         return $text;
@@ -4523,7 +4523,7 @@ class reportico_xml_reader
     				}
 				}
 				else
-                    trigger_error ( template_xlate("NOOPENDIR").$this->query->reports_path );
+                    trigger_error ( template_xlate("NOOPENDIR").$this->query->reports_path , E_USER_NOTICE);
 
 				$text .= $this->draw_array_dropdown("set_".$this->id."_".$showtag.$shadow, $keys, $val, false, $translateoptions);
 
@@ -4557,7 +4557,7 @@ class reportico_xml_reader
     				}
 				}
 				else
-                    trigger_error ( template_xlate("NOOPENDIR").$this->query->reports_path );
+                    trigger_error ( template_xlate("NOOPENDIR").$this->query->reports_path, E_USER_NOTICE );
 
                 if( !in_array($val, $keys) )
                     $keys[] = $val;
@@ -5983,7 +5983,7 @@ class reportico_xml_writer
 
 		if ( !preg_match( "/(.*)\.xml/", $in_report, $matches ) )
 		{
-				trigger_error ( template_xlate("XMLCONFILE")." $in_report ".template_xlate("XMLFORM") );
+				trigger_error ( template_xlate("XMLCONFILE")." $in_report ".template_xlate("XMLFORM") , E_USER_NOTICE);
 				return;
 		}
 
