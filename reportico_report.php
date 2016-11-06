@@ -835,7 +835,7 @@ class reportico_report extends reportico_object
 				if ( $this->query->changed($group->group_name) || $this->last_line) 
 				{
 					if ( !function_exists( "imagecreatefromstring" ) )
-						trigger_error("Function imagecreatefromstring does not exist - ensure PHP is installed with GD option" );
+						trigger_error("Function imagecreatefromstring does not exist - ensure PHP is installed with GD option", E_USER_NOTICE );
 					if ( function_exists( "imagecreatefromstring" ) &&
 				       			$this->graph_display && 
 							//get_checkbox_value("target_show_graph"))

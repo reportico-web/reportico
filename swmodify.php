@@ -97,7 +97,7 @@ class reportico_db_engine
             $info = $this->pdo->errorInfo();
             $msg =  "Error ".$info[1]."<BR>".
                     $info[2];
-            trigger_error("$msg");
+            trigger_error("$msg", E_USER_NOTICE);
     }
     
     function getRowsAffected( )
