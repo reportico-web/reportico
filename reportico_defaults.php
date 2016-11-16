@@ -40,7 +40,7 @@
                     "border-style" => "solid",
                     "border-width" => "1px 1px 1px 1px",
                     "border-color" => "#888888",
-                    "display" => "none",
+                    //"display" => "none",
                     //"margin" => "0px 5px 10px 5px",
                     //"padding" => "0px 5px 0px 5px",
                     );
