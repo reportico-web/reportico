@@ -171,6 +171,7 @@ class reportico_report extends reportico_object
 		$this->line_count = 0;
 		$this->page_count = 0;
 		$this->debug("Base Start **");
+
 		$this->reporttitle = $this->query->derive_attribute("ReportTitle", "Set Report Title");
         if ( isset ( $this->query->user_parameters["custom_title"] ) )
         {
@@ -578,9 +579,6 @@ class reportico_report extends reportico_object
 			$this->format_criteria_selection_set();
 			//$this->page_headers();
 		}
-		$this->debug("Base Each Line");
-
-
 		$this->debug("Base Each Line");
 
 		if ( get_reportico_session_param("target_show_group_trailers") )

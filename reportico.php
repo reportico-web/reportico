@@ -961,6 +961,17 @@ class reportico extends reportico_object
 	}
 
 	// -----------------------------------------------------------------------------
+	// Function : set_criteria_display_group
+	// -----------------------------------------------------------------------------
+	function set_criteria_display_group($query_name, $criteria_display_group)
+	{
+        if ( ($cl =get_query_column($query_name, $this->lookup_queries )) )
+        {   
+            $cl->set_criteria_display_group($criteria_display_group);
+        }
+	}
+
+	// -----------------------------------------------------------------------------
 	// Function : set_criteria_hidden
 	// -----------------------------------------------------------------------------
 	function set_criteria_hidden($query_name, $criteria_hidden)
@@ -1442,14 +1453,14 @@ class reportico extends reportico_object
         if ( $this->initial_show_graph ) set_reportico_session_param("target_show_graph",( $this->initial_show_graph == "show" ));
         if ( $this->initial_show_group_headers ) set_reportico_session_param("target_show_group_headers",( $this->initial_show_group_headers == "show" ));
         if ( $this->initial_show_group_trailers ) set_reportico_session_param("target_show_group_trailers",( $this->initial_show_group_trailers == "show" ));
-        if ( $this->initial_show_column_headers ) set_reportico_session_param("target_show_column_headers",( $this->initial_show_column_headers == "show" ));
+        //if ( $this->initial_show_column_headers ) set_reportico_session_param("target_show_column_headers",( $this->initial_show_column_headers == "show" ));
         if ( $this->initial_show_criteria ) set_reportico_session_param("target_show_criteria",( $this->initial_show_criteria == "show" ));
 
 	    $this->target_show_detail = session_request_item("target_show_detail", true, !isset_reportico_session_param("target_show_detail"));
 	    $this->target_show_graph = session_request_item("target_show_graph", true, !isset_reportico_session_param("target_show_graph"));
 	    $this->target_show_group_headers = session_request_item("target_show_group_headers", true, !isset_reportico_session_param("target_show_group_headers"));
 	    $this->target_show_group_trailers = session_request_item("target_show_group_trailers", true, !isset_reportico_session_param("target_show_group_trailers"));
-	    $this->target_show_column_headers = session_request_item("target_show_column_headers", true, !isset_reportico_session_param("target_show_column_headers"));
+	    //$this->target_show_column_headers = session_request_item("target_show_column_headers", true, !isset_reportico_session_param("target_show_column_headers"));
 	    $this->target_show_criteria = session_request_item("target_show_criteria", true, !isset_reportico_session_param("target_show_criteria"));
 
 		if ( get_reportico_session_param("firstTimeIn") 
@@ -1464,7 +1475,7 @@ class reportico extends reportico_object
 	                $this->target_show_graph = get_request_item("target_show_graph", false);
 	                $this->target_show_group_headers = get_request_item("target_show_group_headers", false);
 	                $this->target_show_group_trailers = get_request_item("target_show_group_trailers", false);
-	                $this->target_show_column_headers = get_request_item("target_show_column_headers", false);
+	                //$this->target_show_column_headers = get_request_item("target_show_column_headers", false);
 	                $this->target_show_criteria = get_request_item("target_show_criteria", false);
                     if ( !$this->target_show_detail && !$this->target_show_graph && !$this->target_show_group_headers
                         && !$this->target_show_group_trailers && !$this->target_show_column_headers && !$this->target_show_criteria )
@@ -1473,14 +1484,14 @@ class reportico extends reportico_object
                             $this->target_show_graph = true;
                             $this->target_show_group_headers = true;
                             $this->target_show_group_trailers = true;
-                            $this->target_show_column_headers = true;
+                            //$this->target_show_column_headers = true;
                             $this->target_show_criteria = true;
                     }
 	                set_reportico_session_param("target_show_detail",$this->target_show_detail);
 	                set_reportico_session_param("target_show_graph",$this->target_show_graph);
 	                set_reportico_session_param("target_show_group_headers",$this->target_show_group_headers);
 	                set_reportico_session_param("target_show_group_trailers",$this->target_show_group_trailers);
-	                set_reportico_session_param("target_show_column_headers",$this->target_show_column_headers);
+	                //set_reportico_session_param("target_show_column_headers",$this->target_show_column_headers);
 	                set_reportico_session_param("target_show_criteria",$this->target_show_criteria);
             }
             else
@@ -1512,7 +1523,7 @@ class reportico extends reportico_object
 	                $this->target_show_graph = get_request_item("target_show_graph", false);
 	                $this->target_show_group_headers = get_request_item("target_show_group_headers", false);
 	                $this->target_show_group_trailers = get_request_item("target_show_group_trailers", false);
-	                $this->target_show_column_headers = get_request_item("target_show_column_headers", false);
+	                //$this->target_show_column_headers = get_request_item("target_show_column_headers", false);
 	                $this->target_show_criteria = get_request_item("target_show_criteria", false);
                     if ( !$this->target_show_detail && !$this->target_show_graph && !$this->target_show_group_headers
                         && !$this->target_show_group_trailers && !$this->target_show_column_headers && !$this->target_show_criteria )
@@ -1521,14 +1532,14 @@ class reportico extends reportico_object
                             $this->target_show_graph = true;
                             $this->target_show_group_headers = true;
                             $this->target_show_group_trailers = true;
-                            $this->target_show_column_headers = true;
+                            //$this->target_show_column_headers = true;
                             $this->target_show_criteria = true;
                     }
 	                set_reportico_session_param("target_show_detail",$this->target_show_detail);
 	                set_reportico_session_param("target_show_graph",$this->target_show_graph);
 	                set_reportico_session_param("target_show_group_headers",$this->target_show_group_headers);
 	                set_reportico_session_param("target_show_group_trailers",$this->target_show_group_trailers);
-	                set_reportico_session_param("target_show_column_headers",$this->target_show_column_headers);
+	                //set_reportico_session_param("target_show_column_headers",$this->target_show_column_headers);
 	                set_reportico_session_param("target_show_criteria",$this->target_show_criteria);
                 }
             }
@@ -1537,7 +1548,7 @@ class reportico extends reportico_object
         if ( isset ( $_REQUEST["target_show_graph"] ))  set_reportico_session_param("target_show_graph",$_REQUEST["target_show_graph"]);
         if ( isset ( $_REQUEST["target_show_group_headers"] ))  set_reportico_session_param("target_show_group_headers",$_REQUEST["target_show_group_headers"]);
         if ( isset ( $_REQUEST["target_show_group_trailers"] ))  set_reportico_session_param("target_show_group_trailers",$_REQUEST["target_show_group_trailers"]);
-        if ( isset ( $_REQUEST["target_show_column_headers"] ))  set_reportico_session_param("target_show_column_headers",$_REQUEST["target_show_column_headers"]);
+        //if ( isset ( $_REQUEST["target_show_column_headers"] ))  set_reportico_session_param("target_show_column_headers",$_REQUEST["target_show_column_headers"]);
         if ( isset ( $_REQUEST["target_show_criteria"] ))  set_reportico_session_param("target_show_criteria",$_REQUEST["target_show_criteria"]);
 
 		if ( array_key_exists("clearform", $_REQUEST) )
@@ -1688,7 +1699,9 @@ class reportico extends reportico_object
 
 				$lq =&	$this->lookup_queries[$col->query_name] ;
                 if ( $lq->criteria_type == "LOOKUP" )
+                {
 				    $lq->execute_criteria_lookup();
+                }
 	            $lq->criteria_summary_display();
                 $identified_criteria = true;
             }
@@ -2372,7 +2385,7 @@ class reportico extends reportico_object
 	// -----------------------------------------------------------------------------
 	// Function : build_query
 	// -----------------------------------------------------------------------------
-	function build_query($in_is_expanding = false, $criteria_name = "", $in_design_mode = false )
+	function build_query($in_is_expanding = false, $criteria_name = "", $in_design_mode = false, $no_warnings = false )
 	{
         if ( !$criteria_name )
 		    $this->set_request_columns();
@@ -2479,7 +2492,7 @@ class reportico extends reportico_object
 
 	    if ( $execute_mode != "MAINTAIN" )
 	    {
-		    $this->query_statement = reportico_assignment::reportico_meta_sql_criteria($this->parent_query, $this->query_statement);
+		    $this->query_statement = reportico_assignment::reportico_meta_sql_criteria($this->parent_query, $this->query_statement, false, $no_warnings);
 	    }
 
 	}			
@@ -3288,7 +3301,7 @@ class reportico extends reportico_object
 		$this->admin_menu_url =  $calling_script."{$url_join_char}project=admin&amp;execute_mode=MENU&amp;reportico_session_name=".reportico_session_name();
 		$this->configure_project_url =  $calling_script."{$url_join_char}execute_mode=PREPARE&amp;xmlin=configureproject.xml&amp;reportico_session_name=".reportico_session_name();
 		$this->delete_project_url =  $calling_script."{$url_join_char}execute_mode=PREPARE&amp;xmlin=deleteproject.xml&amp;reportico_session_name=".reportico_session_name();
-		$this->create_report_url =  $calling_script."{$url_join_char}execute_mode=MAINTAIN&amp;xmlin=&amp;reportico_session_name=".reportico_session_name();
+		$this->create_report_url =  $calling_script."{$url_join_char}execute_mode=PREPARE&amp;xmlin=&amp;reportico_session_name=".reportico_session_name();
 
 		if ( $forward_url_params )
 		{
@@ -3689,7 +3702,7 @@ class reportico extends reportico_object
 			$this->xmloutfile = get_reportico_session_param("xmlout");
 		}
 
-		if ( array_key_exists("xmlout", $_REQUEST) )
+		if ( array_key_exists("xmlout", $_REQUEST) && ( array_key_exists("submit_xxx_SAVE", $_REQUEST) || array_key_exists("submit_xxx_PREPARESAVE", $_REQUEST) ) )
 		{
 			$this->xmloutfile =  $_REQUEST["xmlout"];
 			set_reportico_session_param("xmlout",$this->xmloutfile);
@@ -4175,6 +4188,12 @@ class reportico extends reportico_object
                 $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
                 $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
 
+                if ( $this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml" || $this->xmlinput == "createproject.xml" || $this->xmlinput == "generate_tutorial.xml" )
+                    $reportfile = "";
+                else 
+                    $reportfile = preg_replace("/\.xml/", "", $this->xmloutfile);
+
+				$this->panels["MAIN"]->smarty->assign('XMLFILE', $reportfile);
 
 				$reportname = preg_replace("/.xml/", "", $this->xmloutfile.'_prepare.tpl');
                 restore_error_handler();
@@ -4258,7 +4277,7 @@ class reportico extends reportico_object
                         //header("HTTP/1.0 404 Not Found", true);
                         //$response_array = array();
                         //$response_array["errno"] = $g_system_errors[0]["errno"];
-                        //$response_array["errmsg"] = "oo".$g_system_errors[0]["errstr"];
+                        //$response_array["errmsg"] = $g_system_errors[0]["errstr"];
                         //echo json_encode($response_array);
                         //die;
                     //}
@@ -6298,7 +6317,7 @@ class reportico_criteria_column extends reportico_query_column
 	// -----------------------------------------------------------------------------
 	// Function : execute_criteria_lookup
 	// -----------------------------------------------------------------------------
-	function execute_criteria_lookup($in_is_expanding = false)
+	function execute_criteria_lookup($in_is_expanding = false, $no_warnings = false)
 	{
 		global $g_code_area;
 		require_once("reportico_report_array.php");
@@ -6310,7 +6329,7 @@ class reportico_criteria_column extends reportico_query_column
 		$this->lookup_query->set_datasource($this->datasource);
 		$this->lookup_query->targets = array();
 		$this->lookup_query->add_target($rep);
-		$this->lookup_query->build_query($in_is_expanding, $this->query_name);
+		$this->lookup_query->build_query($in_is_expanding, $this->query_name, false, $no_warnings);
 		$this->lookup_query->execute_query($this->query_name);
 		$g_code_area = "";
 	}
@@ -6681,6 +6700,14 @@ class reportico_criteria_column extends reportico_query_column
 	}
 
 	// -----------------------------------------------------------------------------
+	// Function : set_criteria_display_group
+	// -----------------------------------------------------------------------------
+	function set_criteria_display_group($criteria_display_group)
+	{
+		$this->display_group = $criteria_display_group;
+	}
+
+	// -----------------------------------------------------------------------------
 	// Function : set_criteria_hidden
 	// -----------------------------------------------------------------------------
 	function set_criteria_hidden($criteria_hidden)
@@ -7006,6 +7033,11 @@ class reportico_criteria_column extends reportico_query_column
 		$hidden_params = array();
 		$expanded_params = array();
 
+        if ( !$this->list_values )
+        {
+            trigger_error("'$this->query_name' is defined as a custom list criteria type without any list values defined", E_USER_ERROR);
+        }
+
 		if ( !array_key_exists("clearform", $_REQUEST) )
 		{
 			if ( ! array_key_exists("EXPANDED_".$this->query_name, $_REQUEST) )
@@ -7055,7 +7087,6 @@ class reportico_criteria_column extends reportico_query_column
 			$hidden_params = $this->defaults;
 			$manual_params = $this->defaults;
 		}
-
 		switch ( $type )
 		{
 				case "NOINPUT":
@@ -7066,8 +7097,10 @@ class reportico_criteria_column extends reportico_query_column
 						//break;
 
 				case "MULTI":
-						$res =& $this->lookup_query->targets[0]->results;
+
+		                $res =& $this->list_values;
 						$k = key($res);
+
 						$multisize = 4;
 						if ( $res && count($res[$k]) > 4 )
 							$multisize = count($res[$k]);
@@ -7079,7 +7112,7 @@ class reportico_criteria_column extends reportico_query_column
 
 				case "SELECT2MULTIPLE":
 				case "SELECT2SINGLE":
-						$res =& $this->lookup_query->targets[0]->results;
+		                $res =& $this->list_values;
 						$k = key($res);
 						$multisize = 4;
 						if ( $res && count($res[$k]) > 4 )
@@ -8332,7 +8365,7 @@ class reportico_criteria_column extends reportico_query_column
 					)
 				{
 
-                    // Dont bother running select ofr criteria lookup if criteria item is a dynamic
+                    // Dont bother running select for criteria lookup if criteria item is a dynamic
 					$this->execute_criteria_lookup();
 				}
 				$text .= $this->lookup_display(false);
@@ -8419,7 +8452,7 @@ class reportico_assignment extends reportico_object
 	// -----------------------------------------------------------------------------
 	// Function : reportico_meta_sql_criteria
 	// -----------------------------------------------------------------------------
-	static function reportico_meta_sql_criteria(&$in_query, $in_string, $prev_col_value = false)
+	static function reportico_meta_sql_criteria(&$in_query, $in_string, $prev_col_value = false, $no_warnings = false)
 	{
         // Replace user parameters with values
 
@@ -8458,7 +8491,8 @@ class reportico_assignment extends reportico_object
 			$ct++;
 			if ( $ct > 100 )
 			{
-				echo "Problem with SQL cannot resolve Criteria Items<br>";
+                if ( !$no_warnings )
+				    echo "Problem with SQL cannot resolve Criteria Items<br>";
 				break;
 			}
 			$regpat = "/{([^}]*)/";

@@ -169,7 +169,7 @@ class reportico_report_html extends reportico_report
 		if ( $this->body_display != "show" )
 			return;
 
-		if ( !get_reportico_session_param("target_show_column_headers") )
+		if ( !get_reportico_session_param("target_show_detail") )
 			return;
 
 		if ( !$this->show_column_header($column_item) )

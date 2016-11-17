@@ -188,6 +188,7 @@ class reportico_panel
 				$ct = 0;
 				// Build Select Column List
 				$this->query->expand_col = false;
+                $lastdisplaygroup = "";
 				foreach ( $this->query->lookup_queries as $k => $col )
 				{
 					if ( $col->criteria_type )
@@ -221,6 +222,7 @@ class reportico_panel
                             $crithidden = true;
                         else
                             $crithidden = false;
+                        $critdisplaygroup = $col->display_group;
                         if ( $col->required == "yes" )
                             $critrequired = true;
                         else
@@ -230,16 +232,24 @@ class reportico_panel
 						if ( $col->expand_display && $col->expand_display != "NOINPUT" )
 							$critexp = true;
 
+                        //$nextdisplaygroup = false;
+                        //if ( $k < count($this->query->lookup_queries) - 1 )
+                            //$nextdisplaygroup = $this->query->lookup_queries[$k+1].display_group;
 						$dispcrit[] = array (
 									"name" => $col->query_name,
 									"title" => sw_translate($crittitle),
 									"entry" => $critsel,
 									"entry" => $critsel,
 									"hidden" => $crithidden,
+									"last_display_group" => $lastdisplaygroup,
+									//"next_display_group" => $nextdisplaygroup,
+									"display_group" => $critdisplaygroup,
+									"display_group_class" => preg_replace("/ /", "_", $critdisplaygroup),
 									"required" => $critrequired,
 									"expand" => $critexp,
                                     "tooltip" => sw_translate($col->criteria_help)
 									);
+                        $lastdisplaygroup = $critdisplaygroup;
 					}
 					$this->smarty->assign("CRITERIA_ITEMS", $dispcrit);
 				}
@@ -850,6 +860,7 @@ class reportico_xml_reader
 					"XLabelColumn" => array ( "Title" => "XLABELCOLUMN", "Type" => "QUERYCOLUMNS", "DocId" => "column_for_x_labels"),
 					//"YLabelColumn" => array ( "Title" => "YLABELCOLUMN", "Type" => "HIDE"),
 					"ReturnColumn" => array ( "Title" => "RETURNCOLUMN", "HelpPage" => "criteria", "Type" => "QUERYCOLUMNS", "DocId" => "return_column"),
+					"CriteriaDisplayGroup" => array ( "Title" => "CRITERIADISPLAYGROUP", "HelpPage" => "criteria", "DocId" => "display_group"),
 					"CriteriaHidden" => array ( "Title" => "CRITERIAHIDDEN", "Type" => "DROPDOWN",  "XlateOptions" => true,
 												"Values" => array(".DEFAULT", "yes", "no"), "HelpPage" => "criteria", "DocId" => "criteria_hidden" ),
 					"CriteriaRequired" => array ( "Title" => "CRITERIAREQUIRED", "Type" => "DROPDOWN",  "XlateOptions" => true,
@@ -2449,6 +2460,7 @@ class reportico_xml_reader
 					$updateitem->required = $updates["CriteriaRequired"];
                     //var_dump($updates);
 					$updateitem->hidden = $updates["CriteriaHidden"];
+					$updateitem->display_group = $updates["CriteriaDisplayGroup"];
 					if ( array_key_exists("ReturnColumn", $updates) )
 					{
 						$updateitem->lookup_query->set_lookup_return($updates["ReturnColumn"]);
@@ -2459,6 +2471,7 @@ class reportico_xml_reader
 					}
 					$updateitem->set_criteria_required($updates["CriteriaRequired"]);
 					$updateitem->set_criteria_hidden($updates["CriteriaHidden"]);
+					$updateitem->set_criteria_display_group($updates["CriteriaDisplayGroup"]);
 					$updateitem->set_criteria_defaults(
 								$updates["CriteriaDefaults"]);
 					$updateitem->set_criteria_help(
@@ -2736,6 +2749,19 @@ class reportico_xml_reader
 					$xmlsavefile = $this->query->xmloutfile;
                     if ( !$xmlsavefile )
 			            trigger_error ( template_xlate("UNABLE_TO_SAVE").template_xlate("SPECIFYXML"), E_USER_ERROR );
+					break; 
+
+				case "PREPARESAVE":
+					$xmlsavefile = $this->query->xmloutfile;
+				    set_reportico_session_param("execute_mode","PREPARE");
+                    
+                    if ( !$xmlsavefile )
+                    {
+                        header("HTTP/1.0 404 Not Found", true);
+                            echo '<div class="swError">'.template_xlate("UNABLE_TO_SAVE").template_xlate("SPECIFYXML")."</div>";
+                            die;
+                    }
+
 					break; 
 
 				case "DELETEREPORT":
@@ -5458,6 +5484,7 @@ class reportico_xml_reader
 				$crittitle = $this->get_array_element($ci, "Title") ;
 				$crit_required = $this->get_array_element($ci, "CriteriaRequired");
 				$crit_hidden = $this->get_array_element($ci, "CriteriaHidden");
+				$crit_display_group = $this->get_array_element($ci, "CriteriaDisplayGroup");
 				$crit_lookup_return = $this->get_array_element($ci, "ReturnColumn");
 				$crit_lookup_display = $this->get_array_element($ci, "DisplayColumn");
 				$crit_criteria_display = $this->get_array_element($ci, "OverviewColumn");
@@ -5554,6 +5581,7 @@ class reportico_xml_reader
                 //var_dump($crit_required);
 				$this->query->set_criteria_required($critnm, $crit_required);
 				$this->query->set_criteria_hidden($critnm, $crit_hidden);
+				$this->query->set_criteria_display_group($critnm, $crit_display_group);
 				//$this->query->set_criteria_help($critnm, $crithelp);
 				$this->query->set_criteria_attribute($critnm, "column_title", $crittitle);
 				
@@ -5760,6 +5788,7 @@ class reportico_xml_writer
 //echo "XML $lq->query_name $lq->criteria_display $lq->required $lq->criteria_list<BR>";
 			$el =& $ci->add_xmlval ( "CriteriaRequired", $lq->required );
 			$el =& $ci->add_xmlval ( "CriteriaHidden", $lq->hidden );
+			$el =& $ci->add_xmlval ( "CriteriaDisplayGroup", $lq->display_group );
 			$el =& $ci->add_xmlval ( "ReturnColumn", $lookup_return_col );
 			$el =& $ci->add_xmlval ( "DisplayColumn", $lookup_display_col );
 			$el =& $ci->add_xmlval ( "OverviewColumn", $lookup_abbrev_col );

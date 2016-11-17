@@ -357,7 +357,7 @@ reportico_jquery(document).on('click', '.swMiniMaintain', function(event)
     var reportico_container = reportico_jquery(this).closest("#reportico_container");
 
     reportico_jquery(expandpanel).addClass("loading");
-    forms = reportico_jquery(this).closest('.swMntForm,.swPrpForm,form');
+    forms = reportico_jquery(this).closest('.swMntForm,.swPrpForm,.swPrpSaveForm,form');
     if (    reportico_jquery.type(reportico_ajax_script) === 'undefined' )
     {
         var ajaxaction = reportico_jquery(forms).prop("action");
@@ -401,6 +401,49 @@ reportico_jquery(document).on('click', '.swMiniMaintain', function(event)
     return false;
 
 })
+
+reportico_jquery(document).on('click', '.swPrpSaveButton', function(event) 
+{
+	var expandpanel = reportico_jquery(this).closest('#criteriaform').find('#swPrpExpandCell');
+    var reportico_container = reportico_jquery(this).closest("#reportico_container");
+
+    reportico_jquery(expandpanel).addClass("loading");
+    if (    reportico_jquery.type(reportico_ajax_script) === 'undefined' )
+    {
+        var ajaxaction = reportico_jquery(forms).prop("action");
+    }
+    else
+    {
+        ajaxaction = reportico_ajax_script;
+    }
+
+    filename = reportico_jquery("#swPrpSaveFile").prop("value");
+	params = "";
+    params += "&execute_mode=MAINTAIN&submit_xxx_PREPARESAVE&xmlout=" + filename;
+    params += "&reportico_ajax_called=1";
+
+    reportico_jquery.ajax({
+        type: 'POST',
+        url: ajaxaction,
+        data: params,
+        dataType: 'html',
+        success: function(data, status) 
+        {
+          reportico_jquery(expandpanel).removeClass("loading");
+          reportico_jquery(reportico_container).removeClass("loading");
+          //alert(data);
+        },
+        error: function(xhr, desc, err) {
+          reportico_jquery(expandpanel).removeClass("loading");
+          reportico_jquery(reportico_container).removeClass("loading");
+          showNoticeModal(xhr.responseText);
+        }
+      });
+
+    return false;
+
+})
+
 
 /*
 ** Trigger AJAX request for reportico button/link press if running in AJAX mode
@@ -957,6 +1000,22 @@ var ie7 = (document.all && !window.opera && window.XMLHttpRequest) ? true : fals
 /*
 ** Shows and hides a block of design items fields
 */
+function toggleCriteria(id) {
+    if ( reportico_jquery(".displayGroup" + id ).css("display") == "none" )
+    {
+        reportico_jquery(".displayGroup" + id ).show();
+        reportico_jquery("#swToggleCriteria" + id ).html("-");
+    }
+    else
+    {
+        reportico_jquery("#swToggleCriteria" + id ).html("+");
+        reportico_jquery(".displayGroup" + id ).hide();
+    }
+} 
+
+/*
+** Shows and hides a block of design items fields
+*/
 function toggleLine(id) {
 
     var a = this;
@@ -1047,4 +1106,3 @@ function html_print_fix()
         reporticohtmlwindow.resizeOutputTables(reporticohtmlwindow); 
     }
 }
-
