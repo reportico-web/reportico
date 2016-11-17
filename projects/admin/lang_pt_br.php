@@ -1,4 +1,4 @@
-<?php namespace reportico\reportico\components;
+<?php
 $g_translations = array (
         "pt_br" => array (
             "Project Name" => "Nome do Projeto",

@@ -120,7 +120,7 @@ if ( !is_writeable ( $proj_parent  ) )
 
 if ( file_exists ( $proj_dir ) )
 {
-    if ( $_configure_mode == "CREATE" || $_configure_mode == "CREATETUTORIALS" )
+    if ( $_configure_mode == "CREATE" )
     {
         trigger_error ("Projects area $proj_dir already exists - cannot write project - use Configure Project instead", E_USER_NOTICE);
     	return;
@@ -250,7 +250,7 @@ foreach ( $configparams as $paramkey => $paramval )
 
 $retval = file_put_contents($proj_conf, $txt);
 
-if ( $_configure_mode == "CREATE"  || $_configure_mode == "CREATETUTORIALS" )
+if ( $_configure_mode == "CREATE" )
 {
 	$txt = file_get_contents($menu_template);
 	$retval = file_put_contents($proj_menu, $txt);
