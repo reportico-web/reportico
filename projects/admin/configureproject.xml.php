@@ -122,7 +122,7 @@ if ( file_exists ( $proj_dir ) )
 {
     if ( $_configure_mode == "CREATE" )
     {
-        trigger_error ("Projects area $proj_dir already exists - cannot write project - use Configure Project instead", E_USER_NOTICE);
+        trigger_error ("Projects area $proj_dir already exists - cannot write project - use Configure Project from the administration menu to change it. ", E_USER_NOTICE);
     	return;
     }
 }
@@ -212,10 +212,10 @@ else
 $matches = array();
 
 
-if ( $configparams["SW_DB_TYPE"] == "framework" )
-{
-        handle_debug("Connection to Database not checked as framework database connections have been used", 0);
-}
+//if ( $configparams["SW_DB_TYPE"] == "framework" )
+//{
+        //handle_debug("Connection to Database not checked as framework database connections have been used", 0);
+//}
 
 // If this is a reportico pre 2.8 then it wont handle "framework" type
 foreach ( $configparams as $paramkey => $paramval )
