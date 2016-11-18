@@ -268,7 +268,7 @@ class reportico extends reportico_object
 	var $delete_project_url;
 	var $create_report_url;
 
-	var $version = "4.5";
+	var $version = "4.6";
 
 	var $name;
 	var $rowselection="all";
@@ -1339,7 +1339,10 @@ class reportico extends reportico_object
             $this->execute_mode = "MENU";
 
         if ( get_request_item("jump_to_design_project", "") && array_key_exists("submit_design_project", $_REQUEST) )
-			$this->execute_mode = "MAINTAIN";
+        {
+            $this->xmloutfile = "";
+			$this->execute_mode = "PREPARE";
+        }
 
 		// If Reset pressed force to Prepare mode
 		if ( array_key_exists("clearform", $_REQUEST) )

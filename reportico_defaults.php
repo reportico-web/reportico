@@ -68,6 +68,12 @@
 
             //GROUP HEADER LABEL STYLES
             $styles = array(
+                "border" => "none",
+                );
+            $reportico->apply_styleset("GROUPHEADERLABEL", $styles, false, "HTML");
+
+            //GROUP HEADER LABEL STYLES
+            $styles = array(
                 "margin" => "0 0 0 5",
                 "width" => "3cm",
                 "requires-before" => "8cm",
