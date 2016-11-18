@@ -149,7 +149,7 @@
 
 
 {if $BOOTSTRAP_STYLES}
-{if $BOOTSTRAP_STYLES == "2" || $BOOTSTRAP_STYLES == "3" }
+{if $BOOTSTRAP_STYLES == "2" || $BOOTSTRAP_STYLES == "3" || $BOOTSTRAP_STYLES == "joomla3" }
 <!-- BOOTSTRAP VERSION -->
 {if $SHOW_HIDE_NAVIGATION_MENU == "show" || $SHOW_HIDE_DROPDOWN_MENU == "show"}
     <div class="navbar navbar-default" role="navigation">
@@ -618,7 +618,7 @@ $loopct = 0;
                         <td class='swPrpCritTitle'>
 {if $CRITERIA_ITEMS[critno].tooltip }
 {if $BOOTSTRAP_STYLES}
-{if $BOOTSTRAP_STYLES == "3" }
+{if $BOOTSTRAP_STYLES == "3" || $BOOTSTRAP_STYLES == "joomla3" }
                             <a class='reportico_tooltip' data-toggle="tooltip" data-placement="right" title="{$CRITERIA_ITEMS[critno].tooltip}">
                                     <span class="glyphicon glyphicon-question-sign"></span>
                             </a>
@@ -722,7 +722,18 @@ $loopct++;
 
 </FORM>
 {if $REPORTICO_BOOTSTRAP_MODAL}
-{if $BOOTSTRAP_STYLES == "3" }
+{if $BOOTSTRAP_STYLES == "3"  || $BOOTSTRAP_STYLES == "joomla3"}
+{if $BOOTSTRAP_STYLES == "joomla3"}
+{literal}
+<style type="text/css">
+    #reporticoModal .modal-dialog .modal-content
+    {
+        width:900px; margin-left:-150px;
+    }
+</style>
+{/literal}
+{/if}
+<a id="a_reporticoModal" href="#reporticoModal" role="button" class="btn" data-target="#reporticoModal" data-toggle="modal" style="display:none">BB2</a>
 <div class="modal fade" id="reporticoModal" tabindex="-1" role="dialog" aria-labelledby="reporticoModal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
 {else}
@@ -744,7 +755,8 @@ $loopct++;
     </div>
   </div>
 </div>
-{if $BOOTSTRAP_STYLES == "3" }
+{if $BOOTSTRAP_STYLES == "3"  || $BOOTSTRAP_STYLES == "joomla3"}
+<a id="a_reporticoNoticeModal" href="#reporticoNoticeModal" role="button" class="btn" data-target="#reporticoNoticeModal" data-toggle="modal" style="display:none">B2</a>
 <div class="modal fade" id="reporticoNoticeModal" tabindex="-1" role="dialog" aria-labelledby="reporticoNoticeModal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
 {else}

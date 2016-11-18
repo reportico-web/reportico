@@ -139,7 +139,7 @@
 {if true || $SHOW_REPORT_MENU}
 
 {if $BOOTSTRAP_STYLES}
-{if $BOOTSTRAP_STYLES == "2" || $BOOTSTRAP_STYLES == "3" }
+{if $BOOTSTRAP_STYLES == "2" || $BOOTSTRAP_STYLES == "3" || $BOOTSTRAP_STYLES == "joomla3" }
 <!-- BOOTSTRAP VERSION -->
 {if $SHOW_HIDE_NAVIGATION_MENU == "show" || $SHOW_HIDE_DROPDOWN_MENU == "show"}
     <div class="navbar navbar-default" role="navigation">

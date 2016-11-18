@@ -6245,6 +6245,7 @@ class reportico_criteria_column extends reportico_query_column
 	var $criteria_type;
 	var $_use;
 	var $criteria_display;
+	var $display_group;
 	var $criteria_help;
 	var $expand_display;
 	var $required;
