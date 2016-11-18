@@ -67,7 +67,6 @@ class reportico_report_csv extends reportico_report
 			$buf = "";
 			$len = strlen($buf) + 1;
 
-            
             if ( $this->query->pdf_delivery_mode == "DOWNLOAD_SAME_WINDOW" && $this->query->reportico_ajax_called )
             {   
                 $this->text = base64_encode($this->text);
