@@ -4313,7 +4313,27 @@ $brd["mode"] = "normal";
 		if (!TCPDF_STATIC::empty_string($fontfile) AND (@file_exists($fontfile))) {
 			include($fontfile);
 		} else {
-			$this->Error('Could not include font definition file: '.$family.'');
+			//$this->Error('Could not 1include font definition '.$fontfile.' file: '.$family.'');
+                
+            $fontfile = "freesans";
+            $family = "freesans";
+            if (TCPDF_STATIC::empty_string($fontfile) OR (!@file_exists($fontfile))) {
+                    // build a standard filenames for specified font
+                    $tmp_fontfile = str_replace(' ', '', $family).strtolower($style).'.php';
+                    $fontfile = TCPDF_FONTS::getFontFullPath($tmp_fontfile, $fontdir);
+                    if (TCPDF_STATIC::empty_string($fontfile)) {
+                        $missing_style = true;
+                        // try to remove the style part
+                        $tmp_fontfile = str_replace(' ', '', $family).'.php';
+                        $fontfile = TCPDF_FONTS::getFontFullPath($tmp_fontfile, $fontdir);
+                    }
+                }
+                // include font file
+                if (!TCPDF_STATIC::empty_string($fontfile) AND (@file_exists($fontfile))) {
+                    include($fontfile);
+                } else {
+                    $this->Error('Could not2 include font definition '.$fontfile.' file: '.$family.'');
+                }
 		}
 		// check font parameters
 		if ((!isset($type)) OR (!isset($cw))) {
