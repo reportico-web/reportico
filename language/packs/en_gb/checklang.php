@@ -1,6 +1,9 @@
 <?php
 
-$compare="it_it";
+if ( count($argv) > 1 )
+    $compare=$argv[1];
+else
+    $compare="es_es";
 $tmp=array("prepare", "admin", "maintain", "execute", "menu", "languages");
 
 foreach ( $tmp as $template )

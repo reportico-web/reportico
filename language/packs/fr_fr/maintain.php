@@ -165,6 +165,7 @@ $locale_arr = array (
         "T_USE" => "Utilisez",
         "T_CRITERIADISPLAY" => "Critères d'affichage",
         "T_EXPANDDISPLAY" => "Développer Afficher",
+        "T_CRITERIADISPLAYGROUP" => "Groupe de filtres",
         "T_DATABASETYPE" => "Type de source",
         "T_JUSTIFY" => "Justification",
         "T_COLUMN_DISPLAY" => "Afficher ou masquer?",

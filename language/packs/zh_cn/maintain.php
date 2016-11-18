@@ -150,6 +150,7 @@ $locale_arr = array (
 		"T_USE" => "使用",
 		"T_CRITERIADISPLAY" => "标准显示",
 		"T_EXPANDDISPLAY" => "展开显示",
+        "T_CRITERIADISPLAYGROUP" => "过滤器组",
 		"T_DATABASETYPE" => "数据源类型",
 		"T_JUSTIFY" => "理由",
 		"T_COLUMN_DISPLAY" => "显示或隐藏？",
