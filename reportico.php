@@ -1453,14 +1453,12 @@ class reportico extends reportico_object
         if ( $this->initial_show_graph ) set_reportico_session_param("target_show_graph",( $this->initial_show_graph == "show" ));
         if ( $this->initial_show_group_headers ) set_reportico_session_param("target_show_group_headers",( $this->initial_show_group_headers == "show" ));
         if ( $this->initial_show_group_trailers ) set_reportico_session_param("target_show_group_trailers",( $this->initial_show_group_trailers == "show" ));
-        //if ( $this->initial_show_column_headers ) set_reportico_session_param("target_show_column_headers",( $this->initial_show_column_headers == "show" ));
         if ( $this->initial_show_criteria ) set_reportico_session_param("target_show_criteria",( $this->initial_show_criteria == "show" ));
 
 	    $this->target_show_detail = session_request_item("target_show_detail", true, !isset_reportico_session_param("target_show_detail"));
 	    $this->target_show_graph = session_request_item("target_show_graph", true, !isset_reportico_session_param("target_show_graph"));
 	    $this->target_show_group_headers = session_request_item("target_show_group_headers", true, !isset_reportico_session_param("target_show_group_headers"));
 	    $this->target_show_group_trailers = session_request_item("target_show_group_trailers", true, !isset_reportico_session_param("target_show_group_trailers"));
-	    //$this->target_show_column_headers = session_request_item("target_show_column_headers", true, !isset_reportico_session_param("target_show_column_headers"));
 	    $this->target_show_criteria = session_request_item("target_show_criteria", true, !isset_reportico_session_param("target_show_criteria"));
 
 		if ( get_reportico_session_param("firstTimeIn") 
@@ -1475,7 +1473,6 @@ class reportico extends reportico_object
 	                $this->target_show_graph = get_request_item("target_show_graph", false);
 	                $this->target_show_group_headers = get_request_item("target_show_group_headers", false);
 	                $this->target_show_group_trailers = get_request_item("target_show_group_trailers", false);
-	                //$this->target_show_column_headers = get_request_item("target_show_column_headers", false);
 	                $this->target_show_criteria = get_request_item("target_show_criteria", false);
                     if ( !$this->target_show_detail && !$this->target_show_graph && !$this->target_show_group_headers
                         && !$this->target_show_group_trailers && !$this->target_show_column_headers && !$this->target_show_criteria )
@@ -1484,14 +1481,12 @@ class reportico extends reportico_object
                             $this->target_show_graph = true;
                             $this->target_show_group_headers = true;
                             $this->target_show_group_trailers = true;
-                            //$this->target_show_column_headers = true;
                             $this->target_show_criteria = true;
                     }
 	                set_reportico_session_param("target_show_detail",$this->target_show_detail);
 	                set_reportico_session_param("target_show_graph",$this->target_show_graph);
 	                set_reportico_session_param("target_show_group_headers",$this->target_show_group_headers);
 	                set_reportico_session_param("target_show_group_trailers",$this->target_show_group_trailers);
-	                //set_reportico_session_param("target_show_column_headers",$this->target_show_column_headers);
 	                set_reportico_session_param("target_show_criteria",$this->target_show_criteria);
             }
             else
@@ -1523,7 +1518,6 @@ class reportico extends reportico_object
 	                $this->target_show_graph = get_request_item("target_show_graph", false);
 	                $this->target_show_group_headers = get_request_item("target_show_group_headers", false);
 	                $this->target_show_group_trailers = get_request_item("target_show_group_trailers", false);
-	                //$this->target_show_column_headers = get_request_item("target_show_column_headers", false);
 	                $this->target_show_criteria = get_request_item("target_show_criteria", false);
                     if ( !$this->target_show_detail && !$this->target_show_graph && !$this->target_show_group_headers
                         && !$this->target_show_group_trailers && !$this->target_show_column_headers && !$this->target_show_criteria )
@@ -1532,14 +1526,12 @@ class reportico extends reportico_object
                             $this->target_show_graph = true;
                             $this->target_show_group_headers = true;
                             $this->target_show_group_trailers = true;
-                            //$this->target_show_column_headers = true;
                             $this->target_show_criteria = true;
                     }
 	                set_reportico_session_param("target_show_detail",$this->target_show_detail);
 	                set_reportico_session_param("target_show_graph",$this->target_show_graph);
 	                set_reportico_session_param("target_show_group_headers",$this->target_show_group_headers);
 	                set_reportico_session_param("target_show_group_trailers",$this->target_show_group_trailers);
-	                //set_reportico_session_param("target_show_column_headers",$this->target_show_column_headers);
 	                set_reportico_session_param("target_show_criteria",$this->target_show_criteria);
                 }
             }
@@ -1548,7 +1540,6 @@ class reportico extends reportico_object
         if ( isset ( $_REQUEST["target_show_graph"] ))  set_reportico_session_param("target_show_graph",$_REQUEST["target_show_graph"]);
         if ( isset ( $_REQUEST["target_show_group_headers"] ))  set_reportico_session_param("target_show_group_headers",$_REQUEST["target_show_group_headers"]);
         if ( isset ( $_REQUEST["target_show_group_trailers"] ))  set_reportico_session_param("target_show_group_trailers",$_REQUEST["target_show_group_trailers"]);
-        //if ( isset ( $_REQUEST["target_show_column_headers"] ))  set_reportico_session_param("target_show_column_headers",$_REQUEST["target_show_column_headers"]);
         if ( isset ( $_REQUEST["target_show_criteria"] ))  set_reportico_session_param("target_show_criteria",$_REQUEST["target_show_criteria"]);
 
 		if ( array_key_exists("clearform", $_REQUEST) )
@@ -1699,9 +1690,7 @@ class reportico extends reportico_object
 
 				$lq =&	$this->lookup_queries[$col->query_name] ;
                 if ( $lq->criteria_type == "LOOKUP" )
-                {
 				    $lq->execute_criteria_lookup();
-                }
 	            $lq->criteria_summary_display();
                 $identified_criteria = true;
             }
@@ -7087,6 +7076,7 @@ class reportico_criteria_column extends reportico_query_column
 			$hidden_params = $this->defaults;
 			$manual_params = $this->defaults;
 		}
+
 		switch ( $type )
 		{
 				case "NOINPUT":
@@ -7100,7 +7090,6 @@ class reportico_criteria_column extends reportico_query_column
 
 		                $res =& $this->list_values;
 						$k = key($res);
-
 						$multisize = 4;
 						if ( $res && count($res[$k]) > 4 )
 							$multisize = count($res[$k]);
