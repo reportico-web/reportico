@@ -163,7 +163,7 @@
 			<TD width="50%"></TD>
 			<TD width="98%" align="right" class="swPrpTopMenuCell">
 {$T_OPEN_ADMIN_INSTRUCTIONS}
-				<br><input class="{$BOOTSTRAP_STYLE_TEXTFIELD}" style="display: none" type="password" name="admin_password" value="__OPENACCESS__">
+				<br><input class="{$BOOTSTRAP_STYLE_TEXTFIELD} inline" style="display: none" type="password" name="admin_password" value="__OPENACCESS__">
 				<input class="{$BOOTSTRAP_STYLE_PRIMARY_BUTTON}swPrpSubmit reporticoSubmit" type="submit" name="login" value="{$T_OPEN_LOGIN}">
 {if strlen($ADMIN_PASSWORD_ERROR) > 0}
 				<div style="color: #ff0000;">{$T_ADMIN_PASSWORD_ERROR}</div>
@@ -177,7 +177,7 @@
 			<TD width="35%" align="right" class="swPrpTopMenuCell">
 {$T_ADMIN_INSTRUCTIONS}
 				<br><input class="{$BOOTSTRAP_STYLE_TEXTFIELD}" type="password" name="admin_password" value="">
-				<input class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swPrpSubmit reporticoSubmit" type="submit" name="login" value="{$T_LOGIN}">
+				<input class="{$BOOTSTRAP_STYLE_PRIMARY_BUTTON}swPrpSubmit reporticoSubmit" type="submit" name="login" value="{$T_LOGIN}">
 {if strlen($ADMIN_PASSWORD_ERROR) > 0}
 				<div style="color: #ff0000;">{$T_ADMIN_PASSWORD_ERROR}</div>
 {/if}
@@ -248,7 +248,7 @@
 {/strip}
 {/section}
 				</select>
-				<input class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swMntButton reporticoSubmit" type="submit" name="submit_language" value="{$T_GO}">
+				<input class="{$BOOTSTRAP_STYLE_GO_BUTTON}swMntButton reporticoSubmit" type="submit" name="submit_language" value="{$T_GO}">
 			</TD>
 		</TR>
 {/if}
@@ -262,7 +262,7 @@
 {/strip}
 {/section}
 				</select>
-				<input class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swMntButton reporticoSubmit" type="submit" name="submit_menu_project" value="{$T_GO}">
+				<input class="{$BOOTSTRAP_STYLE_GO_BUTTON}swMntButton reporticoSubmit" type="submit" name="submit_menu_project" value="{$T_GO}">
 			</TD>
 		</TR>
 {/if}
@@ -277,7 +277,7 @@
 {/strip}
 {/section}
 				</select>
-				<input class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swMntButton reporticoSubmit" type="submit" name="submit_design_project" value="{$T_GO}">
+				<input class="{$BOOTSTRAP_STYLE_GO_BUTTON}swMntButton reporticoSubmit" type="submit" name="submit_design_project" value="{$T_GO}">
 			</TD>
 		</TR>
 		<TR> 
@@ -289,7 +289,7 @@
 {/strip}
 {/section}
 				</select>
-				<input class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swMntButton reporticoSubmit" type="submit" name="submit_configure_project" value="{$T_GO}">
+				<input class="{$BOOTSTRAP_STYLE_GO_BUTTON}swMntButton reporticoSubmit" type="submit" name="submit_configure_project" value="{$T_GO}">
 			</TD>
 		</TR>
 		<TR> 
@@ -301,7 +301,7 @@
 {/strip}
 {/section}
 				</select>
-				<input class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swMntButton reporticoSubmit" type="submit" name="submit_delete_project" value="{$T_GO}">
+				<input class="{$BOOTSTRAP_STYLE_GO_BUTTON}swMntButton reporticoSubmit" type="submit" name="submit_delete_project" value="{$T_GO}">
 			</TD>
 		</TR>
 {/if}
@@ -348,7 +348,7 @@
 {/strip}
 {/section}
 				</select>
-				<input class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swMntButton reporticoSubmit" type="submit" name="submit_language" value="{$T_GO}">
+				<input class="{$BOOTSTRAP_STYLE_GO_BUTTON}swMntButton reporticoSubmit" type="submit" name="submit_language" value="{$T_GO}">
 			</TD>
 		</TR>
 {/if}
@@ -362,7 +362,7 @@
 {/strip}
 {/section}
 				</select>
-				<input class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swMntButton reporticoSubmit" type="submit" name="submit_menu_project" value="{$T_GO}">
+				<input class="{$BOOTSTRAP_STYLE_GO_BUTTON}swMntButton reporticoSubmit" type="submit" name="submit_menu_project" value="{$T_GO}">
 			</TD>
 		</TR>
 {/if}
