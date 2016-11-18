@@ -84,9 +84,11 @@
 <script type="text/javascript">var reportico_ajax_script = "{/literal}{$REPORTICO_AJAX_RUNNER}{literal}";</script>
 {/literal}
 {if $REPORTICO_BOOTSTRAP_MODAL}
+<script type="text/javascript">var reportico_bootstrap_styles = "{$BOOTSTRAP_STYLES}";</script>
 <script type="text/javascript">var reportico_bootstrap_modal = true;</script>
 {else}
 <script type="text/javascript">var reportico_bootstrap_modal = false;</script>
+<script type="text/javascript">var reportico_bootstrap_styles = false;</script>
 {/if}
 
 {if $REPORTICO_DYNAMIC_GRIDS}
@@ -451,7 +453,7 @@
 			</div>
 
 {if !$OUTPUT_SHOW_SHOWGRAPH}
-                                        <input style="margin:0px 0px 0px 5px; display:none" type="checkbox" name="target_show_graph" value="1" {$OUTPUT_SHOWGRAPH}>
+                                        <input style="display:none" type="checkbox" name="target_show_graph" value="1" {$OUTPUT_SHOWGRAPH}>
 {/if}
 {if $BOOTSTRAP_STYLES }
 				<INPUT type="checkbox" style="display:none" name="user_criteria_entered" value="1" checked="1">
@@ -470,7 +472,7 @@
                                 <ul class="dropdown-menu reportico-dropdown" style="padding-top:0px; padding-bottom:0px">
     				                <li>
 {if $BOOTSTRAP_STYLES == "2"}
-                                        <input style="margin:0px 0px 0px 5px" type="checkbox" name="target_show_criteria" value="1" {$OUTPUT_SHOWCRITERIA}>
+                                        <input class="reportico_bootstrap2_checkbox" type="checkbox" name="target_show_criteria" value="1" {$OUTPUT_SHOWCRITERIA}>
                                         <label style="display:inline">{$T_SHOW_CRITERIA}</label>
 {else}
                                         <div class="input-group" style="margin-bottom: 0px; ; float: right">
@@ -483,7 +485,7 @@
                                     </li>
                                     <li>
 {if $BOOTSTRAP_STYLES == "2"}
-                                        <input style="margin:0px 0px 0px 5px" type="checkbox" name="target_show_detail" value="1" {$OUTPUT_SHOWDETAIL}>
+                                        <input class="reportico_bootstrap2_checkbox" type="checkbox" name="target_show_detail" value="1" {$OUTPUT_SHOWDETAIL}>
                                         <label style="display:inline">{$T_SHOW_DETAIL}</label>
 {else}
                                         <div class="input-group" style="margin-bottom: 0px; ; float: right">
@@ -497,7 +499,7 @@
 {if $OUTPUT_SHOW_SHOWGRAPH}
     				                <li>
 {if $BOOTSTRAP_STYLES == "2"}
-                                        <input style="margin:0px 0px 0px 5px" type="checkbox" name="target_show_graph" value="1" {$OUTPUT_SHOWGRAPH}>
+                                        <input class="reportico_bootstrap2_checkbox" type="checkbox" name="target_show_graph" value="1" {$OUTPUT_SHOWGRAPH}>
                                         <label style="display:inline">{$T_SHOW_GRAPH}</label>
 {else}
                                         <div class="input-group" style="margin-bottom: 0px; ; float: right">
@@ -511,7 +513,7 @@
 {/if}
     				                <li>
 {if $BOOTSTRAP_STYLES == "2"}
-                                        <input style="margin:0px 0px 0px 5px" type="checkbox" name="target_show_group_headers" value="1" {$OUTPUT_SHOWGROUPHEADERS}>
+                                        <input class="reportico_bootstrap2_checkbox" type="checkbox" name="target_show_group_headers" value="1" {$OUTPUT_SHOWGROUPHEADERS}>
                                         <label style="display:inline">{$T_SHOW_GRPHEADERS}</label>
 {else}
                                         <div class="input-group" style="margin-bottom: 0px; ; float: right">
@@ -524,7 +526,7 @@
                                     </li>
     				                <li>
 {if $BOOTSTRAP_STYLES == "2"}
-                                        <input style="margin:0px 0px 0px 5px" type="checkbox" name="target_show_group_trailers" value="1" {$OUTPUT_SHOWGROUPTRAILERS}>
+                                        <input class="reportico_bootstrap2_checkbox" type="checkbox" name="target_show_group_trailers" value="1" {$OUTPUT_SHOWGROUPTRAILERS}>
                                         <label style="display:inline">{$T_SHOW_GRPTRAILERS}</label>
 {else}
                                         <div class="input-group" style="margin-bottom: 0px; ; float: right">
@@ -724,20 +726,20 @@ $loopct++;
 <div class="modal fade" id="reporticoModal" tabindex="-1" role="dialog" aria-labelledby="reporticoModal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
 {else}
-<div class="modal fade" style="pointer-events: none; width: 900px; margin-left: -450px" id="reporticoModal" tabindex="-1" role="dialog" aria-labelledby="reporticoModal" aria-hidden="true">
+<a id="a_reporticoModal" href="#reporticoModal" role="button" class="btn" data-target="#reporticoModal" data-toggle="modal" style="display:none">BB2</a>
+<div class="modal fade" style="width: 900px; margin-left: -450px" id="reporticoModal" tabindex="-1" role="dialog" aria-labelledby="reporticoModal" aria-hidden="true">
     <div class="modal-dialog">
 {/if}
         <div class="modal-content">
             <div class="modal-header">
-            <button type="button" class="close reportico-bootstrap-modal-close" aria-hidden="true">&times;</button>
+            <button type="button" class="close reportico-bootstrap-modal-close" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h4 class="modal-title reportico-modal-title" id="reporticoModalLabel">Set Parameter</h4>
             </div>
-            <div class="modal-body" style="padding: 0px" id="swMiniMaintain">
+            <div class="modal-body" style="padding: 0px; overflow-y: auto" id="swMiniMaintain">
                 <h3>Modal Body</h3>
             </div>
             <div class="modal-footer">
-                <!--button type="button" class="btn btn-default" data-dismiss="modal">Close</button-->
-                <button type="button" class="btn btn-primary swMiniMaintainSubmit" >Close</button>
+                <button type="button" data-dismiss="modal" class="btn btn-primary swMiniMaintainSubmit" >Close</button>
         </div>
     </div>
   </div>
@@ -746,7 +748,8 @@ $loopct++;
 <div class="modal fade" id="reporticoNoticeModal" tabindex="-1" role="dialog" aria-labelledby="reporticoNoticeModal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
 {else}
-<div class="modal fade" style="pointer-events: none; width: 500px; margin-left: -450px" id="reporticoNoticeModal" tabindex="-1" role="dialog" aria-labelledby="reporticoModal" aria-hidden="true">
+<a id="a_reporticoNoticeModal" href="#reporticoNoticeModal" role="button" class="btn" data-target="#reporticoNoticeModal" data-toggle="modal" style="display:none">B2</a>
+<div class="modal hide fade" id="reporticoNoticeModal" tabindex="-1" role="dialog" aria-labelledby="reporticoNoticeModal" aria-hidden="true">
     <div class="modal-dialog">
 {/if}
         <div class="modal-content">
@@ -754,12 +757,11 @@ $loopct++;
             <button type="button" data-dismiss="modal" class="close" aria-hidden="true">&times;</button>
             <h4 class="modal-title reportico-notice-modal-title" id="reporticoNoticeModalLabel">{$T_NOTICE}</h4>
             </div>
-            <div class="modal-body" style="padding: 0px" id="reporticoNoticeModalBody">
+            <div class="modal-body" style="overflow-y: auto; padding: 0px" id="reporticoNoticeModalBody">
                 <h3>Modal Body</h3>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                <!--button type="button" class="btn btn-primary" >Close</button-->
         </div>
     </div>
   </div>
@@ -770,7 +772,7 @@ $loopct++;
         <div class="reportico-modal-content">
             <div class="reportico-modal-header">
             <button type="button" class="reportico-modal-close">&times;</button>
-            <h4 class="reportico-modal-title" id="reporticoModalLabel">Set Parameter</h4>
+            <h4 class="reportico-modal-title" id="reporticoModalLabel">{$T_NOTICE}</h4>
             </div>
             <div class="reportico-modal-body" style="padding: 0px" id="swMiniMaintain">
                 <h3>Modal Body</h3>

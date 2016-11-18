@@ -173,6 +173,15 @@ function setupDropMenu()
     }
 }
 
+function setupCheckboxes()
+{
+    reportico_jquery('.reportico_bootstrap2_checkbox').on('click', function(event){
+        //The event won't be propagated to the document NODE and 
+        // therefore events delegated to document won't be fired
+        event.stopPropagation();
+    });
+}
+
 /*
 * Where multiple data tables exist due to graphs
 * resize the columns of all tables to match the first
@@ -276,6 +285,7 @@ reportico_jquery(document).ready(function()
     resizeTables();
     setupDynamicGrids();
     setupCriteriaItems();
+    setupCheckboxes();
     //reportico_jquery('#select2_dropdown_country').select2();
 
 });
@@ -734,6 +744,7 @@ reportico_jquery(document).on('click', '#returnFromExpand', function() {
         setupTooltips();
         setupDropMenu();
         setupCriteriaItems();
+        setupCheckboxes();
         },
         error: function(xhr, desc, err) {
         reportico_jquery(expandpanel).removeClass("loading");
@@ -770,6 +781,7 @@ reportico_jquery(document).on('click', '#returnFromExpand', function() {
           setupTooltips();
           setupDropMenu();
           setupCriteriaItems();
+          setupCheckboxes();
         },
         error: function(xhr, desc, err) {
           reportico_jquery(fillPoint).removeClass("loading");
@@ -992,6 +1004,7 @@ function fillDialog(results, cont) {
   setupDynamicGrids();
   resizeHeaders();
   setupCriteriaItems();
+  setupCheckboxes();
   resizeTables();
 }
 

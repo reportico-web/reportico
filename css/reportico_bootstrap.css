@@ -31,6 +31,16 @@
     background-color: #eeeeff;
 }
 
+#swPrpSaveFile
+{
+    display: inline !important;
+}
+
+.reportico_bootstrap2_checkbox
+{
+    margin:0px 0px 0px 5px !important;
+}
+
 #swPrpSubmitPane input
 {
     float: right;
@@ -316,6 +326,7 @@ input.swAdminButton2
     padding-bottom: 5px;
 }
 
+/*
 .swLinkMenu 
 { 
     padding-right: 10px;
@@ -329,6 +340,7 @@ input.swAdminButton2
     padding-top: 5px;
     padding-bottom: 5px;
 }
+*/
 
 /*.swLinkMenu:hover
 {
@@ -1052,7 +1064,8 @@ input.swAdminButton2
 .swMntSetField textarea
 {
     font-size: 10pt;
-    /*width: auto !important;*/
+    width: auto !important;
+    max-width:380px;
 }
 
 .swMntHelpLink
@@ -1066,6 +1079,7 @@ input.swAdminButton2
 .swMntHelpImage
 { 
     border-style: none;
+    display: inline !important;
 }
 
 .swMntHelp

@@ -232,9 +232,6 @@ class reportico_panel
 						if ( $col->expand_display && $col->expand_display != "NOINPUT" )
 							$critexp = true;
 
-                        //$nextdisplaygroup = false;
-                        //if ( $k < count($this->query->lookup_queries) - 1 )
-                            //$nextdisplaygroup = $this->query->lookup_queries[$k+1].display_group;
 						$dispcrit[] = array (
 									"name" => $col->query_name,
 									"title" => sw_translate($crittitle),
@@ -242,7 +239,6 @@ class reportico_panel
 									"entry" => $critsel,
 									"hidden" => $crithidden,
 									"last_display_group" => $lastdisplaygroup,
-									//"next_display_group" => $nextdisplaygroup,
 									"display_group" => $critdisplaygroup,
 									"display_group_class" => preg_replace("/ /", "_", $critdisplaygroup),
 									"required" => $critrequired,
@@ -3386,9 +3382,9 @@ class reportico_xml_reader
 						$text .= '<TD colspan="2">';
 						$text .= '&nbsp;&nbsp;'.template_xlate('PROJECT').$g_project.'&nbsp;&nbsp;&nbsp;&nbsp;';
                         if ( $this->query->xmloutfile == "configureproject" )
-						    $text .= template_xlate('REPORT_FILE').' <input type="text" name="xmlout" value="">';
+						    $text .= template_xlate('REPORT_FILE').' <input style="display: inline" type="text" name="xmlout" value="">';
                         else
-						    $text .= template_xlate('REPORT_FILE').' <input type="text" name="xmlout" value="'.$this->query->xmloutfile.'">';
+						    $text .= template_xlate('REPORT_FILE').' <input type="text" style="display: inline" name="xmlout" value="'.$this->query->xmloutfile.'">';
 						$text .= '&nbsp;&nbsp;<input class="'.$this->query->getBootstrapStyle('button_admin').'swLinkMenu reporticoSubmit" type="submit" name="submit_xxx_SAVE" value="'.template_xlate("SAVE").'">';
 						$text .= '&nbsp;&nbsp;<input class="'.$this->query->getBootstrapStyle('button_admin').'swLinkMenu reporticoSubmit" type="submit" name="submit_maintain_NEW" value="'.template_xlate("NEW_REPORT").'">';
 						$text .= '<input class="'.$this->query->getBootstrapStyle('button_delete').'swLinkMenu reporticoSubmit" style="margin-left: 80px" type="submit" name="submit_xxx_DELETEREPORT" value="'.template_xlate("DELETE_REPORT").'">';
