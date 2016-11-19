@@ -3758,12 +3758,14 @@ class reportico extends reportico_object
             $custom_functions = array();
 
 		    global $g_project;
-            if ( file_exists($this->projects_folder."/$g_project/reportico_defaults.php" ))
+            $old_error_handler = set_error_handler("ErrorHandler", 0);
+            if ( @file_exists($this->projects_folder."/$g_project/reportico_defaults.php" ))
                 include_once($this->projects_folder."/$g_project/reportico_defaults.php");
-            else if ( file_exists(__DIR__."/reportico_defaults.php" ))
+            else if ( @file_exists(__DIR__."/reportico_defaults.php" ))
                 include_once(__DIR__."/reportico_defaults.php");
             if ( function_exists("reportico_defaults") )
                 reportico_defaults($this);
+            $old_error_handler = set_error_handler("ErrorHandler");
         }
 
 	}
@@ -5724,24 +5726,38 @@ function save_admin_password($password1, $password2, $language)
 	$proj_conf = $proj_dir."/config.php";
 	$proj_template = $proj_dir."/adminconfig.template";
 
-	if ( !file_exists ( $proj_parent ) )
+    $old_error_handler = set_error_handler("ErrorHandler", 0);
+	if ( !@file_exists ( $proj_parent ) )
+    {
+            $old_error_handler = set_error_handler("ErrorHandler");
     		return "Projects area $proj_parent does not exist - cannot write project";
+    }
 
-	if ( file_exists ( $proj_conf ) )
+	if ( @file_exists ( $proj_conf ) )
 	{
 		if ( !is_writeable ( $proj_conf  ) )
+        {
+            $old_error_handler = set_error_handler("ErrorHandler");
 			return "Projects config file $proj_conf is not writeable - cannot write config file - change permissions to continue";
+        }
 	}
 
 	if ( !is_writeable ( $proj_dir  ) )
+    {
+            $old_error_handler = set_error_handler("ErrorHandler");
     		return "Projects area $proj_dir is not writeable - cannot write project password in config.php - change permissions to continue";
+    }
 
 
-	if ( !file_exists ( $proj_conf ) )
-		if ( !file_exists ( $proj_template ) )
+	if ( !@file_exists ( $proj_conf ) )
+		if ( !@file_exists ( $proj_template ) )
+        {
+            $old_error_handler = set_error_handler("ErrorHandler");
     		return "Projects config template file $proj_template does not exist - please contact reportico.org";
+        }
+    $old_error_handler = set_error_handler("ErrorHandler");
 
-	if ( file_exists ( $proj_conf ) )
+	if ( @file_exists ( $proj_conf ) )
 	{
 		$txt = file_get_contents($proj_conf);
 	}
