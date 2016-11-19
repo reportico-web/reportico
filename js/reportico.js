@@ -1,5 +1,6 @@
 reportico_jquery = jQuery.noConflict();
 
+
 var reportico_ajax_script = "index.php";
 
 /*
@@ -232,6 +233,8 @@ function resizeHeaders()
 function resizeTables()
 {
   var tableArr = reportico_jquery('.swRepPage');
+  if ( tableArr.length == 0 )
+    return;
   var tableDataRow = reportico_jquery('.swRepResultLine:first');
   var cellWidths = new Array();
   reportico_jquery(tableDataRow).each(function() {
