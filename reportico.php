@@ -8479,8 +8479,8 @@ class reportico_assignment extends reportico_object
         // Support for limesurvey prefix
         if ( isset($in_query->user_parameters["lime_"]) ) 
         {
-            preg_replace ("/{lime_}/", $in_query->user_parameters["lime_"], $in_string);
-            preg_replace ("/{prefix}/", $in_query->user_parameters["lime_"], $in_string);
+            $in_string = preg_replace ("/{lime_}/", $in_query->user_parameters["lime_"], $in_string);
+            $in_string = preg_replace ("/{prefix}/", $in_query->user_parameters["lime_"], $in_string);
         }
 
         // Replace External parameters specified by {USER_PARAM,xxxxx}
