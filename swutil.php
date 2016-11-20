@@ -766,6 +766,7 @@ function find_file_to_include($file_path, &$new_file_path, &$rel_to_include = ""
         if (@file_exists($new_file_path) || is_dir($new_file_path) ) 
 	    {
                	$new_file_path = $selfdir . "/" . $file_path;
+                $old_error_handler = set_error_handler("ErrorHandler");
 				return true;
         }
         $old_error_handler = set_error_handler("ErrorHandler");

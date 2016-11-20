@@ -232,6 +232,7 @@ function resizeHeaders()
 */
 function resizeTables()
 {
+
   var tableArr = reportico_jquery('.swRepPage');
   if ( tableArr.length == 0 )
     return;

@@ -8474,6 +8474,14 @@ class reportico_assignment extends reportico_object
         if ( $external_param2 ) $in_string = preg_replace ("/{EXTERNAL_PARAM2}/", "'".$external_param2."'", $in_string);
         if ( $external_param3 ) $in_string = preg_replace ("/{EXTERNAL_PARAM3}/", "'".$external_param3."'", $in_string);
         if ( $external_user ) $in_string = preg_replace ("/{FRAMEWORK_USER}/", "'".$external_user."'", $in_string);
+        if ( $external_user ) $in_string = preg_replace ("/{USER}/", "'".$external_user."'", $in_string);
+
+        // Support for limesurvey prefix
+        if ( isset($in_query->user_parameters["lime_"]) ) 
+        {
+            preg_replace ("/{lime_}/", $in_query->user_parameters["lime_"], $in_string);
+            preg_replace ("/{prefix}/", $in_query->user_parameters["lime_"], $in_string);
+        }
 
         // Replace External parameters specified by {USER_PARAM,xxxxx}
 		if ( preg_match_all ( "/{USER_PARAM,([^}]*)}/", $in_string, $matches ) )
