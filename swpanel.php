@@ -788,8 +788,8 @@ class reportico_xml_reader
 
 					"DetailStyle" => array ( "Title" => "DETAILSTYLE" ),
 
-                    "GroupHeaderCustom" => array ( "Title" => "GROUPHEADERCUSTOM", "Type" => "TEXTBOX", "WizardLink" => true, "HasChangeComparator" => true, "DocId" => "group_header_custom_text" ),
-                    "GroupTrailerCustom" => array ( "Title" => "GROUPTRAILERCUSTOM", "Type" => "TEXTBOX", "WizardLink" => true, "HasChangeComparator" => true, "DocId" => "group_trailer_custom_text" ),
+                    "GroupHeaderCustom" => array ( "Title" => "GROUPHEADERCUSTOM", "Type" => "TEXTBOXNARROW", "WizardLink" => true, "HasChangeComparator" => true, "DocId" => "group_header_custom_text" ),
+                    "GroupTrailerCustom" => array ( "Title" => "GROUPTRAILERCUSTOM", "Type" => "TEXTBOXNARROW", "WizardLink" => true, "HasChangeComparator" => true, "DocId" => "group_trailer_custom_text" ),
 
 					"AssignStyleLocType" => array ( "Title" => "ASSIGNSTYLELOCTYPE", "Type" => "STYLELOCTYPES", "XlateOptions" => true, "DocId" => "apply_style_to"),
 					"AssignStyleFgColor" => array ( "Title" => "ASSIGNSTYLEFGCOLOR", "Validate" => "HTMLCOLOR", "DocId" => "text_colour" ),
@@ -4486,6 +4486,15 @@ class reportico_xml_reader
 				if ( $edit_mode == "SAFE" && ( $this->query->allow_maintain == "SAFE" || $this->query->allow_maintain == "DEMO" || SW_SAFE_DESIGN_MODE ) )
 					$readonly = "readonly";
 				$text .= '<textarea class="'.$this->query->getBootstrapStyle('textfield').'" '.$readonly.' cols="70" rows="20" name="set_'.$this->id."_".$showtag.$shadow.'" >';
+				$text .= htmlspecialchars($val);
+				$text .= '</textarea>';
+				break;
+
+			case "TEXTBOXNARROW":
+				$readonly = "";
+				if ( $edit_mode == "SAFE" && ( $this->query->allow_maintain == "SAFE" || $this->query->allow_maintain == "DEMO" || SW_SAFE_DESIGN_MODE ) )
+					$readonly = "readonly";
+				$text .= '<textarea class="'.$this->query->getBootstrapStyle('textfield').' swMntTextBoxNarrow" '.$readonly.' cols="70" rows="20" name="set_'.$this->id."_".$showtag.$shadow.'" >';
 				$text .= htmlspecialchars($val);
 				$text .= '</textarea>';
 				break;
