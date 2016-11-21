@@ -843,6 +843,19 @@ class reportico extends reportico_object
 	}
 
 	// -----------------------------------------------------------------------------
+	// Function : get_criteria_value
+	// -----------------------------------------------------------------------------
+	function get_criteria_value($in_criteria_name, $type = "VALUE", $add_delimiters = true)
+	{
+		if ( !array_key_exists($in_criteria_name, $this->lookup_queries) )
+		{
+			return false;
+		}
+        else
+            return $this->lookup_queries[$in_criteria_name]->get_criteria_clause(false, false, true, false, false, $add_delimiters);
+	}
+
+	// -----------------------------------------------------------------------------
 	// Function : get_criteria_by_name
 	// -----------------------------------------------------------------------------
 	function get_criteria_by_name($in_criteria_name)
@@ -1684,13 +1697,12 @@ class reportico extends reportico_object
 
             // Fetch the criteria value summary if required for displaying
             // the criteria entry summary at top of report
-			if ( $execute_mode && $this->target_show_criteria &&
+			if ( $execute_mode && $execute_mode != "MAINTAIN" && $this->target_show_criteria &&
                     ( ( array_key_exists($col->query_name, $_REQUEST) && !(is_array($_REQUEST[$col->query_name]) && count($col->query_name) == 1 && $_REQUEST[$col->query_name][0] == "" ))
 			        || array_key_exists("MANUAL_".$col->query_name, $_REQUEST) 
 			        || array_key_exists("HIDDEN_".$col->query_name, $_REQUEST) 
                     ) )
 			{
-
 				$lq =&	$this->lookup_queries[$col->query_name] ;
                 if ( $lq->criteria_type == "LOOKUP" )
 				    $lq->execute_criteria_lookup();
@@ -2484,7 +2496,7 @@ class reportico extends reportico_object
 
 	    if ( $execute_mode != "MAINTAIN" )
 	    {
-		    $this->query_statement = reportico_assignment::reportico_meta_sql_criteria($this->parent_query, $this->query_statement, false, $no_warnings);
+		    $this->query_statement = reportico_assignment::reportico_meta_sql_criteria($this->parent_query, $this->query_statement, false, $no_warnings, $execute_mode);
 	    }
 
 	}			
@@ -8461,10 +8473,9 @@ class reportico_assignment extends reportico_object
 	// -----------------------------------------------------------------------------
 	// Function : reportico_meta_sql_criteria
 	// -----------------------------------------------------------------------------
-	static function reportico_meta_sql_criteria(&$in_query, $in_string, $prev_col_value = false, $no_warnings = false)
+	static function reportico_meta_sql_criteria(&$in_query, $in_string, $prev_col_value = false, $no_warnings = false, $execute_mode = "EXECUTE")
 	{
         // Replace user parameters with values
-
         $external_param1 = get_reportico_session_param("external_param1");
         $external_param2 = get_reportico_session_param("external_param2");
         $external_param3 = get_reportico_session_param("external_param3");
@@ -8541,6 +8552,13 @@ class reportico_assignment extends reportico_object
 				{
 					$eltype = "VALUE";
                     $showquotes = true;
+                    $surrounder = false;
+                    
+					if ( preg_match ( "/([!])(.*)/", $crit, $critel ) )
+					{
+							$surrounder = $critel[1];
+							$crit = $critel[2];
+					}
 					if ( preg_match ( "/(.*),(.*),(.*)/", $crit, $critel ) )
 					{
 							$crit = $critel[1];
@@ -8563,6 +8581,9 @@ class reportico_assignment extends reportico_object
                             else
 							    $eltype = $critel[2];
 					}
+                    if ( $surrounder == "!" )
+                        $showquotes = false;
+
 					if ( array_key_exists($crit, $in_query->lookup_queries) )
 					{
 						switch ( $eltype )
@@ -8583,6 +8604,10 @@ class reportico_assignment extends reportico_object
 							default :
 								$clause = $in_query->lookup_queries[$crit]->get_criteria_clause(false, false, true, false, false, $showquotes);
 						}
+                        if ( $execute_mode == "MAINTAIN" && !$clause )
+                        {
+                            $clause = "'DUMMY'";
+                        }
 					}
 					else if ( $cl = get_query_column($crit, $in_query->columns ) )
                     {

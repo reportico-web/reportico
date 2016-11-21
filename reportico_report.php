@@ -418,7 +418,7 @@ class reportico_report extends reportico_object
                     break;
 
                 if (
-                    ( $ph->get_attribute("ShowInHTML") == "yes" && get_class($this) == "reportico_report_html" )
+                    ( $ph->get_attribute("ShowInHTML") == "yes" && preg_match("/reportico_report_html/", get_class($this)))
                     || ( $ph->get_attribute("ShowInPDF")  == "yes"&& $this->query->target_format == "PDF" )
                     )
                 {
@@ -439,7 +439,7 @@ class reportico_report extends reportico_object
                     break;
 
                 if (
-                    ( $ph->get_attribute("ShowInHTML") == "yes" && get_class($this) == "reportico_report_html" )
+                    ( $ph->get_attribute("ShowInHTML") == "yes" && preg_match("/reportico_report_html/", get_class($this)))
                     || ( $ph->get_attribute("ShowInPDF")  == "yes"&& $this->query->target_format == "PDF" )
                     )
                 {
@@ -754,7 +754,7 @@ class reportico_report extends reportico_object
                                 }
                             } // foreach
                         }
-                        if (  get_class($this) != "reportico_report_html" )
+                        if (  !preg_match("/reportico_report_html/", get_class($this)) )
 						    $this->format_group_trailer_end();
 						if ( $trailer_first )
 							$trailer_first = false;
@@ -767,7 +767,7 @@ class reportico_report extends reportico_object
 			}
 			while( prev($this->query->groups) );
 
-            if ( $group_changed && get_class($this) == "reportico_report_html" )
+            if ( $group_changed && preg_match("/reportico_report_html/", get_class($this)))
             {
                 $this->format_group_trailer_end();
             }
@@ -951,11 +951,11 @@ class reportico_report extends reportico_object
 				    {
 				        $col =& $group->headers[$i]["GroupHeaderColumn"];
 				        $custom = $group->headers[$i]["GroupHeaderCustom"];
-                        if ( $group->headers[$i]["ShowInHTML" ] == "yes" && get_class($this) == "reportico_report_html" )
+                        if ( $group->headers[$i]["ShowInHTML" ] == "yes" && preg_match("/reportico_report_html/", get_class($this)))
 				            $this->format_group_header($col, $custom);
-                        if ( $group->headers[$i]["ShowInPDF" ] == "yes" && get_class($this) == "reportico_report_tcpdf" )
+                        if ( $group->headers[$i]["ShowInPDF" ] == "yes" && preg_match("/reportico_report_tcpdf/", get_class($this)))
 				            $this->format_group_header($col, $custom);
-                        if ( $group->headers[$i]["ShowInPDF" ] == "yes" && get_class($this) == "reportico_report_fpdf" )
+                        if ( $group->headers[$i]["ShowInPDF" ] == "yes" && preg_match("/reportico_report_fpdf/", get_class($this)))
 				            $this->format_group_header($col, $custom);
 				    }
                 }
