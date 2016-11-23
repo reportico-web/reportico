@@ -62,6 +62,12 @@ $locale_arr = array (
         "T_EDITCRITERIA" => "Valinnat",
         "T_EDITCOLUMNS" => "Sarakkeet",
         "T_EDIT" => "Muokkaa",
+        "T_EDITPRESQLS" => "Pre-SQLs",
+        "T_NOTICE" => "Notice",
+        "T_SHOW_CONTENT" => "Show Content",
+        "T_NEW_REPORT" => "Uusi Raportti",
+        "T_REPORT_FILE" => "Raporttitiedosto",
+        "T_SAVE" => "Tallenna",
         ),
         );
 ?>

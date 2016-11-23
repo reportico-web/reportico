@@ -353,6 +353,12 @@ $locale_arr = array (
         "T_CSS1SIZE" => "Koko tulee olla CSS lukuarvo, jonka jälkeen 'px' tai '%' ",
         "T_CSS4SIZE" => "Koko tulee olla neljä (4) lukuarvoa, jotka on välilyöntien rajaamia ja järjestyksessä (ylä, vasen, ala, oikea) ja  jokaisen numeron jälkeen joko 'px' tai '%'",
         "T_NUMBER" => "Arvo pitää olla numero",
+        "T_CRITERIADISPLAYGROUP" => "Filter Group",
+
+        "T_SELECT2SINGLE" => "Searchable Single List Box",
+        "T_SELECT2MULTIPLE" => "Searchable Multiple List Box",
+        "T_CRITERIAHIDDEN" => "Hide Criteria",
+        "T_CRITERIAREQUIRED" => "Criteria Required",
 
         )
         );
