@@ -34,7 +34,6 @@ if ( $_configure_mode != "DELETE" )
     $configparams["SW_OUTPUT_ENCODING"] = $_criteria["outputencoding"]->get_criteria_value("VALUE", false);
     $configparams["SW_LANGUAGE"] = $_criteria["language"]->get_criteria_value("VALUE", false);
 
-
     if ( !$configparams["SW_DB_TYPE"] ) { trigger_error ( "Specify Database Type", E_USER_NOTICE ); return; }
 
     $test = new reportico_datasource();
