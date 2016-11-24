@@ -6,8 +6,8 @@ After correctly setting your database credentials and pressing the &lt;i&gt;Go&l
 Then you can return to the Admin Menu, and select the &lt;b&gt;tutorials&lt;/b&gt; project from the "Run Project Report Suite" drop down and use "Generate the Tutorial Tables" option to create your sample data. Then you are ready to run the sample reports and try out the tutorials.
 
 
-
-</ReportDescription><PageSize>A4</PageSize><PageOrientation>Portrait</PageOrientation><TopMargin></TopMargin><BottomMargin></BottomMargin><RightMargin></RightMargin><LeftMargin></LeftMargin><pdfFont></pdfFont><pdfFontSize></pdfFontSize><PreExecuteCode>global $_configure_mode;
+</ReportDescription>
+<PageSize>A4</PageSize><PageOrientation>Portrait</PageOrientation><TopMargin></TopMargin><BottomMargin></BottomMargin><RightMargin></RightMargin><LeftMargin></LeftMargin><pdfFont></pdfFont><pdfFontSize></pdfFontSize><PreExecuteCode>global $_configure_mode;
 
 $_configure_mode = &quot;CREATETUTORIALS&quot;;
 
