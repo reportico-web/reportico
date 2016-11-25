@@ -2218,7 +2218,7 @@ echo $txt;
 
 	function format_column_header(& $column_item)   //PDF column headers
 	{
-		if ( !get_reportico_session_param("target_show_column_headers") )
+		if ( !get_reportico_session_param("target_show_detail") )
 			return;
 
 		if ( !$this->show_column_header($column_item) )

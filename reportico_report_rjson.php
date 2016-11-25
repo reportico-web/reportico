@@ -48,7 +48,6 @@ class reportico_report_rjson extends reportico_report
                 "show_graph" => true,
                 "show_group_headers" => true,
                 "show_group_trailers" => true,
-                "show_column_headers" => true,
                 "show_criteria" => true,
 
                 "column_header_styles" => false,

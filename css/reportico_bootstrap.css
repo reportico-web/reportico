@@ -26,6 +26,21 @@
     cursor: pointer;
 }
 
+.swDisplayGroupLine td
+{
+    background-color: #eeeeff;
+}
+
+#swPrpSaveFile
+{
+    display: inline !important;
+}
+
+.reportico_bootstrap2_checkbox
+{
+    margin:0px 0px 0px 5px !important;
+}
+
 #swPrpSubmitPane input
 {
     float: right;
@@ -269,6 +284,20 @@ a:visited
     text-decoration: none;
 }
 
+.swToggleCriteria, .swToggleCriteria:link, .swToggleCriteria:visited
+{ 
+    padding-right: 5px;
+    padding-left: 5px;
+    margin-right: 5px;
+    text-align: center;
+    background-color: #337ab7;
+    color: #ffffff;
+    font-size: larger;
+    font-weight: bold;
+    border: none;
+    text-decoration: none;
+}
+
 .swAdminButton2
 { 
     line-height: inherit !important;
@@ -297,6 +326,7 @@ input.swAdminButton2
     padding-bottom: 5px;
 }
 
+/*
 .swLinkMenu 
 { 
     padding-right: 10px;
@@ -306,17 +336,18 @@ input.swAdminButton2
     color: #000000;
     text-decoration: none;
     border: 1px solid #D0CCC9;
-    background-color: #EFEFEF;
+    /*background-color: #EFEFEF;*/
     padding-top: 5px;
     padding-bottom: 5px;
 }
+*/
 
-.swLinkMenu:hover
+/*.swLinkMenu:hover
 {
     border: solid thin #000000;	
     color: #000000 !important;
     background-color: #F2F2f2 !important;
-}
+}*/
 
 /* ------------------------------------------------------------------------------------*/
 /* -----------------------------Styles for Prepare Execute Mode -----------------------*/
@@ -1033,7 +1064,8 @@ input.swAdminButton2
 .swMntSetField textarea
 {
     font-size: 10pt;
-    /*width: auto !important;*/
+    width: auto !important;
+    max-width:380px;
 }
 
 .swMntHelpLink
@@ -1047,6 +1079,7 @@ input.swAdminButton2
 .swMntHelpImage
 { 
     border-style: none;
+    display: inline !important;
 }
 
 .swMntHelp

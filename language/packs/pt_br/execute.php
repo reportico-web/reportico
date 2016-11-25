@@ -9,6 +9,7 @@ $locale_arr = array (
 		"T_NO_DATA_FOUND" => "Nenhum dado foi encontrado com os criterios informados",
 		"T_UNABLE_TO_CONTINUE" => "Não e possível continuar",
 		"T_INFORMATION" => "Informacoes",
+        "T_NOTICE" => "Notificação",
         "T_REQUIRED_CRITERIA" => "Você deve fornecer um valor para o item de critérios",
         )
 );

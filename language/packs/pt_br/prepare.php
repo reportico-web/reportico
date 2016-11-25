@@ -71,6 +71,10 @@ $locale_arr = array (
         "T_CRITERIAHIDDEN" => "Esconder Critários",
         "T_CRITERIAREQUIRED" => "Critários exigidos",
         "T_NOTICE" => "Notificação",
+        "T_SAVE" => "Salvar",
+        "T_REPORT_FILE" => "Arquivo do relatorio",
+        "T_NEW_REPORT" => "Novo relatorio",
+        "T_SHOW_CONTENT" => "Mostra contenuto",
         ),
         );
 ?>

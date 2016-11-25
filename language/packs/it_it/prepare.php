@@ -59,6 +59,10 @@ $locale_arr = array (
         "T_EDITCOLUMNS" => "Colonne",
         "T_EDIT" => "Modifica",
         "T_NOTICE" => "Notifica",
+        "T_SAVE" => "Salvare",
+        "T_REPORT_FILE" => "Segnala un file",
+        "T_NEW_REPORT" => "Un nuovo rapporto",
+        "T_SHOW_CONTENT" => "Mostra contenuto",
         ),
         );
 ?>

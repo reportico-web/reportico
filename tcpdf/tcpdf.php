@@ -4298,6 +4298,7 @@ $brd["mode"] = "normal";
 		// true when the font style variation is missing
 		$missing_style = false;
 		// search and include font file
+        $old_error_handler = set_error_handler("ErrorHandler", 0);
 		if (TCPDF_STATIC::empty_string($fontfile) OR (!@file_exists($fontfile))) {
 			// build a standard filenames for specified font
 			$tmp_fontfile = str_replace(' ', '', $family).strtolower($style).'.php';
@@ -4313,8 +4314,29 @@ $brd["mode"] = "normal";
 		if (!TCPDF_STATIC::empty_string($fontfile) AND (@file_exists($fontfile))) {
 			include($fontfile);
 		} else {
-			$this->Error('Could not include font definition file: '.$family.'');
+			//$this->Error('Could not 1include font definition '.$fontfile.' file: '.$family.'');
+                
+            $fontfile = "freesans";
+            $family = "freesans";
+            if (TCPDF_STATIC::empty_string($fontfile) OR (!@file_exists($fontfile))) {
+                    // build a standard filenames for specified font
+                    $tmp_fontfile = str_replace(' ', '', $family).strtolower($style).'.php';
+                    $fontfile = TCPDF_FONTS::getFontFullPath($tmp_fontfile, $fontdir);
+                    if (TCPDF_STATIC::empty_string($fontfile)) {
+                        $missing_style = true;
+                        // try to remove the style part
+                        $tmp_fontfile = str_replace(' ', '', $family).'.php';
+                        $fontfile = TCPDF_FONTS::getFontFullPath($tmp_fontfile, $fontdir);
+                    }
+                }
+                // include font file
+                if (!TCPDF_STATIC::empty_string($fontfile) AND (@file_exists($fontfile))) {
+                    include($fontfile);
+                } else {
+                    $this->Error('Could not2 include font definition '.$fontfile.' file: '.$family.'');
+                }
 		}
+        $old_error_handler = set_error_handler("ErrorHandler");
 		// check font parameters
 		if ((!isset($type)) OR (!isset($cw))) {
 			$this->Error('The font definition file has a bad format: '.$fontfile.'');
@@ -4841,6 +4863,8 @@ $brd["mode"] = "normal";
 		if (!isset($this->PageAnnots[$page])) {
 			$this->PageAnnots[$page] = array();
 		}
+
+        $old_error_handler = set_error_handler("ErrorHandler", 0);
 		$this->PageAnnots[$page][] = array('n' => ++$this->n, 'x' => $x, 'y' => $y, 'w' => $w, 'h' => $h, 'txt' => $text, 'opt' => $opt, 'numspaces' => $spaces);
 		if (!$this->pdfa_mode) {
 			if ((($opt['Subtype'] == 'FileAttachment') OR ($opt['Subtype'] == 'Sound')) AND (!TCPDF_STATIC::empty_string($opt['FS']))
@@ -4859,6 +4883,7 @@ $brd["mode"] = "normal";
 		if (isset($opt['mk']['ix']) AND @file_exists($opt['mk']['ix'])) {
 			$this->Image($opt['mk']['ix'], '', '', 0, 0, '', '', '', false, 300, '', false, false, 0, false, true);
 		}
+        $old_error_handler = set_error_handler("ErrorHandler");
 	}
 
 	/**
@@ -6894,6 +6919,7 @@ $rrr++;
 				$exurl = $file;
 			}
 			// check if is a local file
+            $old_error_handler = set_error_handler("ErrorHandler", 0);
 			if (!@file_exists($file)) {
 //$this->debugFile("oo");
 //$this->debugFile(getcwd()."none".$file);
@@ -6914,6 +6940,7 @@ $rrr++;
 					$imgdata = TCPDF_STATIC::fileGetContents($file);
 				}
 			}
+            $old_error_handler = set_error_handler("ErrorHandler");
 		}
 		if (!empty($imgdata)) {
 			// copy image to cache

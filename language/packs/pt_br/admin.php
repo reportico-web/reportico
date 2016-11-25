@@ -28,6 +28,8 @@ $locale_arr = array (
         "T_LINE" => "LINE",
         "T_Create A New Project" => "Criar novo projeto",
         "T_Configure Tutorials" => "Configurar tutoriais",
+        "T_OPEN_LOGIN" => "Entre no modo Design",
+        "T_OPEN_LOGOFF" => "Sair do modo de design",
         ),
         );
 ?>

@@ -34,7 +34,6 @@ if ( $_configure_mode != "DELETE" )
     $configparams["SW_OUTPUT_ENCODING"] = $_criteria["outputencoding"]->get_criteria_value("VALUE", false);
     $configparams["SW_LANGUAGE"] = $_criteria["language"]->get_criteria_value("VALUE", false);
 
-
     if ( !$configparams["SW_DB_TYPE"] ) { trigger_error ( "Specify Database Type", E_USER_NOTICE ); return; }
 
     $test = new reportico_datasource();
@@ -120,9 +119,9 @@ if ( !is_writeable ( $proj_parent  ) )
 
 if ( file_exists ( $proj_dir ) )
 {
-    if ( $_configure_mode == "CREATE" || $_configure_mode == "CREATETUTORIALS" )
+    if ( $_configure_mode == "CREATE" )
     {
-        trigger_error ("Projects area $proj_dir already exists - cannot write project - use Configure Project instead", E_USER_NOTICE);
+        trigger_error ("Projects area $proj_dir already exists - cannot write project - use Configure Project from the administration menu to change it. ", E_USER_NOTICE);
     	return;
     }
 }
@@ -212,10 +211,10 @@ else
 $matches = array();
 
 
-if ( $configparams["SW_DB_TYPE"] == "framework" )
-{
-        handle_debug("Connection to Database not checked as framework database connections have been used", 0);
-}
+//if ( $configparams["SW_DB_TYPE"] == "framework" )
+//{
+        //handle_debug("Connection to Database not checked as framework database connections have been used", 0);
+//}
 
 // If this is a reportico pre 2.8 then it wont handle "framework" type
 foreach ( $configparams as $paramkey => $paramval )
@@ -250,7 +249,7 @@ foreach ( $configparams as $paramkey => $paramval )
 
 $retval = file_put_contents($proj_conf, $txt);
 
-if ( $_configure_mode == "CREATE"  || $_configure_mode == "CREATETUTORIALS" )
+if ( $_configure_mode == "CREATE" )
 {
 	$txt = file_get_contents($menu_template);
 	$retval = file_put_contents($proj_menu, $txt);

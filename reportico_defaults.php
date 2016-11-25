@@ -40,7 +40,7 @@
                     "border-style" => "solid",
                     "border-width" => "1px 1px 1px 1px",
                     "border-color" => "#888888",
-                    "display" => "none",
+                    //"display" => "none",
                     //"margin" => "0px 5px 10px 5px",
                     //"padding" => "0px 5px 0px 5px",
                     );
@@ -65,6 +65,12 @@
                 );
             $reportico->apply_styleset("ALLCELLS", $styles, false, "PDF", "lineno() % 2 == 0");
 
+
+            //GROUP HEADER LABEL STYLES
+            $styles = array(
+                "border" => "none",
+                );
+            $reportico->apply_styleset("GROUPHEADERLABEL", $styles, false, "HTML");
 
             //GROUP HEADER LABEL STYLES
             $styles = array(

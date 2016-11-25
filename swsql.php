@@ -637,6 +637,7 @@ class reportico_sql_parser
             }
         }
 
+        $sql = reportico_assignment::reportico_meta_sql_criteria($in_query->parent_query, $sql, false, false, "MAINTAIN");
 
         $errorCode = false;
         $errorMessage = false;

@@ -762,11 +762,14 @@ function find_file_to_include($file_path, &$new_file_path, &$rel_to_include = ""
         $selfdir = dirname(__FILE__);
         $new_file_path = $selfdir. "/" . $file_path;
 
-        if (file_exists($new_file_path) || is_dir($new_file_path) ) 
+        $old_error_handler = set_error_handler("ErrorHandler", 0);
+        if (@file_exists($new_file_path) || is_dir($new_file_path) ) 
 	    {
                	$new_file_path = $selfdir . "/" . $file_path;
+                $old_error_handler = set_error_handler("ErrorHandler");
 				return true;
         }
+        $old_error_handler = set_error_handler("ErrorHandler");
     }
 
     // else look in incude path
@@ -793,7 +796,7 @@ function find_file_to_include($file_path, &$new_file_path, &$rel_to_include = ""
 	// Turn off Error handling for the following to avoid open_basedir errors
 	$old_error_handler = set_error_handler("ErrorHandler", 0);
     foreach ($_path_array as $_include_path) {
-        if (file_exists($_include_path . "/" . $file_path)) 
+        if (@file_exists($_include_path . "/" . $file_path)) 
 	    {
                	$new_file_path = $_include_path . "/" . $file_path;
     			$old_error_handler = set_error_handler("ErrorHandler");

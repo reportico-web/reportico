@@ -12,8 +12,9 @@ $locale_arr = array (
         "T_RESET" => "Reset",
         "T_SEARCH" => "Search",
         "T_SHOW" => "Show",
-        "T_SHOW_CRITERIA" => "Show Criteria",
-        "T_SHOW_GRAPH" => "Show Graph",
+        "T_SHOW_CONTENT" => "Show Content",
+        "T_SHOW_CRITERIA" => "Criteria",
+        "T_SHOW_GRAPH" => "Graph",
         "T_SHOW_GRPHEADERS" => "Group Headers",
         "T_SHOW_GRPTRAILERS" => "Group Trailers",
         "T_SHOW_COLHEADERS" => "Column Headers",
@@ -62,6 +63,10 @@ $locale_arr = array (
         "T_EDITCOLUMNS" => "Columns",
         "T_EDIT" => "Edit",
         "T_NOTICE" => "Notice",
+        "T_SAVE" => "Save",
+        "T_REPORT_FILE" => "Report File",
+        "T_NEW_REPORT" => "New Report",
+
         ),
         );
 ?>

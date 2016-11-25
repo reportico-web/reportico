@@ -167,6 +167,7 @@ $locale_arr = array (
         "T_USE" => "استخدم",
         "T_CRITERIADISPLAY" => "معايير العرض",
         "T_EXPANDDISPLAY" => "توسيع عرض",
+        "T_CRITERIADISPLAYGROUP" => "تصفية المجموعة",
         "T_DATABASETYPE" => "مصدر البيانات نوع",
         "T_JUSTIFY" => "مبرر",
         "T_COLUMN_DISPLAY" => "إظهار أو إخفاء؟",

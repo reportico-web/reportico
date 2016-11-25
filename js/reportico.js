@@ -1,5 +1,6 @@
 reportico_jquery = jQuery.noConflict();
 
+
 var reportico_ajax_script = "index.php";
 
 /*
@@ -173,6 +174,15 @@ function setupDropMenu()
     }
 }
 
+function setupCheckboxes()
+{
+    reportico_jquery('.reportico_bootstrap2_checkbox').on('click', function(event){
+        //The event won't be propagated to the document NODE and 
+        // therefore events delegated to document won't be fired
+        event.stopPropagation();
+    });
+}
+
 /*
 * Where multiple data tables exist due to graphs
 * resize the columns of all tables to match the first
@@ -222,7 +232,10 @@ function resizeHeaders()
 */
 function resizeTables()
 {
+
   var tableArr = reportico_jquery('.swRepPage');
+  if ( tableArr.length == 0 )
+    return;
   var tableDataRow = reportico_jquery('.swRepResultLine:first');
   var cellWidths = new Array();
   reportico_jquery(tableDataRow).each(function() {
@@ -276,6 +289,7 @@ reportico_jquery(document).ready(function()
     resizeTables();
     setupDynamicGrids();
     setupCriteriaItems();
+    setupCheckboxes();
     //reportico_jquery('#select2_dropdown_country').select2();
 
 });
@@ -357,7 +371,7 @@ reportico_jquery(document).on('click', '.swMiniMaintain', function(event)
     var reportico_container = reportico_jquery(this).closest("#reportico_container");
 
     reportico_jquery(expandpanel).addClass("loading");
-    forms = reportico_jquery(this).closest('.swMntForm,.swPrpForm,form');
+    forms = reportico_jquery(this).closest('.swMntForm,.swPrpForm,.swPrpSaveForm,form');
     if (    reportico_jquery.type(reportico_ajax_script) === 'undefined' )
     {
         var ajaxaction = reportico_jquery(forms).prop("action");
@@ -401,6 +415,49 @@ reportico_jquery(document).on('click', '.swMiniMaintain', function(event)
     return false;
 
 })
+
+reportico_jquery(document).on('click', '.swPrpSaveButton', function(event) 
+{
+	var expandpanel = reportico_jquery(this).closest('#criteriaform').find('#swPrpExpandCell');
+    var reportico_container = reportico_jquery(this).closest("#reportico_container");
+
+    reportico_jquery(expandpanel).addClass("loading");
+    if (    reportico_jquery.type(reportico_ajax_script) === 'undefined' )
+    {
+        var ajaxaction = reportico_jquery(forms).prop("action");
+    }
+    else
+    {
+        ajaxaction = reportico_ajax_script;
+    }
+
+    filename = reportico_jquery("#swPrpSaveFile").prop("value");
+	params = "";
+    params += "&execute_mode=MAINTAIN&submit_xxx_PREPARESAVE&xmlout=" + filename;
+    params += "&reportico_ajax_called=1";
+
+    reportico_jquery.ajax({
+        type: 'POST',
+        url: ajaxaction,
+        data: params,
+        dataType: 'html',
+        success: function(data, status) 
+        {
+          reportico_jquery(expandpanel).removeClass("loading");
+          reportico_jquery(reportico_container).removeClass("loading");
+          //alert(data);
+        },
+        error: function(xhr, desc, err) {
+          reportico_jquery(expandpanel).removeClass("loading");
+          reportico_jquery(reportico_container).removeClass("loading");
+          showNoticeModal(xhr.responseText);
+        }
+      });
+
+    return false;
+
+})
+
 
 /*
 ** Trigger AJAX request for reportico button/link press if running in AJAX mode
@@ -691,6 +748,7 @@ reportico_jquery(document).on('click', '#returnFromExpand', function() {
         setupTooltips();
         setupDropMenu();
         setupCriteriaItems();
+        setupCheckboxes();
         },
         error: function(xhr, desc, err) {
         reportico_jquery(expandpanel).removeClass("loading");
@@ -727,6 +785,7 @@ reportico_jquery(document).on('click', '#returnFromExpand', function() {
           setupTooltips();
           setupDropMenu();
           setupCriteriaItems();
+          setupCheckboxes();
         },
         error: function(xhr, desc, err) {
           reportico_jquery(fillPoint).removeClass("loading");
@@ -949,10 +1008,27 @@ function fillDialog(results, cont) {
   setupDynamicGrids();
   resizeHeaders();
   setupCriteriaItems();
+  setupCheckboxes();
   resizeTables();
 }
 
 var ie7 = (document.all && !window.opera && window.XMLHttpRequest) ? true : false;
+
+/*
+** Shows and hides a block of design items fields
+*/
+function toggleCriteria(id) {
+    if ( reportico_jquery(".displayGroup" + id ).css("display") == "none" )
+    {
+        reportico_jquery(".displayGroup" + id ).show();
+        reportico_jquery("#swToggleCriteria" + id ).html("-");
+    }
+    else
+    {
+        reportico_jquery("#swToggleCriteria" + id ).html("+");
+        reportico_jquery(".displayGroup" + id ).hide();
+    }
+} 
 
 /*
 ** Shows and hides a block of design items fields
@@ -1047,4 +1123,3 @@ function html_print_fix()
         reporticohtmlwindow.resizeOutputTables(reporticohtmlwindow); 
     }
 }
-

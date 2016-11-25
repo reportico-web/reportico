@@ -62,6 +62,10 @@ $locale_arr = array (
         "T_EDITCOLUMNS" => "列",
         "T_EDIT" => "编辑",
         "T_NOTICE" => "通知",
+		"T_SAVE" => "保存",
+		"T_REPORT_FILE" => "报告文件",
+		"T_NEW_REPORT" => "新的报告",
+        "T_SHOW_CONTENT" => "展示内容",
 
 ),
 );

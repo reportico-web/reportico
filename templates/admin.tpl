@@ -73,9 +73,11 @@
 <script type="text/javascript">var reportico_ajax_script = "{/literal}{$REPORTICO_AJAX_RUNNER}{literal}";</script>
 {/literal}
 {if $REPORTICO_BOOTSTRAP_MODAL}
+<script type="text/javascript">var reportico_bootstrap_styles = "{$BOOTSTRAP_STYLES}";</script>
 <script type="text/javascript">var reportico_bootstrap_modal = true;</script>
 {else}
 <script type="text/javascript">var reportico_bootstrap_modal = false;</script>
+<script type="text/javascript">var reportico_bootstrap_styles = false;</script>
 {/if}
 {literal}
 <script type="text/javascript">var reportico_ajax_mode = "{/literal}{$REPORTICO_AJAX_MODE}{literal}";</script>
@@ -163,7 +165,7 @@
 			<TD width="50%"></TD>
 			<TD width="98%" align="right" class="swPrpTopMenuCell">
 {$T_OPEN_ADMIN_INSTRUCTIONS}
-				<br><input class="{$BOOTSTRAP_STYLE_TEXTFIELD}" style="display: none" type="password" name="admin_password" value="__OPENACCESS__">
+				<br><input class="{$BOOTSTRAP_STYLE_TEXTFIELD} inline" style="display: none" type="password" name="admin_password" value="__OPENACCESS__">
 				<input class="{$BOOTSTRAP_STYLE_PRIMARY_BUTTON}swPrpSubmit reporticoSubmit" type="submit" name="login" value="{$T_OPEN_LOGIN}">
 {if strlen($ADMIN_PASSWORD_ERROR) > 0}
 				<div style="color: #ff0000;">{$T_ADMIN_PASSWORD_ERROR}</div>
@@ -176,8 +178,8 @@
 			<TD width="50%"></TD>
 			<TD width="35%" align="right" class="swPrpTopMenuCell">
 {$T_ADMIN_INSTRUCTIONS}
-				<br><input class="{$BOOTSTRAP_STYLE_TEXTFIELD}" type="password" name="admin_password" value="">
-				<input class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swPrpSubmit reporticoSubmit" type="submit" name="login" value="{$T_LOGIN}">
+				<br><input style="display: inline !important" class="{$BOOTSTRAP_STYLE_TEXTFIELD}" type="password" name="admin_password" value="">
+				<input class="{$BOOTSTRAP_STYLE_PRIMARY_BUTTON}swPrpSubmit reporticoSubmit" type="submit" name="login" value="{$T_LOGIN}">
 {if strlen($ADMIN_PASSWORD_ERROR) > 0}
 				<div style="color: #ff0000;">{$T_ADMIN_PASSWORD_ERROR}</div>
 {/if}
@@ -208,7 +210,7 @@
 <br>
 <br>
 {if count($LANGUAGES) > 0 }
-				{$T_CHOOSE_LANGUAGE}
+				<span style="text-align:right;width: 230px; display: inline-block">{$T_CHOOSE_LANGUAGE}</span>
 				<select class="{$BOOTSTRAP_STYLE_DROPDOWN}swPrpDropSelectRegular" name="jump_to_language">
 {section name=menuitem loop=$LANGUAGES}
 {strip}
@@ -235,7 +237,7 @@
 {if !$SHOW_SET_ADMIN_PASSWORD}
 {if count($LANGUAGES) > 0 }
 		<TR> 
-			<TD class="swMenuItem" style="width: 30%">{$T_CHOOSE_LANGUAGE}
+			<TD class="swMenuItem" style="width: 30%"><span style="text-align:right;width: 230px; display: inline-block">{$T_CHOOSE_LANGUAGE}</span>
 				<select class="{$BOOTSTRAP_STYLE_DROPDOWN}swPrpDropSelectRegular" name="jump_to_language">
 {section name=menuitem loop=$LANGUAGES}
 {strip}
@@ -254,7 +256,7 @@
 {/if}
 {if count($PROJECT_ITEMS) > 0 }
 		<TR> 
-			<TD class="swMenuItem" style="width: 30%">{$T_RUN_SUITE}
+			<TD class="swMenuItem" style="width: 30%"><span style="text-align:right;width: 230px; display: inline-block">{$T_RUN_SUITE}</span>
 				<select class="{$BOOTSTRAP_STYLE_DROPDOWN}swPrpDropSelectRegular" name="jump_to_menu_project">
 {section name=menuitem loop=$PROJECT_ITEMS}
 {strip}
@@ -262,14 +264,14 @@
 {/strip}
 {/section}
 				</select>
-				<input class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swMntButton reporticoSubmit" type="submit" name="submit_menu_project" value="{$T_GO}">
+				<input class="{$BOOTSTRAP_STYLE_GO_BUTTON}swMntButton reporticoSubmit" type="submit" name="submit_menu_project" value="{$T_GO}">
 			</TD>
 		</TR>
 {/if}
 {/if}
 {if count($PROJECT_ITEMS) > 0 }
 		<TR> 
-			<TD class="swMenuItem" style="width: 30%">{$T_CREATE_REPORT}
+			<TD class="swMenuItem" style="width: 30%"><span style="text-align:right;width: 230px; display: inline-block">{$T_CREATE_REPORT}</span>
 				<select class="{$BOOTSTRAP_STYLE_DROPDOWN}swPrpDropSelectRegular" name="jump_to_design_project">
 {section name=menuitem loop=$PROJECT_ITEMS}
 {strip}
@@ -281,7 +283,7 @@
 			</TD>
 		</TR>
 		<TR> 
-			<TD class="swMenuItem" style="width: 30%">{$T_CONFIG_PARAM}
+			<TD class="swMenuItem" style="width: 30%"><span style="text-align:right;width: 230px; display: inline-block">{$T_CONFIG_PARAM}</span>
 				<select class="{$BOOTSTRAP_STYLE_DROPDOWN}swPrpDropSelectRegular" name="jump_to_configure_project">
 {section name=menuitem loop=$PROJECT_ITEMS}
 {strip}
@@ -293,7 +295,7 @@
 			</TD>
 		</TR>
 		<TR> 
-			<TD class="swMenuItem" style="width: 30%">{$T_DELETE_PROJECT}
+			<TD class="swMenuItem" style="width: 30%"><span style="text-align:right;width: 230px; display: inline-block">{$T_DELETE_PROJECT}</span>
 				<select class="{$BOOTSTRAP_STYLE_DROPDOWN}swPrpDropSelectRegular" name="jump_to_delete_project">
 {section name=menuitem loop=$PROJECT_ITEMS}
 {strip}
@@ -335,7 +337,7 @@
 {if !$SHOW_SET_ADMIN_PASSWORD}
 {if count($LANGUAGES) > 1 }
 		<TR> 
-			<TD class="swMenuItem" style="width: 30%">{$T_CHOOSE_LANGUAGE}
+			<TD class="swMenuItem" style="width: 30%"><span style="text-align:right;width: 230px; display: inline-block">{$T_CHOOSE_LANGUAGE}</span>
 				<select class="{$BOOTSTRAP_STYLE_DROPDOWN}swPrpDropSelectRegular" name="jump_to_language">
 {section name=menuitem loop=$LANGUAGES}
 {strip}
@@ -354,7 +356,7 @@
 {/if}
 {if count($PROJECT_ITEMS) > 0 }
 		<TR> 
-			<TD class="swMenuItem" style="width: 30%">{$T_RUN_SUITE}
+			<TD class="swMenuItem" style="width: 30%"><span style="text-align:right;width: 230px; display: inline-block">{$T_RUN_SUITE}</span>
 				<select class="{$BOOTSTRAP_STYLE_DROPDOWN}swPrpDropSelectRegular" name="jump_to_menu_project">
 {section name=menuitem loop=$PROJECT_ITEMS}
 {strip}
