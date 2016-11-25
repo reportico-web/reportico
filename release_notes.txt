@@ -1,6 +1,35 @@
 Reportico Open Source PHP Report Designer
 =========================================
 
+4.6 - November 2016
+-------------------
+Save Report now available from criteria entry screen ( you dont need to go into design mode )
+New Finnish Translations kindly provided by JormaHytonen
+New dropdown control for hiding/showing detail/charts/groups etc
+New filter grouping option to allows similar filters to be shown via uncollapse button
+
+4.5 - November 2016
+-------------------
+New look and feel of criteria entry screen with new icons kindly donated by icons8.com
+Error and warning messages now appear in nicer modal popup
+New Criteria Help option provides explanatoory tooltips on user criteria
+Ability to make a criteria item mandatory so user is prompted is value not provided
+Abiliity to hide a criteria item for use when a criteria value is provided externally
+New criteria search boxes which are searchable and dynamic based on the select2 library
+Project Creation and configuration now simpler with less options
+New Brazilian Portuguese language pack
+Improved Spanish Translations
+New finnish Language pack
+New tutorials including PDF Invoice generation
+Project menus in design mode will by default present all available reports in main static menu
+PDF and CSV documents now download without opening up a new browser window (thanks to nmcgann and * download.js) .. configurable by pdf_delivery_mode in run.php
+Date Range pickers automatically change End Date to Start Date
+If Admin password is set to OPENACCESS admin allows password free access to design mode
+Ability to hide the Go and Reset buttons from the Criteria Entry screen - enabled by default
+Show/hide checkboxes for controlling output of detail, charts, groups etc hidden by default in criteria page - turnon with show_hide_prepare_section_boxes in run.php
+Updated to latest Bootstrap libraries
+Lots of layout changes and bug fixes
+
 4.3 - 28th May 2015
 -------------------
 Default styles and properties for all reports or in a project
