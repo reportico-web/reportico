@@ -16,7 +16,7 @@ $locale_arr = array (
         "T_SET_ADMIN_PASSWORD_PROMPT" => "Ylläpidon salasana",
         "T_SET_ADMIN_PASSWORD_REENTER" => "Toista<br>Ylläpidon salasana",
         "T_SET_ADMIN_PASSWORD" => "Aseta Ylläpidon salasana",
-        "T_RUN_SUITE" => "Valitse raportit ",
+        "T_RUN_SUITE" => "Hallitse raportteja Projektissa ",
         "T_CREATE_REPORT" => "Luo Raportti Projektiin :",
         "T_CONFIG_PARAM" => "Muokkaa Projektin asetuksia :",
         "T_DELETE_PROJECT" => "POISTA Projekti :",
@@ -28,8 +28,8 @@ $locale_arr = array (
         "T_LINE" => "LINE",
         "T_Create A New Project" => "Luo uusi Projekti",
         "T_Configure Tutorials" => "Määrittele ja luo Opetusohjelmat",
-        "T_OPEN_LOGIN" => "Enter Design Mode",
-        "T_OPEN_LOGOFF" => "Exit Design Mode",
+        "T_OPEN_LOGIN" => "Aloita muokkaaminen",
+        "T_OPEN_LOGOFF" => "Lopeta muokkaaminen",
         ),
         );
 ?>

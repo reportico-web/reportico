@@ -9,8 +9,8 @@ $locale_arr = array (
 		"T_NO_DATA_FOUND" => "Valituilla arvoilla ei löydy tuloksia",
 		"T_UNABLE_TO_CONTINUE" => "Toimintoa ei voi jatkaa",
 		"T_INFORMATION" => "Informaatio",
-        "T_REQUIRED_CRITERIA" => "You must provide a value for criteria item ",
-        "T_NOTICE" => "Notice",
+        "T_REQUIRED_CRITERIA" => "Sinun täytyy antaa valinnalle joku arvo ",
+        "T_NOTICE" => "Huomio",
         )
 );
 ?>
