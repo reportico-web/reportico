@@ -433,7 +433,7 @@ reportico_jquery(document).on('click', '.swPrpSaveButton', function(event)
 
     filename = reportico_jquery("#swPrpSaveFile").prop("value");
 	params = "";
-    params += "&execute_mode=MAINTAIN&submit_xxx_PREPARESAVE&xmlout=" + filename;
+    params += "&execute_mode=MAINTAIN&submit_xxx_PREPARESAVE=1&xmlout=" + filename;
     params += "&reportico_ajax_called=1";
 
     reportico_jquery.ajax({
