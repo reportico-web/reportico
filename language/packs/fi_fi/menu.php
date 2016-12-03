@@ -15,5 +15,5 @@ $locale_arr = array (
         "T_UNABLE_TO_CONTINUE" => "toimintoa ei voida jatkaa",
         "T_PASSWORD_ERROR" => "Virheellinen salasana. Yritä uudelleen.",
         ),
-        );
+    );
 ?>
