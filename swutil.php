@@ -1480,7 +1480,6 @@ function isset_reportico_session_param($param, $session_name = false)
 function set_reportico_session_param($param, $value, $namespace = false, $array = false)
 {
     global $g_session_namespace_key;
-    $_SESSION[$g_session_namespace_key][$param] = $value;
     if (  !$namespace  )
     {
         $_SESSION[$g_session_namespace_key][$param] = $value;
@@ -1505,7 +1504,7 @@ function set_reportico_session_param($param, $value, $namespace = false, $array 
 function get_reportico_session_param($param)
 {
     global $g_session_namespace_key;
-    if ( isset ( $_SESSION[$g_session_namespace_key][$param] ) )
+    if ( isset($_SESSION[$g_session_namespace_key][$param]))
     {
         return $_SESSION[$g_session_namespace_key][$param];
 }
@@ -1519,7 +1518,7 @@ function get_reportico_session_param($param)
 function exists_reportico_session()
 {
     global $g_session_namespace_key;
-    if ( isset ( $_SESSION[$g_session_namespace_key] ) )
+    if ( isset($_SESSION[$g_session_namespace_key]))
         return true;
     else
         return false;
@@ -1533,8 +1532,8 @@ function exists_reportico_session()
 function unset_reportico_session_param($param)
 {
     global $g_session_namespace_key;
-    if ( isset ( $_SESSION[$g_session_namespace_key][$param] ) )
-        unset ($_SESSION[$g_session_namespace_key][$param]);
+    if ( isset($_SESSION[$g_session_namespace_key][$param]))
+        unset($_SESSION[$g_session_namespace_key][$param]);
 }
 
 /*
