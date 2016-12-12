@@ -548,6 +548,11 @@ class reportico extends reportico_object
     var $csrfToken;
     var $plugins = array();
 
+    // Response code to return back
+    var $http_response_code = 200;
+
+    // At any point set to true to returnimmediately back, eg after error
+    var $return_to_caller = false;
 
 	function __construct()
 	{ 	
@@ -1299,7 +1304,7 @@ class reportico extends reportico_object
 			$this->execute_mode = "EXECUTE";
 
 
-		if ( !$this->execute_mode && isset($_SESSION[reportico_namespace()]) && array_key_exists("execute_mode", $_SESSION[reportico_namespace()] ) )
+		if ( !$this->execute_mode && isset_reportico_session_param("execute_mode")  )
 		{
 			$this->execute_mode = get_reportico_session_param("execute_mode");
 		}
@@ -1659,8 +1664,8 @@ class reportico extends reportico_object
                             $_REQUEST["MANUAL_".$col->query_name."_TODATE"] = $val2;
 		                    if ( get_reportico_session_param('latestRequest') )
                             {
-                                $_SESSION[reportico_namespace()]["latestRequest"]["MANUAL_".$col->query_name."_FROMDATE"] = $val1;
-                                $_SESSION[reportico_namespace()]["latestRequest"]["MANUAL_".$col->query_name."_TODATE"] = $val2;
+                                set_reportico_session_param("MANUAL_".$col->query_name."_FROMDATE", $val1, reportico_namespace(), "latestRequest");
+                                set_reportico_session_param("MANUAL_".$col->query_name."_TODATE", $val2, reportico_namespace(), "latestRequest");
                             }
                         }
                     }
@@ -1678,9 +1683,9 @@ class reportico extends reportico_object
                             $_REQUEST["MANUAL_".$col->query_name] = $val1;
 			                if ( get_reportico_session_param('latestRequest') )
                             {
-                                $_SESSION[reportico_namespace()]["latestRequest"]["MANUAL_".$col->query_name."_FROMDATE"] = $val1;
-                                $_SESSION[reportico_namespace()]["latestRequest"]["MANUAL_".$col->query_name."_TODATE"] = $val1;
-                                $_SESSION[reportico_namespace()]["latestRequest"]["MANUAL_".$col->query_name] = $val1;
+                                set_reportico_session_param("MANUAL_".$col->query_name."_FROMDATE", $val1, reportico_namespace(), "latestRequest");
+                                set_reportico_session_param("MANUAL_".$col->query_name."_TODATE", $val1, reportico_namespace(), "latestRequest");
+                                set_reportico_session_param("MANUAL_".$col->query_name, $val1, reportico_namespace(), "latestRequest");
                             }
                         }
                     }
@@ -1689,7 +1694,7 @@ class reportico extends reportico_object
                         $_REQUEST["MANUAL_".$col->query_name] = $criteriaval;
 		                if ( get_reportico_session_param('latestRequest') )
                         {
-                            $_SESSION[reportico_namespace()]["latestRequest"]["MANUAL_".$col->query_name] = $criteriaval;
+                            set_reportico_session_param("MANUAL_".$col->query_name, $val1, reportico_namespace(), "latestRequest");
                         }
                     }
                 }
@@ -2001,9 +2006,9 @@ class reportico extends reportico_object
         if ( preg_match("/_drilldown(.*)/", reportico_namespace(), $matches) )
         {
             $parent_session = $matches[1];
-            if ( isset ( $_SESSION[$parent_session]['project_password'] ) )
+            if ( isset_reportico_session_param("project_password", $parent_session) )
             {
-                set_reportico_session_param('project_password', $_SESSION[$parent_session]['project_password']);
+                set_reportico_session_param('project_password', get_reportico_session_param("project_password", $parent_session));
             }
         }
 
@@ -2058,7 +2063,7 @@ class reportico extends reportico_object
 		// User has pressed logout button, default then to MENU mode
 		if ( array_key_exists("logout", $_REQUEST) )
 		{
-			if ( array_key_exists("admin_password", $_SESSION[reportico_namespace()]) )
+            if ( isset_reportico_session_param("admin_password")  )
 			{
 				unset_reportico_session_param('admin_password');
 			}
@@ -3570,9 +3575,11 @@ class reportico extends reportico_object
                 {
                     if ( true ||  get_request_item("new_reportico_window",  false ) )
                     {
-                        header("HTTP/1.0 404 Not Found", true);
-                        echo '<div class="swError">'.template_xlate("REQUIRED_CRITERIA")." - ".sw_translate($this->lookup_queries[$col->query_name]->derive_attribute("column_title", ""))."</div>";
-                        die;
+                        $this->http_response_code = 500;
+                        $this->return_to_caller = true;
+			            handle_error(template_xlate("REQUIRED_CRITERIA")." - ".sw_translate($this->lookup_queries[$col->query_name]->derive_attribute("column_title", "")));
+                        //echo '<div class="swError">'.template_xlate("REQUIRED_CRITERIA")." - ".sw_translate($this->lookup_queries[$col->query_name]->derive_attribute("column_title", ""))."</div>";
+                        return;
                     }
                     else
 			            handle_error(template_xlate("REQUIRED_CRITERIA")." - ".sw_translate($this->lookup_queries[$col->query_name]->derive_attribute("column_title", ""))
@@ -3590,12 +3597,14 @@ class reportico extends reportico_object
 		if ( ! $this->top_level_query )
 			return;
 
-		if ( $mode == "MENU" && array_key_exists("xmlin", $_SESSION[reportico_namespace()]) )
+        if ( $mode == "MENU" && isset_reportico_session_param("xmlin")  )
+		//if ( $mode == "MENU" && array_key_exists("xmlin", $_SESSION[reportico_namespace()]) )
 		{
 			unset_reportico_session_param("xmlin");
 		}
 
-		if ( $mode == "ADMIN" && array_key_exists("xmlin", $_SESSION[reportico_namespace()]) )
+        if ( $mode == "ADMIN" && isset_reportico_session_param("xmlin")  )
+		//if ( $mode == "ADMIN" && array_key_exists("xmlin", $_SESSION[reportico_namespace()]) )
 		{
 			unset_reportico_session_param("xmlin");
 		}
@@ -3604,13 +3613,15 @@ class reportico extends reportico_object
 		$this->xmlinput = false;
 		$this->sqlinout = false;
 
-		if ( array_key_exists("xmlin", $_SESSION[reportico_namespace()]) )
+        if ( isset_reportico_session_param("xmlin")  )
+		//if ( array_key_exists("xmlin", $_SESSION[reportico_namespace()]) )
 		{
 			$this->xmlinput = get_reportico_session_param("xmlin");
 			set_reportico_session_param("xmlout",$this->xmlinput);
 		}
 
-		if ( array_key_exists("sqlin", $_SESSION[reportico_namespace()]) )
+        if ( isset_reportico_session_param("sqlin")  )
+		//if ( array_key_exists("sqlin", $_SESSION[reportico_namespace()]) )
 		{
 			$this->sqlinput = get_reportico_session_param("sqlin");
 		}
@@ -3645,7 +3656,7 @@ class reportico extends reportico_object
 		if ( $this->user_template == "_DEFAULT" )
 		{
 			$this->user_template = false;
-			$_SESSION['reportico_template'] = $this->user_template;
+			set_reportico_session_param('reportico_template', $this->user_template);
 		}
 		else if ( !$this->user_template )
 		{
@@ -3657,7 +3668,8 @@ class reportico extends reportico_object
 		}
 
         // Set template from request if specified
-		if ( array_key_exists("template", $_SESSION[reportico_namespace()]) )
+        if ( isset_reportico_session_param("template")  )
+		//if ( array_key_exists("template", $_SESSION[reportico_namespace()]) )
 		{
 			$this->user_template = get_reportico_session_param("template");
 			set_reportico_session_param("template",$this->user_template);
@@ -3701,7 +3713,8 @@ class reportico extends reportico_object
 				$this->xmloutfile = $this->xmlinput;
 		}
 
-		if ( array_key_exists("xmlout", $_SESSION[reportico_namespace()]) )
+        if ( isset_reportico_session_param("xmlout")  )
+		//if ( array_key_exists("xmlout", $_SESSION[reportico_namespace()]) )
 		{
 			$this->xmloutfile = get_reportico_session_param("xmlout");
 		}
@@ -3712,7 +3725,7 @@ class reportico extends reportico_object
 			set_reportico_session_param("xmlout",$this->xmloutfile);
 		}
 		$this->xmlintext =  false;
-		if ( $this->top_level_query && array_key_exists("xmlintext", $_SESSION[reportico_namespace()]) )
+		if ( $this->top_level_query && isset_reportico_session_param("xmlintext") )
 		{
 			if ( ( $this->xmlintext = get_reportico_session_param("xmlintext") ) )
 			{
@@ -3839,7 +3852,7 @@ class reportico extends reportico_object
             $g_session_namespace_key = "reportico_".$g_session_namespace;
 
         // If a session namespace doesnt exist create one
-        if ( !isset($_SESSION[$g_session_namespace_key]) || isset($_REQUEST['clear_session']) || $this->clear_reportico_session)
+        if ( !exists_reportico_session() || isset($_REQUEST['clear_session']) || $this->clear_reportico_session)
             initialize_reportico_namespace($g_session_namespace_key);
 
         // Work out the mode (ADMIN, PREPARE, MENU, EXECUTE, MAINTAIN based on all parameters )
@@ -4032,7 +4045,7 @@ class reportico extends reportico_object
 		}
 		else
 		{
-			if ( $mode != "MODIFY" && array_key_exists('latestRequest', $_SESSION[reportico_namespace()] ))
+			if ( $mode != "MODIFY" && isset_reportico_session_param('latestRequest'))
 			{
 				if ( get_reportico_session_param('latestRequest') )
 				{
@@ -4263,7 +4276,8 @@ class reportico extends reportico_object
                 if ( !get_reportico_session_param("loggedin",false) )
                     $text = "you are not logged in ";
                 else
-				    $text = $this->execute_query(false);
+                    if ( !$this->return_to_caller )
+				        $text = $this->execute_query(false);
 
 				if ( $this->target_format == "SOAP" )
 				{

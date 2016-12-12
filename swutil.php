@@ -1453,7 +1453,10 @@ function reformatDate($informat, $outformat, $date) {
 function column_name_to_label($columnname)
 {
 	$retstring = str_replace("_", " ", $columnname);
-	$retstring = ucwords(mb_strtolower($retstring,output_charset_to_php_charset(SW_OUTPUT_ENCODING)));
+    if ( !function_exists("mb_strtolower") )
+	    $retstring = ucwords(strtolower($retstring));
+    else
+	    $retstring = ucwords(mb_strtolower($retstring,output_charset_to_php_charset(SW_OUTPUT_ENCODING)));
 	return $retstring;
 }
 
@@ -1461,20 +1464,37 @@ function column_name_to_label($columnname)
 ** Returns if a particular reeportico session parameter is set
 ** using current session namespace
 */
-function isset_reportico_session_param($param)
+function isset_reportico_session_param($param, $session_name = false)
 {
     global $g_session_namespace_key;
-    return isset($_SESSION[$g_session_namespace_key][$param]);
+    if ( !$session_name )
+        return isset($_SESSION[$g_session_namespace_key][$param]);
+    else
+        return isset($_SESSION[$session_name][$param]);
 }
 
 /*
 ** Sets a reportico session_param
 ** using current session namespace
 */
-function set_reportico_session_param($param, $value)
+function set_reportico_session_param($param, $value, $namespace = false, $array = false)
 {
     global $g_session_namespace_key;
-    $_SESSION[$g_session_namespace_key][$param] = $value;
+    if (  !$namespace  )
+    {
+        $_SESSION[$g_session_namespace_key][$param] = $value;
+    }
+    else
+    {
+        if ( !$array )
+        {
+            $_SESSION[$session_name][$param] = $value;
+        }
+        else
+        {
+            $_SESSION[$session_name][$array][$param] = $value;
+        }
+    }
 }
 
 /*
@@ -1484,7 +1504,7 @@ function set_reportico_session_param($param, $value)
 function get_reportico_session_param($param)
 {
     global $g_session_namespace_key;
-    if ( isset ( $_SESSION[$g_session_namespace_key][$param] ) )
+    if ( isset($_SESSION[$g_session_namespace_key][$param]))
     {
         return $_SESSION[$g_session_namespace_key][$param];
 }
@@ -1493,14 +1513,27 @@ function get_reportico_session_param($param)
 }
 
 /*
+** Does global reportico session exist
+*/
+function exists_reportico_session()
+{
+    global $g_session_namespace_key;
+    if ( isset($_SESSION[$g_session_namespace_key]))
+        return true;
+    else
+        return false;
+}
+
+
+/*
 ** Clears a reportico session_param
 ** using current session namespace
 */
 function unset_reportico_session_param($param)
 {
     global $g_session_namespace_key;
-    if ( isset ( $_SESSION[$g_session_namespace_key][$param] ) )
-        unset ($_SESSION[$g_session_namespace_key][$param]);
+    if ( isset($_SESSION[$g_session_namespace_key][$param]))
+        unset($_SESSION[$g_session_namespace_key][$param]);
 }
 
 /*
