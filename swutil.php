@@ -1488,11 +1488,11 @@ function set_reportico_session_param($param, $value, $namespace = false, $array 
     {
         if ( !$array )
         {
-            $_SESSION[$session_name][$param] = $value;
+            $_SESSION[$namespace][$param] = $value;
         }
         else
         {
-            $_SESSION[$session_name][$array][$param] = $value;
+            $_SESSION[$namespace][$array][$param] = $value;
         }
     }
 }
