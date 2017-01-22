@@ -2507,6 +2507,44 @@ echo $txt;
 		$contenttype = $column_item->derive_attribute(
 			"content_type",  $column_item->query_name);
 
+	    if ( $column_item->output_images )
+	    {
+            $str = file_get_contents($column_item->output_images["image"]);
+			if ( $str )
+			{
+				$tmpnam = tempnam(SW_TMP_DIR, "dbi");
+                unlink ($tmpnam);
+				$width = $column_item->abs_column_width;
+				$height = 20;
+				$im = imagecreatefromstring($str);
+
+				if ( imagepng($im, $tmpnam.".png" ) )
+				{
+					$x = $column_item->abs_column_start;
+					$y = $this->document->GetY();
+					$this->set_position($x, false);
+                    if ( $this->draw_mode == "CALCULATE" )
+                    {
+					    $h = $this->draw_image($tmpnam.".png", $x, $y, $width * $this->pdfImageDPIScale, 0, true ) + 2;
+                        if ( $h > $this->max_line_height )
+                            $this->max_line_height = $h;
+                        if ( $h > $this->required_line_height )
+                            $this->required_line_height = $h;
+                    }
+                    else
+                    {
+					    $h = $this->draw_image($tmpnam.".png", $x, $y, $width * $this->pdfImageDPIScale, 0 ) + 2;
+                        if ( $h > $this->current_line_height && !$this->ignore_height_checking)
+                            $this->current_line_height = $h;
+                    }
+					if ( $h > $this->yjump )
+						$this->yjump =$h;
+
+					unlink($tmpnam.".png");
+				}
+			}
+		}
+		else
 	    if ( $contenttype == "graphic"  || preg_match("/imagesql=/", $column_item->column_value))
 	    {
 			$sql = @preg_replace("/.*imagesql=/", "", $column_item->column_value);
@@ -2556,6 +2594,8 @@ echo $txt;
 		}
 		else
 		{
+
+
 			if ( !$wd )
 				$this->document->Write( "$padstring");
 			else
