@@ -52,6 +52,44 @@ function setupTooltips()
     });
 }
 
+function getFilterGroupState()
+{
+    var openfilters = "";
+    var closedfilters = "";
+    console.log("Filter");
+    var arr = [];
+    reportico_jquery(".swToggleCriteriaDiv").each(function(){
+        filterid = reportico_jquery(this).prop("id");
+        filterid = filterid.replace("swToggleCriteriaDiv","");
+        filterno = filterid;
+        filterid = ".displayGroup" + filterid;
+        
+            console.log("check" + filterid);
+        if ( reportico_jquery(filterid).first().is(":visible") )
+        {
+            console.log("yes" + filterid);
+            if ( !openfilters )
+                openfilters = "&openfilters[]="+filterno;
+            else
+                openfilters += "&openfilters[]="+filterno;
+            
+        }
+        else
+        {
+            console.log("no" + filterid);
+            if ( !closedfilters )
+                closedfilters = "&closedfilters[]="+filterno;
+            else
+                closedfilters += "&closedfilters[]="+filterno;
+            
+        }
+            console.log("visible" + openfilters);
+    });
+    openfilters = closedfilters  + openfilters;
+    return openfilters;
+
+}
+
 // Sets jQuery attributes for dynamic criteria
 function setupCriteriaItems()
 {
@@ -730,6 +768,8 @@ reportico_jquery(document).on('click', '#returnFromExpand', function() {
     params += "&execute_mode=PREPARE";
     params += "&partial_template=critbody";
     params += "&" + reportico_jquery(this).prop("name") + "=1";
+    params += getFilterGroupState();
+console.log(params);
 
 	forms = reportico_jquery(this).closest('.swMntForm,.swPrpForm,form');
     ajaxaction = reportico_ajax_script;
@@ -758,7 +798,7 @@ reportico_jquery(document).on('click', '#returnFromExpand', function() {
     return false;
 	});
 
-  reportico_jquery(document).on('click', '#reporticoPerformExpand', function() {
+reportico_jquery(document).on('click', '#reporticoPerformExpand', function() {
 
 	forms = reportico_jquery(this).closest('.swMntForm,.swPrpForm,form');
 	var ajaxaction = reportico_jquery(forms).prop("action");
@@ -769,6 +809,8 @@ reportico_jquery(document).on('click', '#returnFromExpand', function() {
     params += "&execute_mode=PREPARE";
     params += "&partial_template=expand";
     params += "&" + reportico_jquery(this).prop("name") + "=1";
+    params += getFilterGroupState();
+console.log(params);
 
 	var fillPoint = reportico_jquery(this).closest('#criteriaform').find('#swPrpExpandCell');
     reportico_jquery(fillPoint).addClass("loading");
@@ -802,6 +844,7 @@ reportico_jquery(document).on('click', '#returnFromExpand', function() {
 ** with output in rather that directing to screen
 */
 reportico_jquery(document).on('click', '.swPrintBox,.prepareAjaxExecute,#prepareAjaxExecute', function() {
+
 
     var reportico_container = reportico_jquery(this).closest("#reportico_container");
     reportico_jquery(reportico_container).find("#rpt_format_pdf").prop("checked", false );
@@ -910,6 +953,8 @@ reportico_jquery(document).on('click', '.swPrintBox,.prepareAjaxExecute,#prepare
 
     if (  reportico_jquery(this).hasClass("swPrintBox") )
         params += "&printable_html=1&new_reportico_window=1";
+
+    params += getFilterGroupState();
 
     var cont = this;
     reportico_jquery.ajax({

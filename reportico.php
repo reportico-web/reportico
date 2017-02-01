@@ -1394,6 +1394,22 @@ class reportico extends reportico_object
 			$this->first_criteria_selection = true;
 		}
 
+        // Store filter group open close state
+        if ( isset($_REQUEST["closedfilters"] ) || isset($_REQUEST["openfilters"] ))
+        {
+            if ( isset($_REQUEST["closedfilters"] ) )
+                set_reportico_session_param("closedfilters", $_REQUEST["closedfilters"]);
+            else
+                set_reportico_session_param("closedfilters", false);
+            if ( isset($_REQUEST["openfilters"] ) )
+                set_reportico_session_param("openfilters", $_REQUEST["openfilters"]);
+            else
+                set_reportico_session_param("openfilters", false);
+        }
+        //echo ">>>";var_dump(get_reportico_session_param("openfilters"));
+
+
+
         // If an initial set of parameter values has been set then parameters are being
         // set probably from a framework. In this case we need clear any MANUAL and HIDDEN requests
         // and set MANUAL ones from the external ones
@@ -1460,6 +1476,8 @@ class reportico extends reportico_object
 		if ( array_key_exists("clearform", $_REQUEST) )
 		{
 			set_reportico_session_param("firstTimeIn",true);
+            set_reportico_session_param("openfilters", false);
+            set_reportico_session_param("closedfilters", false);
 		}
 
         // Set up show option check box settings

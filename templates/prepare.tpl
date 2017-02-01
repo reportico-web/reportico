@@ -599,16 +599,24 @@ $loopct = 0;
 {if isset($CRITERIA_ITEMS)}
 {section name=critno loop=$CRITERIA_ITEMS}
 {if $CRITERIA_ITEMS[critno].display_group && ( $CRITERIA_ITEMS[critno].display_group != $CRITERIA_ITEMS[critno].last_display_group ) }
-<tr id="swToggleCriteriaDiv{$CRITERIA_ITEMS[critno].display_group_class}">
+<tr class="swToggleCriteriaDiv" id="swToggleCriteriaDiv{$CRITERIA_ITEMS[critno].display_group_class}">
 <td colspan="3">
+{if $CRITERIA_ITEMS[critno].visible }
+<a class="swToggleCriteria" id="swToggleCriteria{$CRITERIA_ITEMS[critno].display_group_class}" href="javascript:toggleCriteria('{$CRITERIA_ITEMS[critno].display_group_class}')">-</a>
+{else}
 <a class="swToggleCriteria" id="swToggleCriteria{$CRITERIA_ITEMS[critno].display_group_class}" href="javascript:toggleCriteria('{$CRITERIA_ITEMS[critno].display_group_class}')">+</a>
+{/if}
 {$CRITERIA_ITEMS[critno].display_group}
 </td>
 </tr>
 {/if}
 {if $CRITERIA_ITEMS[critno].hidden || $CRITERIA_ITEMS[critno].display_group }
 {if $CRITERIA_ITEMS[critno].display_group }
+{if $CRITERIA_ITEMS[critno].visible }
+                    <tr class="swPrpCritLine  swDisplayGroupLine displayGroup{$CRITERIA_ITEMS[critno].display_group_class}" id="criteria_{$CRITERIA_ITEMS[critno].name}" >
+{else}
                     <tr class="swPrpCritLine  swDisplayGroupLine displayGroup{$CRITERIA_ITEMS[critno].display_group_class}" id="criteria_{$CRITERIA_ITEMS[critno].name}" style="display:none">
+{/if}
 {else}
                     <tr class="swPrpCritLine" id="criteria_{$CRITERIA_ITEMS[critno].name}" style="display:none">
 {/if}

@@ -232,6 +232,21 @@ class reportico_panel
 						if ( $col->expand_display && $col->expand_display != "NOINPUT" )
 							$critexp = true;
 
+                        
+				        $openfilters = preg_replace("/ /", "_", get_reportico_session_param("openfilters"));
+				        $closedfilters = get_reportico_session_param("closedfilters");
+                        //echo "Look for $critdisplaygroup!!!!!!!!!!!!!!!!!! in $openfilters<BR>";
+                        //var_dump($openfilters);
+                        //var_dump($closedfilters);
+                        //echo "!!!!!!!!!!!!!!!!!!1Filters<BR>";
+                        $visible = false;
+                        if ( $openfilters ) {
+                            if ( in_array(preg_replace("/ /", "_", $critdisplaygroup),$openfilters) )
+                            {
+                                $visible = true;
+                            }
+                        }
+
 						$dispcrit[] = array (
 									"name" => $col->query_name,
 									"title" => sw_translate($crittitle),
@@ -242,6 +257,7 @@ class reportico_panel
 									"display_group" => $critdisplaygroup,
 									"display_group_class" => preg_replace("/ /", "_", $critdisplaygroup),
 									"required" => $critrequired,
+									"visible" => $visible,
 									"expand" => $critexp,
                                     "tooltip" => sw_translate($col->criteria_help)
 									);
