@@ -49,7 +49,7 @@
 
 .icon-48-reportico
 {
-    background: url('../images/icon-reportico-48.png') no-repeat left;`I   
+    background: url('../images/icon-reportico-48.png') no-repeat left;
 }
 
 .swPrpCritSel select
@@ -103,6 +103,7 @@
 }
 .swDateField { width: 100px !important; }
 
+/* Why double {} ? */
 .swPrpTextField { width: 100%; }
 {
     margin: 0px 0px 0px 0px;
