@@ -128,12 +128,10 @@ class reportico_report_csv extends reportico_report
 
 	function each_line($val)
 	{
-		reportico_report::each_line($val);
-
         // Start setting title and headers on first line
         // because we dont want to assume its csv unless we have some
         // output , so we can show an html error otherwise
-        if ( $this->line_count == 1 )
+        if ( $this->line_count == 0 )
         {
 
 		    $this->debug("Excel Begin Page\n");
@@ -141,6 +139,7 @@ class reportico_report_csv extends reportico_report
 		    $this->text .= '"'."$this->reporttitle".'"';
 		    $this->text .= "\n";
         }
+		reportico_report::each_line($val);
 
 		// Excel requires group headers are printed as the first columns in the spreadsheet against
 		// the detail. 
