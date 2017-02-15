@@ -1,0 +1,30 @@
+{
+    "name": "reportico-web/reportico",
+    "description": "Reportico Open Source PHP report Designer",
+    "type": "project",
+    "keywords": [
+        "report",
+        "reporting"
+    ],
+    "authors": [
+        {
+            "name": "Reportico",
+            "email": "info@reportico.org"
+        }
+    ],
+    "homepage": "http://www.reportico.org/",
+    "license": "GPL-3.0",
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "autoload": {
+        "classmap": [
+          "reportico.php"
+        ],
+        "psr-0": {
+          "Reportico\\Reportico": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
