@@ -1689,7 +1689,7 @@ class reportico extends reportico_object
                     }
                     else if ( $col->criteria_type == "DATE" )
                     {
-                        if ( !convert_date_range_defaults_to_dates("DATERANGE", 
+                        if ( !convert_date_range_defaults_to_dates("DATE", 
                             $criteriaval,
                             $val1,
                             $val2) )
