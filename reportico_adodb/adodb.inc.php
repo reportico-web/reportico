@@ -176,7 +176,7 @@
 		 * Set to false for highest performance -- RecordCount() will always return -1 then
 		 * for databases that provide "virtual" recordcounts...
 		 */
-		if (!isset($ADODB_COUNTRECS)) $ADODB_COUNTRECS = true; 
+		if (!isset($ADODB_COUNTRECS)) $ADODB_COUNTRECS = false; 
 	}
 	
 	
