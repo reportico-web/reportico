@@ -196,10 +196,8 @@ class reportico_report_fpdf extends reportico_report
         // If font used is a Unicode Truetype font then
         // use Unicode PDF generator
         $pdf_path = find_best_location_in_include_path( "fpdf" );
-        require_once($pdf_path."/fpdf.php");
-        require_once($pdf_path."/ufpdf.php");
 
-        $this->document = new FPDF($this->orientations[$this->orientation],'pt',$this->page_type);
+        $this->document = new \FPDF($this->orientations[$this->orientation],'pt',$this->page_type);
 
         if ( !isset($this->document->CoreFonts[strtolower($this->fontName)]) )
         {
