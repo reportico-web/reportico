@@ -3,7 +3,6 @@
 // Include files
 // Include the ADODB Database Abstraction Classes
 include_once('reportico_adodb/adodb.inc.php');
-include_once('smarty/libs/Smarty.class.php');
 require_once('swutil.php');
 
 // Set up globals

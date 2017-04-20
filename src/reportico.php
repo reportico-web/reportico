@@ -2861,7 +2861,7 @@ class reportico extends reportico_object
 		global $g_project;
 		global $g_dropdown_menu;
 
-		$smarty = new \smarty();
+		$smarty = new \Smarty();
 		$smarty->template_dir = find_best_location_in_include_path( "templates" );
 		$smarty->compile_dir = find_best_location_in_include_path( "templates_c" );
 

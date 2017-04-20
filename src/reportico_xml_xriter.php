@@ -431,7 +431,7 @@ class reportico_xml_writer
 	function prepare_web_service_file($templatefile, $savefile = false, $instub)
 	{
 		global $g_project;
-		$smarty = new smarty();
+		$smarty = new \Smarty();
 	 	$smarty->compile_dir = find_best_location_in_include_path( "templates_c" );
 
 		$smarty->compile_dir = "/tmp";
@@ -487,7 +487,7 @@ class reportico_xml_writer
 	
 	function prepare_wsdl_data($savefile = false)
 	{
-		$smarty = new smarty();
+		$smarty = new \S\marty();
  		$smarty->compile_dir = find_best_location_in_include_path( "templates_c" );
 
 		$smarty->assign('WS_SERVICE_NAMESPACE', SW_SOAP_NAMESPACE);
