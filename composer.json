@@ -15,7 +15,8 @@
     "homepage": "http://www.reportico.org/",
     "license": "GPL-3.0",
     "require": {
-        "php": ">=5.4.0"
+        "php": ">=5.4.0",
+        "smarty/smarty": "2.6.26"
     },
      "autoload": {
         "psr-4": {

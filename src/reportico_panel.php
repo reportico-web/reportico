@@ -140,8 +140,10 @@ class reportico_panel
 			case "LOGIN":
                 if ( defined ('SW_ADMIN_PASSWORD') && SW_ADMIN_PASSWORD == "__OPENACCESS__" )
 				    $this->smarty->assign('SHOW_OPEN_LOGIN', true);
-                else
+                else {
 				    $this->smarty->assign('SHOW_LOGIN', true);
+				    $this->smarty->assign('SHOW_OPEN_LOGIN', false);
+                }
 				break;
 
 			case "LOGOUT":
