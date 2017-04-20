@@ -69,7 +69,7 @@ function set_project_environment()
 {
 	global $g_project;
 	global $g_menu;
-	global $g_menu_title;
+	//global $g_menu_title;
 
 	$project = session_request_item("project", "reports");
 	$menu = false;
@@ -90,7 +90,8 @@ function set_project_environment()
 			include_once($configfile);
 		$g_project = false;
 		$g_menu = false;
-		$g_menu_title = "";
+		//$g_menu_title = "";
+		ReporticoApp::set('menu_title','');
 		$old_error_handler = set_error_handler("ErrorHandler");
 		handle_error("Project Directory $project not found. Check INCLUDE_PATH or project name");
 		return;
@@ -116,14 +117,16 @@ function set_project_environment()
 			include_once($configfile);
 		$g_project = false;
 		$g_menu = false;
-		$g_menu_title = "";
+		//$g_menu_title = "";
+		ReporticoApp::set('menu_title','');
 		$old_error_handler = set_error_handler("ErrorHandler");
 		handle_error("Configuration Definition file config.php not found in project $project", E_USER_ERROR);
 	}
 
 	$g_project = $project;
 	$g_menu = $menu;
-	$g_menu_title = $menu_title;
+	//$g_menu_title = $menu_title;
+	ReporticoApp::set('menu_title',$$menu_title);
 	return $project;
 }
 }
