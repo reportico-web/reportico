@@ -48,6 +48,9 @@
 
     // Only turn on output buffering if necessary, normally leave this uncommented
 	//ob_start();
+	
+    // Setup SESSION
+    set_up_reportico_session();
 
 	$q = new reportico();
 

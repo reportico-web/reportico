@@ -17,12 +17,10 @@
     "require": {
         "php": ">=5.4.0"
     },
-    "autoload": {
-        "classmap": [
-          "reportico.php"
-        ],
-        "psr-0": {
-          "Reportico\\Reportico": "src/"
+     "autoload": {
+        "psr-4": {
+            "Reportico\\": "src",
+            "pChart\\": "pChart/"
         }
     },
     "minimum-stability": "dev",
