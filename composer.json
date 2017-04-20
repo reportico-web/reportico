@@ -16,7 +16,8 @@
     "license": "GPL-3.0",
     "require": {
         "php": ">=5.4.0",
-        "smarty/smarty": "2.6.26"
+        "smarty/smarty": "2.6.26",
+        "setasign/fpdf": "1.7"
     },
      "autoload": {
         "psr-4": {

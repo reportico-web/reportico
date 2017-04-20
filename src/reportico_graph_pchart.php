@@ -557,7 +557,7 @@ class reportico_graph_pchart
 	function generate_graph_image ($outputfile)
 	{
         // Create Graph Dataset and set axis attributes
-        $graphData = new pData();
+        $graphData = new \pData();
 $graphData->setYAxisName($this->ytitle);
 $graphData->AddPoint($this->xlabels,"xaxis");
 //$graphData->SetSerieName("xaxis","xaxis");
@@ -645,7 +645,7 @@ if ( $gridpos == "front" )
 		$this->apply_defaults_internal();
 
 //echo $this->width_pdf_actual.",".$this->height_pdf_actual."<BR>";
-$graphImage = new pChart($this->width_pdf_actual,$this->height_pdf_actual); 
+$graphImage = new \pChart($this->width_pdf_actual,$this->height_pdf_actual); 
 
 /* Turn of Antialiasing */
 $graphImage->Antialias = TRUE;

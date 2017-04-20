@@ -30,6 +30,7 @@ class ComposerStaticInitb376aa5aebc47958671cc0f6e38a3316
 
     public static $classMap = array (
         'Config_File' => __DIR__ . '/..' . '/smarty/smarty/libs/Config_File.class.php',
+        'FPDF' => __DIR__ . '/..' . '/setasign/fpdf/fpdf.php',
         'Smarty' => __DIR__ . '/..' . '/smarty/smarty/libs/Smarty.class.php',
         'Smarty_Compiler' => __DIR__ . '/..' . '/smarty/smarty/libs/Smarty_Compiler.class.php',
     );

@@ -51,5 +51,46 @@
         "keywords": [
             "templating"
         ]
+    },
+    {
+        "name": "setasign/fpdf",
+        "version": "1.7",
+        "version_normalized": "1.7.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Setasign/FPDF.git",
+            "reference": "08de62a76d5860e0fd679a3fb4f8e2b7e6019ea1"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Setasign/FPDF/zipball/08de62a76d5860e0fd679a3fb4f8e2b7e6019ea1",
+            "reference": "08de62a76d5860e0fd679a3fb4f8e2b7e6019ea1",
+            "shasum": ""
+        },
+        "time": "2015-05-11T08:23:28+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "fpdf.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "no usage restriction"
+        ],
+        "authors": [
+            {
+                "name": "Olivier Plathey",
+                "email": "oliver@fpdf.org",
+                "homepage": "http://fpdf.org/"
+            }
+        ],
+        "description": "FPDF is a PHP class which allows to generate PDF files with pure PHP. F from FPDF stands for Free: you may use it for any kind of usage and modify it to suit your needs.",
+        "homepage": "http://www.fpdf.org",
+        "keywords": [
+            "fpdf",
+            "pdf"
+        ]
     }
 ]
