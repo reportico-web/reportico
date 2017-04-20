@@ -3139,8 +3139,9 @@ class reportico extends reportico_object
 		    $this->generate_dropdown_menu ( $this->dropdown_menu );
 		    $smarty->assign('DROPDOWN_MENU_ITEMS', $this->dropdown_menu);
         }
-        global $g_menu_title;
-		$smarty->assign('MENU_TITLE', $g_menu_title);
+        //global $g_menu_title;
+		//$smarty->assign('MENU_TITLE', $g_menu_title);
+		$smarty->assign('MENU_TITLE', ReporticoApp::get('menu_title'));
 
 		if ( $mode == "MENU" )
 		{
@@ -4308,14 +4309,15 @@ class reportico extends reportico_object
 	{
 
 		global $g_menu;
-		global $g_menu_title;
+		//global $g_menu_title;
 		global $g_dropdown_menu;
 		global $g_language;
 		global $g_project;
 
 		$p = new reportico_panel($this, "ADMIN");
 		$this->initialize_panels("ADMIN");
-		$this->set_attribute("ReportTitle", $g_menu_title);
+		//$this->set_attribute("ReportTitle", $g_menu_title);
+		$this->set_attribute("ReportTitle", ReporticoApp::get('menu_title'));
 	    load_mode_language_pack("languages", $this->output_charset);
 	    load_mode_language_pack("admin", $this->output_charset);
         localise_template_strings($this->panels["MAIN"]->smarty);
@@ -4401,7 +4403,7 @@ class reportico extends reportico_object
 
 		global $g_menu;
 		global $g_admin_menu;
-		global $g_menu_title;
+		//global $g_menu_title;
 		global $g_dropdown_menu;
 		global $g_language;
 		global $g_projpath;
@@ -5632,7 +5634,7 @@ function set_project_environment($initial_project = false, $project_folder = "pr
 	global $g_translations;
 	global $g_admin_menu;
 	global $g_menu;
-	global $g_menu_title;
+	//global $g_menu_title;
 	global $g_dropdown_menu;
 	global $g_report_desc;
 	global $g_included_config;
@@ -5723,7 +5725,8 @@ function set_project_environment($initial_project = false, $project_folder = "pr
 		$g_project = false;
 		$g_menu = false;
 		$g_admin_menu = false;
-		$g_menu_title = "";
+		//$g_menu_title = "";
+		ReporticoApp::set('menu_title','');
 		$g_dropdown_menu = false;
 		$old_error_handler = set_error_handler("ErrorHandler");
 		handle_error("Project Directory $project not found. Check INCLUDE_PATH or project name");
@@ -5779,7 +5782,8 @@ function set_project_environment($initial_project = false, $project_folder = "pr
 		$g_projpath = false;
 		$g_menu = false;
 		$g_admin_menu = false;
-		$g_menu_title = "";
+		//$g_menu_title = "";
+		ReporticoApp::set('menu_title','');
 		$g_dropdown_menu = false;
 		$old_error_handler = set_error_handler("ErrorHandler");
 		handle_error("Configuration Definition file config.php not found in project $project", E_USER_ERROR);
@@ -5846,7 +5850,8 @@ function set_project_environment($initial_project = false, $project_folder = "pr
     else
         $g_admin_menu = false;
 
-	$g_menu_title = $menu_title;
+	//$g_menu_title = $menu_title;
+	ReporticoApp::set('menu_title',$menu_title);
     if ( isset($dropdown_menu ) )
 	    $g_dropdown_menu = $dropdown_menu;
 
