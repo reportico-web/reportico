@@ -244,7 +244,7 @@ class reportico_report_csv extends reportico_report
 	{
 		// Excel requires group headers are printed as the first columns in the spreadsheet against
 		// the detail. 
-		$obj = new ArrayObject( $this->query->groups );
+		$obj = new \ArrayObject( $this->query->groups );
 		$it = $obj->getIterator();
         foreach ( $it as $name => $group)
 		{
