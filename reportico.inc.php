@@ -1,8 +1,6 @@
 <?php
 
 // Include files
-// Include the ADODB Database Abstraction Classes
-include_once('reportico_adodb/adodb.inc.php');
 require_once('swutil.php');
 
 // Set up globals
