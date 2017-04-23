@@ -1077,7 +1077,7 @@ function get_locale_date_format( $in_format ) {
 // This can be used to then find reportico images, links, runners etc
 function get_reportico_url_path()
 {
-        $newpath = "reportico.php";
+        $newpath = "swutil.php";
         $found = find_file_to_include($newpath, $newpath, $reltoinclude);
         $newpath = get_relative_path(str_replace ("/", "\\", realpath($newpath)), dirname(realpath($_SERVER["SCRIPT_FILENAME"])));
         $above = dirname($_SERVER["SCRIPT_NAME"]);

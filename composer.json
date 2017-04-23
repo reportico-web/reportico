@@ -15,14 +15,17 @@
     "homepage": "http://www.reportico.org/",
     "license": "GPL-3.0",
     "require": {
-        "php": ">=5.4.0"
+        "php": ">=5.4.0",
+        "smarty/smarty": "2.6.26",
+        "setasign/fpdf": "1.7",
+        "adodb/adodb-php": "^5.20",
+        "tecnickcom/tcpdf": "^6.2",
+        "monolog/monolog": "^1.22"
     },
-    "autoload": {
-        "classmap": [
-          "reportico.php"
-        ],
-        "psr-0": {
-          "Reportico\\Reportico": "src/"
+     "autoload": {
+        "psr-4": {
+            "Reportico\\": "src",
+            "pChart\\": "pChart/"
         }
     },
     "minimum-stability": "dev",

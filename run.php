@@ -28,7 +28,7 @@
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  * @version $Id: run.php,v 1.25 2014/05/17 15:12:31 peter Exp $
  */
-
+    require_once(__DIR__ .'/vendor/autoload.php');
     // set error reporting level
 	error_reporting(E_ALL);
 
@@ -44,14 +44,19 @@
     // Include Reportico - for embedding reportico in a script running from outside the Reportico directory, 
     // just include the full path to the file reportico.php
 	//require_once('<FULL_PATH_TO_REPORTICO>/reportico.php');
-	require_once('reportico.php');
+	require_once('reportico.inc.php');
 
     // Only turn on output buffering if necessary, normally leave this uncommented
 	//ob_start();
-
-	$q = new reportico();
+	
+    // Setup SESSION
+    set_up_reportico_session();
+	$q = new Reportico\reportico();
 
     // In design mode, allow sql debugging
+    $logger = new Reportico\ReporticoLog();
+    Reportico\ReporticoLog::getI()->setDebugMode(true);
+    
 	//$q->allow_debug = true;
 
     // Specify any URL parameters that should be added into any links generated in Reportico.
@@ -61,7 +66,7 @@
 
     // Reportico Ajax mode. If set to true will run all reportico requests from buttons and links
     // through AJAX, meaning reportico will refresh in its own window and not refresh the whole page
-    //$q->reportico_ajax_mode = true;
+    $q->reportico_ajax_mode = false;
 
     /*
     ** Initial execution states .. allows you to start user and limit user to specfic
@@ -228,6 +233,7 @@
     //$q->output_template_parameters["show_hide_prepare_go_buttons"] = "hide";
     //$q->output_template_parameters["show_hide_prepare_reset_buttons"] = "hide";
 
+    $q->setTheme('bootstrap3');
     // Label for criteria section if required
     // $q->criteria_block_label = "Report Criteria:";
 
