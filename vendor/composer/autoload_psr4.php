@@ -8,4 +8,6 @@ $baseDir = dirname($vendorDir);
 return array(
     'pChart\\' => array($baseDir . '/pChart'),
     'Reportico\\' => array($baseDir . '/src'),
+    'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
+    'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
 );

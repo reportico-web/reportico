@@ -54,6 +54,9 @@
 	$q = new Reportico\reportico();
 
     // In design mode, allow sql debugging
+    $logger = new Reportico\ReporticoLog();
+    Reportico\ReporticoLog::getI()->setDebugMode(true);
+    
 	//$q->allow_debug = true;
 
     // Specify any URL parameters that should be added into any links generated in Reportico.
@@ -63,7 +66,7 @@
 
     // Reportico Ajax mode. If set to true will run all reportico requests from buttons and links
     // through AJAX, meaning reportico will refresh in its own window and not refresh the whole page
-    //$q->reportico_ajax_mode = true;
+    $q->reportico_ajax_mode = false;
 
     /*
     ** Initial execution states .. allows you to start user and limit user to specfic
@@ -230,6 +233,7 @@
     //$q->output_template_parameters["show_hide_prepare_go_buttons"] = "hide";
     //$q->output_template_parameters["show_hide_prepare_reset_buttons"] = "hide";
 
+    $q->setTheme('bootstrap3');
     // Label for criteria section if required
     // $q->criteria_block_label = "Report Criteria:";
 

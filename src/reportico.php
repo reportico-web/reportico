@@ -192,7 +192,9 @@ class reportico extends reportico_object
     var $output_reportbody_styles = false;
 	var $admin_accessible = true;
 
-
+	//Theme to use
+	private $theme;
+	
     // Template Parameters
     var $output_template_parameters = array(
         "show_hide_navigation_menu" => "show",
@@ -2990,6 +2992,8 @@ class reportico extends reportico_object
         $this->jquery_preloaded = register_session_param("jquery_preloaded", $this->jquery_preloaded);
         $this->bootstrap_preloaded = register_session_param("bootstrap_preloaded", $this->bootstrap_preloaded);
 
+
+		/*@todo Must be in the theme and not in the code*/
         if ( !$this->bootstrap_styles )
         {
             $csspath = $this->url_path_to_assets."/css/reportico.css";
@@ -3005,7 +3009,9 @@ class reportico extends reportico_object
             else
                 $csspath = $this->reportico_url_path."/".find_best_url_in_include_path( "css/reportico_bootstrap.css" );
         }
+        
 		$smarty->assign('STYLESHEET', $csspath);
+		
 		$smarty->assign('STYLESHEETDIR', dirname($csspath));
 
 		$smarty->assign('REPORTICO_JQUERY_PRELOADED', $this->jquery_preloaded);
@@ -3032,18 +3038,21 @@ class reportico extends reportico_object
             $smarty->assign(strtoupper($k), $v);
         }
 
-        if ( $this->url_path_to_assets )
-        {
-            $jspath = $this->url_path_to_assets."/js";
-		    $smarty->assign('JSPATH', $jspath);
+		//Define the asset dir path
+        if ( $this->url_path_to_assets ){
+            $asset_path = $this->url_path_to_assets;
+        } else {
+            $asset_path = find_best_url_in_include_path( "assets/notes.txt" );
+		    if ( $asset_path ) $asset_path = dirname($asset_path);
         }
-        else
-        {
-            $jspath = find_best_url_in_include_path( "js/reportico.js" );
-		    if ( $jspath ) $jspath = dirname($jspath);
-		    $smarty->assign('JSPATH', $this->reportico_url_path.$jspath);
-        }
-
+        
+		$smarty->assign('ASSETS_PATH', $asset_path);
+		
+		//Define the template dir where we could find specific asset like css
+		$theme_dir = find_best_url_in_include_path('templates/'.$this->getTheme());
+		$smarty->assign('THEME_DIR', $theme_dir);
+		
+	
 		$this->panels["MAIN"] = new reportico_panel($this, "MAIN");
 		$this->panels["MAIN"]->set_smarty($smarty);
 		$this->panels["BODY"] = new reportico_panel($this, "BODY");
@@ -3650,10 +3659,12 @@ class reportico extends reportico_object
 
         if ( $this->session_namespace )
             $g_session_namespace = $this->session_namespace;
-
+		ReporticoLog::getI()->debug("g_session_namespace : >$g_session_namespace<");
+		
         if ( $g_session_namespace )
             $g_session_namespace_key = "reportico_".$g_session_namespace;
-
+		ReporticoLog::getI()->debug("g_session_namespace_key : >$g_session_namespace_key<");
+		
         // If a session namespace doesnt exist create one
         if ( !exists_reportico_session() || isset($_REQUEST['clear_session']) || $this->clear_reportico_session)
             initialize_reportico_namespace($g_session_namespace_key);
@@ -3661,7 +3672,8 @@ class reportico extends reportico_object
         // Work out the mode (ADMIN, PREPARE, MENU, EXECUTE, MAINTAIN based on all parameters )
         if ( !$mode )
             $mode = $this->get_execute_mode();
-
+		ReporticoLog::getI()->debug("mode : >$mode<");
+		
 		$old_error_handler = set_error_handler("ErrorHandler");
         set_exception_handler("ExceptionHandler");
 
@@ -3732,10 +3744,12 @@ class reportico extends reportico_object
 
 		$g_debug_mode = get_request_item("debug_mode", "0", $this->first_criteria_selection );
 
+		/*Should be removed -> tested 20 lines before !
 		if ( !$mode )
 		{
 			$mode=$this->get_execute_mode();
 		}
+		*/
 
 		// If the project is the ADMIN project then the MAin Menu will be the Admin Page
 		if ( $g_project == "admin" && $mode == "MENU" )
@@ -3926,10 +3940,8 @@ class reportico extends reportico_object
                 // Some calling frameworks require output to be returned
                 // for rendering inside web pages .. in this case
                 // return_output_to_caller will be set to true
-				if ( $this->user_template )
-                    $template = $this->user_template."_admin.tpl";
-                else
-                    $template = "admin.tpl";
+				$template = $this->get_template_path('admin.tpl');
+				
                 if ( $this->return_output_to_caller )
                 {
 				    $txt = $this->panels["MAIN"]->smarty->fetch($template);
@@ -3965,10 +3977,8 @@ class reportico extends reportico_object
                 // Some calling frameworks require output to be returned
                 // for rendering inside web pages .. in this case
                 // return_output_to_caller will be set to true
-				if ( $this->user_template )
-                    $template = $this->user_template."_menu.tpl";
-                else
-                    $template = "menu.tpl";
+				$template = $this->get_template_path('menu.tpl');
+				
                 if ( $this->return_output_to_caller )
                 {
 				    $txt = $this->panels["MAIN"]->smarty->fetch($template);
@@ -4017,18 +4027,14 @@ class reportico extends reportico_object
 
 				$this->panels["MAIN"]->smarty->assign('XMLFILE', $reportfile);
 
-				$reportname = preg_replace("/.xml/", "", $this->xmloutfile.'_prepare.tpl');
+				
                 restore_error_handler();
 
                 // Some calling frameworks require output to be returned
                 // for rendering inside web pages .. in this case
                 // return_output_to_caller will be set to true
-				if (preg_match("/$reportname/", find_best_location_in_include_path( "templates/". $reportname )))
-                    $template = $reportname;
-				else if ( $this->user_template )
-                    $template = $this->user_template."_prepare.tpl";
-                else
-                    $template = "prepare.tpl";
+                $template = $this->get_template_path('prepare.tpl');
+				
                 if ( $this->return_output_to_caller )
                 {
 				    $txt = $this->panels["MAIN"]->smarty->fetch($template);
@@ -4127,18 +4133,13 @@ class reportico extends reportico_object
 				    load_mode_language_pack("languages", $this->output_charset, true);
 					load_mode_language_pack("prepare", $this->output_charset);
                     localise_template_strings($this->panels["MAIN"]->smarty);
-					$reportname = preg_replace("/.xml/", "", $this->xmloutfile.'_execute.tpl');
                     restore_error_handler();
 
                     // Some calling frameworks require output to be returned
                     // for rendering inside web pages .. in this case
                     // return_output_to_caller will be set to true
-                    if (preg_match("/$reportname/", find_best_location_in_include_path( "templates/". $reportname )))
-                        $template = $reportname;
-                    else if ( $this->user_template )
-                        $template = $this->user_template."_error.tpl";
-                    else
-                        $template = "error.tpl";
+                    $template = get_template_path('error.tpl');
+                    
                     if ( false && $this->return_output_to_caller )
                     {
 				        $txt = $this->panels["MAIN"]->smarty->fetch($template);
@@ -4183,7 +4184,8 @@ class reportico extends reportico_object
 				                load_mode_language_pack("languages", $this->output_charset, true);
 								load_mode_language_pack("execute", $this->output_charset);
                                 localise_template_strings($this->panels["MAIN"]->smarty);
-								$mailtext = $this->panels["MAIN"]->smarty->fetch('execute.tpl', NULL, NULL, false);
+                                $template = $this->get_template_path('execute.tpl');
+								$mailtext = $this->panels["MAIN"]->smarty->fetch($template, NULL, NULL, false);
 								//$boundary = '-----=' . md5( uniqid ( rand() ) );
 								//$message = "Content-Type: text/html; name=\"my attachment\"\n";
 								//$message .= "Content-Transfer-Encoding: base64\n";
@@ -4205,18 +4207,11 @@ class reportico extends reportico_object
 			                load_mode_language_pack("languages", $this->output_charset, true);
 							load_mode_language_pack("execute", $this->output_charset);
                             localise_template_strings($this->panels["MAIN"]->smarty);
-						    $reportname = preg_replace("/.xml/", "", $this->xmloutfile.'_execute.tpl');
+						   
                             restore_error_handler();
-
-                            // Some calling frameworks require output to be returned
-                            // for rendering inside web pages .. in this case
-                            // return_output_to_caller will be set to true
-                            if (preg_match("/$reportname/", find_best_location_in_include_path( "templates/". $reportname )))
-                                $template = $reportname;
-                            else if ( $this->user_template )
-                                $template = $this->user_template."_execute.tpl";
-                            else
-                                $template = "execute.tpl";
+                                
+                            $template = $this->get_template_path('execute.tpl');
+                            
                             if ( $this->return_output_to_caller )
                             {
                                 $txt = $this->panels["MAIN"]->smarty->fetch($template);
@@ -4255,10 +4250,8 @@ class reportico extends reportico_object
                     $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
                     $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
                     $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
-                    if ( $this->user_template )
-                        $this->panels["MAIN"]->smarty->display($this->user_template.'_maintain.tpl');
-                    else
-                        $this->panels["MAIN"]->smarty->display('maintain.tpl');
+                    $template = $this->get_template_path('maintain.tpl');
+                    $this->panels["MAIN"]->smarty->display($template);
 				}
 				else
 				{
@@ -4425,7 +4418,7 @@ class reportico extends reportico_object
 
 		$p = new reportico_panel($this, "MENU");
 		$this->initialize_panels("MENU");
-		$this->set_attribute("ReportTitle", $g_menu_title);
+		$this->set_attribute("ReportTitle", ReporticoApp::get('menu_title'));
 
 		if ( $this->static_menu && is_array($this->static_menu) )
 		{
@@ -5920,6 +5913,52 @@ function set_project_environment($initial_project = false, $project_folder = "pr
         }
     }
 
+	/**
+	 * Set theme to use
+	 * 
+	 * @param string $value Theme to use
+	 * */
+	 public function setTheme($value){
+		if(trim($value) != ''){
+			$this->theme = $value;
+		}
+	}
+	
+	private function getTheme(){
+		$theme = $this->theme;
+		
+		if($theme == '')
+		{
+			$theme = 'default';
+		}
+		
+		return $theme;
+	}
+	
+	/**
+	 * Get the path to the template
+	 * 
+	 * @param $template stricng name of template foile (eg. prepare.tpl)
+	 * @return string Path to the template including template / custom file.
+	 */
+	function get_template_path($template){
+		 $reportname = preg_replace("/.xml/", "", $this->xmloutfile.'_'. $template);
+		 
+		// Some calling frameworks require output to be returned
+        // for rendering inside web pages .. in this case
+        // return_output_to_caller will be set to true
+        
+        if (preg_match("/$reportname/", find_best_location_in_include_path( "templates/".$this->getTheme(). $reportname )))
+            $template = $reportname;
+        if (preg_match("/$reportname/", find_best_location_in_include_path( "templates/". $reportname )))
+        	$template = $reportname;
+        else if ( $this->user_template )
+            $template = $this->user_template."_$template";
+        
+        ReporticoLog::getI()->debug("Template : >$template<");
+        return $this->getTheme() . '/'. $template;
+	}
+	
     function apply_styleset($type, $styles, $column = false, $mode = false, $condition = false)
     {
         $txt = "";

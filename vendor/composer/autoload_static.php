@@ -19,6 +19,14 @@ class ComposerStaticInitb376aa5aebc47958671cc0f6e38a3316
         array (
             'Reportico\\' => 10,
         ),
+        'P' => 
+        array (
+            'Psr\\Log\\' => 8,
+        ),
+        'M' => 
+        array (
+            'Monolog\\' => 8,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -29,6 +37,14 @@ class ComposerStaticInitb376aa5aebc47958671cc0f6e38a3316
         'Reportico\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
+        ),
+        'Psr\\Log\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
+        'Monolog\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
     );
 
