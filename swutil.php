@@ -142,6 +142,10 @@ function close_reportico_session()
 
 function convertYMDtoLocal($in_time, $from_format, $to_format)
 {
+    // Allow a time to be blank
+    if ( trim($in_time) ==  "" )
+        return " ";
+
 	$from_format = get_locale_date_format ( $from_format );
 	$to_format = get_locale_date_format ( $to_format );
 
@@ -225,6 +229,10 @@ function get_datepicker_format($in_format)
 
 function parse_date($in_keyword, $in_time = false, $in_mask = "%d/%m/%Y" )
 {
+
+    // To handle date ranges/date criteria that need to have the field set to blank
+    if ( $in_keyword == "BLANK" )
+        return " ";
 
 	$in_mask = get_locale_date_format ( $in_mask );
 	if ( !$in_time )
