@@ -4123,6 +4123,7 @@ class reportico extends reportico_object
                 die;
                     
 			case "ADMIN":
+				$this->set_request_columns();
 				$txt = "";
 				$this->handle_xml_query_input($mode);
 				$this->build_admin_screen();
