@@ -21,12 +21,12 @@
  * @link http://smarty.php.net/
  * @author Monte Ohrt <monte at ohrt dot com>
  * @author Andrei Zmievski <andrei@php.net>
- * @version 2.6.25-dev
+ * @version 2.6.26
  * @copyright 2001-2005 New Digital Group, Inc.
  * @package Smarty
  */
 
-/* $Id$ */
+/* $Id: Smarty_Compiler.class.php,v 1.1.1.1 2010/10/26 21:13:51 peter Exp $ */
 
 /**
  * Template compiling class
@@ -78,7 +78,7 @@ class Smarty_Compiler extends Smarty {
     /**
      * The class constructor.
      */
-    function Smarty_Compiler()
+    function __construct()
     {
         // matches double quoted strings:
         // "foobar"
@@ -262,12 +262,25 @@ class Smarty_Compiler extends Smarty {
         reset($this->_folded_blocks);
 
         /* replace special blocks by "{php}" */
-        $source_content = preg_replace($search.'e', "'"
+        if (function_exists("preg_replace_callback")) {
+            $source_content = preg_replace_callback($search, create_function ('$matches', "return '"
+                                       . $this->_quote_replace($this->left_delimiter) . 'php'
+                                       . "' . str_repeat(\"\n\", substr_count('\$matches[1]', \"\n\")) .'"
+                                       . $this->_quote_replace($this->right_delimiter)
+                                       . "';")
+                                       , $source_content);
+        }
+        else
+        {
+            $source_content = preg_replace($search.'e', "'"
                                        . $this->_quote_replace($this->left_delimiter) . 'php'
                                        . "' . str_repeat(\"\n\", substr_count('\\0', \"\n\")) .'"
                                        . $this->_quote_replace($this->right_delimiter)
                                        . "'"
                                        , $source_content);
+        }
+
+        
 
         /* Gather all template tags. */
         preg_match_all("~{$ldq}\s*(.*?)\s*{$rdq}~s", $source_content, $_match);
@@ -2122,7 +2135,7 @@ class Smarty_Compiler extends Smarty {
                 return null;
 
             case 'template':
-                $compiled_ref = "'$this->_current_file'";
+                $compiled_ref = "'" . addslashes($this->_current_file) . "'";
                 $_max_index = 1;
                 break;
 

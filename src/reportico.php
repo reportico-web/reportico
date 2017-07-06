@@ -2992,6 +2992,20 @@ class reportico extends reportico_object
         $this->jquery_preloaded = register_session_param("jquery_preloaded", $this->jquery_preloaded);
         $this->bootstrap_preloaded = register_session_param("bootstrap_preloaded", $this->bootstrap_preloaded);
 
+		//Define the asset dir path
+        if ( $this->url_path_to_assets ){
+            $asset_path = $this->url_path_to_assets;
+        } else {
+            $asset_path = find_best_url_in_include_path( "assets/notes.txt" );
+		    if ( $asset_path ) $asset_path = dirname($asset_path);
+            $this->url_path_to_assets = $asset_path;
+        }
+        
+		$smarty->assign('ASSETS_PATH', $asset_path);
+		
+		//Define the template dir where we could find specific asset like css
+		$theme_dir = find_best_url_in_include_path('templates/'.$this->getTheme());
+		$smarty->assign('THEME_DIR', $theme_dir);
 
 		/*@todo Must be in the theme and not in the code*/
         if ( !$this->bootstrap_styles )
@@ -3038,20 +3052,6 @@ class reportico extends reportico_object
             $smarty->assign(strtoupper($k), $v);
         }
 
-		//Define the asset dir path
-        if ( $this->url_path_to_assets ){
-            $asset_path = $this->url_path_to_assets;
-        } else {
-            $asset_path = find_best_url_in_include_path( "assets/notes.txt" );
-		    if ( $asset_path ) $asset_path = dirname($asset_path);
-        }
-        
-		$smarty->assign('ASSETS_PATH', $asset_path);
-		
-		//Define the template dir where we could find specific asset like css
-		$theme_dir = find_best_url_in_include_path('templates/'.$this->getTheme());
-		$smarty->assign('THEME_DIR', $theme_dir);
-		
 	
 		$this->panels["MAIN"] = new reportico_panel($this, "MAIN");
 		$this->panels["MAIN"]->set_smarty($smarty);

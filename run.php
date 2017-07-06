@@ -66,7 +66,7 @@
 
     // Reportico Ajax mode. If set to true will run all reportico requests from buttons and links
     // through AJAX, meaning reportico will refresh in its own window and not refresh the whole page
-    $q->reportico_ajax_mode = false;
+    $q->reportico_ajax_mode = true;
 
     /*
     ** Initial execution states .. allows you to start user and limit user to specfic
@@ -130,6 +130,7 @@
     // Default initial execute mode to single report output if REPORTOUTPUT mode specified
     if ( $q->access_mode == "REPORTOUTPUT" )
         $q->initial_execute_mode = "EXECUTE";
+
 
 
     // Provide an existing connection to Reportico, at the moment to use this there still needs to be project
@@ -234,6 +235,7 @@
     //$q->output_template_parameters["show_hide_prepare_reset_buttons"] = "hide";
 
     $q->setTheme('bootstrap3');
+    //$q->setTheme('default');
     // Label for criteria section if required
     // $q->criteria_block_label = "Report Criteria:";
 

@@ -108,7 +108,7 @@
 <FORM class="swMenuForm" name="topmenu" method="POST" action="{$SCRIPT_SELF}">
 <div style="height: 78px" class="swAdminBanner">
 <div style="float: right;">
-<img height="78px" src="{$REPORTICO_URL_DIR}/images/reportico100.png"/>
+<img height="78px" src="{$ASSETS_PATH}/images/reportico100.png"/>
 <div class="smallbanner">Version <a href="http://www.reportico.org/" target="_blank">{$REPORTICO_VERSION}</a></div>
 </div>
 <div style="height: 78px">
