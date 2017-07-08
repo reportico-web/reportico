@@ -8679,7 +8679,7 @@ class reportico_assignment extends reportico_object
 					}
 				}
 
-				if  (!$clause)
+				if  (!$clause && $clause !== 0)
 				{
 					$out_string = preg_replace("/\[[^[]*\{$critexp\}[^[]*\]/", '',  $out_string);
 				}
