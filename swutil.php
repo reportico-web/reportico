@@ -230,6 +230,13 @@ function get_datepicker_format($in_format)
 function parse_date($in_keyword, $in_time = false, $in_mask = "%d/%m/%Y" )
 {
 
+    if ( preg_match("/^{.*}$/", $in_keyword ) )
+    {
+        $in_keyword = preg_replace("/{\"*([^\"]*)\"*}/", "$1", $in_keyword);
+        $datetime = new DateTime("$in_keyword");
+        return $datetime->format($in_mask);
+    }
+
     // To handle date ranges/date criteria that need to have the field set to blank
     if ( $in_keyword == "BLANK" )
         return " ";
