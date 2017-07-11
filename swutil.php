@@ -38,11 +38,11 @@ $g_debug_mode = false;
 $g_error_status = false;
 
 // Debug Levels
-define('SW_DEBUG_NONE', 0);
-define('SW_DEBUG_LOW', 1);
-define('SW_DEBUG_MEDIUM', 2);
-define('SW_DEBUG_HIGH', 3);
-define('SW_DEFAULT_IND', '.');
+define('REPORTICO_DEBUG_NONE', 0);
+define('REPORTICO_DEBUG_LOW', 1);
+define('REPORTICO_DEBUG_MEDIUM', 2);
+define('REPORTICO_DEBUG_HIGH', 3);
+define('REPORTICO_DEFAULT_INDICATOR', '.');
 
 global $g_session_namespace;
 
@@ -725,7 +725,7 @@ function ErrorHandler($errno, $errstr, $errfile, $errline)
 // error handler function
 function has_default($in_code)
 {
-	if ( substr($in_code, 0, 1) == SW_DEFAULT_IND )
+	if ( substr($in_code, 0, 1) == REPORTICO_DEFAULT_INDICATOR )
 	{
 		return true;
 	}
@@ -735,7 +735,18 @@ function has_default($in_code)
 function get_default($in_code)
 {
 	$out_val = false;
-	if ( defined("SW_DEFAULT_".$in_code) )
+    global $g_reportico_config;
+
+    if ( isset($g_reportico_config) && $g_reportico_config )
+    {
+        if (isset($g_reportico_config[$in_code]))
+		    $out_val = $g_reportico_config[$in_code];
+        if (isset($g_reportico_config["pdf_".$in_code]))
+		    $out_val = $g_reportico_config["pdf_".$in_code];
+        if (isset($g_reportico_config["chart_".$in_code]))
+		    $out_val = $g_reportico_config["chart_".$in_code];
+    }
+	else if ( defined("SW_DEFAULT_".$in_code) )
 	{
 		$out_val = constant("SW_DEFAULT_".$in_code);
 	}
@@ -745,21 +756,39 @@ function get_default($in_code)
 // error handler function
 function check_for_default($in_code, $in_val)
 {
+    global $g_reportico_config;
 	$out_val = $in_val;
-
 	if ( !$in_val )
 	{
 		$out_val = $in_val;
-		if ( defined("SW_DEFAULT_".$in_code) )
+        if ( isset($g_reportico_config) && $g_reportico_config )
+        {
+            if (isset($g_reportico_config[$in_code]))
+		        $out_val = $g_reportico_config[$in_code];
+            if (isset($g_reportico_config["pdf_".$in_code]))
+		        $out_val = $g_reportico_config["pdf_".$in_code];
+            if (isset($g_reportico_config["chart_".$in_code]))
+		        $out_val = $g_reportico_config["chart_".$in_code];
+        }
+		else if ( defined("SW_DEFAULT_".$in_code) )
 		{
 			$out_val = constant("SW_DEFAULT_".$in_code);
 		}
 	}
 	else
-	if ( substr($in_val, 0, 1) == SW_DEFAULT_IND )
+	if ( substr($in_val, 0, 1) == REPORTICO_DEFAULT_INDICATOR )
 	{
 		$out_val = substr($in_val, 1);
-		if ( defined("SW_DEFAULT_".$in_code) )
+        if ( isset($g_reportico_config) && $g_reportico_config )
+        {
+            if (isset($g_reportico_config[$in_code]))
+		        $out_val = $g_reportico_config[$in_code];
+            if (isset($g_reportico_config["pdf_".$in_code]))
+		        $out_val = $g_reportico_config["pdf_".$in_code];
+            if (isset($g_reportico_config["chart_".$in_code]))
+		        $out_val = $g_reportico_config["chart_".$in_code];
+        }
+		else if ( defined("SW_DEFAULT_".$in_code) )
 		{
 			$out_val = constant("SW_DEFAULT_".$in_code);
 		}
@@ -866,7 +895,7 @@ function load_mode_language_pack($mode, $output_encoding = "utf-8", $replace = f
     $langfile = find_best_location_in_include_path( "language" );
 
     // Look for encoding specific language file
-    if ( defined("SW_OUTPUT_ENCODING") && SW_OUTPUT_ENCODING != "UTF8" && is_dir($langfile."/".$g_language."/".SW_OUTPUT_ENCODING) )
+    if ( is_set_reportico_config("SW_OUTPUT_ENCODING") && get_reportico_confg("SW_OUTPUT_ENCODING") != "UTF8" && is_dir($langfile."/".$g_language."/".get_reportico_config("SW_OUTPUT_ENCODING")) )
     {
         $langfile = $langfile."/".$g_language."/".SW_OUTPUT_ENCODING."/".$mode.".php";
         require($langfile);
@@ -1157,7 +1186,7 @@ function available_languages()
         return $langs;
 }
 
-// Takes project SW_DB_ENCODING and converts it to PHP representation for iconv
+// Takes project config db encoding and converts it to PHP representation for iconv
 function db_charset_to_php_charset ($in)
 {
     $out = $in;
@@ -1215,7 +1244,7 @@ function db_charset_to_php_charset ($in)
     return $out;
 }
 
-// Takes project SW_OUTPUT_ENCODING and converts it to PHP representation for iconv
+// Takes project config output encoding and converts it to PHP representation for iconv
 function output_charset_to_php_charset ($in)
 {
     $out = $in;
@@ -1269,11 +1298,11 @@ function get_output_encoding_html ()
     $txt = '';
     $tmp1 = '<meta http-equiv="Content-Type" content="text/html; charset=';
     $tmp2 = '" />';
-    switch ( SW_OUTPUT_ENCODING )  
+    switch (get_reportico_config("output_encoding"))
     {
         case "None" : $txt = ''; break;
         case "UTF8" : $txt = $tmp1 . "utf-8". $tmp2; '<meta charset="utf-8">'; break;
-        default : $txt = $tmp1 . SW_OUTPUT_ENCODING. $tmp2; break;
+        default : $txt = $tmp1 . get_reportico_config("output_encoding"). $tmp2; break;
     }
 
     return $txt;
@@ -1471,7 +1500,7 @@ function column_name_to_label($columnname)
     if ( !function_exists("mb_strtolower") )
 	    $retstring = ucwords(strtolower($retstring));
     else
-	    $retstring = ucwords(mb_strtolower($retstring,output_charset_to_php_charset(SW_OUTPUT_ENCODING)));
+	    $retstring = ucwords(mb_strtolower($retstring,output_charset_to_php_charset(get_reportico_config("output_encoding"))));
 	return $retstring;
 }
 
@@ -1579,6 +1608,59 @@ function reportico_session_name()
         return session_id()."_".$g_session_namespace;
 }
 
+/*
+** Returns if config item is set
+*/
+function is_set_reportico_config($param)
+{
+    if ( isset ( $g_reportico_config ) )
+    {
+        if ( isset($g_reportico_config[$param]))
+            return true;
+    }
+    else if ( defined("SW_".strtoupper($param)) )
+    {
+        return true;
+    }
+    else
+        return false;
+}
+
+/*
+** Sets global and project configuration parameters
+*/
+function set_reportico_config($param, $value = false)
+{
+    global $g_reportico_config;
+    $g_reportico_config[$param] = $value;
+}
+
+
+/*
+** Returns global and project configuration parameters
+*/
+function get_reportico_config($param, $default = false)
+{
+    global $g_reportico_config;
+    if ( isset ( $g_reportico_config ) )
+    {
+        if ( isset($g_reportico_config[$param]) )
+        {
+            if ( $g_reportico_config[$param] )
+            {
+                return ($g_reportico_config[$param]);
+            }
+        }
+        else
+            return $default;
+    }
+    else if ( defined("SW_".strtoupper($param)) )
+    {
+        return constant("SW_".strtoupper($param));
+    }
+    else
+        return $default;
+}
 
 /*
 ** Returns the current namespace

@@ -1040,7 +1040,7 @@ class reportico_report_fpdf extends reportico_report
 
 			    if ( $str )
 			    {
-				    $tmpnam = tempnam(SW_TMP_DIR, "dbi");
+				    $tmpnam = tempnam(get_reportico_config("tmp_dir"), "dbi");
                     unlink ($tmpnam);
 				    $width = $qn->abs_column_width;
 				    $height = 20;
@@ -1122,7 +1122,7 @@ class reportico_report_fpdf extends reportico_report
 	{
 		$this->end_line();
 		
-		$tmpnam = tempnam(SW_TMP_DIR, "gph");
+		$tmpnam = tempnam(get_reportico_config("tmp_dir"), "gph");
         if ( defined("SW_GRAPH_ENGINE") && SW_GRAPH_ENGINE == "PCHART" )
         {
 		    unlink($tmpnam);
@@ -1249,7 +1249,7 @@ class reportico_report_fpdf extends reportico_report
 
 			if ( $str )
 			{
-				$tmpnam = tempnam(SW_TMP_DIR, "dbi");
+				$tmpnam = tempnam(get_reportico_config("tmp_dir"), "dbi");
                 unlink ($tmpnam);
 				$width = $column_item->abs_column_width;
 				$height = 20;
@@ -1676,7 +1676,7 @@ class reportico_report_fpdf extends reportico_report
 				if ( $str )
 				{
 					//$im = convert_image_string_to_image($str, "png");
-					$tmpnam = tempnam(SW_TMP_DIR, "dbi");
+					$tmpnam = tempnam(get_reportico_config("tmp_dir"), "dbi");
                     unlink ($tmpnam);
 					$width = $qn->abs_column_width;
 					$height = 20;

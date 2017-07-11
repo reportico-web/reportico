@@ -1,11 +1,10 @@
 <?php
-$menu_title = SW_PROJECT_TITLE;
+$menu_title = get_reportico_config("project_title", "Report Suite");
 $menu = array (
 	array ( "language" => "en_gb", "report" => ".*\.xml", "title" => "<AUTO>" )
 	);
 ?>
 <?php
-$menu_title = SW_PROJECT_TITLE;
 $menu = array (
 	array ( "report" => "<p>Welcome to the Reportico demonstration and tutorials.<br>In the drop down menus above you will find some example reports and tutorials.<br>
 <Br>To try these reports and tutorials you will need to create the tutorial database tables <br>which are based upon a sample stock and orders database known as Northwind.<br><br>Click the <i>Generate Tutorial Tables</i> below to create the tables in an already existing database<br> (the tables created all begin with the prefix northwind_ so they wont conflict with any existing tables).<br><br>Once you have created the tables you are ready to<br>run through the exercises which are documented in the <a style=\"text-decoration: underline !important\"  target=\"_blank\" href=\"http://www.reportico.org/documentation/4.6/doku.php?id=reporticotutorial\">Reportico online documentation here</a>", "title" => "TEXT" ),

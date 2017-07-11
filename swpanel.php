@@ -137,14 +137,14 @@ class reportico_panel
 		switch($this->panel_type)
 		{
 			case "LOGIN":
-                if ( defined ('SW_ADMIN_PASSWORD') && SW_ADMIN_PASSWORD == "__OPENACCESS__" )
+                if ( is_set_reportico_config('admin_password') && get_reportico_config('admin_password') == "__OPENACCESS__" )
 				    $this->smarty->assign('SHOW_OPEN_LOGIN', true);
                 else
 				    $this->smarty->assign('SHOW_LOGIN', true);
 				break;
 
 			case "LOGOUT":
-				if ( !SW_DB_CONNECT_FROM_CONFIG )
+				if ( !get_reportico_config("db_connect_from_config") )
 				{
 					$this->smarty->assign('SHOW_LOGOUT', true);
 				}
@@ -309,7 +309,7 @@ class reportico_panel
 
 			case "USERINFO":
 				$this->smarty->assign('DB_LOGGEDON', true);
-				if ( !SW_DB_CONNECT_FROM_CONFIG )
+				if ( !get_reportico_config("db_connect_from_config") )
 				{
 					$this->smarty->assign('DBUSER', $this->query->datasource->user_name);
 				}
@@ -423,7 +423,7 @@ class reportico_panel
 
 				$this->smarty->assign('SHOW_OUTPUT', true);
 
-				if ( defined("SW_ALLOW_OUTPUT" ) && !SW_ALLOW_OUTPUT )
+				if ( is_set_reportico_config("allow_output" ) && !get_reportico_config('allow_output') )
 					$this->smarty->assign('SHOW_OUTPUT', false);
 
 				$op = session_request_item("target_format", "HTML");
@@ -464,7 +464,7 @@ class reportico_panel
 				$this->smarty->assign("OUTPUT_SHOWGROUPTRAILERS", get_reportico_session_param("target_show_group_trailers") ? "checked" : "" );
 				$this->smarty->assign("OUTPUT_SHOWCOLHEADERS", get_reportico_session_param("target_show_column_headers") ? "checked" : "" );
 
-				if ( ( $this->query->allow_debug && SW_ALLOW_DEBUG ) )
+				if ( ( $this->query->allow_debug && get_reportico_config('allow_debug') ) )
 				{
 					$this->smarty->assign("OUTPUT_SHOW_DEBUG", true );
 					$debug_mode = get_request_item("debug_mode", "0", $this->query->first_criteria_selection );
@@ -1009,7 +1009,7 @@ class reportico_xml_reader
         // and should therefore be hidden from design pane
 		//$this->field_display["LineColor"]["Type"] = "HIDE";
 
-        if ( !defined("SW_GRAPH_ENGINE") || SW_GRAPH_ENGINE == "PCHART" )
+        if ( !is_set_reportico_config("graph_engine") || get_reportico_config('graph_engine') == "PCHART" )
         {
     	    $this->field_display["GraphColor"]["Type"] = "HIDE";
 		    $this->field_display["XGridColor"]["Type"] = "HIDE";
@@ -2463,7 +2463,7 @@ class reportico_xml_reader
 					else
 						$updateitem->table_name = "";
 					$updateitem->column_name = $updates["QueryColumnName"];
-					if ( defined("SW_DYNAMIC_ORDER_GROUP" ) )
+					if ( is_set_reportico_config("dynamic_order_group" ) )
 						$updateitem->_use = $updates["Use"];
 					$updateitem->criteria_type = $updates["CriteriaType"];
 					$updateitem->criteria_list = $updates["CriteriaList"];
@@ -2559,7 +2559,7 @@ class reportico_xml_reader
 					$pl["name"] = $updates["PlotColumn"];
 					$pl["type"] = $updates["PlotType"];
 				    $pl["linecolor"] = $updates["LineColor"];
-                    if ( defined("SW_GRAPH_ENGINE") && SW_GRAPH_ENGINE != "PCHART" )
+                    if ( is_set_reportico_config("graph_engine") && get_reportico_config('graph_engine') != "PCHART" )
                     {
 					    $pl["fillcolor"] = $updates["FillColor"];
                     }
@@ -2578,7 +2578,7 @@ class reportico_xml_reader
 					else
 						$graph->set_graph_column($updates["GraphColumn"]);
 
-                    if ( defined("SW_GRAPH_ENGINE") && SW_GRAPH_ENGINE != "PCHART" )
+                    if ( is_set_reportico_config("graph_engine") && get_reportico_config('graph_engine') != "PCHART" )
                     {
 					    $graph->set_graph_color($updates["GraphColor"]);
 					    $graph->set_grid(".DEFAULT",
@@ -2597,7 +2597,7 @@ class reportico_xml_reader
 					$graph->set_width_pdf($updates["GraphWidthPDF"]);
 					$graph->set_height_pdf($updates["GraphHeightPDF"]);
 
-                    if ( defined("SW_GRAPH_ENGINE") && SW_GRAPH_ENGINE != "PCHART" )
+                    if ( is_set_reportico_config("graph_engine") && get_reportico_config('graph_engine') != "PCHART" )
                     {
 					    $graph->set_title_font($updates["TitleFont"], $updates["TitleFontStyle"],
 						    $updates["TitleFontSize"], $updates["TitleColor"]);
@@ -2607,12 +2607,12 @@ class reportico_xml_reader
 						    $updates["YTitleFontSize"], $updates["YTitleColor"]);
                     }
 
-                    if ( defined("SW_GRAPH_ENGINE") && SW_GRAPH_ENGINE != "PCHART" )
+                    if ( is_set_reportico_config("graph_engine") && get_reportico_config('graph_engine') != "PCHART" )
 					    $graph->set_xaxis($updates["XTickInterval"],$updates["XTickLabelInterval"],$updates["XAxisColor"]);
                     else
 					    $graph->set_xaxis(".DEFAULT",$updates["XTickLabelInterval"],".DEFAULT");
 
-                    if ( defined("SW_GRAPH_ENGINE") && SW_GRAPH_ENGINE != "PCHART" )
+                    if ( is_set_reportico_config("graph_engine") && get_reportico_config('graph_engine') != "PCHART" )
                     {
 					    $graph->set_yaxis($updates["YTickInterval"],$updates["YTickLabelInterval"],$updates["YAxisColor"]);
 					    $graph->set_xaxis_font($updates["XAxisFont"], $updates["XAxisFontStyle"],
@@ -2885,7 +2885,7 @@ class reportico_xml_reader
 		// use this file as the defalt input for future queries
 		if ( $xmlsavefile )
 		{
-			if ( $this->query->allow_maintain != "SAFE" && $this->query->allow_maintain != "DEMO" && SW_ALLOW_MAINTAIN )
+			if ( $this->query->allow_maintain != "SAFE" && $this->query->allow_maintain != "DEMO" && get_reportico_config('allow_maintain') )
 			{
 				$xmlout->write_file($xmlsavefile);
 				set_reportico_session_param("xmlin",$xmlsavefile);
@@ -2899,7 +2899,7 @@ class reportico_xml_reader
 		// use this file as the defalt input for future queries
 		if ( $xmldeletefile )
 		{
-			if ( $this->query->allow_maintain != "SAFE" && $this->query->allow_maintain != "DEMO" && SW_ALLOW_MAINTAIN )
+			if ( $this->query->allow_maintain != "SAFE" && $this->query->allow_maintain != "DEMO" && get_reportico_config('allow_maintain') )
 			{
 				$xmlout->remove_file($xmldeletefile);
 				set_reportico_session_param("xmlin",false);
@@ -4465,7 +4465,7 @@ class reportico_xml_reader
         else
 		    $text .= $title;
 		if ( $edit_mode == "SAFE"  )
-			if ( SW_SAFE_DESIGN_MODE ) 
+			if ( get_reportico_config('safe_design_mode') ) 
 				$text .= "<br>".template_xlate("SAFEOFF");
 			else 
 				$text .= "";
@@ -4492,14 +4492,14 @@ class reportico_xml_reader
 			case "TEXTFIELD":
 			case "TEXTFIELDNOOK":
 				$readonly = "";
-				if ( $edit_mode == "SAFE" && ( $this->query->allow_maintain == "SAFE" || $this->query->allow_maintain == "DEMO" || SW_SAFE_DESIGN_MODE ) )
+				if ( $edit_mode == "SAFE" && ( $this->query->allow_maintain == "SAFE" || $this->query->allow_maintain == "DEMO" || get_reportico_config('safe_design_mode') ) )
 					$readonly = "readonly";
 				$text .= '<input class="'.$this->query->getBootstrapStyle('textfield').'" type="text" size="40%" '.$readonly.' name="set_'.$this->id."_".$showtag.$shadow.'" value="'.htmlspecialchars($val).'">';
 				break;
 
 			case "TEXTBOX":
 				$readonly = "";
-				if ( $edit_mode == "SAFE" && ( $this->query->allow_maintain == "SAFE" || $this->query->allow_maintain == "DEMO" || SW_SAFE_DESIGN_MODE ) )
+				if ( $edit_mode == "SAFE" && ( $this->query->allow_maintain == "SAFE" || $this->query->allow_maintain == "DEMO" || get_reportico_config('safe_design_mode') ) )
 					$readonly = "readonly";
 				$text .= '<textarea class="'.$this->query->getBootstrapStyle('textfield').'" '.$readonly.' cols="70" rows="20" name="set_'.$this->id."_".$showtag.$shadow.'" >';
 				$text .= htmlspecialchars($val);
@@ -4508,7 +4508,7 @@ class reportico_xml_reader
 
 			case "TEXTBOXNARROW":
 				$readonly = "";
-				if ( $edit_mode == "SAFE" && ( $this->query->allow_maintain == "SAFE" || $this->query->allow_maintain == "DEMO" || SW_SAFE_DESIGN_MODE ) )
+				if ( $edit_mode == "SAFE" && ( $this->query->allow_maintain == "SAFE" || $this->query->allow_maintain == "DEMO" || get_reportico_config('safe_design_mode') ) )
 					$readonly = "readonly";
 				$text .= '<textarea class="'.$this->query->getBootstrapStyle('textfield').' swMntTextBoxNarrow" '.$readonly.' cols="70" rows="20" name="set_'.$this->id."_".$showtag.$shadow.'" >';
 				$text .= htmlspecialchars($val);
@@ -4517,7 +4517,7 @@ class reportico_xml_reader
 
 			case "TEXTBOXSMALL":
 				$readonly = "";
-				if ( $edit_mode == "SAFE" && ( $this->query->allow_maintain == "SAFE" || $this->query->allow_maintain == "DEMO" || SW_SAFE_DESIGN_MODE ) )
+				if ( $edit_mode == "SAFE" && ( $this->query->allow_maintain == "SAFE" || $this->query->allow_maintain == "DEMO" || get_reportico_config('safe_design_mode') ) )
 					$readonly = "readonly";
 				$text .= '<textarea class="'.$this->query->getBootstrapStyle('textfield').'" '.$readonly.' cols="70" rows="4" name="set_'.$this->id."_".$showtag.$shadow.'" >';
 				$text .= htmlspecialchars($val);
@@ -5801,7 +5801,7 @@ class reportico_xml_writer
 			$el =& $ci->add_xmlval ( "QueryTableName", $lq->table_name );
 			$el =& $ci->add_xmlval ( "QueryColumnName", $lq->column_name );
 			$el =& $ci->add_xmlval ( "CriteriaType", $lq->criteria_type );
-			if ( defined("SW_DYNAMIC_ORDER_GROUP" ) )
+			if ( is_set_reportico_config("dynamic_order_group" ) )
 				$el =& $ci->add_xmlval ( "Use", $lq->_use );
 			$el =& $ci->add_xmlval ( "CriteriaHelp", $lq->criteria_help );
 			$el =& $ci->add_xmlval ( "CriteriaDisplay", $lq->criteria_display );
@@ -6028,131 +6028,6 @@ class reportico_xml_writer
 		} // Output Section
 	}
 
-	function generate_web_service($in_report)
-	{
-
-		if ( !preg_match( "/(.*)\.xml/", $in_report, $matches ) )
-		{
-				trigger_error ( template_xlate("XMLCONFILE")." $in_report ".template_xlate("XMLFORM") , E_USER_NOTICE);
-				return;
-		}
-
-		$stub = $matches[1];
-		$wsdlfile = $matches[1].".wsdl";
-		$srvphpfile = $matches[1]."_wsv.php";
-		$cltphpfile = $matches[1]."_wcl.php";
-
-		$this->prepare_web_service_file("wsdl.tpl", $wsdlfile, $stub);
-		$this->prepare_web_service_file("soapclient.tpl", $cltphpfile, $stub);
-		$this->prepare_web_service_file("soapserver.tpl", $srvphpfile, $stub);
-		
-	}
-	
-	function prepare_web_service_file($templatefile, $savefile = false, $instub)
-	{
-		global $g_project;
-		$smarty = new smarty();
-	 	$smarty->compile_dir = find_best_location_in_include_path( "templates_c" );
-
-		$smarty->compile_dir = "/tmp";
-		$smarty->assign('WS_SERVICE_NAMESPACE', SW_SOAP_NAMESPACE);
-		$smarty->assign('WS_SERVICE_CODE', $instub);
-		$smarty->assign('WS_SERVICE_NAME', $instub);
-		$smarty->assign('PROJECT', $g_project);
-		$smarty->assign('WS_SERVICE_BASEURL', SW_SOAP_SERVICEBASEURL);
-		$smarty->assign('WS_REPORTNAME', $instub);
-		$smarty->debug = true;
-
-		$cols = array();
-		$cols[] = array (
-				"name" => "ReportName",
-				"type" => "char",
-				"length" => 0
-			);
-		foreach ( $this->query->columns as $col )
-		{
-			$cols[] = array (
-				"name" => $col->query_name,
-				"type" => $col->column_type,
-				"length" => $col->column_length
-				);
-		}
-		$smarty->assign("COLUMN_ITEMS", $cols);
-
-		$crits = array();
-		foreach ( $this->query->lookup_queries as $lq )
-		{
-			$crits[] = array (
-				"name" => $lq->query_name
-					);
-		}
-		$smarty->assign("CRITERIA_ITEMS", $crits);
-
-		header('Content-Type: text/html');
-		if ( $savefile )
-		{
-			$data = $smarty->fetch($templatefile, null, null, false );
-			echo "<PRE>";
-			echo "====================================================";
-			echo "Writing $savefile from template $templatefile";
-			echo "====================================================";
-			echo htmlspecialchars($data);
-			echo "</PRE>";
-			$this->write_report_file($savefile, $data);
-		}
-		else
-			$smarty->display($templatefile);
-		
-	}
-	
-	function prepare_wsdl_data($savefile = false)
-	{
-		$smarty = new smarty();
- 		$smarty->compile_dir = find_best_location_in_include_path( "templates_c" );
-
-		$smarty->assign('WS_SERVICE_NAMESPACE', SW_SOAP_NAMESPACE);
-		$smarty->assign('WS_SERVICE_CODE', SW_SOAP_SERVICECODE);
-		$smarty->assign('WS_SERVICE_NAME', SW_SOAP_SERVICENAME);
-		$smarty->assign('WS_SERVICE_URL', SW_SOAP_SERVICEURL);
-		$smarty->debugging = true;
-
-		
-		$cols = array();
-		$cols[] = array (
-				"name" => "ReportName",
-				"type" => "char",
-				"length" => 0
-			);
-		foreach ( $this->query->columns as $col )
-		{
-			$cols[] = array (
-				"name" => $col->query_name,
-				"type" => $col->column_type,
-				"length" => $col->column_length
-				);
-		}
-		$smarty->assign("COLUMN_ITEMS", $cols);
-
-		$crits = array();
-		foreach ( $this->query->lookup_queries as $lq )
-		{
-			$crits[] = array (
-				"name" => $lq->query_name
-					);
-		}
-		$smarty->assign("CRITERIA_ITEMS", $crits);
-
-		header('Content-Type: text/xml');
-		if ( $savefile )
-		{
-			$data = $smarty->fetch('wsdl.tpl', null, null, false );
-			$this->write_report_file($savefile, $data);
-		}
-		else
-			$smarty->display('wsdl.tpl');
-		
-	}
-	
 	function get_xmldata()
 	{
 		$text = '<?xml version="'.$this->xml_version.'"?>';

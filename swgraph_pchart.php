@@ -312,7 +312,7 @@ class reportico_graph
 
         // Select the appropriate reporting engine
 		$dyngraph = "dyngraph.php";
-        if ( defined("SW_GRAPH_ENGINE") && SW_GRAPH_ENGINE == "PCHART" )
+        if ( is_set_reportico_config("graph_engine") && get_reportico_config("graph_engine") == "PCHART" )
 		    $dyngraph = "dyngraph_pchart.php";
 
         $dr = get_reportico_url_path();

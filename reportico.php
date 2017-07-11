@@ -142,7 +142,8 @@ class reportico_object
 		else
         if ( preg_match ( "/{constant,SW_DB_DRIVER}/", $parsed ) )
         {
-            if ( defined("SW_DB_TYPE") && SW_DB_TYPE == "framework" )
+            $dbtype = get_reportico_config("db_type");
+            if ( $dbtype && $dbtype == "framework" )
                 $parsed = "framework";
             else
             {
@@ -163,7 +164,8 @@ class reportico_object
             preg_match ( "/{constant,SW_DB_DATABASE}/", $parsed ) 
         )
         {
-            if ( defined("SW_DB_TYPE") && SW_DB_TYPE == "framework" )
+            $dbtype = get_reportico_config("db_type");
+            if ( $dbtype && $dbtype == "framework" )
                 $parsed = "";
             else
             {
@@ -1813,7 +1815,7 @@ class reportico extends reportico_object
 					$this->lookup_queries[$col->query_name]->collate_request_date(
 						$col->query_name, "FROMDATE",
 						$this->lookup_queries[$col->query_name]->column_value,
-						SW_PREP_DATEFORMAT);
+						get_reportico_config("prep_dateformat"));
 			}
 
 			if ( array_key_exists($col->query_name."_TODATE_DAY", $_REQUEST) )
@@ -1822,7 +1824,7 @@ class reportico extends reportico_object
 					$this->lookup_queries[$col->query_name]->collate_request_date(
 						$col->query_name, "TODATE", 
 						$this->lookup_queries[$col->query_name]->column_value2,
-						SW_PREP_DATEFORMAT);
+						get_reportico_config("prep_dateformat"));
 			}
 
 			if ( array_key_exists("MANUAL_".$col->query_name."_FROMDATE", $_REQUEST) )
@@ -1981,7 +1983,7 @@ class reportico extends reportico_object
 			// Allow access to Admin Page if already logged as admin user, or configuration does not contain
 			// an Admin Password (older version of reportico) or Password is blank implying site congired with
 			// No Admin Password security or user has just reset password to blank (ie open access )
-			if (isset_reportico_session_param('admin_password') || !defined ('SW_ADMIN_PASSWORD') || ( defined ('SW_ADMIN_PASSWORD_RESET' ) && SW_ADMIN_PASSWORD_RESET == '' ) )
+			if (isset_reportico_session_param('admin_password') || !is_set_reportico_config ('admin_password') || ( is_set_reportico_config ('admin_password_reset' ) && get_reportico_config("admin_password_reset") == '' ) )
 			{
 				$loggedon = "ADMIN";
 			}
@@ -1990,7 +1992,7 @@ class reportico extends reportico_object
 				if (array_key_exists("login", $_REQUEST) && isset($_REQUEST['admin_password']))
 				{
                     // User has supplied an admin password and pressed login
-					if ( $_REQUEST['admin_password'] == SW_ADMIN_PASSWORD )
+					if ( $_REQUEST['admin_password'] == get_reportico_config("admin_password") )
 					{
 						set_reportico_session_param('admin_password',"1");
 						$loggedon = "ADMIN";
@@ -2009,7 +2011,7 @@ class reportico extends reportico_object
 			}
 
 			// If Admin Password is set to blank then force logged on state to true
-			if ( SW_ADMIN_PASSWORD == "" )
+			if ( get_reportico_config("admin_password") == "" )
 			{
 				set_reportico_session_param('admin_password',"1");
 				$loggedon = true;
@@ -2030,13 +2032,13 @@ class reportico extends reportico_object
             }
         }
 
+        $project_password = get_reportico_config("project_password");
 		if ( 
-			( !defined ('SW_PROJECT_PASSWORD') ) || 
-			( SW_PROJECT_PASSWORD == '' ) ||
+			( !$project_password ) || 
 			( isset_reportico_session_param('admin_password') ) ||
 			( $this->execute_mode != "MAINTAIN" && isset_reportico_session_param('project_password') && 
-					get_reportico_session_param('project_password') == SW_PROJECT_PASSWORD )  ||
-			( isset_reportico_session_param('project_password') && get_reportico_session_param('project_password') == SW_PROJECT_PASSWORD && $this->allow_maintain == "DEMO" )
+					get_reportico_session_param('project_password') == $project_password )  ||
+			( isset_reportico_session_param('project_password') && get_reportico_session_param('project_password') == $project_password && $this->allow_maintain == "DEMO" )
             
 		)
 		{
@@ -2060,7 +2062,7 @@ class reportico extends reportico_object
                     $testpassword = $_REQUEST['project_password'];
 
 				if ( isset_reportico_session_param('admin_password') ||
-					( $this->execute_mode != "MAINTAIN" && $testpassword == SW_PROJECT_PASSWORD  )
+					( $this->execute_mode != "MAINTAIN" && $testpassword == $project_password  )
                     )
 				{
 					set_reportico_session_param('project_password',$testpassword);
@@ -2088,7 +2090,7 @@ class reportico extends reportico_object
 			unset_reportico_session_param('project_password');
 			set_reportico_session_param("execute_mode","MENU");
 			$loggedon = false;
-			if ( SW_PROJECT_PASSWORD == '' ) 
+			if ( $project_password == '' ) 
 			{
 				$loggedon = "NORMAL";
 			}
@@ -3108,8 +3110,7 @@ class reportico extends reportico_object
 		// Date format for ui Datepicker
         global $g_language;
 		$smarty->assign('AJAX_DATEPICKER_LANGUAGE', get_datepicker_language($g_language));
-		$smarty->assign('AJAX_DATEPICKER_FORMAT', get_datepicker_format(SW_PREP_DATEFORMAT));
-		$smarty->assign('PDF_DELIVERY_MODE', $this->pdf_delivery_mode);
+		$smarty->assign('AJAX_DATEPICKER_FORMAT', get_datepicker_format(get_reportico_config("prep_dateformat")));
 		
 
 		$smarty->assign('DB_LOGGEDON', false);
@@ -3133,9 +3134,7 @@ class reportico extends reportico_object
 
 		$smarty->assign('PRINTABLE_HTML', false);
         if ( get_request_item("printable_html") )
-        {
 		    $smarty->assign('PRINTABLE_HTML', true);
-        }
 
         // In frameworks we dont want to load jquery when its intalled once when the module load
         // so flag this unless specified in new_reportico_window
@@ -3411,7 +3410,7 @@ class reportico extends reportico_object
             $smarty->assign('REPORTICO_BOOTSTRAP_MODAL', false);
 
 		// If no admin password then force user to enter one and  a language
-		if ( $g_project == "admin" && SW_ADMIN_PASSWORD == "PROMPT" )
+		if ( $g_project == "admin" && get_reportico_config("admin_password") == "PROMPT" )
 		{
 			$smarty->assign('LANGUAGES', available_languages());
 			// New Admin password submitted, attempt to set password and go to MENU option
@@ -3426,7 +3425,7 @@ class reportico extends reportico_object
 			$this->panels["LOGOUT"]->set_visibility(false);
 			$this->panels["MENU"]->set_visibility(false);
 			$smarty->assign('SHOW_REPORT_MENU', false);
-			if ( !defined('SW_ADMIN_PASSWORD_RESET') )
+			if ( !is_set_reportico_config('admin_password_reset') )
 				return;
 			else
 				$smarty->assign('SHOW_SET_ADMIN_PASSWORD', false);
@@ -3460,7 +3459,8 @@ class reportico extends reportico_object
 				$smarty->assign('SHOW_REPORT_MENU', true);
 
 				// Only show a logout button if a password is in effect
-				if ( $this->login_type == "DESIGN" || $this->login_type == "ADMIN" || ( defined ('SW_PROJECT_PASSWORD') && SW_PROJECT_PASSWORD != '' ) )
+                $project_password = get_reportico_config("project_password");
+				if ( $this->login_type == "DESIGN" || $this->login_type == "ADMIN" || ( is_set_reportico_config ('project_password') && get_reportico_config('PROJECT_PASSWORD') != '' ) )
 					$smarty->assign('SHOW_LOGOUT', true);
 
                 // Dont show logout button in ALLPROJECTS, ONE PROJECT
@@ -3923,8 +3923,8 @@ class reportico extends reportico_object
 
         // Convert input and out charsets into their PHP versions
         // for later iconv use
-        $this->db_charset = db_charset_to_php_charset(SW_DB_ENCODING);
-        $this->output_charset = output_charset_to_php_charset(SW_OUTPUT_ENCODING);
+        $this->db_charset = db_charset_to_php_charset(get_reportico_config("db_encoding", "UTF8"));
+        $this->output_charset = output_charset_to_php_charset(get_reportico_config("output_encoding", "UTF8"));
 
 		// Ensure Smarty Template folder exists and is writeable
 		$include_template_dir=$this->compiled_templates_folder;
@@ -4785,7 +4785,7 @@ class reportico extends reportico_object
 		{
 			$g_code_area = "Custom User SQLs";
 			$nsql = reportico_assignment::reportico_meta_sql_criteria($this, $sql, true);
-			handle_debug("Pre-SQL".$nsql, SW_DEBUG_LOW);
+			handle_debug("Pre-SQL".$nsql, REPORTICO_DEBUG_LOW);
             $recordSet = false;
             $errorCode = false;
             $errorMessage = false;
@@ -4932,7 +4932,7 @@ class reportico extends reportico_object
         }
 
 		if ( $conn != false )
-			handle_debug($this->query_statement, SW_DEBUG_LOW);
+			handle_debug($this->query_statement, REPORTICO_DEBUG_LOW);
 
 		// Begin Target Output 
                 //handle_error("set");
@@ -5171,9 +5171,9 @@ class reportico extends reportico_object
 				    $a = '$col->column_value = '.$assign->expression.';';
 				$r = eval($a);
 
-				if ( /*SW_DEBUG ||*/ $g_debug_mode )
+				if ( /*REPORTICO_DEBUG ||*/ $g_debug_mode )
 					handle_debug ("Assignment ".$assign->query_name." = ". $assign->expression.
-						" => ".$col->column_value, SW_DEBUG_HIGH );
+						" => ".$col->column_value, REPORTICO_DEBUG_HIGH );
 
 			}
 
@@ -5823,10 +5823,10 @@ function save_admin_password($password1, $password2, $language)
 	$retval = file_put_contents($proj_conf, $txt );
 	
 	// Password is saved so use it so user can login
-	if ( !defined('SW_ADMIN_PASSWORD') )
-		define ('SW_ADMIN_PASSWORD', $password1);
+	if ( !is_set_reportico_config('admin_password') )
+        set_reportico_config("admin_password", $password1);
 	else
-		define ('SW_ADMIN_PASSWORD_RESET', $password1);
+        set_reportico_config("admin_password_reset", $password1);
 
 	return ;
 
@@ -6003,18 +6003,18 @@ function set_project_environment($initial_project = false, $project_folder = "pr
 	}
 
     // Ensure a Database and Output Character Set Encoding is set
-    if ( !defined("SW_DB_ENCODING" ) )
-        define("SW_DB_ENCODING", "UTF8");
-    if ( !defined("SW_OUTPUT_ENCODING" ) )
-        define("SW_OUTPUT_ENCODING", "UTF8");
+    if ( !is_set_reportico_config("db_encoding" ) )
+        set_reportico_config("db_encoding", "UTF8");
+    if ( !is_set_reportico_config("output_encoding" ) )
+        set_reportico_config("output_encoding", "UTF8");
 
     // Ensure a language is set
-    if ( !defined("SW_LANGUAGE" ) )
-        define("SW_LANGUAGE", "en_gb");
+    if ( !is_set_reportico_config("language" ) )
+        set_reportico_config("language", "en_gb");
 
 	$g_project = $project;
-	if ( !defined('SW_PROJECT') )
-	    define('SW_PROJECT', $g_project);
+	if ( !is_set_reportico_config('project') )
+	    set_reportico_config('project', $g_project);
 
 	$language = "en_gb";
     // Default language to first language in avaible_languages
@@ -6024,8 +6024,9 @@ function set_project_environment($initial_project = false, $project_folder = "pr
         $language = $langs[0]["value"];
     }
 
-	if ( defined('SW_LANGUAGE') && SW_LANGUAGE && SW_LANGUAGE != "PROMPT" )
-	    $language = session_request_item("reportico_language", SW_LANGUAGE);
+    $config_language = get_reportico_config("language", false);
+	if ( $config_language && $config_language != "PROMPT" )
+	    $language = session_request_item("reportico_language", $config_language);
     else
 	    $language = session_request_item("reportico_language", "en_gb");
 
@@ -6041,14 +6042,6 @@ function set_project_environment($initial_project = false, $project_folder = "pr
     }
     if ( !$found && count($langs) > 0 )
         $language = $langs[0]["value"];
-
-    // If project has change then change to default project language
-    // Ignore for now as want to use chosen Administrator language if set
-    //if ( $last_project && ( $last_project != $project ) )
-    //{
-        //$language = SW_LANGUAGE;
-		//set_reportico_session_param("language",$language);
-    //}
 
 	if ( array_key_exists("submit_language", $_REQUEST) )
 	{
@@ -6068,7 +6061,7 @@ function set_project_environment($initial_project = false, $project_folder = "pr
 	    $g_dropdown_menu = $dropdown_menu;
 
     // Include project specific language translations
-    load_project_language_pack($project, output_charset_to_php_charset(SW_OUTPUT_ENCODING));
+    load_project_language_pack($project, output_charset_to_php_charset(get_reportico_config("output_encoding", "UTF8")));
 
 	return $project;
 }
@@ -6846,13 +6839,13 @@ class reportico_criteria_column extends reportico_query_column
 		if ( !array_key_exists("clearform", $_REQUEST) && array_key_exists("MANUAL_".$this->query_name."_FROMDATE", $_REQUEST) )
 		{
 			$this->range_start = $_REQUEST["MANUAL_".$this->query_name."_FROMDATE"];
-			$this->range_start = $this->collate_request_date($this->query_name, "FROMDATE", $this->range_start, SW_PREP_DATEFORMAT);
+			$this->range_start = $this->collate_request_date($this->query_name, "FROMDATE", $this->range_start, get_reportico_config("prep_dateformat"));
 		}
 		else
 		if ( !array_key_exists("clearform", $_REQUEST) && array_key_exists("HIDDEN_".$this->query_name."_FROMDATE", $_REQUEST) )
 		{
 			$this->range_start = $_REQUEST["HIDDEN_".$this->query_name."_FROMDATE"];
-			$this->range_start = $this->collate_request_date($this->query_name, "FROMDATE", $this->range_start, SW_PREP_DATEFORMAT);
+			$this->range_start = $this->collate_request_date($this->query_name, "FROMDATE", $this->range_start, get_reportico_config("prep_dateformat"));
 		}
 		else
 		{
@@ -6870,8 +6863,8 @@ class reportico_criteria_column extends reportico_query_column
             unset ( $_REQUEST["HIDDEN_".$this->query_name."_TODATE"] );
 		}
 
-		$this->range_start = parse_date($this->range_start,false, SW_PREP_DATEFORMAT);
-		$text .= $this->format_date_value($this->query_name.'_FROMDATE', $this->range_start, SW_PREP_DATEFORMAT );
+		$this->range_start = parse_date($this->range_start,false, get_reportico_config("prep_dateformat"));
+		$text .= $this->format_date_value($this->query_name.'_FROMDATE', $this->range_start, get_reportico_config("prep_dateformat") );
 
 		return $text;
 
@@ -6890,13 +6883,13 @@ class reportico_criteria_column extends reportico_query_column
 		{
 
 			$this->range_start = $_REQUEST["MANUAL_".$this->query_name."_FROMDATE"];
-			$this->range_start = $this->collate_request_date($this->query_name, "FROMDATE", $this->range_start, SW_PREP_DATEFORMAT);
+			$this->range_start = $this->collate_request_date($this->query_name, "FROMDATE", $this->range_start, get_reportico_config("prep_dateformat"));
 		}
 		else
 		if ( !array_key_exists("clearform", $_REQUEST) && array_key_exists("HIDDEN_".$this->query_name."_FROMDATE", $_REQUEST) )
 		{
 			$this->range_start = $_REQUEST["HIDDEN_".$this->query_name."_FROMDATE"];
-			$this->range_start = $this->collate_request_date($this->query_name, "FROMDATE", $this->range_start, SW_PREP_DATEFORMAT);
+			$this->range_start = $this->collate_request_date($this->query_name, "FROMDATE", $this->range_start, get_reportico_config("prep_dateformat"));
 		}
 		else
 		{
@@ -6919,27 +6912,27 @@ class reportico_criteria_column extends reportico_query_column
         if ( !$this->range_start )
             $this->range_end = "TODAY";
 
-		$this->range_start = parse_date($this->range_start, false, SW_PREP_DATEFORMAT);
-		$text .= $this->format_date_value($this->query_name.'_FROMDATE', $this->range_start, SW_PREP_DATEFORMAT );
+		$this->range_start = parse_date($this->range_start, false, get_reportico_config("prep_dateformat"));
+		$text .= $this->format_date_value($this->query_name.'_FROMDATE', $this->range_start, get_reportico_config("prep_dateformat"));
 
 		$text .= "&nbsp;- ";
 
 		if ( array_key_exists("MANUAL_".$this->query_name."_TODATE", $_REQUEST) )
 		{
 			$this->range_end = $_REQUEST["MANUAL_".$this->query_name."_TODATE"];
-			$this->range_end = $this->collate_request_date($this->query_name, "TODATE", $this->range_end, SW_PREP_DATEFORMAT);
+			$this->range_end = $this->collate_request_date($this->query_name, "TODATE", $this->range_end, get_reportico_config("prep_dateformat"));
 		}
 		else if ( array_key_exists("HIDDEN_".$this->query_name."_TODATE", $_REQUEST) )
 		{
 			$this->range_end = $_REQUEST["HIDDEN_".$this->query_name."_TODATE"];
-			$this->range_end = $this->collate_request_date($this->query_name, "TODATE", $this->range_end, SW_PREP_DATEFORMAT);
+			$this->range_end = $this->collate_request_date($this->query_name, "TODATE", $this->range_end, get_reportico_config("prep_dateformat"));
 		}
 
         if ( !$this->range_end )
             $this->range_end = "TODAY";
 
-		$this->range_end = parse_date($this->range_end, false, SW_PREP_DATEFORMAT);
-		$text .= $this->format_date_value($this->query_name.'_TODATE', $this->range_end, SW_PREP_DATEFORMAT);
+		$this->range_end = parse_date($this->range_end, false, get_reportico_config("prep_dateformat"));
+		$text .= $this->format_date_value($this->query_name.'_TODATE', $this->range_end, get_reportico_config("prep_dateformat"));
 		return $text;
 	}
 
@@ -8123,8 +8116,8 @@ class reportico_criteria_column extends reportico_query_column
                     $this->column_value = false;
 				if ( $this->column_value )
 				{
-					$val1 = parse_date($this->column_value, false, SW_PREP_DATEFORMAT);
-					$val1 = convertYMDtoLocal($val1, SW_PREP_DATEFORMAT, SW_DB_DATEFORMAT);
+					$val1 = parse_date($this->column_value, false, get_reportico_config("prep_dateformat"));
+					$val1 = convertYMDtoLocal($val1, get_reportico_config("prep_dateformat", get_reportico_config("db_dateformat")));
 					if ( $lhs )
 					{
 						if ( $this->table_name  && $this->column_name )
@@ -8156,10 +8149,11 @@ class reportico_criteria_column extends reportico_query_column
                     // If daterange value here is a range in a single value then its been
                     // run directly from command line and needs splitting up using "-"
 
-					$val1 = parse_date($this->column_value,false, SW_PREP_DATEFORMAT);
-					$val2 = parse_date($this->column_value2,false, SW_PREP_DATEFORMAT);
-					$val1 = trim(convertYMDtoLocal($val1, SW_PREP_DATEFORMAT, SW_DB_DATEFORMAT));
-					$val2 = trim(convertYMDtoLocal($val2, SW_PREP_DATEFORMAT, SW_DB_DATEFORMAT));
+
+					$val1 = parse_date($this->column_value,false, get_reportico_config("prep_dateformat"));
+					$val2 = parse_date($this->column_value2,false, get_reportico_config("prep_dateformat"));
+					$val1 = convertYMDtoLocal($val1, get_reportico_config("prep_dateformat"), get_reportico_config("db_dateformat"));
+					$val2 = convertYMDtoLocal($val2, get_reportico_config("prep_dateformat"), get_reportico_config("db_dateformat"));
 					if ( $lhs )
 					{	
 						if ( $this->table_name  && $this->column_name )

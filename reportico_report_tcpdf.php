@@ -1554,7 +1554,7 @@ echo $txt;
             if ( !preg_match("/^http:\/\//", $link) && !preg_match("/^\//", $link ) )
                 $link = "http://".$_SERVER["HTTP_HOST"].dirname($this->query->url_path_to_reportico_runner)."/".$link;
             if ( preg_match("/^\//", $link ) )
-                $link = SW_HTTP_URLHOST."/".$link;
+                $link = get_reportico_config("http_urlhost")."/".$link;
         }
 
         // Cell Side Borders
@@ -2173,7 +2173,7 @@ echo $txt;
 
 			    if ( $str )
 			    {
-				    $tmpnam = tempnam(SW_TMP_DIR, "dbi");
+				    $tmpnam = tempnam(get_reportico_config("tmp_dir"), "dbi");
                     unlink ($tmpnam);
 				    $width = $qn->abs_column_width;
 				    $height = 20;
@@ -2257,8 +2257,9 @@ echo $txt;
 	{
 		//$this->end_line();
 		
-		$tmpnam = tempnam(SW_TMP_DIR, "gph");
-        if ( defined("SW_GRAPH_ENGINE") && SW_GRAPH_ENGINE == "PCHART" )
+		$tmpnam = tempnam(get_reportico_config("tmp_dir"), "gph");
+
+        if ( get_reportico_config("graph_engine") == "PCHART" )
         {
 		    unlink($tmpnam);
 		    $img = $graph->generate_graph_image($tmpnam.".png");
@@ -2560,7 +2561,7 @@ echo $txt;
 
 			if ( $str )
 			{
-				$tmpnam = tempnam(SW_TMP_DIR, "dbi");
+				$tmpnam = tempnam(get_reportico_config("tmp_dir"), "dbi");
                 unlink ($tmpnam);
 				$width = $column_item->abs_column_width;
 				$height = 20;
@@ -3453,7 +3454,7 @@ echo $txt;
 				if ( $str )
 				{
 					//$im = convert_image_string_to_image($str, "png");
-					$tmpnam = tempnam(SW_TMP_DIR, "dbi");
+					$tmpnam = tempnam(get_reportico_config("tmp_dir"), "dbi");
                     unlink ($tmpnam);
 					$width = $qn->abs_column_width;
 					$height = 20;
