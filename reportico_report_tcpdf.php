@@ -165,6 +165,8 @@ class reportico_report_tcpdf extends reportico_report
     var $cell_row_top_addition = 0;
     var $cell_row_bottom_addition = 0;
 
+    var $page_thrown_for_line = false;
+
 	function __construct ()
 	{
 		$this->column_spacing = 0;
@@ -856,7 +858,7 @@ echo $txt;
             $attachfile = "reportico.pdf";
             if ( $this->reportfilename )
                 $attachfile = preg_replace("/ /", "_", $this->reportfilename.".pdf");
-                       header('Content-Disposition: attachment;filename='.$attachfile);
+            header('Content-Disposition: attachment;filename='.$attachfile);
 
 
             // INLINE output is just returned to browser window it is invoked from 
@@ -3227,6 +3229,8 @@ echo $txt;
 
 	function each_line($val) // PDF
 	{
+        $this->page_thrown_for_line = false;
+
 
         if ( !$this->columns_calculated )
         {
@@ -3513,6 +3517,11 @@ echo $txt;
 
 	function begin_page()
 	{
+        // Prevent a line being 
+        if ( $this->page_thrown_for_line )
+            return;
+        $this->page_thrown_for_line = true;
+
 		reportico_report::begin_page();
 
         $this->page_footer_start_y = $this->abs_bottom_margin;
