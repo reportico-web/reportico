@@ -1613,6 +1613,7 @@ function reportico_session_name()
 */
 function is_set_reportico_config($param)
 {
+    global $g_reportico_config;
     if ( isset ( $g_reportico_config ) )
     {
         if ( isset($g_reportico_config[$param]))
@@ -1632,7 +1633,8 @@ function is_set_reportico_config($param)
 function set_reportico_config($param, $value = false)
 {
     global $g_reportico_config;
-    $g_reportico_config[$param] = $value;
+    if ( $g_reportico_config )
+        $g_reportico_config[$param] = $value;
 }
 
 
@@ -1642,6 +1644,11 @@ function set_reportico_config($param, $value = false)
 function get_reportico_config($param, $default = false)
 {
     global $g_reportico_config;
+    if ( preg_match("/^SW_/", $param) )
+    {
+        $param = strtolower(preg_replace("/SW_/", "", $param));
+    }
+
     if ( isset ( $g_reportico_config ) )
     {
         if ( isset($g_reportico_config[$param]) )

@@ -1,5 +1,5 @@
 <?php
-$menu_title = SW_PROJECT_TITLE;
+$menu_title = get_reportico_config('project_title');
 $menu = array (
 	array ( "language" => "en_gb", "report" => ".*\.xml", "title" => "<AUTO>" )
 	);

@@ -150,10 +150,7 @@ class reportico_object
                 $parsed = preg_replace('/{constant,([^}]*)}/',
                         	'\1',
                         	$parsed);
-			    if ( defined ( $parsed ) )
-				    $parsed = constant($parsed);
-			    else
-				    $parsed = "";
+			    $parsed = get_reportico_config($parsed,"");
             }
 			return $parsed;
         }
@@ -172,23 +169,18 @@ class reportico_object
                 $parsed = preg_replace('/{constant,([^}]*)}/',
                         	'\1',
                         	$parsed);
-			    if ( defined ( $parsed ) )
-				    $parsed = constant($parsed);
-			    else
-				    $parsed = "";
+			    $parsed = get_reportico_config($parsed,"");
             }
 			return $parsed;
         }
 		else
 		if ( preg_match ( "/{constant,.*}/", $parsed ) )
 		{
+            global $g_reportico_config;
             $parsed = preg_replace('/{constant,([^}]*)}/',
                         	'\1',
                         	$parsed);
-			if ( defined ( $parsed ) )
-				$parsed = constant($parsed);
-			else
-				$parsed = "";
+			$parsed = get_reportico_config($parsed,"");
 			return $parsed;
 		}
 		else

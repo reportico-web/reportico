@@ -219,15 +219,48 @@ $matches = array();
 // If this is a reportico pre 2.8 then it wont handle "framework" type
 foreach ( $configparams as $paramkey => $paramval )
 {
+
 	if ( $paramkey == "SW_PROJECT" ) 
 		continue;
 
+    // Dont allow config parameter of quotes to escape them to avoid injection
+    // This means we do not want multiple backslashes
+    $paramval = preg_replace('/[\\\][\\\]*/', '\\', $paramval);
+    $paramval = preg_replace('/\\\$/', '\\\\\\', $paramval);
+    $paramval = addcslashes($paramval, "'\"");
+
+	if ( !preg_match("/global \\\$g_reportico_config ;/", $txt)) {
+        // Apply config to older types of config file stored as defines
+	    $match = preg_match ( "/(define.*?$paramkey',).*\);/", $txt);
+        if ( $match ) {
+            if ( $paramkey == "SW_SAFE_DESIGN_MODE" )
+            {
+                if ( $paramval )
+                    $paramval = "true";
+                else
+                    $paramval = "false";
+                $txt = preg_replace ( "/(define.*?$paramkey',).*\);/", "$1$paramval);", $txt);
+            }
+            else
+            {
+                $paramval = $paramval;
+                $txt = preg_replace ( "/define\('$paramkey', *'.*'\);/", "define('$paramkey', '$paramval');", $txt);
+            }
+        }
+        continue;
+    }
+
+    // Use new type of
+    $modkey = strtolower($paramkey);
+    $modkey = preg_replace("/^sw_/", "", $modkey);
+
 
     // Check if parameter exists in config file and if not add it (caters for new parameters in Reportico for existing projects )
-	$match = preg_match ( "/(define.*?$paramkey',).*\);/", $txt);
+	$match = preg_match ( "/\\\$g_reportico_config\[.$modkey.\] = /", $txt);
+
     if ( !$match )
     {
-	    $txt = preg_replace ( "/\?>/", "\n// Automatic addition of parameter $paramkey\ndefine('$paramkey', '$paramval');\n?>", $txt);
+	    $txt = preg_replace ( "/\?>/", "\n// Automatic addition of parameter $modkey\n\$g_reportico_config[\"$modkey\"] = \"$paramval\";\n?>", $txt);
     }
     else
     {
@@ -237,17 +270,19 @@ foreach ( $configparams as $paramkey => $paramval )
                 $paramval = "true";
             else
                 $paramval = "false";
-            $txt = preg_replace ( "/(define.*?$paramkey',).*\);/", "$1$paramval);", $txt);
+    
+            $txt = preg_replace ( "/(\\\$g_reportico_config\[.$modkey.\] = ).*/", "$1$paramval;", $txt);
         }
         else
         {
             $paramval = $paramval;
-            $txt = preg_replace ( "/define\('$paramkey', *'.*'\);/", "define('$paramkey', '$paramval');", $txt);
+            $txt = preg_replace ( "/(\\\$g_reportico_config\[.$modkey.\] = ).*/", "$1\"$paramval\";", $txt);
         }
     }
 }
 
 $retval = file_put_contents($proj_conf, $txt);
+
 
 if ( $_configure_mode == "CREATE" )
 {
