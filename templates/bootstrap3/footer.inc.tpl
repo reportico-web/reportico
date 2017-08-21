@@ -1,0 +1,6 @@
+{if !$REPORTICO_AJAX_CALLED}
+{if !$EMBEDDED_REPORT} 
+</BODY>
+</HTML>
+{/if}
+{/if}
