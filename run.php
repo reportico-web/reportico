@@ -50,7 +50,7 @@
 	//ob_start();
 	
     // Setup SESSION
-    set_up_reportico_session();
+    Reportico\set_up_reportico_session();
 	$q = new Reportico\reportico();
 
     // In design mode, allow sql debugging
@@ -229,6 +229,13 @@
     //$q->output_template_parameters["show_hide_prepare_page_style"] = "show";
     //$q->output_template_parameters["show_hide_prepare_go_buttons"] = "hide";
     //$q->output_template_parameters["show_hide_prepare_reset_buttons"] = "hide";
+
+    // Set a theme
+    // ======================
+    // Use the specified folder under the templates area to identify with templates, stylesheets and js to use for the instance
+    $q->setTheme('bootstrap3');
+    //$q->setTheme('bootstrap2');
+    //$q->setTheme('default');
 
     // Label for criteria section if required
     // $q->criteria_block_label = "Report Criteria:";
