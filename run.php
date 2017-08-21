@@ -28,7 +28,7 @@
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  * @version $Id: run.php,v 1.25 2014/05/17 15:12:31 peter Exp $
  */
-
+    require_once(__DIR__ .'/vendor/autoload.php');
     // set error reporting level
 	error_reporting(E_ALL);
 
@@ -44,12 +44,14 @@
     // Include Reportico - for embedding reportico in a script running from outside the Reportico directory, 
     // just include the full path to the file reportico.php
 	//require_once('<FULL_PATH_TO_REPORTICO>/reportico.php');
-	require_once('reportico.php');
+	require_once('reportico.inc.php');
 
     // Only turn on output buffering if necessary, normally leave this uncommented
 	//ob_start();
-
-	$q = new reportico();
+	
+    // Setup SESSION
+    set_up_reportico_session();
+	$q = new Reportico\reportico();
 
     // In design mode, allow sql debugging
 	//$q->allow_debug = true;
