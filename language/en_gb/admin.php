@@ -3,6 +3,7 @@ $locale_arr = array (
     "language" => "English",
     "template" => array (
         "T_CHOOSE_LANGUAGE" => "Choose Language",
+        "T_TITLE" => "Reportico Administration Page",
         "T_ADMINTITLE" => "Reportico Administration Page",
         "T_LOGGED_IN_AS" => "Logged in as",
         "T_LOGIN" => "Enter Design Mode",

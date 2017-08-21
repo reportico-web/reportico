@@ -1,15 +1,15 @@
 <?php
 // Extract Criteria Options
-$type = $_criteria["dbtype"]->get_criteria_value("VALUE", false);
-$name = $_criteria["database"]->get_criteria_value("VALUE", false);
-$host = $_criteria["host"]->get_criteria_value("VALUE", false);
-$server = $_criteria["server"]->get_criteria_value("VALUE", false);
-$user = $_criteria["user"]->get_criteria_value("VALUE", false);
-$password = $_criteria["password"]->get_criteria_value("VALUE", false);
-$protocol = $_criteria["protocol"]->get_criteria_value("VALUE", false);
-$baseurl = $_criteria["baseurl"]->get_criteria_value("VALUE", false);
-$project = $_criteria["project"]->get_criteria_value("VALUE", false);
-$title = $_criteria["projtitle"]->get_criteria_value("VALUE", false);
+$type = $_criteria["dbtype"]->getCriteriaValue("VALUE", false);
+$name = $_criteria["database"]->getCriteriaValue("VALUE", false);
+$host = $_criteria["host"]->getCriteriaValue("VALUE", false);
+$server = $_criteria["server"]->getCriteriaValue("VALUE", false);
+$user = $_criteria["user"]->getCriteriaValue("VALUE", false);
+$password = $_criteria["password"]->getCriteriaValue("VALUE", false);
+$protocol = $_criteria["protocol"]->getCriteriaValue("VALUE", false);
+$baseurl = $_criteria["baseurl"]->getCriteriaValue("VALUE", false);
+$project = $_criteria["project"]->getCriteriaValue("VALUE", false);
+$title = $_criteria["projtitle"]->getCriteriaValue("VALUE", false);
 
 if ( !$title ) { trigger_error ( "Specify Project Title", E_USER_NOTICE ); return; }
 if ( !$type ) { trigger_error ( "Specify Database Type", E_USER_NOTICE ); return; }
@@ -23,7 +23,7 @@ global $g_debug_mode;
 $g_debug_mode = true;
 ;
 
-$test = new reportico_datasource();
+$test = new reporticoDatasource();
 
 $test->driver = $type;
 $test->user_name = $user;
@@ -35,11 +35,11 @@ $test->protocol = $protocol;
 $test->connect(true);
 
 if ( $test->connected )
-    handle_debug("Connection to Database succeeded", 0);
+    handleDebug("Connection to Database succeeded", 0);
 else
    trigger_error("Connection to Database failed", E_USER_NOTICE);
 
-$proj_parent = find_best_location_in_include_path( "projects" );
+$proj_parent = findBestLocationInIncludePath( "projects" );
 $proj_dir = $proj_parent."/$project";
 $proj_conf = $proj_dir."/config.php";
 $proj_menu = $proj_dir."/menu.php";
@@ -108,7 +108,7 @@ $txt = file_get_contents($lang_template);
 $retval = file_put_contents($proj_lang, $txt);
 
 
-handle_debug("Project Created", 0);
+handleDebug("Project Created", 0);
 
 
 ?>

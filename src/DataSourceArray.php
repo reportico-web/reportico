@@ -1,7 +1,6 @@
-<?
+<?php
 
 namespace Reportico;
-
 
 /**
  * Class DataSourceArray
@@ -13,57 +12,54 @@ namespace Reportico;
  */
 class DataSourceArray
 {
-	var $array_set;
-	var $EOF = false;
-	var $ct = 0;
-	var $numrows = 0;
+    public $array_set;
+    public $EOF = false;
+    public $ct = 0;
+    public $numrows = 0;
 
-	function __construct()
-	{
-	}
+    public function __construct()
+    {
+    }
 
-	function Connect(&$in_array)
-	{
-		$this->array_set =& $in_array;
-		reset($this->array_set);
-		$k = key($this->array_set);
-		$this->numrows = count($this->array_set[$k]);
-	}
+    public function Connect(&$in_array)
+    {
+        $this->array_set = &$in_array;
+        reset($this->array_set);
+        $k = key($this->array_set);
+        $this->numrows = count($this->array_set[$k]);
+    }
 
-	function FetchRow()
-	{
-		$rs = array();
+    public function FetchRow()
+    {
+        $rs = array();
 
-		reset($this->array_set);
-		while ( $d =& key($this->array_set) )
-		{
-			$rs[$d] = $this->array_set[$d][$this->ct];
-			next($this->array_set);
-		}
-		$this->ct++;
+        reset($this->array_set);
+        while ($d = &key($this->array_set)) {
+            $rs[$d] = $this->array_set[$d][$this->ct];
+            next($this->array_set);
+        }
+        $this->ct++;
 
-		if ( $this->ct == $this->numrows )
-		{
-			$this->EOF = true;
-		}
+        if ($this->ct == $this->numrows) {
+            $this->EOF = true;
+        }
 
-		return($rs);
-	}
+        return ($rs);
+    }
 
-	function & ErrorMsg()
-	{
-		return "Array dummy Message";
-	}
+    public function &ErrorMsg()
+    {
+        return "Array dummy Message";
+    }
 
-	function Close()
-	{
-		return ;
-	}
+    public function Close()
+    {
+        return;
+    }
 
-	function & Execute($in_query)
-	{
-		return($this);
-	}
-
+    public function &Execute($in_query)
+    {
+        return ($this);
+    }
 
 }

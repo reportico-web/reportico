@@ -41,7 +41,7 @@ date_default_timezone_set(@date_default_timezone_get());
 
 set_include_path ( '.' );
 
-$fontpath = find_best_location_in_include_path( "pChart3/fonts" );
+$fontpath = findBestLocationInIncludePath( "pChart3/fonts" );
 define ( "PCHARTFONTS_DIR", $fontpath."/" );
 function & derive_request_item ( $attrib_name, $default )
 {
@@ -58,11 +58,11 @@ function & derive_request_item ( $attrib_name, $default )
 }
 
 /**
- * Function convert_special_chars
+ * Function convertSpecialChars
  *
  * Converts special strings encoded back to original text
  */
-function convert_special_chars($intext)
+function convertSpecialChars($intext)
 {
     $outtext = preg_replace("/<AMPERSAND>/", "&", $intext);
     return $outtext;
@@ -106,7 +106,7 @@ $graphid = derive_request_item("graphid", "");
 
 if ( $graphid )
 {
-    $params=get_reportico_session_param($graphid);
+    $params=getReporticoSessionParam($graphid);
 	$a = explode('&', $params);
 	$i = 0;
 	while ($i < count($a)) 
@@ -128,9 +128,9 @@ $ygriddisplay = derive_request_item("ygriddisplay", "none");
 $gridpos = derive_request_item("gridposition", "back");
 $xgridcolor =  htmltorgb(derive_request_item("xgridcolor", "purple"));
 $ygridcolor =  htmltorgb(derive_request_item("ygridcolor", "darkgreen"));
-$title = convert_special_chars(derive_request_item("title", ""));
-$xtitle = convert_special_chars(derive_request_item("xtitle", ""));
-$ytitle = convert_special_chars(derive_request_item("ytitle", ""));
+$title = convertSpecialChars(derive_request_item("title", ""));
+$xtitle = convertSpecialChars(derive_request_item("xtitle", ""));
+$ytitle = convertSpecialChars(derive_request_item("ytitle", ""));
 $titlefont = derive_request_item("titlefont", "Arial");
 $titlefontstyle = derive_request_item("titlefontstyle", "Normal");
 $titlefontsize = derive_request_item("titlefontsize", 12);

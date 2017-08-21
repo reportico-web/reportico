@@ -17,7 +17,7 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
- * File:        swmodify.php
+ * File:        DatabaseEngine.php
  *
  * Base class for handling generic updating functionality
  * to the database where details of an operation, a data view name
@@ -28,10 +28,10 @@
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- * @version $Id: swmodify.php,v 1.8 2014/05/17 15:12:31 peter Exp $
+ * @version $Id: DatabaseEngine.php,v 1.8 2014/05/17 15:12:31 peter Exp $
  */
 
-class reportico_db_engine
+class DatabaseEngine
 {
 	public $pdo;
 	public $stmt;
@@ -105,16 +105,16 @@ class reportico_db_engine
             return $this->stmt->rowCount();
     }
     
-    function rpt_setDirtyRead()
+    function rptSetDirtyRead()
     {
 	    $sql = "SET ISOLATION TO DIRTY READ";
 	    return $this->pdo->Execute($sql);
     }
     
     
-    function perform_project_modifications ($project)
+    function performProjectModifications ($project)
     {
-        $filename = find_best_location_in_include_path( "projects/".$project."/modification_rules.php");
+        $filename = findBestLocationInIncludePath( "projects/".$project."/modification_rules.php");
         $return_status = array (
                     "errstat" => 0,
                     "msgtext" => "Modification sucessful"

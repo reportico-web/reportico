@@ -12,31 +12,31 @@ $g_system_errors = array();
 global $g_debug_mode;
 if ( $_configure_mode != "DELETE" )
 {
-    $configparams["SW_PROJECT_PASSWORD"] = $_criteria["projectpassword"]->get_criteria_value("VALUE", false);
-    $configparams["SW_DB_TYPE"] = $_criteria["dbtype"]->get_criteria_value("VALUE", false);
-    $configparams["SW_DB_DATABASE"] = $_criteria["database"]->get_criteria_value("VALUE", false);
-    $configparams["SW_DB_HOST"] = $_criteria["host"]->get_criteria_value("VALUE", false);
-    $configparams["SW_DB_SERVER"] = $_criteria["server"]->get_criteria_value("VALUE", false);
-    $configparams["SW_DB_USER"] = $_criteria["user"]->get_criteria_value("VALUE", false);
-    $configparams["SW_DB_PASSWORD"] = $_criteria["password"]->get_criteria_value("VALUE", false);
-    $configparams["SW_DB_PROTOCOL"] = $_criteria["protocol"]->get_criteria_value("VALUE", false);
-    $configparams["SW_HTTP_BASEDIR"] = $_criteria["baseurl"]->get_criteria_value("VALUE", false);
-    $configparams["SW_PROJECT"] = $_criteria["project"]->get_criteria_value("VALUE", false);
-    $configparams["SW_PROJECT_TITLE"] = $_criteria["projtitle"]->get_criteria_value("VALUE", false);
+    $configparams["SW_PROJECT_PASSWORD"] = $_criteria["projectpassword"]->getCriteriaValue("VALUE", false);
+    $configparams["SW_DB_TYPE"] = $_criteria["dbtype"]->getCriteriaValue("VALUE", false);
+    $configparams["SW_DB_DATABASE"] = $_criteria["database"]->getCriteriaValue("VALUE", false);
+    $configparams["SW_DB_HOST"] = $_criteria["host"]->getCriteriaValue("VALUE", false);
+    $configparams["SW_DB_SERVER"] = $_criteria["server"]->getCriteriaValue("VALUE", false);
+    $configparams["SW_DB_USER"] = $_criteria["user"]->getCriteriaValue("VALUE", false);
+    $configparams["SW_DB_PASSWORD"] = $_criteria["password"]->getCriteriaValue("VALUE", false);
+    $configparams["SW_DB_PROTOCOL"] = $_criteria["protocol"]->getCriteriaValue("VALUE", false);
+    $configparams["SW_HTTP_BASEDIR"] = $_criteria["baseurl"]->getCriteriaValue("VALUE", false);
+    $configparams["SW_PROJECT"] = $_criteria["project"]->getCriteriaValue("VALUE", false);
+    $configparams["SW_PROJECT_TITLE"] = $_criteria["projtitle"]->getCriteriaValue("VALUE", false);
     if ( $_configure_mode == "CREATE" )
         $configparams["SW_SAFE_DESIGN_MODE"] = true;
     else
-        $configparams["SW_SAFE_DESIGN_MODE"] = $_criteria["safemode"]->get_criteria_value("VALUE", false);
+        $configparams["SW_SAFE_DESIGN_MODE"] = $_criteria["safemode"]->getCriteriaValue("VALUE", false);
 
-    $configparams["SW_DB_DATEFORMAT"] = $_criteria["dbdateformat"]->get_criteria_value("VALUE", false);
-    $configparams["SW_PREP_DATEFORMAT"] = $_criteria["displaydateformat"]->get_criteria_value("VALUE", false);
-    $configparams["SW_DB_ENCODING"] = $_criteria["dbencoding"]->get_criteria_value("VALUE", false);
-    $configparams["SW_OUTPUT_ENCODING"] = $_criteria["outputencoding"]->get_criteria_value("VALUE", false);
-    $configparams["SW_LANGUAGE"] = $_criteria["language"]->get_criteria_value("VALUE", false);
+    $configparams["SW_DB_DATEFORMAT"] = $_criteria["dbdateformat"]->getCriteriaValue("VALUE", false);
+    $configparams["SW_PREP_DATEFORMAT"] = $_criteria["displaydateformat"]->getCriteriaValue("VALUE", false);
+    $configparams["SW_DB_ENCODING"] = $_criteria["dbencoding"]->getCriteriaValue("VALUE", false);
+    $configparams["SW_OUTPUT_ENCODING"] = $_criteria["outputencoding"]->getCriteriaValue("VALUE", false);
+    $configparams["SW_LANGUAGE"] = $_criteria["language"]->getCriteriaValue("VALUE", false);
 
     if ( !$configparams["SW_DB_TYPE"] ) { trigger_error ( "Specify Database Type", E_USER_NOTICE ); return; }
 
-    $test = new \Reportico\reportico_datasource();
+    $test = new \Reportico\reporticoDatasource();
     $test->driver = $configparams["SW_DB_TYPE"];
 
     if ( $test->driver != "framework" )
@@ -76,7 +76,7 @@ if ( $_configure_mode != "DELETE" )
     {
         $test->connect(true);
         if ( $test->connected )
-            handle_debug("Connection to Database succeeded", 0);
+            handleDebug("Connection to Database succeeded", 0);
         else
         {
             trigger_error("Connection to Database failed", E_USER_NOTICE);
@@ -91,7 +91,7 @@ else
     $configparams["SW_PROJECT_TITLE"] = SW_PROJECT_TITLE;
 }
 
-$proj_parent = find_best_location_in_include_path( "projects" );
+$proj_parent = findBestLocationInIncludePath( "projects" );
 $proj_dir = $proj_parent."/".$configparams["SW_PROJECT"];
 $proj_conf = $proj_dir."/config.php";
 $proj_menu = $proj_dir."/menu.php";
@@ -157,7 +157,7 @@ if ( file_exists ( $proj_conf ) && $_configure_mode == "DELETE" )
     if ( !($status = rename ( $proj_conf, $proj_conf.".deleted" )) )
         trigger_error ("Failed to disable $proj_conf file. Possible permission, configuration problem", E_USER_NOTICE);
     else
-	    handle_debug("Project Deleted Successfully", 0);
+	    handleDebug("Project Deleted Successfully", 0);
     ReporticoApp::set("no_sql",true);
     
     return;
@@ -190,7 +190,7 @@ else
         {
             if ( $configparams["SW_DB_TYPE"] == "framework" )
             {
-                handle_debug ("Warning - This project was created with an older version of reportico which cannot use the connection details of an application framework. In order to connect to a framework the project configuration file ".$configparams["SW_PROJECT"]."/config.php was updated. Any manually made modifications are saved as the original config.php was backed up to the file config.php.orig.", 0);
+                handleDebug ("Warning - This project was created with an older version of reportico which cannot use the connection details of an application framework. In order to connect to a framework the project configuration file ".$configparams["SW_PROJECT"]."/config.php was updated. Any manually made modifications are saved as the original config.php was backed up to the file config.php.orig.", 0);
 	            $retval = file_put_contents($proj_conf.".orig", $txt);
             }
         }
@@ -213,7 +213,7 @@ $matches = array();
 
 //if ( $configparams["SW_DB_TYPE"] == "framework" )
 //{
-        //handle_debug("Connection to Database not checked as framework database connections have been used", 0);
+        //handleDebug("Connection to Database not checked as framework database connections have been used", 0);
 //}
 
 // If this is a reportico pre 2.8 then it wont handle "framework" type
@@ -294,14 +294,14 @@ if ( $_configure_mode == "CREATE" )
 }
 
 if ( $configparams["SW_PROJECT"] != "tutorials" )
-if ( !$configparams["SW_PROJECT_PASSWORD"] ) handle_debug ("Warning - Project password not set - any user will be able to run reports in this project", 0);
+if ( !$configparams["SW_PROJECT_PASSWORD"] ) handleDebug ("Warning - Project password not set - any user will be able to run reports in this project", 0);
 
 if ( $_configure_mode == "CREATETUTORIALS" )
-	handle_debug("Tutorials Created Successfully", 0);
+	handleDebug("Tutorials Created Successfully", 0);
 else if ( $_configure_mode == "CREATE" )
-	handle_debug("Project Created Successfully", 0);
+	handleDebug("Project Created Successfully", 0);
 else
-	handle_debug("Project Configuration Updated Successfully", 0);
+	handleDebug("Project Configuration Updated Successfully", 0);
 
 $g_debug_mode = false;
 

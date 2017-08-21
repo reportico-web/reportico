@@ -9,7 +9,7 @@
 	error_reporting(E_ALL);
 
 	require_once('reportico.php');
-	$a = new reportico();
+	$a = new Reportico();
 	$a->allow_maintain = "FULL";
 	$a->allow_debug = true;
 	$a->embedded_report = true;

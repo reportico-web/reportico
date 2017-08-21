@@ -1,26 +1,26 @@
 <?php
 /*
- Reportico - PHP Reporting Tool
- Copyright (C) 2010-2014 Peter Deed
+Reportico - PHP Reporting Tool
+Copyright (C) 2010-2014 Peter Deed
 
- This program is free software; you can redistribute it and/or
- modify it under the terms of the GNU General Public License
- as published by the Free Software Foundation; either version 2
- of the License, or (at your option) any later version.
- 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
 
- You should have received a copy of the GNU General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
  * File:        ReportXml.php
  *
  * Base class for all report output formats.
- * Defines base functionality for handling report 
+ * Defines base functionality for handling report
  * page headers, footers, group headers, group trailers
  * data lines
  *
@@ -35,58 +35,59 @@ namespace Reportico;
 
 class ReportXml extends Report
 {
-	var	$record_template;
-	var	$results = array();
-	var	$line_ct = 0;
-	
-	function __construct ()
-	{
-		$this->page_width = 595;
-		$this->page_height = 842;
-		$this->column_spacing = "2%";
-	}
+    public $record_template;
+    public $results = array();
+    public $line_ct = 0;
 
-	function start ()
-	{
+    public function __construct()
+    {
+        $this->page_width = 595;
+        $this->page_height = 842;
+        $this->column_spacing = "2%";
+    }
 
-		Report::start();
-		$title = $this->reporttitle;
-		$this->results=array(
-			"title" => $title,
-			"timestamp" => date("Y-m-d\TH:i:s\Z", time()),
-			"displaylike" => array(),
-			"data" => array()
-			);
+    public function start()
+    {
 
-		$ct=0;
-	}
+        Report::start();
+        $title = $this->reporttitle;
+        $this->results = array(
+            "title" => $title,
+            "timestamp" => date("Y-m-d\TH:i:s\Z", time()),
+            "displaylike" => array(),
+            "data" => array(),
+        );
 
-	function finish ()
-	{
-		Report::finish();
-		$xmlroot =  preg_replace("/\.xml$/", "", $this->query->xmloutfile);
-		$xml =  $this->arrayToXML($this->results,  new SimpleXMLElement('<'.$xmlroot.'/>'))->asXml();
-        	$len = strlen($xml);
+        $ct = 0;
+    }
 
-		if ( ob_get_length() > 0 )
+    public function finish()
+    {
+        Report::finish();
+        $xmlroot = preg_replace("/\.xml$/", "", $this->query->xmloutfile);
+        $xml = $this->arrayToXML($this->results, new SimpleXMLElement('<' . $xmlroot . '/>'))->asXml();
+        $len = strlen($xml);
+
+        if (ob_get_length() > 0) {
             ob_end_clean();
+        }
 
-		header('Cache-Control: no-cache, must-revalidate');
-		header('Content-Type: text/xml');
+        header('Cache-Control: no-cache, must-revalidate');
+        header('Content-Type: text/xml');
 
-		header("Content-Length: $len");
-		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-		header('Content-Disposition: inline; filename=reportico.xml');
-		
-		echo $xml;
+        header("Content-Length: $len");
+        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+        header('Content-Disposition: inline; filename=reportico.xml');
 
-		die;
-	}
+        echo $xml;
 
-	function arrayToXML1($root_element_name,$ar)
-	{
-    		$xml = new SimpleXMLElement("<?xml version=\"1.0\"?><".$root_element_name."></".$root_element_name.">");
-    		$f = create_function('$f,$c,$a','
+        die;
+    }
+
+    public function arrayToXML1($root_element_name, $ar)
+    {
+        $xml = new SimpleXMLElement("<?xml version=\"1.0\"?><" . $root_element_name . "></" . $root_element_name . ">");
+        $f = create_function('$f,$c,$a', '
             		foreach($a as $k=>$v) {
                 		if(is_array($v)) {
                     		$ch=$c->addChild($k);
@@ -95,70 +96,71 @@ class ReportXml extends Report
                     		$c->addChild($k,$v);
                 		}
             		}');
-    		$f($f,$xml,$ar);
-    		return $xml->asXML();
-	}
-	function arrayToXml(array $arr, SimpleXMLElement $xml)
-	{
-    		foreach ($arr as $k => $v) {
-				if ( is_array ($v) && count($v) == 0 )
-					continue;
-				if ( preg_match("/^dataline_/", $k ) ) $k = "dataline";
-        		    is_array($v) ? $this->arrayToXml($v, $xml->addChild($k)) : $xml->addChild($k, $v);
-    		}
-    		return $xml;
-	}
+        $f($f, $xml, $ar);
+        return $xml->asXML();
+    }
+    public function arrayToXml(array $arr, SimpleXMLElement $xml)
+    {
+        foreach ($arr as $k => $v) {
+            if (is_array($v) && count($v) == 0) {
+                continue;
+            }
 
+            if (preg_match("/^dataline_/", $k)) {
+                $k = "dataline";
+            }
 
-	function format_column(& $column_item)
-	{
-		if ( !$this->show_column_header($column_item) )
-				return;
+            is_array($v) ? $this->arrayToXml($v, $xml->addChild($k)) : $xml->addChild($k, $v);
+        }
+        return $xml;
+    }
 
-		$k =& $column_item->column_value;
-		$padstring = str_pad($k,20);
-	}
+    public function formatColumn(&$column_item)
+    {
+        if (!$this->showColumnHeader($column_item)) {
+            return;
+        }
 
-	function each_line($val)
-	{
-		Report::each_line($val);
+        $k = &$column_item->column_value;
+        $padstring = str_pad($k, 20);
+    }
 
-		// Set the values for the fields in the record
-		$linekey = "dataline_".($this->line_ct + 1);
-		$this->results["data"][$linekey] = array();
+    public function eachLine($val)
+    {
+        Report::eachLine($val);
 
-       	if ( $this->line_ct == 0 )
-       	{
-               $qn = get_query_column("golap", $this->columns ) ;
-               if ( $qn )
-                       {
-                   $arr = explode ( ",", $qn->column_value );
-                   foreach ( $arr as $k => $v )
-                   {
-                       $arr1 = explode ( "=", $v );
-                       $this->results["displaylike"][$arr1[0]] = $arr1[1];
-                   }
-               }
-       	}
+        // Set the values for the fields in the record
+        $linekey = "dataline_" . ($this->line_ct + 1);
+        $this->results["data"][$linekey] = array();
 
-		foreach ( $this->query->display_order_set["column"] as $col )
-	  	{
-			$qn = get_query_column($col->query_name, $this->columns ) ;
-			$coltitle = $col->derive_attribute( "column_title",  $col->query_name);
-			$coltitle = str_replace("_", " ", $coltitle);
-			$coltitle = ucwords(strtolower($coltitle));
-			$coltitle = sw_translate($coltitle);
+        if ($this->line_ct == 0) {
+            $qn = getQueryColumn("golap", $this->columns);
+            if ($qn) {
+                $arr = explode(",", $qn->column_value);
+                foreach ($arr as $k => $v) {
+                    $arr1 = explode("=", $v);
+                    $this->results["displaylike"][$arr1[0]] = $arr1[1];
+                }
+            }
+        }
 
-		    $disp = $col->derive_attribute( "column_display",  "show" );
-		    if ( $disp == "hide" ) continue;
+        foreach ($this->query->display_order_set["column"] as $col) {
+            $qn = getQueryColumn($col->query_name, $this->columns);
+            $coltitle = $col->deriveAttribute("column_title", $col->query_name);
+            $coltitle = str_replace("_", " ", $coltitle);
+            $coltitle = ucwords(strtolower($coltitle));
+            $coltitle = swTranslate($coltitle);
 
-			$this->results["data"][$linekey][preg_replace("/ /", "", $coltitle)] = $qn->column_value;
+            $disp = $col->deriveAttribute("column_display", "show");
+            if ($disp == "hide") {
+                continue;
+            }
 
-       		}
-		$this->line_ct++;
-		
-	}
+            $this->results["data"][$linekey][preg_replace("/ /", "", $coltitle)] = $qn->column_value;
+
+        }
+        $this->line_ct++;
+
+    }
 
 }
-
-?>

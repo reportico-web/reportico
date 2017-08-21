@@ -50,8 +50,8 @@
 	//ob_start();
 	
     // Setup SESSION
-    Reportico\set_up_reportico_session();
-	$q = new Reportico\reportico();
+    Reportico\setUpReporticoSession();
+	$q = new Reportico\Reportico();
 
     // In design mode, allow sql debugging
 	//$q->allow_debug = true;
@@ -95,7 +95,7 @@
     //$q->initial_show_graph = "show";
     //$q->initial_show_group_headers = "show";
     //$q->initial_show_group_trailers = "show";
-    //$q->initial_show_column_headers = "show";
+    //$q->initial_showColumnHeaders = "show";
     //$q->initial_show_criteria = "show";
 
     // Set default output style - TABLE = one row per record, FORM = one page per record
@@ -105,7 +105,7 @@
     //$q->initial_sql = "SELECT column1 AS columntitle1, column2 AS columntitle2 FROM table";
 
     // Set Report Title  when running reort from an SQL statement above
-    // $q->set_attribute("ReportTitle", "Report Title");
+    // $q->setAttribute("ReportTitle", "Report Title");
 
     // Specify access mode to limit what user can do, one of :-
     // FULL - the default, allows user to log in under admin/design mode and design reports
@@ -119,9 +119,9 @@
     // Also the full report definition can be built up programmatically
     // which requires further doicumentation
     //$q->importSQL("SELECT column1 AS columntitle1, column2 AS columntitle2 FROM table");
-    //$q->get_column("column1")->set_attribute("column_display","hide");
-    //$q->get_column("column1")->set_attribute("column_title","Custom Title");
-    //$q->set_attribute("ReportTitle","New Report Title");
+    //$q->get_column("column1")->setAttribute("column_display","hide");
+    //$q->get_column("column1")->setAttribute("column_title","Custom Title");
+    //$q->setAttribute("ReportTitle","New Report Title");
 
 
     // Default initial execute mode to single report output if REPORTOUTPUT mode specified

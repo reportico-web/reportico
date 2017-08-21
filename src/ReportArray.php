@@ -1,26 +1,26 @@
 <?php
 /*
- Reportico - PHP Reporting Tool
- Copyright (C) 2010-2014 Peter Deed
+Reportico - PHP Reporting Tool
+Copyright (C) 2010-2014 Peter Deed
 
- This program is free software; you can redistribute it and/or
- modify it under the terms of the GNU General Public License
- as published by the Free Software Foundation; either version 2
- of the License, or (at your option) any later version.
- 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
 
- You should have received a copy of the GNU General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
  * File:        ReportArray.php
  *
  * Base class for all report output formats.
- * Defines base functionality for handling report 
+ * Defines base functionality for handling report
  * page headers, footers, group headers, group trailers
  * data lines
  *
@@ -33,60 +33,58 @@
  */
 namespace Reportico;
 
-
 class ReportArray extends Report
 {
-	var	$record_template;
-	var	$column_spacing;
-	var	$results = array();
-	
-	function __construct ()
-	{
-		$this->page_width = 595;
-		$this->page_height = 842;
-		$this->column_spacing = "2%";
-	}
+    public $record_template;
+    public $column_spacing;
+    public $results = array();
 
-	function start ()
-	{
+    public function __construct()
+    {
+        $this->page_width = 595;
+        $this->page_height = 842;
+        $this->column_spacing = "2%";
+    }
 
-		Report::start();
+    public function start()
+    {
 
-		$results=array();
+        Report::start();
 
-		$ct=0;
-	}
+        $results = array();
 
-	function finish ()
-	{
-		Report::finish();
+        $ct = 0;
+    }
 
-	}
+    public function finish()
+    {
+        Report::finish();
 
-	function format_column(& $column_item)
-	{
-		if ( !$this->show_column_header($column_item) )
-				return;
+    }
 
-		$k =& $column_item->column_value;
-		$padstring = str_pad($k,20);
-	}
+    public function formatColumn(&$column_item)
+    {
+        if (!$this->showColumnHeader($column_item)) {
+            return;
+        }
 
-	function each_line($val)
-	{
-		Report::each_line($val);
+        $k = &$column_item->column_value;
+        $padstring = str_pad($k, 20);
+    }
 
-		// Set the values for the fields in the record
-		$record = array();
+    public function eachLine($val)
+    {
+        Report::eachLine($val);
 
-		foreach ( $this->query->display_order_set["column"] as $col )
-	  	{
-			$qn = get_query_column($col->query_name, $this->columns ) ;
-			$this->results[$qn->query_name][] = $qn->column_value;
-			$ct = count($this->results[$qn->query_name]);
-       	}
-		
-	}
+        // Set the values for the fields in the record
+        $record = array();
+
+        foreach ($this->query->display_order_set["column"] as $col) {
+            $qn = getQueryColumn($col->query_name, $this->columns);
+            $this->results[$qn->query_name][] = $qn->column_value;
+            $ct = count($this->results[$qn->query_name]);
+        }
+
+    }
 
 }
-?>

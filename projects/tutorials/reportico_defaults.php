@@ -14,7 +14,7 @@
             // Set up styles
             // Use 
             // $styles = array ( "styleproperty" => "value", .... );
-            // $reportico->apply_styleset("REPORTSECTION", $styles, "columnname", WHENTOAPPLY );
+            // $reportico->applyStyleset("REPORTSECTION", $styles, "columnname", WHENTOAPPLY );
             // Where REPORTSECTION is one of ALLCELLS ROW CELL PAGE BODY COLUMNHEADERS GROUPHEADER GROUPHEADERLABEL GROUPHEADERVALUE GROUPTRAILER
             // and WHENTOAPPLY can be PDF or HTML of leave unsepcified/false for both
 
@@ -32,7 +32,7 @@
                     //"margin" => "0 0 0 5",
                     "font-family" => "freesans",
                     );
-                $reportico->apply_styleset("BODY", $styles, false, "PDF");
+                $reportico->applyStyleset("BODY", $styles, false, "PDF");
 
                 // CRITERIA BOX STYLES
                 $styles = array(
@@ -43,19 +43,19 @@
                     //"margin" => "0px 5px 10px 5px",
                     //"padding" => "0px 5px 0px 5px",
                     );
-                $reportico->apply_styleset("CRITERIA", $styles, false, "HTML");
+                $reportico->applyStyleset("CRITERIA", $styles, false, "HTML");
 
                 $styles = array(
                     "display" => "none",
                     );
-                $reportico->apply_styleset("CRITERIA", $styles, false, "PDF");
+                $reportico->applyStyleset("CRITERIA", $styles, false, "PDF");
             }
 
             // PAGE DETAIL BOX STYLES
             $styles = array(
                 "margin" => "0 2 0 2",
                 );
-            $reportico->apply_styleset("PAGE", $styles, false, "PDF");
+            $reportico->applyStyleset("PAGE", $styles, false, "PDF");
 
             // DETAIL ROW BOX STYLES WITH ALTERNATING COLOURS 
             // Default all row lines to light grey
@@ -63,13 +63,13 @@
                 "background-color" => "#fdfdfd",
                 "margin" => "0 5 0 5",
                 );
-            $reportico->apply_styleset("ROW", $styles, false, "PDF");
+            $reportico->applyStyleset("ROW", $styles, false, "PDF");
 
             // Darker grey on every other line
             $styles = array(
                 "background-color" => "#eeeeee",
                 );
-            $reportico->apply_styleset("ALLCELLS", $styles, false, "PDF", "lineno() % 2 == 0");
+            $reportico->applyStyleset("ALLCELLS", $styles, false, "PDF", "lineno() % 2 == 0");
 
 
             //GROUP HEADER LABEL STYLES
@@ -78,13 +78,13 @@
                 "width" => "3cm",
                 "requires-before" => "8cm",
                 );
-            $reportico->apply_styleset("GROUPHEADERLABEL", $styles, false, "PDF");
+            $reportico->applyStyleset("GROUPHEADERLABEL", $styles, false, "PDF");
 
             // GROUP HEADER VALUE STYLES
             $styles = array(
                 "margin" => "0 20 0 0",
                 );
-            $reportico->apply_styleset("GROUPHEADERVALUE", $styles, false, "PDF");
+            $reportico->applyStyleset("GROUPHEADERVALUE", $styles, false, "PDF");
 
             // ALL CELL STYLES
             /*
@@ -94,7 +94,7 @@
                 "border-style" => "solid",
                 "border-color" => "#888888",
                 );
-            $reportico->apply_styleset("ALLCELLS", $styles, false, "PDF");
+            $reportico->applyStyleset("ALLCELLS", $styles, false, "PDF");
             */
 
             // Specific named cell styles
@@ -104,7 +104,7 @@
                 "font-weight" => "bold",
                 "font-style" => "italic",
                 );
-            $reportico->apply_styleset("CELL", $styles, "id", "PDF");
+            $reportico->applyStyleset("CELL", $styles, "id", "PDF");
             */
 
             // Column header styles
@@ -113,7 +113,7 @@
                 "background-color" => "#999999",
                 "font-weight" => "bold",
                 );
-            $reportico->apply_styleset("COLUMNHEADERS", $styles, false, "PDF");
+            $reportico->applyStyleset("COLUMNHEADERS", $styles, false, "PDF");
 
             // Page Headers for TCPDF driver ( this is the default )
             if ( $reportico->pdf_engine == "tcpdf" )

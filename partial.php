@@ -39,7 +39,7 @@
 
 	//ob_start();
 	require_once('reportico.php');
-	$q = new reportico();
+	$q = new Reportico();
 	$q->allow_debug = true;
 	$q->forward_url_get_parameters = "";
 	$q->embedded_report = true;

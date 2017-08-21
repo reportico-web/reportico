@@ -45,7 +45,7 @@ date_default_timezone_set(@date_default_timezone_get());
 
 set_include_path ( '.' );
 
-$fontpath = find_best_location_in_include_path( "pChart/fonts" );
+$fontpath = findBestLocationInIncludePath( "pChart/fonts" );
 define ( "PCHARTFONTS_DIR", $fontpath."/" );
 function & derive_request_item ( $attrib_name, $default )
 {
@@ -62,18 +62,18 @@ function & derive_request_item ( $attrib_name, $default )
 }
 
 /**
- * Function convert_special_chars
+ * Function convertSpecialChars
  *
  * Converts special strings encoded back to original text
  */
-function convert_special_chars($intext)
+function convertSpecialChars($intext)
 {
     $outtext = preg_replace("/<AMPERSAND>/", "&", $intext);
     return $outtext;
 }
 
 
-set_up_reportico_session();		
+setUpReporticoSession();		
 
 if ( ReporticoApp::get("session_namespace") )
     ReporticoApp::set("session_namespace_key",  "reportico_".ReporticoApp::get("session_namespace") );
@@ -89,7 +89,7 @@ $graphid = derive_request_item("graphid", "");
 
 if ( $graphid )
 {
-	$params=get_reportico_session_param($graphid);
+	$params=getReporticoSessionParam($graphid);
 	$a = explode('&', $params);
 	$i = 0;
 	while ($i < count($a)) 
@@ -112,9 +112,9 @@ $ygriddisplay = derive_request_item("ygriddisplay", "none");
 $gridpos = derive_request_item("gridposition", "back");
 $xgridcolor =  htmltorgb(derive_request_item("xgridcolor", "purple"));
 $ygridcolor =  htmltorgb(derive_request_item("ygridcolor", "darkgreen"));
-$title = convert_special_chars(derive_request_item("title", ""));
-$xtitle = convert_special_chars(derive_request_item("xtitle", ""));
-$ytitle = convert_special_chars(derive_request_item("ytitle", ""));
+$title = convertSpecialChars(derive_request_item("title", ""));
+$xtitle = convertSpecialChars(derive_request_item("xtitle", ""));
+$ytitle = convertSpecialChars(derive_request_item("ytitle", ""));
 
 if ( $title == "Set Title" ) $title = "";
 if ( $xtitle == "Set Title" ) $xtitle = "";
@@ -345,7 +345,7 @@ foreach ( $plot as $k => $v )
 	if ( $v["type"] == "STACKEDBAR" || $v["type"] == "BAR") 
 		$barexists = true;
     if ( $v["linecolor"] )
-        $graphImage->Palette[$k] = htmltorgb_pchart($v["linecolor"]);
+        $graphImage->Palette[$k] = htmltorgbPchart($v["linecolor"]);
 }
 
 $scale_drawing_mode = SCALE_NORMAL;

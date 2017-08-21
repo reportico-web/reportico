@@ -8,7 +8,7 @@ To remove the tutorials tables use the &lt;/b&gt;Drop Tables&lt;/b&gt; option.
 &lt;p&gt;
 To generate the tables click on the &lt;b&gt;Execute&lt;/b&gt; button. If the table generation fails then an appropriate error message will occur. If the table generation succeeds then you are ready to run through the example tutorials.
 </ReportDescription><PageSize>A4</PageSize><PageOrientation>Portrait</PageOrientation><TopMargin></TopMargin><BottomMargin></BottomMargin><RightMargin></RightMargin><LeftMargin></LeftMargin><pdfFont></pdfFont><pdfFontSize></pdfFontSize><PreExecuteCode>// Work out whether to recreate tables
-$val = $_criteria[&quot;recreate_tables&quot;]-&gt;get_criteria_value(&quot;VALUE&quot;);
+$val = $_criteria[&quot;recreate_tables&quot;]-&gt;getCriteriaValue(&quot;VALUE&quot;);
 
 $stat = true;
 
@@ -1127,7 +1127,7 @@ if ( !$stat )
 }
 else
 {
-    handle_debug(&quot;Tutorial database was successfully created&quot;, SW_DEBUG_NONE);
+    handleDebug(&quot;Tutorial database was successfully created&quot;, SW_DEBUG_NONE);
 
 }
 

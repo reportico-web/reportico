@@ -53,7 +53,7 @@ include ("jpgraph/src/jpgraph_pie3d.php");
  * everything necessary such as titles, axis formatting, 
  * graph type, colours etc
  */
-class reportico_graph_jgraph
+class ChartJpgraph
 {
 	var $graph_column = "";
 	var $title = "Set Title";
@@ -174,7 +174,7 @@ class reportico_graph_jgraph
 		return ( $pl );
 	}
 
-	function clear_data()
+	function clearData()
 	{
 		foreach ( $this->plot as $k => $v )
 		{
@@ -184,13 +184,13 @@ class reportico_graph_jgraph
 		$this->ylabels = array();
 	}
 
-	function add_xlabel($in_val)
+	function addXlabel($in_val)
 	{
 		$in_val = @preg_replace("/&/", "+", $in_val);
 		$this->xlabels[] = $in_val;
 	}
 
-	function add_plot_value($in_query, $plotno, $in_val)
+	function addPlotValue($in_query, $plotno, $in_val)
 	{
 		$in_val = trim($in_val);
 		if ( !$in_val )
@@ -202,7 +202,7 @@ class reportico_graph_jgraph
 				switch ( $v["datatype"] )
 				{
 					case "hhmmss":
-						$this->plot[$k]["data"][] = hhmmss_to_seconds($in_val);
+						$this->plot[$k]["data"][] = hhmmssToSeconds($in_val);
 						break;
 
 					default:
@@ -212,21 +212,21 @@ class reportico_graph_jgraph
 		}
 	}
 
-	function convert_special_chars($intext)
+	function convertSpecialChars($intext)
 	{
 		$outtext = preg_replace("/&/", "<AMPERSAND>", $intext);
 		return $outtext;
 	}
 
-	function generate_url_params($target_format, $session_placeholder=false)
+	function generateUrlParams($targetFormat, $sessionPlaceholder=false)
 	{
-		$this->apply_defaults();
+		$this->applyDefaults();
 
 		$result = "";
 		$url = "";
-		$url .= "title=".$this->convert_special_chars($this->title_actual);
-		$url .= "&xtitle=".$this->convert_special_chars($this->xtitle_actual);
-		$url .= "&ytitle=".$this->convert_special_chars($this->ytitle_actual);
+		$url .= "title=".$this->convertSpecialChars($this->title_actual);
+		$url .= "&xtitle=".$this->convertSpecialChars($this->xtitle_actual);
+		$url .= "&ytitle=".$this->convertSpecialChars($this->ytitle_actual);
 		$url .= "&width=".$this->width_actual;
 		$url .= "&height=".$this->height_actual;
 		$url .= "&graphcolor=".$this->graphcolor_actual;
@@ -280,10 +280,10 @@ class reportico_graph_jgraph
 				$url .= "&plotfillcolor$k=".$v["fillcolor"];
 		}
 
-		if ( $session_placeholder)
+		if ( $sessionPlaceholder)
 		{
-			$ses = "graph_".$session_placeholder;
-            set_reportico_session_param($ses, $url);
+			$ses = "graph_".$sessionPlaceholder;
+            setReporticoSessionParam($ses, $url);
 			$url = "graphid=".$ses."&time=".time();
 		}
 
@@ -291,59 +291,59 @@ class reportico_graph_jgraph
         if ( defined("SW_GRAPH_ENGINE") && SW_GRAPH_ENGINE == "PCHART" )
 		    $dyngraph = "dyngraph_pchart.php";
 
-        $dr = get_reportico_url_path();
-        $dyngraph = $dr."/".find_best_url_in_include_path( $dyngraph );
+        $dr = getReporticoUrlPath();
+        $dyngraph = $dr."/".findBestUrlInIncludePath( $dyngraph );
         if ( $this->reportico->framework_parent )
         {
             $dyngraph = "";
         }
-        $forward_url_params = session_request_item('forward_url_get_parameters', $this->reportico->forward_url_get_parameters);
+        $forward_url_params = sessionRequestItem('forward_url_get_parameters', $this->reportico->forward_url_get_parameters);
         if ( $forward_url_params )
             $url .= "&".$forward_url_params;
         $url .= "&reportico_call_mode=graph_jpgraph";
-        $url .= "&reportico_session_name=".reportico_session_name();
+        $url .= "&reporticoSessionName=".reporticoSessionName();
 		$result = '<img class="swRepGraph" src=\''.$dyngraph.'?'.$url.'\'>';
 
 		return $result;
 	}
 
-	function set_graph_color($in_col)
+	function setGraphColor($in_col)
 	{
 		$this->graphcolor = $in_col;
 	}
-	function set_graph_column($in_val)
+	function setGraphColumn($in_val)
 	{
 		$this->graph_column = $in_val;
 	}
-	function set_title($in_title)
+	function setTitle($in_title)
 	{
 		$this->title = $in_title;
 	}
-	function set_xtitle($in_xtitle)
+	function setXtitle($in_xtitle)
 	{
 		$this->xtitle = $in_xtitle;
 	}
-	function set_ytitle($in_ytitle)
+	function setYtitle($in_ytitle)
 	{
 		$this->ytitle = $in_ytitle;
 	}
-	function set_width_pdf($in_width)
+	function setWidthPdf($in_width)
 	{
 		$this->width_pdf = $in_width;
 	}
-	function set_height_pdf($in_height)
+	function setHeightPdf($in_height)
 	{
 		$this->height_pdf = $in_height;
 	}
-	function set_width($in_width)
+	function setWidth($in_width)
 	{
 		$this->width = $in_width;
 	}
-	function set_height($in_height)
+	function setHeight($in_height)
 	{
 		$this->height = $in_height;
 	}
-	function set_grid($in_pos,$in_xdisplay, $in_xcolor, $in_ydisplay, $in_ycolor)
+	function setGrid($in_pos,$in_xdisplay, $in_xcolor, $in_ydisplay, $in_ycolor)
 	{
 			$this->gridpos = $in_pos;
 			$this->xgriddisplay = $in_xdisplay;
@@ -351,17 +351,17 @@ class reportico_graph_jgraph
 			$this->ygriddisplay = $in_ydisplay;
 			$this->ygridcolor = $in_ycolor;
 	}
-	function set_xlabel_column($in_xlabel_column)
+	function setXlabelColumn($in_xlabel_column)
 	{
 		$this->xlabel_column = $in_xlabel_column;
 	}
-	function set_ylabel_column($in_ylabel_column)
+	function setYlabelColumn($in_ylabel_column)
 	{
 		$this->ylabel_column = $in_ylabel_column;
 	}
 
 
-	function set_title_font($in_font, $in_style, $in_size, $in_col)
+	function setTitleFont($in_font, $in_style, $in_size, $in_col)
 	{
 			$this->titlefont = $in_font;
 			$this->titlefontstyle = $in_style;
@@ -369,7 +369,7 @@ class reportico_graph_jgraph
 			$this->titlecolor = $in_col;
 	}
 
-	function set_xtitle_font($in_font, $in_style, $in_size, $in_col)
+	function setXtitleFont($in_font, $in_style, $in_size, $in_col)
 	{
 			$this->xtitlefont = $in_font;
 			$this->xtitlefontstyle = $in_style;
@@ -377,7 +377,7 @@ class reportico_graph_jgraph
 			$this->xtitlecolor = $in_col;
 	}
 
-	function set_ytitle_font($in_font, $in_style, $in_size, $in_col)
+	function setYtitleFont($in_font, $in_style, $in_size, $in_col)
 	{
 			$this->ytitlefont = $in_font;
 			$this->ytitlefontstyle = $in_style;
@@ -385,7 +385,7 @@ class reportico_graph_jgraph
 			$this->ytitlecolor = $in_col;
 	}
 
-	function set_xaxis_font($in_font, $in_style, $in_size, $in_col)
+	function setXaxisFont($in_font, $in_style, $in_size, $in_col)
 	{
 			$this->xaxisfont = $in_font;
 			$this->xaxisfontstyle = $in_style;
@@ -393,7 +393,7 @@ class reportico_graph_jgraph
 			$this->xaxisfontcolor = $in_col;
 	}
 
-	function set_yaxis_font($in_font, $in_style, $in_size, $in_col)
+	function setYaxisFont($in_font, $in_style, $in_size, $in_col)
 	{
 			$this->yaxisfont = $in_font;
 			$this->yaxisfontstyle = $in_style;
@@ -401,14 +401,14 @@ class reportico_graph_jgraph
 			$this->yaxisfontcolor = $in_col;
 	}
 
-	function set_xaxis($in_tic,$in_lab_tic,$in_col)
+	function setXaxis($in_tic,$in_lab_tic,$in_col)
 	{
 			$this->xtickinterval = $in_tic;
 			$this->xticklabelinterval = $in_lab_tic;
 			$this->xaxiscolor = $in_col;
 	}
 
-	function set_yaxis($in_tic,$in_lab_tic,$in_col)
+	function setYaxis($in_tic,$in_lab_tic,$in_col)
 	{
 			$this->ytickinterval = $in_tic;
 			$this->yticklabelinterval = $in_lab_tic;
@@ -416,12 +416,12 @@ class reportico_graph_jgraph
 
 	}
 
-	function set_margin_color($in_col)
+	function setMarginColor($in_col)
 	{
 			$this->margincolor = $in_col;
 	}
 
-	function set_margins($in_lt, $in_rt, $in_tp, $in_bt)
+	function setMargins($in_lt, $in_rt, $in_tp, $in_bt)
 	{
 			$this->marginleft = $in_lt;
 			$this->marginright = $in_rt;
@@ -430,52 +430,52 @@ class reportico_graph_jgraph
 	}
 
 
-	function apply_defaults ()
+	function applyDefaults ()
 	{
-		$this->xaxiscolor_actual = check_for_default("XAxisColor", $this->xaxiscolor);
-		$this->xticklabelinterval_actual = check_for_default("XTickLabelInterval", $this->xticklabelinterval);
-		$this->xtickinterval_actual = check_for_default("XTickInterval", $this->xtickinterval);
-		$this->yaxiscolor_actual = check_for_default("YAxisColor", $this->yaxiscolor);
-		$this->yticklabelinterval_actual = check_for_default("YTickLabelInterval", $this->yticklabelinterval);
-		$this->ytickinterval_actual = check_for_default("YTickInterval", $this->ytickinterval);
-		$this->graphcolor_actual = check_for_default("GraphColor", $this->graphcolor);
-		$this->marginbottom_actual = check_for_default("MarginBottom", $this->marginbottom);
-		$this->margintop_actual = check_for_default("MarginTop", $this->margintop);
-		$this->marginleft_actual = check_for_default("MarginLeft", $this->marginleft);
-		$this->marginright_actual = check_for_default("MarginRight", $this->marginright);
-		$this->margincolor_actual = check_for_default("MarginColor", $this->margincolor);
-		$this->gridpos_actual = check_for_default("GridPosition", $this->gridpos);
-		$this->xgriddisplay_actual = check_for_default("XGridDisplay", $this->xgriddisplay);
-		$this->xgridcolor_actual = check_for_default("XGridColor", $this->xgridcolor);
-		$this->ygriddisplay_actual = check_for_default("YGridDisplay", $this->ygriddisplay);
-		$this->ygridcolor_actual = check_for_default("YGridColor", $this->ygridcolor);
+		$this->xaxiscolor_actual = checkForDefault("XAxisColor", $this->xaxiscolor);
+		$this->xticklabelinterval_actual = checkForDefault("XTickLabelInterval", $this->xticklabelinterval);
+		$this->xtickinterval_actual = checkForDefault("XTickInterval", $this->xtickinterval);
+		$this->yaxiscolor_actual = checkForDefault("YAxisColor", $this->yaxiscolor);
+		$this->yticklabelinterval_actual = checkForDefault("YTickLabelInterval", $this->yticklabelinterval);
+		$this->ytickinterval_actual = checkForDefault("YTickInterval", $this->ytickinterval);
+		$this->graphcolor_actual = checkForDefault("GraphColor", $this->graphcolor);
+		$this->marginbottom_actual = checkForDefault("MarginBottom", $this->marginbottom);
+		$this->margintop_actual = checkForDefault("MarginTop", $this->margintop);
+		$this->marginleft_actual = checkForDefault("MarginLeft", $this->marginleft);
+		$this->marginright_actual = checkForDefault("MarginRight", $this->marginright);
+		$this->margincolor_actual = checkForDefault("MarginColor", $this->margincolor);
+		$this->gridpos_actual = checkForDefault("GridPosition", $this->gridpos);
+		$this->xgriddisplay_actual = checkForDefault("XGridDisplay", $this->xgriddisplay);
+		$this->xgridcolor_actual = checkForDefault("XGridColor", $this->xgridcolor);
+		$this->ygriddisplay_actual = checkForDefault("YGridDisplay", $this->ygriddisplay);
+		$this->ygridcolor_actual = checkForDefault("YGridColor", $this->ygridcolor);
 
-		$this->titlefont_actual = check_for_default("TitleFont", $this->titlefont);
-		$this->titlefontstyle_actual = check_for_default("TitleFontStyle", $this->titlefontstyle);
-		$this->titlefontsize_actual = check_for_default("TitleFontSize", $this->titlefontsize);
-		$this->titlecolor_actual = check_for_default("TitleColor", $this->titlecolor);
-		$this->xtitlefont_actual = check_for_default("XTitleFont", $this->xtitlefont);
-		$this->xtitlefontstyle_actual = check_for_default("XTitleFontStyle", $this->xtitlefontstyle);
-		$this->xtitlefontsize_actual = check_for_default("XTitleFontSize", $this->xtitlefontsize);
-		$this->xtitlecolor_actual = check_for_default("XTitleColor", $this->xtitlecolor);
-		$this->ytitlefont_actual = check_for_default("YTitleFont", $this->ytitlefont);
-		$this->ytitlefontstyle_actual = check_for_default("YTitleFontStyle", $this->ytitlefontstyle);
-		$this->ytitlefontsize_actual = check_for_default("YTitleFontSize", $this->ytitlefontsize);
-		$this->ytitlecolor_actual = check_for_default("YTitleColor", $this->ytitlecolor);
-		$this->xaxisfont_actual = check_for_default("XAxisFont", $this->xaxisfont);
-		$this->xaxisfontstyle_actual = check_for_default("XAxisFontStyle", $this->xaxisfontstyle);
-		$this->xaxisfontsize_actual = check_for_default("XAxisFontSize", $this->xaxisfontsize);
-		$this->xaxisfontcolor_actual = check_for_default("XAxisFontColor", $this->xaxisfontcolor);
-		$this->xaxiscolor_actual = check_for_default("XAxisColor", $this->xaxiscolor);
-		$this->yaxisfont_actual = check_for_default("YAxisFont", $this->yaxisfont);
-		$this->yaxisfontstyle_actual = check_for_default("YAxisFontStyle", $this->yaxisfontstyle);
-		$this->yaxisfontsize_actual = check_for_default("YAxisFontSize", $this->yaxisfontsize);
-		$this->yaxisfontcolor_actual = check_for_default("YAxisFontColor", $this->yaxisfontcolor);
-		$this->yaxiscolor_actual = check_for_default("YAxisColor", $this->yaxiscolor);
+		$this->titlefont_actual = checkForDefault("TitleFont", $this->titlefont);
+		$this->titlefontstyle_actual = checkForDefault("TitleFontStyle", $this->titlefontstyle);
+		$this->titlefontsize_actual = checkForDefault("TitleFontSize", $this->titlefontsize);
+		$this->titlecolor_actual = checkForDefault("TitleColor", $this->titlecolor);
+		$this->xtitlefont_actual = checkForDefault("XTitleFont", $this->xtitlefont);
+		$this->xtitlefontstyle_actual = checkForDefault("XTitleFontStyle", $this->xtitlefontstyle);
+		$this->xtitlefontsize_actual = checkForDefault("XTitleFontSize", $this->xtitlefontsize);
+		$this->xtitlecolor_actual = checkForDefault("XTitleColor", $this->xtitlecolor);
+		$this->ytitlefont_actual = checkForDefault("YTitleFont", $this->ytitlefont);
+		$this->ytitlefontstyle_actual = checkForDefault("YTitleFontStyle", $this->ytitlefontstyle);
+		$this->ytitlefontsize_actual = checkForDefault("YTitleFontSize", $this->ytitlefontsize);
+		$this->ytitlecolor_actual = checkForDefault("YTitleColor", $this->ytitlecolor);
+		$this->xaxisfont_actual = checkForDefault("XAxisFont", $this->xaxisfont);
+		$this->xaxisfontstyle_actual = checkForDefault("XAxisFontStyle", $this->xaxisfontstyle);
+		$this->xaxisfontsize_actual = checkForDefault("XAxisFontSize", $this->xaxisfontsize);
+		$this->xaxisfontcolor_actual = checkForDefault("XAxisFontColor", $this->xaxisfontcolor);
+		$this->xaxiscolor_actual = checkForDefault("XAxisColor", $this->xaxiscolor);
+		$this->yaxisfont_actual = checkForDefault("YAxisFont", $this->yaxisfont);
+		$this->yaxisfontstyle_actual = checkForDefault("YAxisFontStyle", $this->yaxisfontstyle);
+		$this->yaxisfontsize_actual = checkForDefault("YAxisFontSize", $this->yaxisfontsize);
+		$this->yaxisfontcolor_actual = checkForDefault("YAxisFontColor", $this->yaxisfontcolor);
+		$this->yaxiscolor_actual = checkForDefault("YAxisColor", $this->yaxiscolor);
 
 	}
 
-	function generate_graph_image ()
+	function generateGraphImage ()
 	{
 		// Create the graph. 
 		// Set up Font Mapping Arrays
@@ -515,11 +515,11 @@ class reportico_graph_jgraph
 			"Bold+Italic" => FS_BOLDITALIC
 		);
 
-		$this->apply_defaults();
+		$this->applyDefaults();
 
         if ( !function_exists( "imagecreatefromstring" ) )
 		{
-			handle_error("Graph Option Not Available. Requires GD2");
+			handleError("Graph Option Not Available. Requires GD2");
 			return;
 		}
 

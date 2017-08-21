@@ -51,11 +51,11 @@ function & derive_request_item ( $attrib_name, $default )
 }
 
 /**
- * Function convert_special_chars
+ * Function convertSpecialChars
  *
  * Converts special strings encoded back to original text
  */
-function convert_special_chars($intext)
+function convertSpecialChars($intext)
 {
     $outtext = preg_replace("/<AMPERSAND>/", "&", $intext);
     return $outtext;
@@ -63,7 +63,7 @@ function convert_special_chars($intext)
 
 
 include ("swutil.php");
-set_up_reportico_session();		
+setUpReporticoSession();		
 
 if ( ReporticoApp::get("session_namespace") )
     ReporticoApp::set("session_namespace_key",  "reportico_".ReporticoApp::get("session_namespace") );
@@ -122,7 +122,7 @@ $graphid = derive_request_item("graphid", "");
 
 if ( $graphid )
 {
-    $params=get_reportico_session_param($graphid);
+    $params=getReporticoSessionParam($graphid);
 	$a = explode('&', $params);
 	$i = 0;
 	while ($i < count($a)) 
@@ -143,9 +143,9 @@ $ygriddisplay = derive_request_item("ygriddisplay", "none");
 $gridpos = derive_request_item("gridposition", "back");
 $xgridcolor = derive_request_item("xgridcolor", "purple");
 $ygridcolor = derive_request_item("ygridcolor", "darkgreen");
-$title = convert_special_chars(derive_request_item("title", ""));
-$xtitle = convert_special_chars(derive_request_item("xtitle", ""));
-$ytitle = convert_special_chars(derive_request_item("ytitle", ""));
+$title = convertSpecialChars(derive_request_item("title", ""));
+$xtitle = convertSpecialChars(derive_request_item("xtitle", ""));
+$ytitle = convertSpecialChars(derive_request_item("ytitle", ""));
 $titlefont = derive_request_item("titlefont", "Arial");
 $titlefontstyle = derive_request_item("titlefontstyle", "Normal");
 $titlefontsize = derive_request_item("titlefontsize", 12);

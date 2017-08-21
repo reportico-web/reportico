@@ -49,17 +49,17 @@ ReporticoApp::set("session_namespace_key",  "reportico");
 
 
 
-set_up_reportico_session();
+setUpReporticoSession();
 
 if ( ReporticoApp::get("session_namespace") )
     ReporticoApp::set("session_namespace_key",  "reportico_".ReporticoApp::get("session_namespace") );
 
 
 
-if ( !function_exists("set_project_environment" ) )
+if ( !function_exists("setProjectEnvironment" ) )
 {
 /**
- * Function set_project_environment
+ * Function setProjectEnvironment
  *
  * Analyses configuration and current session to identify which project area
  * is to be used. 
@@ -67,13 +67,13 @@ if ( !function_exists("set_project_environment" ) )
  * the current SESSION project is used. If none of these are specified then the default
  * "reports" project is used
  */
-function set_project_environment()
+function setProjectEnvironment()
 {
 	global $g_project;
 	global $g_menu;
 	//global $g_menu_title;
 
-	$project = session_request_item("project", "reports");
+	$project = sessionRequestItem("project", "reports");
 	$menu = false;
 	$menu_title = "Set Menu Title";
 
@@ -83,11 +83,11 @@ function set_project_environment()
 	$menufile = $projpath."/menu.php";
 
 	if ( !is_file($projpath) )
-		find_file_to_include($projpath, $projpath);
+		findFileToInclude($projpath, $projpath);
 
 	if ( !$projpath )
 	{
-		find_file_to_include("config.php", $configfile);
+		findFileToInclude("config.php", $configfile);
 		if ( $configfile )
 			include_once($configfile);
 		$g_project = false;
@@ -95,14 +95,14 @@ function set_project_environment()
 		//$g_menu_title = "";
 		ReporticoApp::set('menu_title','');
 		$old_error_handler = set_error_handler("ErrorHandler");
-		handle_error("Project Directory $project not found. Check INCLUDE_PATH or project name");
+		handleError("Project Directory $project not found. Check INCLUDE_PATH or project name");
 		return;
 	}
 	
 	if ( !is_file($configfile) )
-		find_file_to_include($configfile, $configfile);
+		findFileToInclude($configfile, $configfile);
 	if ( !is_file($menufile) )
-		find_file_to_include($menufile, $menufile);
+		findFileToInclude($menufile, $menufile);
 	
 	if ( $configfile )
 	{
@@ -110,11 +110,11 @@ function set_project_environment()
 		if ( is_file($menufile) )
 			include_once($menufile);
 		else
-			handle_error("Menu Definition file menu.php not found in project $project", E_USER_WARNING);
+			handleError("Menu Definition file menu.php not found in project $project", E_USER_WARNING);
 	}
 	else
 	{
-		find_file_to_include("config.php", $configfile);
+		findFileToInclude("config.php", $configfile);
 		if ( $configfile )
 			include_once($configfile);
 		$g_project = false;
@@ -122,7 +122,7 @@ function set_project_environment()
 		//$g_menu_title = "";
 		ReporticoApp::set('menu_title','');
 		$old_error_handler = set_error_handler("ErrorHandler");
-		handle_error("Configuration Definition file config.php not found in project $project", E_USER_ERROR);
+		handleError("Configuration Definition file config.php not found in project $project", E_USER_ERROR);
 	}
 
 	$g_project = $project;
@@ -133,8 +133,8 @@ function set_project_environment()
 }
 }
 
-set_project_environment();
-$datasource = new reportico_datasource();
+setProjectEnvironment();
+$datasource = new ReporticoDatasource();
 $datasource->connect();
 
 $imagesql = $_REQUEST["imagesql"];
