@@ -1,4 +1,6 @@
 <?php
+namespace Reportico;
+
 /*
  Reportico - PHP Reporting Tool
  Copyright (C) 2010-2014 Peter Deed
@@ -33,13 +35,13 @@
 
 
 /**
- * Class reportico_sql_parser
+ * Class SqlParser
  *
  * Parses SQL statements entered by user during
  * report design mode and imports them into
  * the Reportico engine
  */
-class reportico_sql_parser
+class SqlParser
 {
 
 	var $sql;
@@ -637,7 +639,7 @@ class reportico_sql_parser
             }
         }
 
-        $sql = reportico_assignment::reportico_meta_sql_criteria($in_query->parent_query, $sql, false, false, "MAINTAIN");
+        $sql = Assignment::reportico_meta_sql_criteria($in_query->parent_query, $sql, false, false, "MAINTAIN");
 
         $errorCode = false;
         $errorMessage = false;

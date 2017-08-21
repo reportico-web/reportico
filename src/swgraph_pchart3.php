@@ -309,7 +309,7 @@ class reportico_graph
 
         // Select the appropriate reporting engine
 		$dyngraph = "dyngraph.php";
-        if ( is_set_reportico_config("graph_engine") && get_reportico_config("graph_engine") == "PCHART" )
+        if ( ReporticoApp::isSetConfig("graph_engine") && ReporticoApp::getConfig("graph_engine") == "PCHART" )
 		    $dyngraph = "dyngraph_pchart.php";
 
 		if ( !is_file ( $dyngraph ) )

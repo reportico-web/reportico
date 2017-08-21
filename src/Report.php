@@ -17,7 +17,7 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
- * File:        reportico_report.php
+ * File:        Report.php
  *
  * Base class for all report output formats.
  * Defines base functionality for handling report 
@@ -33,7 +33,7 @@
  */
  
 namespace Reportico;
-class reportico_report extends reportico_object
+class Report extends reportico_object
 {
 	var	$query_set = array();
 	var	$document;
@@ -418,7 +418,7 @@ class reportico_report extends reportico_object
                     break;
 
                 if (
-                    ( $ph->get_attribute("ShowInHTML") == "yes" && preg_match("/reportico_report_html/", get_class($this)))
+                    ( $ph->get_attribute("ShowInHTML") == "yes" && preg_match("/ReportHtml/", get_class($this)))
                     || ( $ph->get_attribute("ShowInPDF")  == "yes"&& $this->query->target_format == "PDF" )
                     )
                 {
@@ -439,7 +439,7 @@ class reportico_report extends reportico_object
                     break;
 
                 if (
-                    ( $ph->get_attribute("ShowInHTML") == "yes" && preg_match("/reportico_report_html/", get_class($this)))
+                    ( $ph->get_attribute("ShowInHTML") == "yes" && preg_match("/ReportHtml/", get_class($this)))
                     || ( $ph->get_attribute("ShowInPDF")  == "yes"&& $this->query->target_format == "PDF" )
                     )
                 {
@@ -754,7 +754,7 @@ class reportico_report extends reportico_object
                                 }
                             } // foreach
                         }
-                        if (  !preg_match("/reportico_report_html/", get_class($this)) )
+                        if (  !preg_match("/ReportHtml/", get_class($this)) )
 						    $this->format_group_trailer_end();
 						if ( $trailer_first )
 							$trailer_first = false;
@@ -767,7 +767,7 @@ class reportico_report extends reportico_object
 			}
 			while( prev($this->query->groups) );
 
-            if ( $group_changed && preg_match("/reportico_report_html/", get_class($this)))
+            if ( $group_changed && preg_match("/ReportHtml/", get_class($this)))
             {
                 $this->format_group_trailer_end();
             }
@@ -844,9 +844,9 @@ class reportico_report extends reportico_object
                         {
 		                    $graph->width_pdf_actual = check_for_default("GraphWidthPDF", $graph->width_pdf);
 		                    $graph->height_pdf_actual = check_for_default("GraphHeightPDF", $graph->height_pdf);
-		                    $graph->title_actual = reportico_assignment::reportico_meta_sql_criteria($this->query, $graph->title, true);
-		                    $graph->xtitle_actual = reportico_assignment::reportico_meta_sql_criteria($this->query, $graph->xtitle, true);
-		                    $graph->ytitle_actual = reportico_assignment::reportico_meta_sql_criteria($this->query, $graph->ytitle, true);
+		                    $graph->title_actual = Assignment::reportico_meta_sql_criteria($this->query, $graph->title, true);
+		                    $graph->xtitle_actual = Assignment::reportico_meta_sql_criteria($this->query, $graph->xtitle, true);
+		                    $graph->ytitle_actual = Assignment::reportico_meta_sql_criteria($this->query, $graph->ytitle, true);
 						    if ( $url_string = $graph->generate_url_params($this->query->target_format) )
 						    {
 								    $this->plot_graph($graph, $graph_ct);
@@ -951,11 +951,11 @@ class reportico_report extends reportico_object
 				    {
 				        $col =& $group->headers[$i]["GroupHeaderColumn"];
 				        $custom = $group->headers[$i]["GroupHeaderCustom"];
-                        if ( $group->headers[$i]["ShowInHTML" ] == "yes" && preg_match("/reportico_report_html/", get_class($this)))
+                        if ( $group->headers[$i]["ShowInHTML" ] == "yes" && preg_match("/ReportHtml/", get_class($this)))
 				            $this->format_group_header($col, $custom);
-                        if ( $group->headers[$i]["ShowInPDF" ] == "yes" && preg_match("/reportico_report_tcpdf/", get_class($this)))
+                        if ( $group->headers[$i]["ShowInPDF" ] == "yes" && preg_match("/ReportTCPDF/", get_class($this)))
 				            $this->format_group_header($col, $custom);
-                        if ( $group->headers[$i]["ShowInPDF" ] == "yes" && preg_match("/reportico_report_fpdf/", get_class($this)))
+                        if ( $group->headers[$i]["ShowInPDF" ] == "yes" && preg_match("/ReportFPDF/", get_class($this)))
 				            $this->format_group_header($col, $custom);
 				    }
                 }

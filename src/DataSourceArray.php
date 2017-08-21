@@ -4,14 +4,14 @@ namespace Reportico;
 
 
 /**
- * Class reportico_db_array
+ * Class DataSourceArray
  *
  * Allows an array of data to appear like a database table by
  * implementing the necessary functions for connecting, disconnecting
  * and fetching. This means the Reportico engine will not care if data comes
  * from a database or an array
  */
-class reportico_db_array
+class DataSourceArray
 {
 	var $array_set;
 	var $EOF = false;

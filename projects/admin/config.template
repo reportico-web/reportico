@@ -1,4 +1,6 @@
 <?php
+namespace Reportico;
+
 // -----------------------------------------------------------------------------
 // -- Reportico -----------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -7,93 +9,95 @@
 // General User Configuration Settings for Reportico Operation
 // -----------------------------------------------------------------------------
 
-global $g_reportico_config ;
-
-
 //setlocale(LC_MONETARY = 'en_US');
-//echo money_format('%i'] = $number) . "\n";
+//echo money_format('%i'] = $number) . '\n';
 
 //setlocale(LC_MONETARY = 'en_US';
-//echo money_format('$%.2n'] = $number) . "\n";
-//echo money_format('$%(#10n'] = $number) . "\n";
+//echo money_format('$%.2n'] = $number) . '\n';
+//echo money_format('$%(#10n'] = $number) . '\n';
 
-$g_reportico_config = array(
-        "currency" => "$",
-        "number_delimiter" => ",",
-        "decimal_point" => ".",
-        )
-    ;
-
-$g_reportico_config["design_dropdown"] = 
-    array( "column_format" => array ( 
-                        "number",
-                        "money"
-                        )
-        )
-        ;
-
+// Locale settings
+ReporticoApp::setConfig('currency','$');
+ReporticoApp::setConfig('number_delimiter',',');
+ReporticoApp::setConfig('decimal_point','.');
+ReporticoApp::setConfig('column_format',array ('number', 'money'));
 
 // Password required to gain access to the project
 // Blank of false implies no passwrd required
-$g_reportico_config['project_password'] = 'PROMPT';
+ReporticoApp::setConfig('project_password','PROMPT');
 
 // Project Title used at the top of menus
-$g_reportico_config['project_title'] = 'Set Report Title';
+ReporticoApp::setConfig('project_title','Set Report Title');
+
+// Identify whether to always run in into Debug Mode
+ReporticoApp::setConfig('allow_output', true);
+ReporticoApp::setConfig('allow_debug', true);
+
+// Identify whether Show Criteria is default option
+ReporticoApp::setConfig('default_showcriteria', false);
+
 
 // Specification of Safe Mode. Turn on SAFE mode by specifying true.
 // In SAFE mode = design of reports is allowed but Code and SQL Injection
 // are prevented. This means that the designer prevents entry of potentially
-// cdangerous ustom PHP source in the Custom Source Section or potentially
+// dangerous custom PHP source in the Custom Source Section or potentially
 // dangerous SQL statements in Pre-Execute Criteria sections
-$g_reportico_config['safe_design_mode'] = true;
+ReporticoApp::setConfig('safe_design_mode',true);
+
+// If false prevents any designing of reports
+ReporticoApp::setConfig('allow_maintain',true);
+
+// Identify whether to use AJAX handling. Enabling with enable Data Pickers,
+// loading of partial form elements and quicker-ti-use design mode
+define('ajax_enabled',true);
 
 // Location of Reportico Top Level Directory From Browser Point of View
 // DB connection details for ADODB
-$g_reportico_config['db_type'] = 'pdo_mysql';
+ReporticoApp::setConfig('db_type','pdo_mysql');
 // If connecting to existing framework db then use
 // db parameters from external framework
-if ( $g_reportico_config['db_type'] == "framework" )
+if ( ReporticoApp::getConfig('db_type') == 'framework' )
 {
-$g_reportico_config['db_driver'] = SW_FRAMEWORK_DB_DRIVER;
-$g_reportico_config['db_user'] = SW_FRAMEWORK_DB_USER;
-$g_reportico_config['db_password'] = SW_FRAMEWORK_DB_PASSWORD;
-$g_reportico_config['db_host'] = SW_FRAMEWORK_DB_HOST;
-$g_reportico_config['db_database'] = SW_FRAMEWORK_DB_DATABASE;
+ReporticoApp::setConfig('db_driver',ReporticoApp::getConfig('db_driver'));
+ReporticoApp::setConfig('db_user',ReporticoApp::getConfig('db_user'));
+ReporticoApp::setConfig('db_password',ReporticoApp::getConfig('db_password'));
+ReporticoApp::setConfig('db_host',ReporticoApp::getConfig('db_host'));
+ReporticoApp::setConfig('db_database',ReporticoApp::getConfig('db_database'));
 }
 else
 {
-$g_reportico_config['db_driver'] = $g_reportico_config['db_type'];
-$g_reportico_config['db_user'] = 'root';
-$g_reportico_config['db_password'] = 'root';
-$g_reportico_config['db_host'] = 'localhost';
-$g_reportico_config['db_database'] = 'iconnex';
+ReporticoApp::setConfig('db_driver',ReporticoApp::getConfig('db_type'));
+ReporticoApp::setConfig('db_user','root');
+ReporticoApp::setConfig('db_password','root');
+ReporticoApp::setConfig('db_host','localhost');
+ReporticoApp::setConfig('db_database','iconnex');
 }
-$g_reportico_config['db_connect_from_config'] = true;
-$g_reportico_config['db_dateformat'] = 'Y-m-d';
-$g_reportico_config['prep_dateformat'] = 'Y-m-d';
-$g_reportico_config['db_server'] = '';
-$g_reportico_config['db_protocol'] = '';
-$g_reportico_config['db_encoding'] = 'None';
+ReporticoApp::setConfig('db_connect_from_config',true);
+ReporticoApp::setConfig('db_dateformat','Y-m-d');
+ReporticoApp::setConfig('prep_dateformat','Y-m-d');
+ReporticoApp::setConfig('db_server','');
+ReporticoApp::setConfig('db_protocol','');
+ReporticoApp::setConfig('db_encoding','None');
 
 //HTML Output Encoding
-$g_reportico_config['output_encoding'] = 'UTF8';
+ReporticoApp::setConfig('output_encoding','UTF8');
 
 // Identify temp area
-$g_reportico_config['tmp_dir'] = "tmp";
+ReporticoApp::setConfig('tmp_dir','tmp');
 
 // SOAP Environment
-$g_reportico_config['SOAP_NAMESPACE'] = 'reportico.org';
-$g_reportico_config['SOAP_SERVICEBASEURL'] = 'http://www.reportico.co.uk/swsite/site/tutorials';
+ReporticoApp::setConfig('SOAP_NAMESPACE','reportico.org');
+ReporticoApp::setConfig('SOAP_SERVICEBASEURL','http://www.reportico.co.uk/swsite/site/tutorials');
 
 // Parameter Defaults
-$g_reportico_config['pdf_PageSize'] = 'A4';
-$g_reportico_config['pdf_PageOrientation'] = 'Portrait';
-$g_reportico_config['pdf_TopMargin'] = "1cm";
-$g_reportico_config['pdf_BottomMargin'] = "2cm";
-$g_reportico_config['pdf_LeftMargin'] = "1cm";
-$g_reportico_config['pdf_RightMargin'] = "1cm";
-$g_reportico_config['pdf_pdfFont'] = "Helvetica";
-$g_reportico_config['pdf_pdfFontSize'] = "10";
+ReporticoApp::setConfig('pdf_PageSize','A4');
+ReporticoApp::setConfig('pdf_PageOrientation','Portrait');
+ReporticoApp::setConfig('pdf_TopMargin','1cm');
+ReporticoApp::setConfig('pdf_BottomMargin','2cm');
+ReporticoApp::setConfig('pdf_LeftMargin','1cm');
+ReporticoApp::setConfig('pdf_RightMargin','1cm');
+ReporticoApp::setConfig('pdf_pdfFont','Helvetica');
+ReporticoApp::setConfig('pdf_pdfFontSize','10');
 
 // FPDF parameters
 define('FPDF_FONTPATH', 'fpdf/font/');
@@ -105,6 +109,13 @@ define('FPDF_FONTPATH', 'fpdf/font/');
 //define('PDF_HEADER_YPOS'] = '20';
 //define('PDF_HEADER_WIDTH'] = '100';
 
+// Default project language
+ReporticoApp::setConfig('language','en_gb');
+
+// Legacy pointed to home folder
+ReporticoApp::setConfig('http_basedir','./');
+
+
 // Graph Defaults
 // Default Charting Engine is JpGraph. A slightly modified version 3.0.7 of jpGraph is supplied
 // within Reportico. 
@@ -114,10 +125,10 @@ define('FPDF_FONTPATH', 'fpdf/font/');
 // application into the reportico folder named pChart. pChart 2.1.3
 // You can get pChart from http://www.pchart.net/
 //
-$g_reportico_config["graph_engine"] = "PCHART" ;
-if ( !$g_reportico_config["graph_engine"] || $g_reportico_config["graph_engine"] == "JPGRAPH" )
+ReporticoApp::setConfig('graph_engine','PCHART' );
+if ( !ReporticoApp::getConfig('graph_engine') == 'JPGRAPH' )
 {
-$g_reportico_config['DEFAULT_Font'] = "Arial";
+ReporticoApp::setConfig('DEFAULT_Font','Arial');
 //advent_light
 //Bedizen
 //Mukti_Narrow
@@ -128,51 +139,51 @@ $g_reportico_config['DEFAULT_Font'] = "Arial";
 //pf_arma_five
 //Silkscreen
 //verdana
-$g_reportico_config['chart_GraphWidth'] = 800;
-$g_reportico_config['chart_GraphHeight'] = 400;
-$g_reportico_config['chart_GraphWidthPDF'] = 500;
-$g_reportico_config['chart_GraphHeightPDF'] = 250;
-$g_reportico_config['chart_GraphColor'] = "white";
-$g_reportico_config['chart_MarginTop'] = "40";
-$g_reportico_config['chart_MarginBottom'] = "90";
-$g_reportico_config['chart_MarginLeft'] = "60";
-$g_reportico_config['chart_MarginRight'] = "50";
-$g_reportico_config['chart_MarginColor'] = "white";
-$g_reportico_config['chart_XTickLabelInterval'] = "1";
-$g_reportico_config['chart_YTickLabelInterval'] = "2";
-$g_reportico_config['chart_XTickInterval'] = "1";
-$g_reportico_config['chart_YTickInterval'] = "1";
-$g_reportico_config['chart_GridPosition'] = "back";
-$g_reportico_config['chart_XGridDisplay'] = "none";
-$g_reportico_config['chart_XGridColor'] = "gray";
-$g_reportico_config['chart_YGridDisplay'] = "none";
-$g_reportico_config['chart_YGridColor'] = "gray";
-$g_reportico_config['chart_TitleFont'] = $g_reportico_config['chart_Font'];
-$g_reportico_config['chart_TitleFontStyle'] = "Normal";
-$g_reportico_config['chart_TitleFontSize'] = "12";
-$g_reportico_config['chart_TitleColor'] = "black";
-$g_reportico_config['chart_XTitleFont'] = $g_reportico_config['chart_Font'];
-$g_reportico_config['chart_XTitleFontStyle'] = "Normal";
-$g_reportico_config['chart_XTitleFontSize'] = "10";
-$g_reportico_config['chart_XTitleColor'] = "black";
-$g_reportico_config['chart_YTitleFont'] = $g_reportico_config['chart_Font'];
-$g_reportico_config['chart_YTitleFontStyle'] = "Normal";
-$g_reportico_config['chart_YTitleFontSize'] = "10";
-$g_reportico_config['chart_YTitleColor'] = "black";
-$g_reportico_config['chart_XAxisFont'] = $g_reportico_config['chart_Font'];
-$g_reportico_config['chart_XAxisFontStyle'] = "Normal";
-$g_reportico_config['chart_XAxisFontSize'] = "10";
-$g_reportico_config['chart_XAxisFontColor'] = "black";
-$g_reportico_config['chart_XAxisColor'] = "black";
-$g_reportico_config['chart_YAxisFont'] = $g_reportico_config['chart_Font'];
-$g_reportico_config['chart_YAxisFontStyle'] = "Normal";
-$g_reportico_config['chart_YAxisFontSize'] = "8";
-$g_reportico_config['chart_YAxisFontColor'] = "black";
-$g_reportico_config['chart_YAxisColor'] = "black";
+ReporticoApp::setConfig('chart_GraphWidth',800);
+ReporticoApp::setConfig('chart_GraphHeight',400);
+ReporticoApp::setConfig('chart_GraphWidthPDF',500);
+ReporticoApp::setConfig('chart_GraphHeightPDF',250);
+ReporticoApp::setConfig('chart_GraphColor','white');
+ReporticoApp::setConfig('chart_MarginTop','40');
+ReporticoApp::setConfig('chart_MarginBottom','90');
+ReporticoApp::setConfig('chart_MarginLeft','60');
+ReporticoApp::setConfig('chart_MarginRight','50');
+ReporticoApp::setConfig('chart_MarginColor','white');
+ReporticoApp::setConfig('chart_XTickLabelInterval','1');
+ReporticoApp::setConfig('chart_YTickLabelInterval','2');
+ReporticoApp::setConfig('chart_XTickInterval','1');
+ReporticoApp::setConfig('chart_YTickInterval','1');
+ReporticoApp::setConfig('chart_GridPosition','back');
+ReporticoApp::setConfig('chart_XGridDisplay','none');
+ReporticoApp::setConfig('chart_XGridColor','gray');
+ReporticoApp::setConfig('chart_YGridDisplay','none');
+ReporticoApp::setConfig('chart_YGridColor','gray');
+ReporticoApp::setConfig('chart_TitleFont',ReporticoApp::getConfig('chart_Font'));
+ReporticoApp::setConfig('chart_TitleFontStyle','Normal');
+ReporticoApp::setConfig('chart_TitleFontSize','12');
+ReporticoApp::setConfig('chart_TitleColor','black');
+ReporticoApp::setConfig('chart_XTitleFont',ReporticoApp::getConfig('chart_Font'));
+ReporticoApp::setConfig('chart_XTitleFontStyle','Normal');
+ReporticoApp::setConfig('chart_XTitleFontSize','10');
+ReporticoApp::setConfig('chart_XTitleColor','black');
+ReporticoApp::setConfig('chart_YTitleFont',ReporticoApp::getConfig('chart_Font'));
+ReporticoApp::setConfig('chart_YTitleFontStyle','Normal');
+ReporticoApp::setConfig('chart_YTitleFontSize','10');
+ReporticoApp::setConfig('chart_YTitleColor','black');
+ReporticoApp::setConfig('chart_XAxisFont',ReporticoApp::getConfig('chart_Font'));
+ReporticoApp::setConfig('chart_XAxisFontStyle','Normal');
+ReporticoApp::setConfig('chart_XAxisFontSize','10');
+ReporticoApp::setConfig('chart_XAxisFontColor','black');
+ReporticoApp::setConfig('chart_XAxisColor','black');
+ReporticoApp::setConfig('chart_YAxisFont',ReporticoApp::getConfig('chart_Font'));
+ReporticoApp::setConfig('chart_YAxisFontStyle','Normal');
+ReporticoApp::setConfig('chart_YAxisFontSize','8');
+ReporticoApp::setConfig('chart_YAxisFontColor','black');
+ReporticoApp::setConfig('chart_YAxisColor','black');
 }
 else // Use jpgraph
 {
-$g_reportico_config['chart_Font'] = "Mukti_Narrow.ttf";
+ReporticoApp::setConfig('chart_Font','Mukti_Narrow.ttf');
 //advent_light.ttf
 //Bedizen.ttf
 //calibri.ttf
@@ -182,54 +193,69 @@ $g_reportico_config['chart_Font'] = "Mukti_Narrow.ttf";
 //pf_arma_five.ttf
 //Silkscreen.ttf
 //verdana.ttf
-$g_reportico_config['chart_FontSize'] = "8";
-$g_reportico_config['chart_FontColor'] = "#303030";
-$g_reportico_config['chart_LineColor'] = "#303030";
-$g_reportico_config['chart_BackColor'] = "#eeeeff";
-$g_reportico_config['chart_FontStyle'] = "Normal";
-$g_reportico_config['chart_GraphWidth'] = 800;
-$g_reportico_config['chart_GraphHeight'] = 400;
-$g_reportico_config['chart_GraphWidthPDF'] = 500;
-$g_reportico_config['chart_GraphHeightPDF'] = 300;
-$g_reportico_config['chart_GraphColor'] = $g_reportico_config['chart_BackColor'];
-$g_reportico_config['chart_MarginTop'] = "50";
-$g_reportico_config['chart_MarginBottom'] = "80";
-$g_reportico_config['chart_MarginLeft'] = "70";
-$g_reportico_config['chart_MarginRight'] = "40";
-$g_reportico_config['chart_MarginColor'] = $g_reportico_config['chart_BackColor'];
-$g_reportico_config['chart_XTickLabelInterval'] = "AUTO";
-$g_reportico_config['chart_YTickLabelInterval'] = "2";
-$g_reportico_config['chart_XTickInterval'] = "1";
-$g_reportico_config['chart_YTickInterval'] = "1";
-$g_reportico_config['chart_GridPosition'] = "back";
-$g_reportico_config['chart_XGridDisplay'] = "none";
-$g_reportico_config['chart_XGridColor'] = $g_reportico_config['chart_LineColor'];
-$g_reportico_config['chart_YGridDisplay'] = "none";
-$g_reportico_config['chart_YGridColor'] = $g_reportico_config['chart_LineColor'];
-$g_reportico_config['chart_TitleFont'] = $g_reportico_config['chart_Font'];
-$g_reportico_config['chart_TitleFontStyle'] = $g_reportico_config['chart_FontStyle'];
-$g_reportico_config['chart_TitleFontSize'] = 12; 
-$g_reportico_config['chart_TitleColor'] = $g_reportico_config['chart_LineColor'];
-$g_reportico_config['chart_XTitleFont'] = $g_reportico_config['chart_Font'];
-$g_reportico_config['chart_XTitleFontStyle'] = $g_reportico_config['chart_FontStyle'];
-$g_reportico_config['chart_XTitleFontSize'] = $g_reportico_config['chart_FontSize'];
-$g_reportico_config['chart_XTitleColor'] = $g_reportico_config['chart_LineColor'];
-$g_reportico_config['chart_YTitleFont'] = $g_reportico_config['chart_Font'];
-$g_reportico_config['chart_YTitleFontStyle'] = $g_reportico_config['chart_FontStyle'];
-$g_reportico_config['chart_YTitleFontSize'] = $g_reportico_config['chart_FontSize'];
-$g_reportico_config['chart_YTitleColor'] = $g_reportico_config['chart_LineColor'];
-$g_reportico_config['chart_XAxisFont'] = $g_reportico_config['chart_Font'];
-$g_reportico_config['chart_XAxisFontStyle'] = $g_reportico_config['chart_FontStyle'];
-$g_reportico_config['chart_XAxisFontSize'] = $g_reportico_config['chart_FontSize'];
-$g_reportico_config['chart_XAxisFontColor'] = $g_reportico_config['chart_FontColor'];
-$g_reportico_config['chart_XAxisColor'] = $g_reportico_config['chart_LineColor'];
-$g_reportico_config['chart_YAxisFont'] = $g_reportico_config['chart_Font'];
-$g_reportico_config['chart_YAxisFontStyle'] = $g_reportico_config['chart_FontStyle'];
-$g_reportico_config['chart_YAxisFontSize'] = $g_reportico_config['chart_FontSize'];
-$g_reportico_config['chart_YAxisFontColor'] = $g_reportico_config['chart_LineColor'];
-$g_reportico_config['chart_YAxisColor'] = $g_reportico_config['chart_LineColor'];
+ReporticoApp::setConfig('chart_FontSize','8');
+ReporticoApp::setConfig('chart_FontColor','#303030');
+ReporticoApp::setConfig('chart_LineColor','#303030');
+ReporticoApp::setConfig('chart_BackColor','#eeeeff');
+ReporticoApp::setConfig('chart_FontStyle','Normal');
+ReporticoApp::setConfig('chart_GraphWidth',800);
+ReporticoApp::setConfig('chart_GraphHeight',400);
+ReporticoApp::setConfig('chart_GraphWidthPDF',500);
+ReporticoApp::setConfig('chart_GraphHeightPDF',300);
+ReporticoApp::setConfig('chart_GraphColor',ReporticoApp::getConfig('chart_BackColor'));
+ReporticoApp::setConfig('chart_MarginTop','50');
+ReporticoApp::setConfig('chart_MarginBottom','80');
+ReporticoApp::setConfig('chart_MarginLeft','70');
+ReporticoApp::setConfig('chart_MarginRight','40');
+ReporticoApp::setConfig('chart_MarginColor',ReporticoApp::getConfig('chart_BackColor'));
+ReporticoApp::setConfig('chart_XTickLabelInterval','AUTO');
+ReporticoApp::setConfig('chart_YTickLabelInterval','2');
+ReporticoApp::setConfig('chart_XTickInterval','1');
+ReporticoApp::setConfig('chart_YTickInterval','1');
+ReporticoApp::setConfig('chart_GridPosition','back');
+ReporticoApp::setConfig('chart_XGridDisplay','none');
+ReporticoApp::setConfig('chart_XGridColor',ReporticoApp::getConfig('chart_LineColor'));
+ReporticoApp::setConfig('chart_YGridDisplay','none');
+ReporticoApp::setConfig('chart_YGridColor',ReporticoApp::getConfig('chart_LineColor'));
+ReporticoApp::setConfig('chart_TitleFont',ReporticoApp::getConfig('chart_Font'));
+ReporticoApp::setConfig('chart_TitleFontStyle',ReporticoApp::getConfig('chart_FontStyle'));
+ReporticoApp::setConfig('chart_TitleFontSize',12); 
+ReporticoApp::setConfig('chart_TitleColor',ReporticoApp::getConfig('chart_LineColor'));
+ReporticoApp::setConfig('chart_XTitleFont',ReporticoApp::getConfig('chart_Font'));
+ReporticoApp::setConfig('chart_XTitleFontStyle',ReporticoApp::getConfig('chart_FontStyle'));
+ReporticoApp::setConfig('chart_XTitleFontSize',ReporticoApp::getConfig('chart_FontSize'));
+ReporticoApp::setConfig('chart_XTitleColor',ReporticoApp::getConfig('chart_LineColor'));
+ReporticoApp::setConfig('chart_YTitleFont',ReporticoApp::getConfig('chart_Font'));
+ReporticoApp::setConfig('chart_YTitleFontStyle',ReporticoApp::getConfig('chart_FontStyle'));
+ReporticoApp::setConfig('chart_YTitleFontSize',ReporticoApp::getConfig('chart_FontSize'));
+ReporticoApp::setConfig('chart_YTitleColor',ReporticoApp::getConfig('chart_LineColor'));
+ReporticoApp::setConfig('chart_XAxisFont',ReporticoApp::getConfig('chart_Font'));
+ReporticoApp::setConfig('chart_XAxisFontStyle',ReporticoApp::getConfig('chart_FontStyle'));
+ReporticoApp::setConfig('chart_XAxisFontSize',ReporticoApp::getConfig('chart_FontSize'));
+ReporticoApp::setConfig('chart_XAxisFontColor',ReporticoApp::getConfig('chart_FontColor'));
+ReporticoApp::setConfig('chart_XAxisColor',ReporticoApp::getConfig('chart_LineColor'));
+ReporticoApp::setConfig('chart_YAxisFont',ReporticoApp::getConfig('chart_Font'));
+ReporticoApp::setConfig('chart_YAxisFontStyle',ReporticoApp::getConfig('chart_FontStyle'));
+ReporticoApp::setConfig('chart_YAxisFontSize',ReporticoApp::getConfig('chart_FontSize'));
+ReporticoApp::setConfig('chart_YAxisFontColor',ReporticoApp::getConfig('chart_LineColor'));
+ReporticoApp::setConfig('chart_YAxisColor',ReporticoApp::getConfig('chart_LineColor'));
 }
 
-// Automatic addition of parameter SW_LANGUAGE
-$g_reportico_config['language'] = 'en_gb';
+
+// Statis Menu Title default to project Title
+ReporticoApp::set('menu_title',ReporticoApp::getConfig('project_title'));
+
+// Vertical centre page main menu, default show all reports in project
+ReporticoApp::set('static_menu', array (
+        array ( 'language' => 'en_gb', 'report' => '.*\.xml', 'title' => '<AUTO>' )
+        ));
+
+// Vertical centre page main menu in admin mode default to all reports
+ReporticoApp::set('admin_menu', array (
+        array ( 'language' => 'en_gb', 'report' => '.*\.xml', 'title' => '<AUTO>' )
+        ));
+
+// Dropdown project menu, default to none
+ReporticoApp::set('dropdown_menu', false );
+
 ?>

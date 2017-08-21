@@ -17,7 +17,7 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
- * File:        reportico_report_xml.php
+ * File:        ReportXml.php
  *
  * Base class for all report output formats.
  * Defines base functionality for handling report 
@@ -33,7 +33,7 @@
  */
 namespace Reportico;
 
-class reportico_report_xml extends reportico_report
+class ReportXml extends Report
 {
 	var	$record_template;
 	var	$results = array();
@@ -49,7 +49,7 @@ class reportico_report_xml extends reportico_report
 	function start ()
 	{
 
-		reportico_report::start();
+		Report::start();
 		$title = $this->reporttitle;
 		$this->results=array(
 			"title" => $title,
@@ -63,7 +63,7 @@ class reportico_report_xml extends reportico_report
 
 	function finish ()
 	{
-		reportico_report::finish();
+		Report::finish();
 		$xmlroot =  preg_replace("/\.xml$/", "", $this->query->xmloutfile);
 		$xml =  $this->arrayToXML($this->results,  new SimpleXMLElement('<'.$xmlroot.'/>'))->asXml();
         	$len = strlen($xml);
@@ -121,7 +121,7 @@ class reportico_report_xml extends reportico_report
 
 	function each_line($val)
 	{
-		reportico_report::each_line($val);
+		Report::each_line($val);
 
 		// Set the values for the fields in the record
 		$linekey = "dataline_".($this->line_ct + 1);

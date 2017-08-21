@@ -1,4 +1,5 @@
 <?php
+namespace Reportico;
 /*
  Reportico - PHP Reporting Tool
  Copyright (C) 2010-2011 Peter Deed
@@ -30,6 +31,7 @@
  */
 global $g_error_status;
 
+
 // System Error Handling and Debug Tracking Variables
 $g_system_errors = array();
 $g_code_area = "";
@@ -43,8 +45,6 @@ define('REPORTICO_DEBUG_LOW', 1);
 define('REPORTICO_DEBUG_MEDIUM', 2);
 define('REPORTICO_DEBUG_HIGH', 3);
 define('REPORTICO_DEFAULT_INDICATOR', '.');
-
-global $g_session_namespace;
 
 // Ensure that sessions from different browser windows on same devide
 // target separate SESSION_ID
@@ -60,11 +60,9 @@ function set_up_reportico_session()
             if ( preg_match("/_/", $session_name ) )
             {
 	            $ar = explode("_", $session_name);
-                global $g_session_namespace;
-                global $g_session_namespace_key;
-                $g_session_namespace = $ar[1];
-                if ( $g_session_namespace )
-                    $g_session_namespace_key = "reportico_".$g_session_namespace;
+                ReporticoApp::set("session_namespace",$ar[1]);
+                if ( ReporticoApp::get("session_namespace") )
+                    ReporticoApp::set("session_namespace_key","reportico_".ReporticoApp::get("session_namespace"));
                 // Set session to join only if it is not NS meaning its called from framework and existing session
                 // should be used
                 if ( $ar[0] != "NS" )
@@ -81,17 +79,15 @@ function set_up_reportico_session()
     {
         if ( !$session_name || !isset($_SESSION))
 			session_start();
-        global $g_session_namespace;
-        global $g_session_namespace_key;
-        $g_session_namespace = substr($session_name, 3);
+        ReporticoApp::set("session_namespace", substr($session_name, 3));
 
         // IF NS_NEW passed then autogenerate session namespace from current time
-        if ( $g_session_namespace == "NEW" )
+        if ( ReporticoApp::get("session_namespace") == "NEW" )
         {
-            $g_session_namespace =  date("YmdHis");
+            ReporticoApp::set("session_namespace", date("YmdHis"));
         }
-        if ( $g_session_namespace )
-            $g_session_namespace_key = "reportico_".$g_session_namespace;
+        if ( ReporticoApp::get("session_namespace") )
+            ReporticoApp::set("session_namespace_key", "reportico_".ReporticoApp::get("session_namespace"));
 		if (isset($_REQUEST['clear_session']) && isset($_SESSION)) 
         {
             initialize_reportico_namespace(reportico_namespace());
@@ -149,15 +145,15 @@ function convertYMDtoLocal($in_time, $from_format, $to_format)
 	$from_format = get_locale_date_format ( $from_format );
 	$to_format = get_locale_date_format ( $to_format );
 
-    if ( !class_exists("DateTime", false ) || !method_exists("DateTime", "createFromFormat" ) )
+    if ( !class_exists("\DateTime", false ) || !method_exists("\DateTime", "createFromFormat" ) )
     {
-        //handle_error("This version of PHP does not have the DateTime class. Must be PHP >= 5.3 to use date criteria");
+        //handle_error("This version of PHP does not have the \DateTime class. Must be PHP >= 5.3 to use date criteria");
         //return false;
         $retval = reformatDate($from_format, $to_format, $in_time );
         return $retval;
     }
     try {
-	    $datetime = DateTime::createFromFormat($from_format, $in_time);
+	    $datetime = \DateTime::createFromFormat($from_format, $in_time);
 
         if ( !$datetime )
         {
@@ -233,7 +229,7 @@ function parse_date($in_keyword, $in_time = false, $in_mask = "%d/%m/%Y" )
     if ( preg_match("/^{.*}$/", $in_keyword ) )
     {
         $in_keyword = preg_replace("/{\"*([^\"]*)\"*}/", "$1", $in_keyword);
-        $datetime = new DateTime("$in_keyword");
+        $datetime = new \DateTime("$in_keyword");
         return $datetime->format($in_mask);
     }
 
@@ -363,13 +359,13 @@ function parse_date($in_keyword, $in_time = false, $in_mask = "%d/%m/%Y" )
 
 	}
 
-    if ( !class_exists("DateTime", false ) )
+    if ( !class_exists("\DateTime", false ) )
     {
         handle_error("This version of PHP does not have the DateTime class. Must be PHP >= 5.3 to use date criteria");
         return false;
     }
 	try {
-        $datetime = new DateTime("@$new_time");
+        $datetime = new \DateTime("@$new_time");
 	}
 	catch(Exception $e) {
             handle_error("Error in date formatting<BR>".$e->getMessage());
@@ -714,9 +710,9 @@ function ErrorHandler($errno, $errstr, $errfile, $errline)
 		"errsource" => $g_code_source,
 		"errct" => 1
 		);
-	//echo "<PRE>";
-	//var_dump($g_system_errors);
-	//echo "</PRE>";
+	echo "<PRE>";
+	var_dump($g_system_errors);
+	echo "</PRE>";
 
     $g_error_status = 1;
 
@@ -737,19 +733,7 @@ function get_default($in_code)
 	$out_val = false;
     global $g_reportico_config;
 
-    if ( isset($g_reportico_config) && $g_reportico_config )
-    {
-        if (isset($g_reportico_config[$in_code]))
-		    $out_val = $g_reportico_config[$in_code];
-        if (isset($g_reportico_config["pdf_".$in_code]))
-		    $out_val = $g_reportico_config["pdf_".$in_code];
-        if (isset($g_reportico_config["chart_".$in_code]))
-		    $out_val = $g_reportico_config["chart_".$in_code];
-    }
-	else if ( defined("SW_DEFAULT_".$in_code) )
-	{
-		$out_val = constant("SW_DEFAULT_".$in_code);
-	}
+    $out_val(ReporticoApp::getConfig($in_code));
 	return $out_val;
 }
 
@@ -805,15 +789,14 @@ function find_file_to_include($file_path, &$new_file_path, &$rel_to_include = ""
     {
         $selfdir = dirname(__FILE__);
         $new_file_path = $selfdir. "/" . $file_path;
-
-        $old_error_handler = set_error_handler("ErrorHandler", 0);
+        $old_error_handler = set_error_handler("Reportico\ErrorHandler", 0);
         if (@file_exists($new_file_path) || is_dir($new_file_path) ) 
 	    {
                	$new_file_path = $selfdir . "/" . $file_path;
-                $old_error_handler = set_error_handler("ErrorHandler");
+                $old_error_handler = set_error_handler("Reportico\ErrorHandler");
 				return true;
         }
-        $old_error_handler = set_error_handler("ErrorHandler");
+        $old_error_handler = set_error_handler("Reportico\ErrorHandler");
     }
 
     // else look in incude path
@@ -838,49 +821,44 @@ function find_file_to_include($file_path, &$new_file_path, &$rel_to_include = ""
 		}
 	}
 	// Turn off Error handling for the following to avoid open_basedir errors
-	$old_error_handler = set_error_handler("ErrorHandler", 0);
+	$old_error_handler = set_error_handler("Reportico\ErrorHandler", 0);
     foreach ($_path_array as $_include_path) {
         if (@file_exists($_include_path . "/" . $file_path)) 
 	    {
                	$new_file_path = $_include_path . "/" . $file_path;
-    			$old_error_handler = set_error_handler("ErrorHandler");
+    			$old_error_handler = set_error_handler("Reportico\ErrorHandler");
 				return true;
             }
         }
-    $old_error_handler = set_error_handler("ErrorHandler");
+    $old_error_handler = set_error_handler("Reportico\ErrorHandler");
 
 	$new_file_path = $file_path;
 	return false;
 }
 
-// Translate string into another language using the g_translations global array
+// Translate string into another language using the (ReporticoApp::get("translations")) array
 function &sw_translate($in_string)
 {
-	global $g_language;
-	global $g_translations;
 	$out_string =& $in_string;
-	if ( $g_translations )
-		if ( array_key_exists( $g_language, $g_translations ) )
+	if ( (ReporticoApp::get("translations")) )
+		if ( array_key_exists( ReporticoApp::getConfig("language"), (ReporticoApp::get("translations")) ) )
 		{
-			$langset =& $g_translations[$g_language];
+			$langset =& (ReporticoApp::get("translations"))[ReporticoApp::getConfig("language")];
 			if ( isset ( $langset[$in_string] ) )
 				$out_string =& $langset[$in_string];
 		}
 	return  $out_string;
 }
 
-// Translate string into another language using the g_translations global array
+// Translate string into another language using the (ReporticoApp::get("translations")) array
 function &sw_translate_report_desc($in_report)
 {
-	global $g_language;
-	global $g_report_desc;
-
     $in_report = preg_replace("/\.xml$/", "", $in_report);
 	$out_string = false;
-	if ( $g_report_desc )
-		if ( array_key_exists( $g_language, $g_report_desc ) )
+	if ( ReporticoApp::get("report_desc") )
+		if ( array_key_exists( ReporticoApp::getConfig("language"), ReporticoApp::get("report_desc") ) )
 		{
-			$langset =& $g_report_desc[$g_language];
+			$langset =& (ReporticoApp::get("report_desc"))[ReporticoApp::getConfig("language")];
 			if ( isset ( $langset[$in_report] ) )
 				$out_string =& $langset[$in_report];
 		}
@@ -890,22 +868,20 @@ function &sw_translate_report_desc($in_report)
 // Load the relevant localisation strings from the language folder
 function load_mode_language_pack($mode, $output_encoding = "utf-8", $replace = false)
 {
-    global $g_language;
-    global $g_locale;
     $langfile = find_best_location_in_include_path( "language" );
 
     // Look for encoding specific language file
-    if ( is_set_reportico_config("SW_OUTPUT_ENCODING") && get_reportico_confg("SW_OUTPUT_ENCODING") != "UTF8" && is_dir($langfile."/".$g_language."/".get_reportico_config("SW_OUTPUT_ENCODING")) )
+    if ( ReporticoApp::isSetConfig("SW_OUTPUT_ENCODING") && ReporticoApp::getConfig("SW_OUTPUT_ENCODING") != "UTF8" && is_dir($langfile."/".ReporticoApp::getConfig("language")."/".ReporticoApp::getConfig("SW_OUTPUT_ENCODING")."/".$mode) )
     {
-        $langfile = $langfile."/".$g_language."/".SW_OUTPUT_ENCODING."/".$mode.".php";
+        $langfile = $langfile."/".ReporticoApp::getConfig("language")."/".ReporticoApp::isSetConfig("SW_OUTPUT_ENCODING")."/".$mode.".php";
         require($langfile);
     }
     else
     {
-        $langfile = $langfile."/".$g_language."/".$mode.".php";
+        $langfile = $langfile."/".ReporticoApp::getConfig("language")."/".$mode.".php";
         if ( !is_file($langfile) )
         {
-            trigger_error ( "Language pack for mode  $mode, language $g_language not found", E_USER_ERROR );
+            trigger_error ( "Language pack for mode  $mode, language ".ReporticoApp::getConfig("language")." not found", E_USER_ERROR );
         }
         else
         {
@@ -918,15 +894,16 @@ function load_mode_language_pack($mode, $output_encoding = "utf-8", $replace = f
                     $locale_arr["template"][$k] = iconv("utf-8", $output_encoding, $v);
                 }
             }
-            if ( !$g_locale || !is_array($g_locale) || $replace )
+            if ( !( ReporticoApp::get("locale")) || !is_array(( ReporticoApp::get("locale"))) || $replace )
             {
-                $g_locale = $locale_arr;
+                ReporticoApp::set("locale",$locale_arr);
             }
             else
             {
-                if ( is_array($g_locale["template"]) && is_array($locale_arr) && is_array($locale_arr["template"]) )
+                if ( is_array(( ReporticoApp::get("locale"))["template"]) && is_array($locale_arr) && is_array($locale_arr["template"]) )
                 {
-                    $g_locale["template"] = array_merge($g_locale["template"], $locale_arr["template"]);
+                    $arr = array("template" => array_merge((ReporticoApp::get("locale"))["template"], $locale_arr["template"]));
+                    ReporticoApp::set("locale", $arr);
                 }
             }
         }
@@ -936,16 +913,12 @@ function load_mode_language_pack($mode, $output_encoding = "utf-8", $replace = f
 // Load the users custom translations strings from the project
 function load_project_language_pack($project, $output_encoding = "utf-8")
 {
-    global $g_translations;
-	global $g_report_desc;
-    global $g_locale;
-    global $g_language;
 
-    $g_translations = array();
+    ReporticoApp::set("translations", array());
 
     // Include project specific language translations these could be
     // held in the file lang.php or lang_<language>.php
-    $langfile = "projects/$project/lang_".$g_language.".php";
+    $langfile = "projects/$project/lang_".ReporticoApp::getConfig("language").".php";
     if ( is_file($langfile) )
     {
         include($langfile);
@@ -969,14 +942,14 @@ function load_project_language_pack($project, $output_encoding = "utf-8")
         }
     }
 
-    if ( $g_translations && is_array($g_translations) && isset ( $g_translations[$g_language] ) && is_array($g_translations[$g_language]) )
+    if ( isset ( (ReporticoApp::get("translations"))[ReporticoApp::getConfig("language")] ) && is_array((ReporticoApp::get("translations"))[ReporticoApp::getConfig("language")]) )
     {
         // Convert UTF-8 mode to output character set if differen from native language pack
         if ( strtolower($output_encoding) != "utf-8" )
         {
-            foreach ( $g_translations[$g_language] as $k => $v )
+            foreach ( (ReporticoApp::get("translations"))[ReporticoApp::getConfig("language")] as $k => $v )
             {
-                $g_translations["template"][$k] = iconv("utf-8", $output_encoding, $v);
+                (ReporticoApp::get("translations"))["template"][$k] = iconv("utf-8", $output_encoding, $v);
             }
         }
     }
@@ -987,10 +960,9 @@ function load_project_language_pack($project, $output_encoding = "utf-8")
 // Set local language strings in templates
 function localise_template_strings(&$in_smarty, $in_template = "")
 {
-    global $g_locale;
-    if ( $g_locale )
+    if ( ReporticoApp::get("locale") )
     {
-        foreach($g_locale["template"] as $key => $string)
+        foreach(( ReporticoApp::get("locale"))["template"] as $key => $string)
         {
             $in_smarty->assign($key, $string);
         }
@@ -1006,12 +978,11 @@ function template_xlate($in_string)
 {
     if (!$in_string ) return $in_string;
     $out_string = "T_".$in_string;
-    global $g_locale;
-    if ( $g_locale )
+    if ( ( ReporticoApp::get("locale")) )
     {
-        if ( array_key_exists ( $out_string, $g_locale["template"] ) )
+        if ( array_key_exists ( $out_string, ( ReporticoApp::get("locale"))["template"] ) )
         {
-            $out_string = $g_locale["template"][$out_string];
+            $out_string = ( ReporticoApp::get("locale"))["template"][$out_string];
         }
     }
     return $out_string;
@@ -1021,9 +992,6 @@ function template_xlate($in_string)
 // Is path executable and writeable?
 function sw_path_executable($in_path)
 {
-	global $g_language;
-	global $g_report_desc;
-
 	$perms = fileperms($in_path);
 	
 	if ( !is_dir ( $in_path ) )
@@ -1069,7 +1037,7 @@ function find_best_location_in_include_path( $path )
 	//if ( !is_file ( $newpath ) && !is_dir ( $newpath ) )
 	//{
 		$found = find_file_to_include($newpath, $newpath, $reltoinclude);
-		$newpath = get_relative_path(str_replace ("/", "\\", realpath($newpath)), dirname(realpath($_SERVER["SCRIPT_FILENAME"])));
+		//$newpath = get_relative_path(str_replace ("/", "\\", realpath($newpath)), dirname(realpath($_SERVER["SCRIPT_FILENAME"])));
         if ( !$found )
             return false;
 	//}
@@ -1146,9 +1114,8 @@ function get_reportico_url_path()
 function available_languages()
 {
         $langs = array();
-        global $g_language;
         $lang_dir = find_best_location_in_include_path( "language" );
-
+//echo $lang_dir; die;
         if ( is_dir ( $lang_dir ) )
         {
             // Place english at the start
@@ -1159,7 +1126,7 @@ function available_languages()
                     if ( $file == "en_gb" || $file == "en_us" )
                         if ( is_dir ( $lang_dir."/".$file ) )
                         {
-                            $langs[] = array("label" => template_xlate($file), "value" => $file, "active" => ($file == $g_language) );
+                            $langs[] = array("label" => template_xlate($file), "value" => $file, "active" => ($file == ReporticoApp::getConfig("language")) );
                         }
                 }
                 closedir($dh);
@@ -1171,7 +1138,7 @@ function available_languages()
                     if ( $file != "." && $file != ".." && $file != "CVS" && $file != "packs" && $file != "en_us" && $file != "en_gb" )
                         if ( is_dir ( $lang_dir."/".$file ) )
                         {
-                            $langs[] = array("label" => template_xlate($file), "value" => $file, "active" => ($file == $g_language) );
+                            $langs[] = array("label" => template_xlate($file), "value" => $file, "active" => ($file == ReporticoApp::getConfig("language")) );
                         }
                 }
                 closedir($dh);
@@ -1298,11 +1265,11 @@ function get_output_encoding_html ()
     $txt = '';
     $tmp1 = '<meta http-equiv="Content-Type" content="text/html; charset=';
     $tmp2 = '" />';
-    switch (get_reportico_config("output_encoding"))
+    switch (ReporticoApp::getConfig("output_encoding"))
     {
         case "None" : $txt = ''; break;
         case "UTF8" : $txt = $tmp1 . "utf-8". $tmp2; '<meta charset="utf-8">'; break;
-        default : $txt = $tmp1 . get_reportico_config("output_encoding"). $tmp2; break;
+        default : $txt = $tmp1 . ReporticoApp::getConfig("output_encoding"). $tmp2; break;
     }
 
     return $txt;
@@ -1429,8 +1396,7 @@ function htmltorgb($color)
 function &load_existing_report ( $reportfile, $projects_folder = "projects" )
 {
     $q = new reportico();
-    global $g_project;
-    $q->reports_path = $projects_folder."/".$g_project;
+    $q->reports_path = $projects_folder."/".ReporticoApp::getconfig("project");
     $q->projects_folder = $projects_folder;
 
     $reader = new reportico_xml_reader($q, $reportfile, false);
@@ -1500,7 +1466,7 @@ function column_name_to_label($columnname)
     if ( !function_exists("mb_strtolower") )
 	    $retstring = ucwords(strtolower($retstring));
     else
-	    $retstring = ucwords(mb_strtolower($retstring,output_charset_to_php_charset(get_reportico_config("output_encoding"))));
+	    $retstring = ucwords(mb_strtolower($retstring,output_charset_to_php_charset(ReporticoApp::getConfig("output_encoding"))));
 	return $retstring;
 }
 
@@ -1510,9 +1476,8 @@ function column_name_to_label($columnname)
 */
 function isset_reportico_session_param($param, $session_name = false)
 {
-    global $g_session_namespace_key;
     if ( !$session_name )
-        return isset($_SESSION[$g_session_namespace_key][$param]);
+        return isset($_SESSION[ReporticoApp::get("session_namespace_key")][$param]);
     else
         return isset($_SESSION[$session_name][$param]);
 }
@@ -1523,10 +1488,9 @@ function isset_reportico_session_param($param, $session_name = false)
 */
 function set_reportico_session_param($param, $value, $namespace = false, $array = false)
 {
-    global $g_session_namespace_key;
     if (  !$namespace  )
     {
-        $_SESSION[$g_session_namespace_key][$param] = $value;
+        $_SESSION[ReporticoApp::get("session_namespace_key")][$param] = $value;
     }
     else
     {
@@ -1547,10 +1511,9 @@ function set_reportico_session_param($param, $value, $namespace = false, $array 
 */
 function get_reportico_session_param($param)
 {
-    global $g_session_namespace_key;
-    if ( isset($_SESSION[$g_session_namespace_key][$param]))
+    if ( isset($_SESSION[ReporticoApp::get("session_namespace_key")][$param]))
     {
-        return $_SESSION[$g_session_namespace_key][$param];
+        return $_SESSION[ReporticoApp::get("session_namespace_key")][$param];
 }
     else
         return false;
@@ -1561,8 +1524,7 @@ function get_reportico_session_param($param)
 */
 function exists_reportico_session()
 {
-    global $g_session_namespace_key;
-    if ( isset($_SESSION[$g_session_namespace_key]))
+    if ( isset($_SESSION[ReporticoApp::get("session_namespace_key")]))
         return true;
     else
         return false;
@@ -1575,9 +1537,8 @@ function exists_reportico_session()
 */
 function unset_reportico_session_param($param)
 {
-    global $g_session_namespace_key;
-    if ( isset($_SESSION[$g_session_namespace_key][$param]))
-        unset($_SESSION[$g_session_namespace_key][$param]);
+    if ( isset($_SESSION[ReporticoApp::get("session_namespace_key")][$param]))
+        unset($_SESSION[ReporticoApp::get("session_namespace_key")][$param]);
 }
 
 /*
@@ -1600,73 +1561,11 @@ function register_session_param($param, $value)
 */
 function reportico_session_name()
 {
-    global $g_session_namespace;
-    //if ( $g_session_namespace )
+    //if ( ReporticoApp::get("session_namespace") )
     if ( get_reportico_session_param("framework_parent" ) )
-        return "NS_".$g_session_namespace;
+        return "NS_".ReporticoApp::get("session_namespace");
     else
-        return session_id()."_".$g_session_namespace;
-}
-
-/*
-** Returns if config item is set
-*/
-function is_set_reportico_config($param)
-{
-    global $g_reportico_config;
-    if ( isset ( $g_reportico_config ) )
-    {
-        if ( isset($g_reportico_config[$param]))
-            return true;
-    }
-    else if ( defined("SW_".strtoupper($param)) )
-    {
-        return true;
-    }
-    else
-        return false;
-}
-
-/*
-** Sets global and project configuration parameters
-*/
-function set_reportico_config($param, $value = false)
-{
-    global $g_reportico_config;
-    if ( $g_reportico_config )
-        $g_reportico_config[$param] = $value;
-}
-
-
-/*
-** Returns global and project configuration parameters
-*/
-function get_reportico_config($param, $default = false)
-{
-    global $g_reportico_config;
-    if ( preg_match("/^SW_/", $param) )
-    {
-        $param = strtolower(preg_replace("/SW_/", "", $param));
-    }
-
-    if ( isset ( $g_reportico_config ) )
-    {
-        if ( isset($g_reportico_config[$param]) )
-        {
-            if ( $g_reportico_config[$param] )
-            {
-                return ($g_reportico_config[$param]);
-            }
-        }
-        else
-            return $default;
-    }
-    else if ( defined("SW_".strtoupper($param)) )
-    {
-        return constant("SW_".strtoupper($param));
-    }
-    else
-        return $default;
+        return session_id()."_".ReporticoApp::get("session_namespace");
 }
 
 /*
@@ -1674,8 +1573,7 @@ function get_reportico_config($param, $default = false)
 */
 function reportico_namespace()
 {
-    global $g_session_namespace_key;
-    return $g_session_namespace_key;
+    return ReporticoApp::get("session_namespace_key");
 }
 
 /*

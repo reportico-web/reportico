@@ -44,15 +44,17 @@ error_reporting(E_ALL);
 // page when called from a framework. In name space in operation the
 // session array index to find reportico variables can be found in "reportico"
 // otherwise it's reportic_<namespace>
-global $g_session_namespace;
-global $g_session_namespace_key;
-$g_session_namespace = false;
-$g_session_namespace_key = "reportico";
+ReporticoApp::set("session_namespace",  false);
+ReporticoApp::set("session_namespace_key",  "reportico");
+
+
 
 set_up_reportico_session();
 
-if ( $g_session_namespace )
-    $g_session_namespace_key = "reportico_".$g_session_namespace;
+if ( ReporticoApp::get("session_namespace") )
+    ReporticoApp::set("session_namespace_key",  "reportico_".ReporticoApp::get("session_namespace") );
+
+
 
 if ( !function_exists("set_project_environment" ) )
 {

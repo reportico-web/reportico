@@ -17,7 +17,7 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
- * File:        reportico_report_rjson.php
+ * File:        ReportRjson.php
  *
  * Base class for all report output formats.
  * Defines base functionality for handling report 
@@ -33,7 +33,7 @@
  */
 namespace Reportico;
 
-class reportico_report_rjson extends reportico_report
+class ReportRjson extends Report
 {
 	var	$graph_session_placeholder = 0;
 
@@ -67,7 +67,7 @@ class reportico_report_rjson extends reportico_report
 
 	function start ()
 	{
-		reportico_report::start();
+		Report::start();
 
 		$this->debug("RJSON Start **");
 		$this->page_line_count = 0;
@@ -75,7 +75,7 @@ class reportico_report_rjson extends reportico_report
 
 	function finish ()
 	{
-        reportico_report::finish();
+        Report::finish();
 
 		if ( $this->line_count < 1 )
             $this->setup_report_attributes();
@@ -102,7 +102,7 @@ class reportico_report_rjson extends reportico_report
 
 	function begin_page()
 	{
-		reportico_report::begin_page();
+		Report::begin_page();
         $this->setup_report_attributes();
 	}
 
@@ -321,9 +321,9 @@ class reportico_report_rjson extends reportico_report
 		$this->graph_session_placeholder++;
 		$graph->width_actual = check_for_default("GraphWidth", $graph->width);
 		$graph->height_actual = check_for_default("GraphHeight", $graph->height);
-		$graph->title_actual = reportico_assignment::reportico_meta_sql_criteria($this->query, $graph->title, true);
-		$graph->xtitle_actual = reportico_assignment::reportico_meta_sql_criteria($this->query, $graph->xtitle, true);
-		$graph->ytitle_actual = reportico_assignment::reportico_meta_sql_criteria($this->query, $graph->ytitle, true);
+		$graph->title_actual = Assignment::reportico_meta_sql_criteria($this->query, $graph->title, true);
+		$graph->xtitle_actual = Assignment::reportico_meta_sql_criteria($this->query, $graph->xtitle, true);
+		$graph->ytitle_actual = Assignment::reportico_meta_sql_criteria($this->query, $graph->ytitle, true);
 		$url_string = $graph->generate_url_params("HTML", $this->graph_session_placeholder);
 		$this->jar[""] .= '<div class="swRepResultGraph">';
 		if ( $url_string )
@@ -401,7 +401,7 @@ class reportico_report_rjson extends reportico_report
 
 	function each_line($val) // HTML
 	{
-		reportico_report::each_line($val);
+		Report::each_line($val);
 
         if ( session_request_item("target_style", "TABLE" ) == "FORM" )
         {
@@ -501,7 +501,7 @@ class reportico_report_rjson extends reportico_report
 
 	function publish()
 	{
-		reportico_report::publish();
+		Report::publish();
 		$this->debug("Publish HTML");
 	}
 

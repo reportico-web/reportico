@@ -75,13 +75,13 @@ class reportico_datasource extends reportico_object
 	
 	function __construct(&$pdo = false, $connections = false)
 	{
-	    $this->_conn_host_name = get_reportico_config("db_host");
-	    $this->_conn_user_name = get_reportico_config("db_user");
-	    $this->_conn_password = get_reportico_config("db_password");
-	    $this->_conn_driver = get_reportico_config("db_driver");
-	    $this->_conn_database = get_reportico_config("db_database");
-	    $this->_conn_server = get_reportico_config("db_server");
-	    $this->_conn_protocol = get_reportico_config("db_protocol");
+	    $this->_conn_host_name = ReporticoApp::getConfig("db_host");
+	    $this->_conn_user_name = ReporticoApp::getConfig("db_user");
+	    $this->_conn_password = ReporticoApp::getConfig("db_password");
+	    $this->_conn_driver = ReporticoApp::getConfig("db_driver");
+	    $this->_conn_database = ReporticoApp::getConfig("db_database");
+	    $this->_conn_server = ReporticoApp::getConfig("db_server");
+	    $this->_conn_protocol = ReporticoApp::getConfig("db_protocol");
 
         $this->external_connection = &$pdo;
         $this->available_connections = &$connections;
@@ -312,29 +312,29 @@ class reportico_datasource extends reportico_object
 			$this->_conn_server = $this->server;
 			$this->_conn_protocol = $this->protocol;
 		}
-		else if ( get_reportico_config("db_connect_from_config") )
+		else if ( ReporticoApp::getConfig("db_connect_from_config") )
 		{
-			$this->_conn_driver = get_reportico_config("db_driver");
+			$this->_conn_driver = ReporticoApp::getConfig("db_driver");
 			if ( !$this->_conn_user_name ) 
 				$this->_conn_user_name = $this->user_name;
-			$this->_conn_password = get_reportico_config("db_password");
+			$this->_conn_password = ReporticoApp::getConfig("db_password");
 			if ( !$this->_conn_password ) 
 				$this->_conn_password = $this->password;
-			$this->_conn_host_name = get_reportico_config("db_host");
-			$this->_conn_database = get_reportico_config("db_database");
-			$this->_conn_server = get_reportico_config("db_server");
-			$this->_conn_protocol = get_reportico_config("db_protocol");
+			$this->_conn_host_name = ReporticoApp::getConfig("db_host");
+			$this->_conn_database = ReporticoApp::getConfig("db_database");
+			$this->_conn_server = ReporticoApp::getConfig("db_server");
+			$this->_conn_protocol = ReporticoApp::getConfig("db_protocol");
 		}
 		else
 		{
 			$this->_conn_driver = $this->driver;
-			$this->_conn_driver = get_reportico_config("db_driver");
+			$this->_conn_driver = ReporticoApp::getConfig("db_driver");
 			$this->_conn_user_name = $this->user_name;
 			$this->_conn_password = $this->password;
 			$this->_conn_host_name = $this->host_name;
-			$this->_conn_database = get_reportico_config("db_database");
-			$this->_conn_server = get_reportico_config("db_server");
-			$this->_conn_protocol = get_reportico_config("db_protocol");
+			$this->_conn_database = ReporticoApp::getConfig("db_database");
+			$this->_conn_server = ReporticoApp::getConfig("db_server");
+			$this->_conn_protocol = ReporticoApp::getConfig("db_protocol");
 		}
 
 		if ( $this->_conn_driver == "none" )
@@ -351,7 +351,7 @@ class reportico_datasource extends reportico_object
 		    return $this->connected;
         }
 
-        $dbtype = get_reportico_config("db_type", false);
+        $dbtype = ReporticoApp::getConfig("db_type", false);
         if ( $dbtype && $dbtype == "existingconnection" && !$this->external_connection )
         {
 				handle_error( "Project defined to use existing connection but none set.");
@@ -404,7 +404,7 @@ class reportico_datasource extends reportico_object
 				break;
 
 			case "array":
-				$this->ado_connection = new reportico_db_array();
+				$this->ado_connection = new DataSourceArray();
 				$this->ado_connection->Connect($this->_conn_database);
 				$connected = true;
 				break;
@@ -438,7 +438,7 @@ class reportico_datasource extends reportico_object
 						    "username=".$this->_conn_user_name."; ".
 						    "password=".$this->_conn_password."; ".
 						    "dbname=".$this->_conn_database;
-                        if ( $dbenc = $this->get_encoding_for_db_driver (  $this->_conn_driver, get_reportico_config("db_encoding") ) )
+                        if ( $dbenc = $this->get_encoding_for_db_driver (  $this->_conn_driver, ReporticoApp::getConfig("db_encoding") ) )
                                 $cnstr .= ";CharacterSet=".$dbenc;
 
 					    $connected = $this->ado_connection->Connect($cnstr,$this->_conn_user_name,$this->_conn_password);
@@ -454,7 +454,7 @@ class reportico_datasource extends reportico_object
 						    "password=".$this->_conn_password."; ".
 						    "dbname=".$this->_conn_database;
 
-                        if ( $dbenc = $this->get_encoding_for_db_driver (  $this->_conn_driver, get_reportico_config("db_encoding") ) )
+                        if ( $dbenc = $this->get_encoding_for_db_driver (  $this->_conn_driver, ReporticoApp::getConfig("db_encoding") ) )
                                 $cnstr .= ";CharacterSet=".$dbenc;
 
 					    $connected = $this->ado_connection->Connect($cnstr,$this->_conn_user_name,$this->_conn_password);
@@ -521,7 +521,7 @@ class reportico_datasource extends reportico_object
                         else
 					        $cnstr = "oci:".  "dbname=//".$this->_conn_host_name."/".$this->_conn_database;
 
-                        if ( $dbenc = $this->get_encoding_for_db_driver (  $this->_conn_driver, get_reportico_config("db_encoding") ) )
+                        if ( $dbenc = $this->get_encoding_for_db_driver (  $this->_conn_driver, ReporticoApp::getConfig("db_encoding") ) )
                                 $cnstr .= ";charset=".$dbenc;
 
 					    $connected = $this->ado_connection->Connect($cnstr,$this->_conn_user_name,$this->_conn_password);
@@ -565,7 +565,7 @@ class reportico_datasource extends reportico_object
 
                         if ( $connected )
                         {
-                            if ( $dbenc = $this->get_encoding_for_db_driver (  $this->_conn_driver, get_reportico_config("db_encoding") ) )
+                            if ( $dbenc = $this->get_encoding_for_db_driver (  $this->_conn_driver, ReporticoApp::getConfig("db_encoding") ) )
                                 $this->ado_connection->Execute("set names '".$dbenc."'");
                         }
                     }
@@ -610,7 +610,7 @@ class reportico_datasource extends reportico_object
     
                         if ( $connected )
                         {
-                                if ( $dbenc = $this->get_encoding_for_db_driver (  $this->_conn_driver, get_reportico_config("db_encoding") ) )
+                                if ( $dbenc = $this->get_encoding_for_db_driver (  $this->_conn_driver, ReporticoApp::getConfig("db_encoding") ) )
                                     $this->ado_connection->Execute("set names '".$dbenc."'");
                         }
                     }

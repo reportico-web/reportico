@@ -1,5 +1,7 @@
 <?php
-$menu_title = get_reportico_config("project_title", "Report Suite");
+namespace Reportico;
+
+$menu_title = ReporticoApp::getConfig("project_title", "Report Suite");
 $menu = array (
 	array ( "language" => "en_gb", "report" => ".*\.xml", "title" => "<AUTO>" )
 	);

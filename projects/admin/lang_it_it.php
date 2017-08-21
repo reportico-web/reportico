@@ -1,5 +1,6 @@
 <?php
-$g_translations = array (
+namespace Reportico;
+$translations = array (
         "it_it" => array (
             "Project Name" => "Nome del progetto",
             "Project Title" => "Titolo del progetto",
@@ -41,7 +42,7 @@ Disattivarlo per consentire l'accesso a queste funzioni. ",
             );
 
 
-$g_report_desc = array (
+$report_desc = array (
     "it_it" => array (
         "createproject" =>
 "
@@ -56,7 +57,7 @@ Quando si è soddisfatti premere il pulsante Andare.
 "),
     );
 
-$g_report_desc [ "it_it"] [ "configureproject"] =
+$report_desc [ "it_it"] [ "configureproject"] =
 "
 Modificare elementi di configurazione per questo progetto.
 <br>
@@ -65,4 +66,8 @@ Modificare elementi di configurazione per questo progetto.
 Quando si è soddisfatti premere il pulsante Andare.
 <P>
 ";
+
+ReporticoApp::set("translations", $translations);
+ReporticoApp::set("report_desc", $report_desc);
+
 ?>

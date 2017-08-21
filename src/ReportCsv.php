@@ -17,7 +17,7 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
- * File:        reportico_report_csv.php
+ * File:        ReportCsv.php
  *
  * Base class for all report output formats.
  * Defines base functionality for handling report 
@@ -33,7 +33,7 @@
  */
 namespace Reportico;
 
-class reportico_report_csv extends reportico_report
+class ReportCsv extends Report
 {
 	var	$abs_top_margin;
 	var	$abs_bottom_margin;
@@ -46,7 +46,7 @@ class reportico_report_csv extends reportico_report
 
 	function start ()
 	{
-		reportico_report::start();
+		Report::start();
 
 		$this->debug("Excel Start **");
 
@@ -55,7 +55,7 @@ class reportico_report_csv extends reportico_report
 
 	function finish ()
 	{
-		reportico_report::finish();
+		Report::finish();
 
 		if ( $this->report_file )
 		{
@@ -139,7 +139,7 @@ class reportico_report_csv extends reportico_report
 		    $this->text .= '"'."$this->reporttitle".'"';
 		    $this->text .= "\n";
         }
-		reportico_report::each_line($val);
+		Report::each_line($val);
 
 		// Excel requires group headers are printed as the first columns in the spreadsheet against
 		// the detail. 
@@ -172,7 +172,7 @@ class reportico_report_csv extends reportico_report
 
 	function begin_page()
 	{
-		reportico_report::begin_page();
+		Report::begin_page();
 
 	}
 
@@ -286,7 +286,7 @@ class reportico_report_csv extends reportico_report
 
 	function publish()
 	{
-		reportico_report::publish();
+		Report::publish();
 		$this->debug("Publish Excel");
 	}
 

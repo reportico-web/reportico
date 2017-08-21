@@ -2,7 +2,7 @@
 namespace Reportico;
 /*
 
- Reportico - PHP R2eporting Tool
+ Reportico - PHP Reporting Tool
  Copyright (C) 2010-2014 Peter Deed
 
  This program is free software; you can redistribute it and/or
@@ -39,13 +39,13 @@ namespace Reportico;
 /* $Id $ */
 
 /**
- * Class reportico_panel
+ * Class DesignPanel
  *
  * Class for storing the hierarchy of content that will be
  * displayed through the browser when running Reportico
  * 
  */
-class reportico_panel
+class DesignPanel
 {
 	var $panel_type;
 	var $query = NULL;
@@ -79,7 +79,7 @@ class reportico_panel
 		$this->program = $in_program;
 		$this->text = $in_text;
 
-		$cp = new reportico_panel($this->query, "MENUITEM");
+		$cp = new DesignPanel($this->query, "MENUITEM");
 		$cp->visible = true;
 		$this->panels[] =& $cp;
 		$cp->program = $in_program;
@@ -92,7 +92,7 @@ class reportico_panel
 		$this->program = $in_program;
 		$this->text = $in_text;
 
-		$cp = new reportico_panel($this->query, "PROJECTITEM");
+		$cp = new DesignPanel($this->query, "PROJECTITEM");
 		$cp->visible = true;
 		$this->panels[] =& $cp;
 		$cp->program = $in_program;
@@ -138,7 +138,7 @@ class reportico_panel
 		switch($this->panel_type)
 		{
 			case "LOGIN":
-                if ( defined ('SW_ADMIN_PASSWORD') && SW_ADMIN_PASSWORD == "__OPENACCESS__" )
+                if ( ReporticoApp::getConfig('admin_password') == "__OPENACCESS__" )
 				    $this->smarty->assign('SHOW_OPEN_LOGIN', true);
                 else {
 				    $this->smarty->assign('SHOW_LOGIN', true);
@@ -147,8 +147,7 @@ class reportico_panel
 				break;
 
 			case "LOGOUT":
-				if ( !SW_DB_CONNECT_FROM_CONFIG )
-				{
+				if ( !ReporticoApp::getConfig("db_connect_from_config") ) {
 					$this->smarty->assign('SHOW_LOGOUT', true);
 				}
 				break;
@@ -170,7 +169,7 @@ class reportico_panel
                 // For Admin options title should be translatable
                 // Also for configureproject.xml
 				global $g_project;
-                if ( $this->query->xmlinput == "configureproject.xml" || $g_project == "admin" )
+                if ( $this->query->xmlinput == "configureproject.xml" || ReporticoApp::getConfig("project") == "admin" )
 				    $this->smarty->assign('TITLE', template_xlate($reporttitle));
                 else
 				    $this->smarty->assign('TITLE', $reporttitle);
@@ -305,14 +304,13 @@ class reportico_panel
 				{
 					if ( !($desc = sw_translate_report_desc($this->query->xmloutfile)) )
 						$desc = $this->query->derive_attribute("ReportDescription", false); 
-					$this->smarty->debug = true;
 					$this->smarty->assign("REPORT_DESCRIPTION", $desc);
 				}
 				break;
 
 			case "USERINFO":
 				$this->smarty->assign('DB_LOGGEDON', true);
-				if ( !SW_DB_CONNECT_FROM_CONFIG )
+				if ( !ReporticoApp::getConfig("db_connect_from_config") )
 				{
 					$this->smarty->assign('DBUSER', $this->query->datasource->user_name);
 				}
@@ -426,7 +424,7 @@ class reportico_panel
 
 				$this->smarty->assign('SHOW_OUTPUT', true);
 
-				if ( defined("SW_ALLOW_OUTPUT" ) && !SW_ALLOW_OUTPUT )
+				if ( !ReporticoApp::getConfig("allow_output", true ) )
 					$this->smarty->assign('SHOW_OUTPUT', false);
 
 				$op = session_request_item("target_format", "HTML");
@@ -467,7 +465,7 @@ class reportico_panel
 				$this->smarty->assign("OUTPUT_SHOWGROUPTRAILERS", get_reportico_session_param("target_show_group_trailers") ? "checked" : "" );
 				$this->smarty->assign("OUTPUT_SHOWCOLHEADERS", get_reportico_session_param("target_show_column_headers") ? "checked" : "" );
 
-				if ( ( $this->query->allow_debug && SW_ALLOW_DEBUG ) )
+				if ( $this->query->allow_debug && ReporticoApp::getConfig("allow_debug", true ) )
 				{
 					$this->smarty->assign("OUTPUT_SHOW_DEBUG", true );
 					$debug_mode = get_request_item("debug_mode", "0", $this->query->first_criteria_selection );

@@ -1,4 +1,5 @@
 <?php
+namespace Reportico;
 // -----------------------------------------------------------------------------
 // -- Reportico -----------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -9,113 +10,129 @@
 
 // Password required to gain access to Administration Panel
 // Set to Blank to allow reset from browser
-define('SW_ADMIN_PASSWORD','PROMPT');
+ReporticoApp::setConfig('admin_password','PROMPT');
 
-define('SW_HTTP_BASEDIR', './');
-define('SW_HTTP_URLHOST', 'http://127.0.0.1');
+ReporticoApp::setConfig('http_basedir', './');
+ReporticoApp::setConfig('http_urlhost', 'http://127.0.0.1');
 
 
 // Default System Language
-define('SW_LANGUAGE', 'PROMPT');
+ReporticoApp::setConfig('language','PROMPT');
 
-define('SW_DEFAULT_PROJECT', 'reports');
+ReporticoApp::setConfig('default_project', 'reports');
 
 // Project Title used at the top of menus
-define('SW_PROJECT_TITLE','Reportico Administration Page');
+ReporticoApp::setConfig('project_title','Reportico Administration Page');
 
 // Identify whether to always run in into Debug Mode
-define('SW_ALLOW_OUTPUT', false);
-define('SW_ALLOW_DEBUG', true);
+ReporticoApp::setConfig('allow_output', false);
+ReporticoApp::setConfig('allow_debug', true);
 
 // Identify whether Show Criteria is default option
-define('SW_DEFAULT_SHOWCRITERIA', false);
+ReporticoApp::setConfig('default_showcriteria', false);
 
 // Specification of Safe Mode. Turn on SAFE mode by specifying true.
 // In SAFE mode, design of reports is allowed but Code and SQL Injection
 // are prevented. This means that the designer prevents entry of potentially
 // cdangerous ustom PHP source in the Custom Source Section or potentially
 // dangerous SQL statements in Pre-Execute Criteria sections
-define('SW_SAFE_DESIGN_MODE', true);
+ReporticoApp::setConfig('safe_design_mode', true);
 
 // If false prevents any designing of reports
-define('SW_ALLOW_MAINTAIN', true);
+ReporticoApp::setConfig('allow_maintain',true);
+
+// If false prevents any designing of reports
+ReporticoApp::setConfig('allow_maintain', true);
 
 // DB connection details for ADODB
-define('SW_DB_DRIVER', 'none');
-define('SW_DB_USER', '');
-define('SW_DB_PASSWORD', '');
-define('SW_DB_HOST', 'localhost');
-define('SW_DB_DATABASE', '');
-define('SW_DB_CONNECT_FROM_CONFIG', true);
-define('SW_DB_DATEFORMAT', 'Y-m-d');
-define('SW_PREP_DATEFORMAT', 'Y-m-d');
-define('SW_DB_SERVER', '');
-define('SW_DB_PROTOCOL', '');
-define('SW_DB_ENCODING', 'None');
+ReporticoApp::setConfig('db_driver', 'none');
+ReporticoApp::setConfig('db_user', '');
+ReporticoApp::setConfig('db_password', '');
+ReporticoApp::setConfig('db_host', 'localhost');
+ReporticoApp::setConfig('db_database', '');
+ReporticoApp::setConfig('db_connect_from_config', true);
+ReporticoApp::setConfig('db_dateformat', 'Y-m-d');
+ReporticoApp::setConfig('prep_dateformat', 'Y-m-d');
+ReporticoApp::setConfig('db_server', '');
+ReporticoApp::setConfig('db_protocol', '');
+ReporticoApp::setConfig('db_encoding', 'None');
 
 //HTML Output Encoding
-define('SW_OUTPUT_ENCODING', 'UTF8');
+ReporticoApp::setConfig('output_encoding', 'UTF8');
 
 // Identify temp area
-define('SW_TMP_DIR', "tmp");
-
-// SOAP Environment
-define('SW_SOAP_NAMESPACE', 'reportico.org');
-define('SW_SOAP_SERVICEBASEURL', 'http://www.reportico.co.uk/swsite/site/tutorials');
+ReporticoApp::setConfig('tmp_dir', "tmp");
 
 // Parameter Defaults
-define('SW_DEFAULT_PageSize', 'A4');
-define('SW_DEFAULT_PageOrientation', 'Landscape');
-define('SW_DEFAULT_TopMargin', "1cm");
-define('SW_DEFAULT_BottomMargin', "2cm");
-define('SW_DEFAULT_LeftMargin', "1cm");
-define('SW_DEFAULT_RightMargin', "1cm");
-define('SW_DEFAULT_pdfFont', "Helvetica");
-define('SW_DEFAULT_pdfFontSize', "10");
+ReporticoApp::setConfig('DEFAULT_PageSize', 'A4');
+ReporticoApp::setConfig('DEFAULT_BottomMargin', "2cm");
+ReporticoApp::setConfig('DEFAULT_LeftMargin', "1cm");
+ReporticoApp::setConfig('DEFAULT_RightMargin', "1cm");
+ReporticoApp::setConfig('DEFAULT_pdfFont', "Helvetica");
+ReporticoApp::setConfig('DEFAULT_pdfFontSize', "10");
 
 // FPDF parameters
-define('FPDF_FONTPATH', './fpdf/font/');
+ReporticoApp::setConfig('fpdf_fontpath', "./fpdf/font/");
 
 // Graph Defaults
-define('SW_DEFAULT_GraphWidth', 800);
-define('SW_DEFAULT_GraphHeight', 400);
-define('SW_DEFAULT_GraphWidthPDF', 500);
-define('SW_DEFAULT_GraphHeightPDF', 250);
-define('SW_DEFAULT_GraphColor', "yellow");
-define('SW_DEFAULT_MarginTop', "20");
-define('SW_DEFAULT_MarginBottom', "80");
-define('SW_DEFAULT_MarginLeft', "50");
-define('SW_DEFAULT_MarginRight', "50");
-define('SW_DEFAULT_MarginColor', "red");
-define('SW_DEFAULT_XTickLabelInterval', "4");
-define('SW_DEFAULT_YTickLabelInterval', "2");
-define('SW_DEFAULT_XTickInterval', "1");
-define('SW_DEFAULT_YTickInterval', "1");
-define('SW_DEFAULT_GridPosition', "back");
-define('SW_DEFAULT_XGridDisplay', "none");
-define('SW_DEFAULT_XGridColor', "gray");
-define('SW_DEFAULT_YGridDisplay', "major");
-define('SW_DEFAULT_YGridColor', "gray");
-define('SW_DEFAULT_TitleFont', "Font2");
-define('SW_DEFAULT_TitleFontStyle', "Normal");
-define('SW_DEFAULT_TitleFontSize', "12");
-define('SW_DEFAULT_TitleColor', "black");
-define('SW_DEFAULT_XTitleFont', "Font1");
-define('SW_DEFAULT_XTitleFontStyle', "Normal");
-define('SW_DEFAULT_XTitleFontSize', "12");
-define('SW_DEFAULT_XTitleColor', "black");
-define('SW_DEFAULT_YTitleFont', "Font1");
-define('SW_DEFAULT_YTitleFontStyle', "Normal");
-define('SW_DEFAULT_YTitleFontSize', "12");
-define('SW_DEFAULT_YTitleColor', "black");
-define('SW_DEFAULT_XAxisFont', "Font1");
-define('SW_DEFAULT_XAxisFontStyle', "Normal");
-define('SW_DEFAULT_XAxisFontSize', "12");
-define('SW_DEFAULT_XAxisFontColor', "black");
-define('SW_DEFAULT_XAxisColor', "black");
-define('SW_DEFAULT_YAxisFont', "Font1");
-define('SW_DEFAULT_YAxisFontStyle', "Normal");
-define('SW_DEFAULT_YAxisFontSize', "12");
-define('SW_DEFAULT_YAxisFontColor', "black");
-define('SW_DEFAULT_YAxisColor', "black");
+ReporticoApp::setConfig('DEFAULT_GraphWidth', 800);
+ReporticoApp::setConfig('DEFAULT_GraphHeight', 400);
+ReporticoApp::setConfig('DEFAULT_GraphWidthPDF', 500);
+ReporticoApp::setConfig('DEFAULT_GraphHeightPDF', 250);
+ReporticoApp::setConfig('DEFAULT_GraphColor', "yellow");
+ReporticoApp::setConfig('DEFAULT_MarginTop', "20");
+ReporticoApp::setConfig('DEFAULT_MarginBottom', "80");
+ReporticoApp::setConfig('DEFAULT_MarginLeft', "50");
+ReporticoApp::setConfig('DEFAULT_MarginRight', "50");
+ReporticoApp::setConfig('DEFAULT_MarginColor', "red");
+ReporticoApp::setConfig('DEFAULT_XTickLabelInterval', "4");
+ReporticoApp::setConfig('DEFAULT_YTickLabelInterval', "2");
+ReporticoApp::setConfig('DEFAULT_XTickInterval', "1");
+ReporticoApp::setConfig('DEFAULT_YTickInterval', "1");
+ReporticoApp::setConfig('DEFAULT_GridPosition', "back");
+ReporticoApp::setConfig('DEFAULT_XGridDisplay', "none");
+ReporticoApp::setConfig('DEFAULT_XGridColor', "gray");
+ReporticoApp::setConfig('DEFAULT_YGridDisplay', "major");
+ReporticoApp::setConfig('DEFAULT_YGridColor', "gray");
+ReporticoApp::setConfig('DEFAULT_TitleFont', "Font2");
+ReporticoApp::setConfig('DEFAULT_TitleFontStyle', "Normal");
+ReporticoApp::setConfig('DEFAULT_TitleFontSize', "12");
+ReporticoApp::setConfig('DEFAULT_TitleColor', "black");
+ReporticoApp::setConfig('DEFAULT_XTitleFont', "Font1");
+ReporticoApp::setConfig('DEFAULT_XTitleFontStyle', "Normal");
+ReporticoApp::setConfig('DEFAULT_XTitleFontSize', "12");
+ReporticoApp::setConfig('DEFAULT_XTitleColor', "black");
+ReporticoApp::setConfig('DEFAULT_YTitleFont', "Font1");
+ReporticoApp::setConfig('DEFAULT_YTitleFontStyle', "Normal");
+ReporticoApp::setConfig('DEFAULT_YTitleFontSize', "12");
+ReporticoApp::setConfig('DEFAULT_YTitleColor', "black");
+ReporticoApp::setConfig('DEFAULT_XAxisFont', "Font1");
+ReporticoApp::setConfig('DEFAULT_XAxisFontStyle', "Normal");
+ReporticoApp::setConfig('DEFAULT_XAxisFontSize', "12");
+ReporticoApp::setConfig('DEFAULT_XAxisFontColor', "black");
+ReporticoApp::setConfig('DEFAULT_XAxisColor', "black");
+ReporticoApp::setConfig('DEFAULT_YAxisFont', "Font1");
+ReporticoApp::setConfig('DEFAULT_YAxisFontStyle', "Normal");
+ReporticoApp::setConfig('DEFAULT_YAxisFontSize', "12");
+ReporticoApp::setConfig('DEFAULT_YAxisFontColor', "black");
+ReporticoApp::setConfig('DEFAULT_YAxisColor', "black");
+
+// Statis Menu Title default to project Title
+ReporticoApp::set('menu_title',ReporticoApp::getConfig('project_title'));
+
+// Vertical centre page main menu, default show all reports in project
+ReporticoApp::set('static_menu', array (
+        array ( "language" => "en_gb", "report" => "", "title" => "BLANKLINE" ),
+	    array ( "language" => "en_gb", "report" => "createproject.xml", "title" => "Create A New Project" ),
+	    array ( "language" => "en_gb", "report" => "createtutorials.xml", "title" => "Configure Tutorials" ),
+	));
+
+// Vertical centre page main menu in admin mode default to all reports
+ReporticoApp::set('admin_menu', array (
+        array ( 'language' => 'en_gb', 'report' => '.*\.xml', 'title' => '<AUTO>' )
+        ));
+
+// Dropdown project menu, default to none
+ReporticoApp::set('dropdown_menu', false );
+
 ?>

@@ -17,7 +17,7 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
- * File:        reportico_report_soap_template.php
+ * File:        ReportSoapTemplate.php
  *
  * Base class for all report output formats.
  * Defines base functionality for handling report 
@@ -33,7 +33,7 @@
  */
 namespace Reportico;
 
-class reportico_report_soap_template extends reportico_report
+class ReportSoapTemplate extends Report
 {
 
 	var $soapdata = array();
@@ -46,7 +46,7 @@ class reportico_report_soap_template extends reportico_report
 		// Include NuSoap Web Service PlugIn
 		//require_once("nusoap.php");
 
-		reportico_report::start();
+		Report::start();
 
 		$this->reporttitle = $this->query->derive_attribute("ReportTitle", "Set Report Title");
 		$this->debug("SOAP Start **");
@@ -54,7 +54,7 @@ class reportico_report_soap_template extends reportico_report
 
 	function finish ()
 	{
-		reportico_report::finish();
+		Report::finish();
 		$this->debug("HTML End **");
 
 		if ( $this->line_count < 1 )
@@ -91,7 +91,7 @@ class reportico_report_soap_template extends reportico_report
 
 	function each_line($val)
 	{
-		reportico_report::each_line($val);
+		Report::each_line($val);
 
 		if ( $this->page_line_count == 1 )
 		{

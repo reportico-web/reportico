@@ -5,12 +5,12 @@ namespace Reportico;
 
 
 /**
- * Class reportico_assignment
+ * Class Assignment
  *
  * Identifies instructions for report column output
  * that must be calculated upon report execution. 
  */
-class reportico_assignment extends reportico_object
+class Assignment extends reportico_object
 {
 	var $query_name;
 	var $expression;

@@ -2215,7 +2215,7 @@ class XmlReader
 		if ( !$show_area )
 			$show_area = "mainquer";
 
-		$xmlout = new reportico_xml_writer($this->query);
+		$xmlout = new XmlWriter($this->query);
 		$xmlout->prepare_xml_data();
 
 		// If Save option has been used then write data to the named file and
@@ -2332,7 +2332,7 @@ class XmlReader
 
 		}
 
-		$default = get_default($striptag, ".");
+		$default = ReporticoApp::getDefaultConfig($striptag, ".");
 
 		$helppage = "importlink";
 		if ( $helppage )
@@ -3766,7 +3766,7 @@ class XmlReader
         if ( $overridetitle )
             $title = $overridetitle;
 
-		$default = get_default($striptag, ".");
+		$default = ReporticoApp::getDefaultConfig($striptag, ".");
 
 		if ( $type == "HIDE" )
 		{

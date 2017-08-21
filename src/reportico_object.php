@@ -61,7 +61,7 @@ class reportico_object
 		$parsed  = $to_parse;
         if ( preg_match ( "/{constant,SW_PROJECT}/", $parsed ) )
         {
-            $parsed = $g_project;
+            $parsed = ReporticoApp::getConfig("project");
             return $parsed;
         }
 		else

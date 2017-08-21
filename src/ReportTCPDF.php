@@ -17,7 +17,7 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
- * File:        reportico_report_pdf.php
+ * File:        Report_pdf.php
  *
  * Base class for all report output formats.
  * Defines base functionality for handling report 
@@ -33,7 +33,7 @@
  */
 namespace Reportico;
 
-class reportico_report_tcpdf extends reportico_report
+class ReportTCPDF extends Report
 {
     var $dbg = false;
 	var	$abs_top_margin;
@@ -184,7 +184,7 @@ echo $txt;
     // For each line reset styles to default values
     function set_default_styles()
     {
-		reportico_report::set_default_styles();
+		Report::set_default_styles();
 
 		// Default column headers to underlined if not specified
         if ( !$this->query->output_header_styles )
@@ -240,7 +240,7 @@ echo $txt;
 
 	function start ()
 	{
-		reportico_report::start();
+		Report::start();
 		$this->debug("PDF Start **");
 
 
@@ -827,7 +827,7 @@ echo $txt;
 
 	function finish ()
 	{
-		reportico_report::finish();
+		Report::finish();
 		$this->debug("Finish");
 
 		$this->document->SetDisplayMode("real");
@@ -1552,7 +1552,7 @@ echo $txt;
             if ( !preg_match("/^http:\/\//", $link) && !preg_match("/^\//", $link ) )
                 $link = "http://".$_SERVER["HTTP_HOST"].dirname($this->query->url_path_to_reportico_runner)."/".$link;
             if ( preg_match("/^\//", $link ) )
-                $link = get_reportico_config("http_urlhost")."/".$link;
+                $link = ReporticoApp::getConfig("http_urlhost")."/".$link;
         }
 
         // Cell Side Borders
@@ -2029,7 +2029,7 @@ echo $txt;
         }
 
         $tx = $this->reportico_string_to_php($tx);
-        $tx = reportico_assignment::reportico_meta_sql_criteria($this->query, $tx);
+        $tx = Assignment::reportico_meta_sql_criteria($this->query, $tx);
         $tx = preg_replace("/<\/*u>/", "", $tx);
 
         return $styles;
@@ -2067,7 +2067,7 @@ echo $txt;
                 $tx = $custom;
                 $styles = $this->fetch_cell_styles($tx);
                 $tx = $this->reportico_string_to_php($tx);
-                $tx = reportico_assignment::reportico_meta_sql_criteria($this->query, $tx);
+                $tx = Assignment::reportico_meta_sql_criteria($this->query, $tx);
                 $just = "L";
 
                 $this->apply_style_tags( "EACHHEADMID", $this->mid_cell_reportbody_styles);
@@ -2171,7 +2171,7 @@ echo $txt;
 
 			    if ( $str )
 			    {
-				    $tmpnam = tempnam(get_reportico_config("tmp_dir"), "dbi");
+				    $tmpnam = tempnam(ReporticoApp::getConfig("tmp_dir"), "dbi");
                     unlink ($tmpnam);
 				    $width = $qn->abs_column_width;
 				    $height = 20;
@@ -2255,9 +2255,9 @@ echo $txt;
 	{
 		//$this->end_line();
 		
-		$tmpnam = tempnam(get_reportico_config("tmp_dir"), "gph");
+		$tmpnam = tempnam(ReporticoApp::getConfig("tmp_dir"), "gph");
 
-        if ( get_reportico_config("graph_engine") == "PCHART" )
+        if ( ReporticoApp::getConfig("graph_engine") == "PCHART" )
         {
 		    unlink($tmpnam);
 		    $img = $graph->generate_graph_image($tmpnam.".png");
@@ -2364,7 +2364,7 @@ echo $txt;
      */
 	function format_report_detail_start() // PDF
 	{
-		reportico_report::format_report_detail_start();
+		Report::format_report_detail_start();
     }
 
     /*
@@ -2372,7 +2372,7 @@ echo $txt;
      */
 	function format_report_detail_end()
 	{
-		reportico_report::format_report_detail_end();
+		Report::format_report_detail_end();
     }
 
     /*
@@ -2559,7 +2559,7 @@ echo $txt;
 
 			if ( $str )
 			{
-				$tmpnam = tempnam(get_reportico_config("tmp_dir"), "dbi");
+				$tmpnam = tempnam(ReporticoApp::getConfig("tmp_dir"), "dbi");
                 unlink ($tmpnam);
 				$width = $column_item->abs_column_width;
 				$height = 20;
@@ -3236,7 +3236,7 @@ echo $txt;
         }
 
 
-		reportico_report::each_line($val);
+		Report::each_line($val);
         if ( session_request_item("target_style", "TABLE" ) == "FORM" )
         {
 		    $this->end_line();
@@ -3452,7 +3452,7 @@ echo $txt;
 				if ( $str )
 				{
 					//$im = convert_image_string_to_image($str, "png");
-					$tmpnam = tempnam(get_reportico_config("tmp_dir"), "dbi");
+					$tmpnam = tempnam(ReporticoApp::getConfig("tmp_dir"), "dbi");
                     unlink ($tmpnam);
 					$width = $qn->abs_column_width;
 					$height = 20;
@@ -3512,7 +3512,7 @@ echo $txt;
 
 	function begin_page()
 	{
-		reportico_report::begin_page();
+		Report::begin_page();
 
         $this->page_footer_start_y = $this->abs_bottom_margin;
         $this->page_header_start_y = $this->abs_top_margin;
@@ -3530,7 +3530,7 @@ echo $txt;
 
         // Page Headers
         $this->apply_style_tags( "EACHHEADMID", $this->mid_cell_reportbody_styles);
-		reportico_report::page_headers();
+		Report::page_headers();
         $prevx = $this->document->GetX();
         $prevy = $this->document->GetY();
 		$this->end_line();
@@ -3589,7 +3589,7 @@ echo $txt;
 
 	function publish()
 	{
-		reportico_report::publish();
+		Report::publish();
 		$this->debug("Publish PDF");
 	}
 

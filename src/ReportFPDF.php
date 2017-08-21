@@ -35,9 +35,9 @@
 namespace Reportico;
 
 // -----------------------------------------------------------------------------
-// Class reportico_report_fpdf
+// Class ReportFPDF
 // -----------------------------------------------------------------------------
-class reportico_report_fpdf extends reportico_report
+class ReportFPDF extends Report
 {
 	var	$abs_top_margin;
 	var	$abs_bottom_margin;
@@ -112,7 +112,7 @@ class reportico_report_fpdf extends reportico_report
     // For each line reset styles to default values
     function set_default_styles()
     {
-		reportico_report::set_default_styles();
+		Report::set_default_styles();
 
 		// Default column headers to underlined if not specified
         if ( !$this->query->output_header_styles )
@@ -152,7 +152,7 @@ class reportico_report_fpdf extends reportico_report
 
 	function start ()
 	{
-		reportico_report::start();
+		Report::start();
 		$this->debug("PDF Start **");
 
 
@@ -378,7 +378,7 @@ class reportico_report_fpdf extends reportico_report
 
 	function finish ()
 	{
-		reportico_report::finish();
+		Report::finish();
 		$this->debug("Finish");
 
 		//if ( $this->line_count < 1 )
@@ -951,7 +951,7 @@ class reportico_report_fpdf extends reportico_report
                 }
 
                 $tx = $this->reportico_string_to_php($tx);
-		        $tx = reportico_assignment::reportico_meta_sql_criteria($this->query, $tx);
+		        $tx = Assignment::reportico_meta_sql_criteria($this->query, $tx);
                 $tx = preg_replace("/<\/*u>/", "", $tx);
                 
 	            $this->apply_style_tags($styles);
@@ -1038,7 +1038,7 @@ class reportico_report_fpdf extends reportico_report
 
 			    if ( $str )
 			    {
-				    $tmpnam = tempnam(get_reportico_config("tmp_dir"), "dbi");
+				    $tmpnam = tempnam(ReporticoApp::getConfig("tmp_dir"), "dbi");
                     unlink ($tmpnam);
 				    $width = $qn->abs_column_width;
 				    $height = 20;
@@ -1120,7 +1120,7 @@ class reportico_report_fpdf extends reportico_report
 	{
 		$this->end_line();
 		
-		$tmpnam = tempnam(get_reportico_config("tmp_dir"), "gph");
+		$tmpnam = tempnam(ReporticoApp::getConfig("tmp_dir"), "gph");
         if ( defined("SW_GRAPH_ENGINE") && SW_GRAPH_ENGINE == "PCHART" )
         {
 		    unlink($tmpnam);
@@ -1247,7 +1247,7 @@ class reportico_report_fpdf extends reportico_report
 
 			if ( $str )
 			{
-				$tmpnam = tempnam(get_reportico_config("tmp_dir"), "dbi");
+				$tmpnam = tempnam(ReporticoApp::getConfig("tmp_dir"), "dbi");
                 unlink ($tmpnam);
 				$width = $column_item->abs_column_width;
 				$height = 20;
@@ -1510,7 +1510,7 @@ class reportico_report_fpdf extends reportico_report
 	function each_line($val) // PDF
 	{
         
-		reportico_report::each_line($val);
+		Report::each_line($val);
 
         if ( session_request_item("target_style", "TABLE" ) == "FORM" )
         {
@@ -1674,7 +1674,7 @@ class reportico_report_fpdf extends reportico_report
 				if ( $str )
 				{
 					//$im = convert_image_string_to_image($str, "png");
-					$tmpnam = tempnam(get_reportico_config("tmp_dir"), "dbi");
+					$tmpnam = tempnam(ReporticoApp::getConfig("tmp_dir"), "dbi");
                     unlink ($tmpnam);
 					$width = $qn->abs_column_width;
 					$height = 20;
@@ -1734,7 +1734,7 @@ class reportico_report_fpdf extends reportico_report
 
 	function begin_page()
 	{
-		reportico_report::begin_page();
+		Report::begin_page();
 
 		$this->debug("PDF Begin Page\n");
 
@@ -1746,7 +1746,7 @@ class reportico_report_fpdf extends reportico_report
 		$this->set_position($this->abs_left_margin, $this->abs_top_margin);
         $this->current_line_start_y = $this->document->GetY();
 
-		reportico_report::page_headers();
+		Report::page_headers();
 		$this->end_line();
 		$this->end_line();
 	}
@@ -1760,7 +1760,7 @@ class reportico_report_fpdf extends reportico_report
 
 	function publish()
 	{
-		reportico_report::publish();
+		Report::publish();
 		$this->debug("Publish PDF");
 	}
 
@@ -1808,7 +1808,7 @@ class reportico_report_fpdf extends reportico_report
         }
 
         $tx = $this->reportico_string_to_php($tx);
-		$tx = reportico_assignment::reportico_meta_sql_criteria($this->query, $tx);
+		$tx = Assignment::reportico_meta_sql_criteria($this->query, $tx);
         $tx = preg_replace("/<\/*u>/", "", $tx);
 
 	    $this->apply_style_tags($styles);
@@ -1863,7 +1863,7 @@ class reportico_report_fpdf extends reportico_report
         }
 
         $tx = $this->reportico_string_to_php($tx);
-		$tx = reportico_assignment::reportico_meta_sql_criteria($this->query, $tx);
+		$tx = Assignment::reportico_meta_sql_criteria($this->query, $tx);
         $tx = preg_replace("/<\/*u>/", "", $tx);
 
 	    $this->apply_style_tags($styles);

@@ -75,12 +75,12 @@ function convert_special_chars($intext)
 
 set_up_reportico_session();		
 
-global $g_session_namespace;
-global $g_session_namespace_key;
-if ( $g_session_namespace )
-    $g_session_namespace_key = "reportico_".$g_session_namespace;
+if ( ReporticoApp::get("session_namespace") )
+    ReporticoApp::set("session_namespace_key",  "reportico_".ReporticoApp::get("session_namespace") );
 else
-    $g_session_namespace_key = "reportico";
+    ReporticoApp::set("session_namespace_key",  "reportico");
+
+
 
 $plotdata = array();
 $plot = array();

@@ -5,7 +5,7 @@ namespace Reportico;
 
 
 /**
- * Class reportico_criteria_column
+ * Class CriteriaColumn
  *
  * Identifies a criteria item. Holds all the necessary information
  * to allow users to input criteria values including criteria presentation
@@ -13,7 +13,7 @@ namespace Reportico;
  * lists can be generated from the database when the criteria type is LOOKUP
  */
 
-class reportico_criteria_column extends reportico_query_column
+class CriteriaColumn extends reportico_query_column
 {
 	var $defaults = array();
 	var $defaults_raw = "";
@@ -93,7 +93,7 @@ class reportico_criteria_column extends reportico_query_column
 		global $g_code_area;
 
 		$g_code_area = "Criteria ".$this->query_name;
-		$rep = new reportico_report_array();
+		$rep = new ReportArray();
 
 		$this->lookup_query->rowselection = true;
 		$this->lookup_query->set_datasource($this->datasource);

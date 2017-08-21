@@ -17,7 +17,7 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
- * File:        reportico_report_html.php
+ * File:        ReportHtml.php
  *
  * Base class for all report output formats.
  * Defines base functionality for handling report 
@@ -34,7 +34,7 @@
 
 namespace Reportico;
 
-class reportico_report_html extends reportico_report
+class ReportHtml extends Report
 {
 	var	$abs_top_margin;
 	var	$abs_bottom_margin;
@@ -53,7 +53,7 @@ class reportico_report_html extends reportico_report
 
 	function start ()
 	{
-		reportico_report::start();
+		Report::start();
 
 		$this->debug("HTML Start **");
 
@@ -70,7 +70,7 @@ class reportico_report_html extends reportico_report
 
 	function finish ()
 	{
-		reportico_report::finish();
+		Report::finish();
 		$this->debug("HTML End **");
 
         if ( preg_match("/\?/", $this->query->get_action_url()) )
@@ -351,7 +351,7 @@ class reportico_report_html extends reportico_report
 //echo "<BR>";
 
         $tx = $this->reportico_string_to_php($tx);
-        $tx = reportico_assignment::reportico_meta_sql_criteria($this->query, $tx);
+        $tx = Assignment::reportico_meta_sql_criteria($this->query, $tx);
         $tx = preg_replace("/<\/*u>/", "", $tx);
 
         return $styles;
@@ -522,9 +522,9 @@ class reportico_report_html extends reportico_report
 		$this->graph_session_placeholder++;
 		$graph->width_actual = check_for_default("GraphWidth", $graph->width);
 		$graph->height_actual = check_for_default("GraphHeight", $graph->height);
-		$graph->title_actual = reportico_assignment::reportico_meta_sql_criteria($this->query, $graph->title, true);
-		$graph->xtitle_actual = reportico_assignment::reportico_meta_sql_criteria($this->query, $graph->xtitle, true);
-		$graph->ytitle_actual = reportico_assignment::reportico_meta_sql_criteria($this->query, $graph->ytitle, true);
+		$graph->title_actual = Assignment::reportico_meta_sql_criteria($this->query, $graph->title, true);
+		$graph->xtitle_actual = Assignment::reportico_meta_sql_criteria($this->query, $graph->xtitle, true);
+		$graph->ytitle_actual = Assignment::reportico_meta_sql_criteria($this->query, $graph->ytitle, true);
 		$url_string = $graph->generate_url_params("HTML", $this->graph_session_placeholder);
 		$this->text .= '<div class="swRepResultGraph">';
 		if ( $url_string )
@@ -623,7 +623,7 @@ class reportico_report_html extends reportico_report
 	function each_line($val) // HTML
 	{
 
-		reportico_report::each_line($val);
+		Report::each_line($val);
 
         if ( session_request_item("target_style", "TABLE" ) == "FORM" )
         {
@@ -714,7 +714,7 @@ class reportico_report_html extends reportico_report
 
 	function begin_page()
 	{
-		reportico_report::begin_page();
+		Report::begin_page();
 
         $this->throw_page = true;
         //$this->page_started = true;
@@ -751,7 +751,7 @@ class reportico_report_html extends reportico_report
         }
 
         // Page Headers
-		reportico_report::page_headers();
+		Report::page_headers();
 
 		$title = $this->query->derive_attribute("ReportTitle", "Unknown");
         if ( $this->query->output_template_parameters["show_hide_report_output_title"] != "hide" )
@@ -791,7 +791,7 @@ class reportico_report_html extends reportico_report
 
 	function publish()
 	{
-		reportico_report::publish();
+		Report::publish();
 		$this->debug("Publish HTML");
 	}
 

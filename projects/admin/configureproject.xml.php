@@ -1,4 +1,5 @@
 <?php
+namespace Reportico;
 
 //global $_configure_mode;
 
@@ -9,7 +10,6 @@ global $g_system_errors;
 
 $g_system_errors = array();
 global $g_debug_mode;
-global $g_no_sql;
 if ( $_configure_mode != "DELETE" )
 {
     $configparams["SW_PROJECT_PASSWORD"] = $_criteria["projectpassword"]->get_criteria_value("VALUE", false);
@@ -51,7 +51,7 @@ if ( $_configure_mode != "DELETE" )
     if ( !$configparams["SW_HTTP_BASEDIR"] ) { trigger_error ( "Specify Base URL", E_USER_NOTICE ); return; }
 
     $g_debug_mode = true;
-    $g_no_sql = true;
+    ReporticoApp::set("no_sql",true);
 
 
 
@@ -158,7 +158,7 @@ if ( file_exists ( $proj_conf ) && $_configure_mode == "DELETE" )
         trigger_error ("Failed to disable $proj_conf file. Possible permission, configuration problem", E_USER_NOTICE);
     else
 	    handle_debug("Project Deleted Successfully", 0);
-    $g_no_sql = true;
+    ReporticoApp::set("no_sql",true);
     
     return;
 }
@@ -217,6 +217,7 @@ $matches = array();
 //}
 
 // If this is a reportico pre 2.8 then it wont handle "framework" type
+$installation_type = "OLD";
 foreach ( $configparams as $paramkey => $paramval )
 {
 
@@ -229,7 +230,7 @@ foreach ( $configparams as $paramkey => $paramval )
     $paramval = preg_replace('/\\\$/', '\\\\\\', $paramval);
     $paramval = addcslashes($paramval, "'\"");
 
-	if ( !preg_match("/global \\\$g_reportico_config ;/", $txt)) {
+	if ( !preg_match("/ReporticoApp/", $txt)) {
         // Apply config to older types of config file stored as defines
 	    $match = preg_match ( "/(define.*?$paramkey',).*\);/", $txt);
         if ( $match ) {
@@ -250,33 +251,30 @@ foreach ( $configparams as $paramkey => $paramval )
         continue;
     }
 
+    $installation_type = "NEW";
+
     // Use new type of
     $modkey = strtolower($paramkey);
     $modkey = preg_replace("/^sw_/", "", $modkey);
 
 
     // Check if parameter exists in config file and if not add it (caters for new parameters in Reportico for existing projects )
-	$match = preg_match ( "/\\\$g_reportico_config\[.$modkey.\] = /", $txt);
-
-    if ( !$match )
-    {
-	    $txt = preg_replace ( "/\?>/", "\n// Automatic addition of parameter $modkey\n\$g_reportico_config[\"$modkey\"] = \"$paramval\";\n?>", $txt);
+	$match = preg_match ( "/ReporticoApp::setConfig\(.$modkey.,/", $txt);
+    if ( !$match ) {
+	    $txt = preg_replace ( "/\?>/", "\n// Automatic addition of parameter $modkey\nReporticoApp::setConfig('$modkey','$paramval');\n?>", $txt);
     }
-    else
-    {
-        if ( $paramkey == "SW_SAFE_DESIGN_MODE" )
-        {
+    else {
+        if ( $paramkey == "SW_SAFE_DESIGN_MODE" ) {
             if ( $paramval )
                 $paramval = "true";
             else
                 $paramval = "false";
     
-            $txt = preg_replace ( "/(\\\$g_reportico_config\[.$modkey.\] = ).*/", "$1$paramval;", $txt);
+            $txt = preg_replace ( "/(ReporticoApp::setConfig\(.$modkey.,).*/", "$1$paramval);", $txt);
         }
-        else
-        {
+        else {
             $paramval = $paramval;
-            $txt = preg_replace ( "/(\\\$g_reportico_config\[.$modkey.\] = ).*/", "$1\"$paramval\";", $txt);
+            $txt = preg_replace ( "/(ReporticoApp::setConfig\(.$modkey.,).*/", "$1\"$paramval\");", $txt);
         }
     }
 }
@@ -286,8 +284,11 @@ $retval = file_put_contents($proj_conf, $txt);
 
 if ( $_configure_mode == "CREATE" )
 {
-	$txt = file_get_contents($menu_template);
-	$retval = file_put_contents($proj_menu, $txt);
+    if ( $installation_type == "OLD" )
+    {
+	    $txt = file_get_contents($menu_template);
+	    $retval = file_put_contents($proj_menu, $txt);
+    }
 	$txt = file_get_contents($lang_template);
 	$retval = file_put_contents($proj_lang, $txt);
 }
