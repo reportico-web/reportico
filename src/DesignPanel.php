@@ -162,14 +162,15 @@ class DesignPanel
                 break;
 
             case "TITLE":
-                $reporttitle = swTranslate($this->query->deriveAttribute("ReportTitle", "Set Report Title"));
 
                 // For Admin options title should be translatable
                 // Also for configureproject.xml
                 global $g_project;
                 if ($this->query->xmlinput == "configureproject.xml" || ReporticoApp::getConfig("project") == "admin") {
-                    $this->smarty->assign('TITLE', templateXlate($reporttitle));
+                    $reporttitle = $this->query->deriveAttribute("ReportTitle", "Set Report Title");
+                    $this->smarty->assign('TITLE', swTranslate($reporttitle));
                 } else {
+                    $reporttitle = swTranslate($this->query->deriveAttribute("ReportTitle", "Set Report Title"));
                     $this->smarty->assign('TITLE', $reporttitle);
                 }
 

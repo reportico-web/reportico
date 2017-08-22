@@ -967,7 +967,11 @@ function templateXlate($in_string)
         if (array_key_exists($out_string, (ReporticoApp::get("locale"))["template"])) {
             $out_string = (ReporticoApp::get("locale"))["template"][$out_string];
         }
+        else
+            $out_string = $in_string;
     }
+    else
+        $out_string = $in_string;
     return $out_string;
 }
 

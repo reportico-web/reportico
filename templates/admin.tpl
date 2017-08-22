@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <HTML>
 <HEAD>
-<TITLE>{$T_ADMINTITLE}</TITLE>
+<TITLE>{$T_TITLE}</TITLE>
 <LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{$STYLESHEET}">
 {if $BOOTSTRAP_STYLES}
 {if $BOOTSTRAP_STYLES == "2"}
@@ -138,7 +138,7 @@
 <div class="smallbanner">Version <a href="http://www.reportico.org/" target="_blank">{$REPORTICO_VERSION}</a></div>
 </div>
 <div style="height: 78px">
-<H1 class="swTitle" style="text-align: center; padding-top: 30px; padding-left: 200px;">{$T_ADMINTITLE}</H1>
+<H1 class="swTitle" style="text-align: center; padding-top: 30px; padding-left: 200px;">{$T_TITLE}</H1>
 </div>
 </div>
 <input type="hidden" name="reportico_session_name" value="{$SESSION_ID}" /> 

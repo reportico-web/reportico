@@ -1,4 +1,4 @@
-{include file='bootstrap3mod/header.inc.tpl'}
+{include file='bootstrap3/header.inc.tpl'}
 <div id="reportico_container">
     <script>
         reportico_criteria_items = [];

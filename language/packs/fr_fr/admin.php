@@ -2,7 +2,7 @@
 $locale_arr = array (
 "language" => "French",
 "template" => array (
-        "T_ADMINTITLE" => "Page d'administration Reportico",
+        "T_TITLE" => "Page d'administration Reportico",
         "T_LOGGED_IN_AS" => "Connecté en tant que",
         "T_LOGIN" => "Connexion",
         "T_LOGOFF" => "Déconnexion",

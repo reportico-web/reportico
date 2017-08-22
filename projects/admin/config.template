@@ -242,7 +242,7 @@ ReporticoApp::setConfig('chart_YAxisColor',ReporticoApp::getConfig('chart_LineCo
 }
 
 
-// Statis Menu Title default to project Title
+// Static Menu Title default to project Title
 ReporticoApp::set('menu_title',ReporticoApp::getConfig('project_title'));
 
 // Vertical centre page main menu, default show all reports in project

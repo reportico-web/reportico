@@ -5418,7 +5418,8 @@ class Reportico extends ReporticoObject
         }
 
         $txt = preg_replace("/(define.*?SW_ADMIN_PASSWORD',).*\);/", "$1'$password1');", $txt);
-        $txt = preg_replace("/(define.*?SW_LANGUAGE',).*\);/", "$1'$language');", $txt);
+        $txt = preg_replace ( "/(ReporticoApp::setConfig\(.admin_password.,).*/", "$1'$password1');", $txt);
+        $txt = preg_replace ( "/(ReporticoApp::setConfig\(.language.,).*/", "$1'$language');", $txt);
 
         unsetReporticoSessionParam('admin_password');
         $retval = file_put_contents($proj_conf, $txt);
