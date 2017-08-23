@@ -61,4 +61,9 @@ $dropdown_menu = array(
                         ),
                 );
 
+// Vertical centre page main menu, default show all reports in project
+ReporticoApp::set('static_menu', $menu);
+ReporticoApp::set('admin_menu', $admin_menu);
+ReporticoApp::set('dropdown_menu', $dropdown_menu);
+
 ?>

@@ -93,7 +93,7 @@ class ReporticoObject
                 if (defined($parsed)) {
                     $parsed = constant($parsed);
                 } else {
-                    $parsed = "";
+                    $parsed = ReporticoApp::getConfig($parsed);
                 }
 
             }
@@ -106,7 +106,7 @@ class ReporticoObject
             if (defined($parsed)) {
                 $parsed = constant($parsed);
             } else {
-                $parsed = "";
+                $parsed = ReporticoApp::getConfig($parsed);
             }
 
             return $parsed;

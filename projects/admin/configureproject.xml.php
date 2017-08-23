@@ -48,7 +48,7 @@ if ( $_configure_mode != "DELETE" )
 
     if ( !$configparams["SW_PROJECT"] ) { trigger_error ( "Specify Project Name", E_USER_NOTICE ); return; }
     if ( !$configparams["SW_PROJECT_TITLE"] ) { trigger_error ( "Specify Project Title", E_USER_NOTICE ); return; }
-    if ( !$configparams["SW_HTTP_BASEDIR"] ) { trigger_error ( "Specify Base URL", E_USER_NOTICE ); return; }
+    //if ( !$configparams["SW_HTTP_BASEDIR"] ) { trigger_error ( "Specify Base URL", E_USER_NOTICE ); return; }
 
     $g_debug_mode = true;
     ReporticoApp::set("no_sql",true);
@@ -297,7 +297,7 @@ if ( $configparams["SW_PROJECT"] != "tutorials" )
 if ( !$configparams["SW_PROJECT_PASSWORD"] ) handleDebug ("Warning - Project password not set - any user will be able to run reports in this project", 0);
 
 if ( $_configure_mode == "CREATETUTORIALS" )
-	handleDebug("Tutorials Created Successfully", 0);
+	handleDebug("Tutorials Project Created Successfully, now use the \"Generate the Tutorial Tables\" option to create and populate the tutorial tables", 0);
 else if ( $_configure_mode == "CREATE" )
 	handleDebug("Project Created Successfully", 0);
 else
