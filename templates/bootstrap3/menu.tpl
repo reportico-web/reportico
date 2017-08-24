@@ -1,4 +1,4 @@
-{include file='bootstrap3mod/header.inc.tpl'}
+{include file='bootstrap3/header.inc.tpl'}
 <div id="reportico_container">
 <FORM class="swMenuForm" name="topmenu" method="POST" action="{$SCRIPT_SELF}">
 <input type="hidden" name="reportico_session_name" value="{$SESSION_ID}" /> 
@@ -16,20 +16,20 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-{include file='bootstrap3mod/dropdown-brand.inc.tpl'}
+{include file='bootstrap3/dropdown-brand.inc.tpl'}
             <div class= "nav-collapse collapse in" id="reportico-bootstrap-collapse">
-{include file='bootstrap3mod/dropdown-menu.inc.tpl'}
+{include file='bootstrap3/dropdown-menu.inc.tpl'}
 {if $SHOW_HIDE_NAVIGATION_MENU == "show" }
             <ul class= "nav navbar-nav pull-right navbar-right">
 {else}
             <ul style="display:none" class= "nav navbar-nav pull-right navbar-right">
 {/if}
 {if $SHOW_TOPMENU}
-{include file='bootstrap3mod/menu-bar-logout.inc.tpl'}
-{include file='bootstrap3mod/menu-bar-project-password.inc.tpl'}
+{include file='bootstrap3/menu-bar-logout.inc.tpl'}
+{include file='bootstrap3/menu-bar-project-password.inc.tpl'}
 {/if}
-{include file='bootstrap3mod/menu-bar-admin-menu.inc.tpl'}
-{include file='bootstrap3mod/menu-bar-configure-create-buttons.inc.tpl'}
+{include file='bootstrap3/menu-bar-admin-menu.inc.tpl'}
+{include file='bootstrap3/menu-bar-configure-create-buttons.inc.tpl'}
 </div>
 </ul>
         </div>
@@ -71,6 +71,6 @@
 			</TABLE>
 {/if}
 </FORM>
-{include file='bootstrap3mod/reportico-banner.inc.tpl'}
+{include file='bootstrap3/reportico-banner.inc.tpl'}
 </div>
-{include file='bootstrap3mod/footer.inc.tpl'}
+{include file='bootstrap3/footer.inc.tpl'}

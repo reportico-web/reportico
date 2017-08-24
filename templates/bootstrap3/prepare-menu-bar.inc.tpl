@@ -11,9 +11,9 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-{include file='bootstrap3mod/dropdown-brand.inc.tpl'}
+{include file='bootstrap3/dropdown-brand.inc.tpl'}
             <div class= "nav-collapse collapse in" id="reportico-bootstrap-collapse">
-{include file='bootstrap3mod/dropdown-menu.inc.tpl'}
+{include file='bootstrap3/dropdown-menu.inc.tpl'}
 
 
 <!-- right hand side option buttons in  nav bar -->
@@ -23,13 +23,13 @@
             <ul style="display:none" class= "nav navbar-nav pull-right navbar-right">
 {/if}
 {if $SHOW_TOPMENU}
-{include file='bootstrap3mod/menu-bar-design.inc.tpl'}
-{include file='bootstrap3mod/menu-bar-debug-level.inc.tpl'}
-{include file='bootstrap3mod/menu-bar-project-password.inc.tpl'}
+{include file='bootstrap3/menu-bar-design.inc.tpl'}
+{include file='bootstrap3/menu-bar-debug-level.inc.tpl'}
+{include file='bootstrap3/menu-bar-project-password.inc.tpl'}
 {/if}
-{include file='bootstrap3mod/menu-bar-admin-menu.inc.tpl'}
-{include file='bootstrap3mod/menu-bar-project-menu.inc.tpl'}
-{include file='bootstrap3mod/menu-bar-logout.inc.tpl'}
+{include file='bootstrap3/menu-bar-admin-menu.inc.tpl'}
+{include file='bootstrap3/menu-bar-project-menu.inc.tpl'}
+{include file='bootstrap3/menu-bar-logout.inc.tpl'}
 </ul>
 </div>
 </ul>

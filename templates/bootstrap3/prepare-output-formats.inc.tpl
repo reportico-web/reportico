@@ -1,7 +1,5 @@
 <div class="swPrpToolbarPane" style="padding: 0px 5px; float: left;vertical-align: bottom;text-align: center; border-right: solid 1px #bbb">
 <div style="display: none">
-    &nbsp;
-    {$T_OUTPUT}
     <INPUT type="radio" id="rpt_format_html" name="target_format" value="HTML" {$OUTPUT_TYPES[0]}>HTML
     <INPUT type="radio" id="rpt_format_pdf" name="target_format" value="PDF" {$OUTPUT_TYPES[1]}>PDF
     <INPUT type="radio" id="rpt_format_csv" name="target_format" value="CSV" {$OUTPUT_TYPES[2]}>CSV

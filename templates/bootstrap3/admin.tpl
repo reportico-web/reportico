@@ -251,10 +251,10 @@
 	</TABLE>
 {/if}
 
-{include file='bootstrap3mod/message-error.inc.tpl'}
+{include file='bootstrap3/message-error.inc.tpl'}
 </FORM>
 
 
 
 </div>
-{include file='bootstrap3mod/footer.inc.tpl'}
+{include file='bootstrap3/footer.inc.tpl'}

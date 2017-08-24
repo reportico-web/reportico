@@ -1,1 +1,1 @@
-{include file='bootstrap3mod/prepare-expand-contents.inc.tpl'}
+{include file='bootstrap3/prepare-expand-contents.inc.tpl'}
