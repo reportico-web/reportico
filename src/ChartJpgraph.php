@@ -283,7 +283,7 @@ class ChartJpgraph
 		if ( $sessionPlaceholder)
 		{
 			$ses = "graph_".$sessionPlaceholder;
-            setReporticoSessionParam($ses, $url);
+            ReporticoSession::setReporticoSessionParam($ses, $url);
 			$url = "graphid=".$ses."&time=".time();
 		}
 
@@ -297,11 +297,11 @@ class ChartJpgraph
         {
             $dyngraph = "";
         }
-        $forward_url_params = sessionRequestItem('forward_url_get_parameters', $this->reportico->forward_url_get_parameters);
+        $forward_url_params = ReporticoSession::sessionRequestItem('forward_url_get_parameters', $this->reportico->forward_url_get_parameters);
         if ( $forward_url_params )
             $url .= "&".$forward_url_params;
         $url .= "&reportico_call_mode=graph_jpgraph";
-        $url .= "&reportico_session_name=".reporticoSessionName();
+        $url .= "&reportico_session_name=".ReporticoSession::reporticoSessionName();
 		$result = '<img class="swRepGraph" src=\''.$dyngraph.'?'.$url.'\'>';
 
 		return $result;

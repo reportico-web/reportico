@@ -2117,7 +2117,7 @@ class XmlReader
 
                 case "PREPARESAVE":
                     $xmlsavefile = $this->query->xmloutfile;
-                    setReporticoSessionParam("execute_mode", "PREPARE");
+                    ReporticoSession::setReporticoSessionParam("execute_mode", "PREPARE");
 
                     if (!$xmlsavefile) {
                         header("HTTP/1.0 404 Not Found", true);
@@ -2224,8 +2224,8 @@ class XmlReader
         if ($xmlsavefile) {
             if ($this->query->allow_maintain != "SAFE" && $this->query->allow_maintain != "DEMO" && ReporticoApp::getConfig('allow_maintain')) {
                 $xmlout->writeFile($xmlsavefile);
-                setReporticoSessionParam("xmlin", $xmlsavefile);
-                unsetReporticoSessionParam("xmlintext");
+                ReporticoSession::setReporticoSessionParam("xmlin", $xmlsavefile);
+                ReporticoSession::unsetReporticoSessionParam("xmlintext");
             } else {
                 trigger_error(templateXlate("SAFENOSAVE"), E_USER_ERROR);
             }
@@ -2237,8 +2237,8 @@ class XmlReader
         if ($xmldeletefile) {
             if ($this->query->allow_maintain != "SAFE" && $this->query->allow_maintain != "DEMO" && ReporticoApp::getConfig('allow_maintain')) {
                 $xmlout->removeFile($xmldeletefile);
-                setReporticoSessionParam("xmlin", false);
-                unsetReporticoSessionParam("xmlintext");
+                ReporticoSession::setReporticoSessionParam("xmlin", false);
+                ReporticoSession::unsetReporticoSessionParam("xmlintext");
             } else {
                 trigger_error(templateXlate("SAFENODEL"), E_USER_ERROR);
             }

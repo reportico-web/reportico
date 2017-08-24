@@ -50,10 +50,10 @@ class Assignment extends ReporticoObject
     public static function reporticoMetaSqlCriteria(&$in_query, $in_string, $prev_col_value = false, $no_warnings = false, $execute_mode = "EXECUTE")
     {
         // Replace user parameters with values
-        $external_param1 = getReporticoSessionParam("external_param1");
-        $external_param2 = getReporticoSessionParam("external_param2");
-        $external_param3 = getReporticoSessionParam("external_param3");
-        $external_user = getReporticoSessionParam("external_user");
+        $external_param1 = ReporticoSession::getReporticoSessionParam("external_param1");
+        $external_param2 = ReporticoSession::getReporticoSessionParam("external_param2");
+        $external_param3 = ReporticoSession::getReporticoSessionParam("external_param3");
+        $external_user = ReporticoSession::getReporticoSessionParam("external_user");
 
         if ($external_param1) {
             $in_string = preg_replace("/{EXTERNAL_PARAM1}/", "'" . $external_param1 . "'", $in_string);

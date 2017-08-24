@@ -175,7 +175,7 @@ class DesignPanel
                 }
 
                 $submit_self = $this->query->getActionUrl();
-                $forward = sessionRequestItem('forward_url_get_parameters', '');
+                $forward = ReporticoSession::sessionRequestItem('forward_url_get_parameters', '');
                 if ($forward) {
                     $submit_self .= "?" . $forward;
                 }
@@ -242,8 +242,8 @@ class DesignPanel
                             $critexp = true;
                         }
 
-                        $openfilters = preg_replace("/ /", "_", getReporticoSessionParam("openfilters"));
-                        $closedfilters = getReporticoSessionParam("closedfilters");
+                        $openfilters = preg_replace("/ /", "_", ReporticoSession::getReporticoSessionParam("openfilters"));
+                        $closedfilters = ReporticoSession::getReporticoSessionParam("closedfilters");
                         //echo "Look for $critdisplaygroup!!!!!!!!!!!!!!!!!! in $openfilters<BR>";
                         //var_dump($openfilters);
                         //var_dump($closedfilters);
@@ -347,7 +347,7 @@ class DesignPanel
 
                 $create_report_url = $this->query->create_report_url;
                 $configure_project_url = $this->query->configure_project_url;
-                $forward = sessionRequestItem('forward_url_get_parameters', '');
+                $forward = ReporticoSession::sessionRequestItem('forward_url_get_parameters', '');
                 if ($forward) {
                     $configure_project_url .= "&" . $forward;
                     $create_report_url .= "&" . $forward;
@@ -360,7 +360,7 @@ class DesignPanel
             case "MENUBUTTON":
                 $prepare_url = $this->query->prepare_url;
                 $menu_url = $this->query->menu_url;
-                $forward = sessionRequestItem('forward_url_get_parameters', '');
+                $forward = ReporticoSession::sessionRequestItem('forward_url_get_parameters', '');
                 if ($forward) {
                     $menu_url .= "&" . $forward;
                     $prepare_url .= "&" . $forward;
@@ -369,7 +369,7 @@ class DesignPanel
                 $this->smarty->assign('RUN_REPORT_URL', $prepare_url);
 
                 $admin_menu_url = $this->query->admin_menu_url;
-                $forward = sessionRequestItem('forward_url_get_parameters', '');
+                $forward = ReporticoSession::sessionRequestItem('forward_url_get_parameters', '');
                 if ($forward) {
                     $admin_menu_url .= "&" . $forward;
                 }
@@ -382,7 +382,7 @@ class DesignPanel
 
             case "PROJECTITEM":
                 if ($this->text != ".." && $this->text != "admin") {
-                    $forward = sessionRequestItem('forward_url_get_parameters', '');
+                    $forward = ReporticoSession::sessionRequestItem('forward_url_get_parameters', '');
                     if ($forward) {
                         $forward .= "&";
                     }
@@ -395,13 +395,13 @@ class DesignPanel
 
                     $this->query->projectitems[] = array(
                         "label" => $this->text,
-                        "url" => $this->query->getActionUrl() . $url_join_char . $forward . "execute_mode=MENU&project=" . $this->program . "&amp;reportico_session_name=" . reporticoSessionName(),
+                        "url" => $this->query->getActionUrl() . $url_join_char . $forward . "execute_mode=MENU&project=" . $this->program . "&amp;reportico_session_name=" . ReporticoSession::reporticoSessionName(),
                     );
                 }
                 break;
 
             case "MENUITEM":
-                $forward = sessionRequestItem('forward_url_get_parameters', '');
+                $forward = ReporticoSession::sessionRequestItem('forward_url_get_parameters', '');
                 if ($forward) {
                     $forward .= "&";
                 }
@@ -420,7 +420,7 @@ class DesignPanel
                 } else {
                     $this->query->menuitems[] = array(
                         "label" => $this->text,
-                        "url" => $this->query->getActionUrl() . $url_join_char . $forward . "execute_mode=PREPARE&xmlin=" . $this->program . "&amp;reportico_session_name=" . reporticoSessionName(),
+                        "url" => $this->query->getActionUrl() . $url_join_char . $forward . "execute_mode=PREPARE&xmlin=" . $this->program . "&amp;reportico_session_name=" . ReporticoSession::reporticoSessionName(),
                     );
                 }
 
@@ -438,7 +438,7 @@ class DesignPanel
                     $this->smarty->assign('SHOW_OUTPUT', false);
                 }
 
-                $op = sessionRequestItem("target_format", "HTML");
+                $op = ReporticoSession::sessionRequestItem("target_format", "HTML");
                 $output_types = array(
                     "HTML" => "",
                     "PDF" => "",
@@ -455,7 +455,7 @@ class DesignPanel
 
                 $this->smarty->assign('OUTPUT_TYPES', $noutput_types);
 
-                $op = sessionRequestItem("target_style", "TABLE");
+                $op = ReporticoSession::sessionRequestItem("target_style", "TABLE");
                 $output_styles = array(
                     "TABLE" => "",
                     "FORM" => "",
@@ -475,12 +475,12 @@ class DesignPanel
 
                 $this->smarty->assign("OUTPUT_ATTACH", $attach);
 
-                $this->smarty->assign("OUTPUT_SHOWGRAPH", getReporticoSessionParam("target_show_graph") ? "checked" : "");
-                $this->smarty->assign("OUTPUT_SHOWCRITERIA", getReporticoSessionParam("target_show_criteria") ? "checked" : "");
-                $this->smarty->assign("OUTPUT_SHOWDETAIL", getReporticoSessionParam("target_show_detail") ? "checked" : "");
-                $this->smarty->assign("OUTPUT_SHOWGROUPHEADERS", getReporticoSessionParam("target_show_group_headers") ? "checked" : "");
-                $this->smarty->assign("OUTPUT_SHOWGROUPTRAILERS", getReporticoSessionParam("target_show_group_trailers") ? "checked" : "");
-                $this->smarty->assign("OUTPUT_SHOWCOLHEADERS", getReporticoSessionParam("target_showColumnHeaders") ? "checked" : "");
+                $this->smarty->assign("OUTPUT_SHOWGRAPH", ReporticoSession::getReporticoSessionParam("target_show_graph") ? "checked" : "");
+                $this->smarty->assign("OUTPUT_SHOWCRITERIA", ReporticoSession::getReporticoSessionParam("target_show_criteria") ? "checked" : "");
+                $this->smarty->assign("OUTPUT_SHOWDETAIL", ReporticoSession::getReporticoSessionParam("target_show_detail") ? "checked" : "");
+                $this->smarty->assign("OUTPUT_SHOWGROUPHEADERS", ReporticoSession::getReporticoSessionParam("target_show_group_headers") ? "checked" : "");
+                $this->smarty->assign("OUTPUT_SHOWGROUPTRAILERS", ReporticoSession::getReporticoSessionParam("target_show_group_trailers") ? "checked" : "");
+                $this->smarty->assign("OUTPUT_SHOWCOLHEADERS", ReporticoSession::getReporticoSessionParam("target_showColumnHeaders") ? "checked" : "");
 
                 if ($this->query->allow_debug && ReporticoApp::getConfig("allow_debug", true)) {
                     $this->smarty->assign("OUTPUT_SHOW_DEBUG", true);
@@ -643,7 +643,7 @@ class DesignPanel
                 }
 
                 $this->smarty->assign('ERRORMSG', $msg);
-                setReporticoSessionParam('latestRequest', "");
+                ReporticoSession::setReporticoSessionParam('latestRequest', "");
                 break;
         }
         return $text;

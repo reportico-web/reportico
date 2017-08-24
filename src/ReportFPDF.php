@@ -489,7 +489,7 @@ class ReportFPDF extends Report
     public function formatColumnTrailer(&$trailer_col, &$value_col, $trailer_first = false) // PDF
 
     {
-        if (!getReporticoSessionParam("target_show_group_trailers")) {
+        if (!ReporticoSession::getReporticoSessionParam("target_show_group_trailers")) {
             return;
         }
 
@@ -826,7 +826,7 @@ class ReportFPDF extends Report
     public function formatGroupHeaderStart() // PDF
 
     {
-        if (sessionRequestItem("target_style", "TABLE") == "FORM") {
+        if (ReporticoSession::sessionRequestItem("target_style", "TABLE") == "FORM") {
             return;
         }
 
@@ -989,18 +989,18 @@ class ReportFPDF extends Report
             $group_label_width = $group_data_xpos - 5;
             $group_data_width = $this->abs_right_margin - $group_data_xpos;
 
-            if (sessionRequestItem("target_style", "TABLE") != "FORM") {
+            if (ReporticoSession::sessionRequestItem("target_style", "TABLE") != "FORM") {
                 $this->unapplyStyleTags($this->query->output_page_styles);
             }
 
-            if (sessionRequestItem("target_style", "TABLE") != "FORM") {
+            if (ReporticoSession::sessionRequestItem("target_style", "TABLE") != "FORM") {
                 $this->applyStyleTags($this->query->output_group_header_label_styles);
             }
 
             $this->setPosition($group_xpos, $y);
             $padstring = $group_label;
             $this->drawCell($group_label_width, $this->vsize, "$padstring");
-            if (sessionRequestItem("target_style", "TABLE") != "FORM") {
+            if (ReporticoSession::sessionRequestItem("target_style", "TABLE") != "FORM") {
                 $this->unapplyStyleTags($this->query->output_group_header_label_styles);
             }
 
@@ -1008,7 +1008,7 @@ class ReportFPDF extends Report
 
             // Display group header value
             $contenttype = $col->deriveAttribute("content_type", $col->query_name);
-            if (sessionRequestItem("target_style", "TABLE") != "FORM") {
+            if (ReporticoSession::sessionRequestItem("target_style", "TABLE") != "FORM") {
                 $this->applyStyleTags($this->query->output_group_header_value_styles);
             }
 
@@ -1056,7 +1056,7 @@ class ReportFPDF extends Report
                 $padstring = $qn->column_value;
                 $this->drawCell($group_data_width, $this->vsize, "$padstring");
             }
-            if (sessionRequestItem("target_style", "TABLE") != "FORM") {
+            if (ReporticoSession::sessionRequestItem("target_style", "TABLE") != "FORM") {
                 $this->unapplyStyleTags($this->query->output_group_header_value_styles);
             }
 
@@ -1068,7 +1068,7 @@ class ReportFPDF extends Report
                 $this->setPosition(false, $y + $this->yjump);
             }
 
-            if (sessionRequestItem("target_style", "TABLE") != "FORM") {
+            if (ReporticoSession::sessionRequestItem("target_style", "TABLE") != "FORM") {
                 $this->applyStyleTags($this->query->output_page_styles);
             }
 
@@ -1078,7 +1078,7 @@ class ReportFPDF extends Report
     public function formatColumnHeader(&$column_item) //PDF column headers
 
     {
-        if (!getReporticoSessionParam("target_show_detail")) {
+        if (!ReporticoSession::getReporticoSessionParam("target_show_detail")) {
             return;
         }
 
@@ -1160,7 +1160,7 @@ class ReportFPDF extends Report
     public function formatHeaders() // PDF
 
     {
-        if (sessionRequestItem("target_style", "TABLE") == "FORM") {
+        if (ReporticoSession::sessionRequestItem("target_style", "TABLE") == "FORM") {
             return;
         }
 
@@ -1538,7 +1538,7 @@ class ReportFPDF extends Report
 
         Report::eachLine($val);
 
-        if (sessionRequestItem("target_style", "TABLE") == "FORM") {
+        if (ReporticoSession::sessionRequestItem("target_style", "TABLE") == "FORM") {
             $this->endLine();
 
             // Throw new page if set to throw between rows
@@ -1603,7 +1603,7 @@ class ReportFPDF extends Report
         $this->checkGraphicFit();
 
         $this->yjump = 0;
-        if ($this->body_display == "show" && getReporticoSessionParam("target_show_detail")) {
+        if ($this->body_display == "show" && ReporticoSession::getReporticoSessionParam("target_show_detail")) {
             $this->row_styles = array();
             $this->applyStyleTags($this->query->output_row_styles, false, false, "ROW");
 

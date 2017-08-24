@@ -296,7 +296,7 @@ class reportico_graph
 
         if ($sessionPlaceholder) {
             $ses = "graph_" . $sessionPlaceholder;
-            setReporticoSessionParam($ses, $url);
+            ReporticoSession::setReporticoSessionParam($ses, $url);
             $url = "graphid=" . $ses . "&time=" . time();
         }
 
