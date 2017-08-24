@@ -229,7 +229,7 @@ class ChartNVD3
         return $outtext;
     }
 
-    public function generateUrlParams($targetFormat, $sessionPlaceholder = false)
+    public function generateUrlParams($target_format, $sessionPlaceholder = false)
     {
         $this->applyDefaults();
 

@@ -527,11 +527,11 @@ class CriteriaColumn extends QueryColumn
 
         if (!array_key_exists("clearform", $_REQUEST) && array_key_exists("MANUAL_" . $this->query_name . "_FROMDATE", $_REQUEST)) {
             $this->range_start = $_REQUEST["MANUAL_" . $this->query_name . "_FROMDATE"];
-            $this->range_start = $this->collateRequestDate($this->query_name, "FROMDATE", $this->range_start, SW_PREP_DATEFORMAT);
+            $this->range_start = $this->collateRequestDate($this->query_name, "FROMDATE", $this->range_start, ReporticoApp::getConfig("prep_dateformat"));
         } else
         if (!array_key_exists("clearform", $_REQUEST) && array_key_exists("HIDDEN_" . $this->query_name . "_FROMDATE", $_REQUEST)) {
             $this->range_start = $_REQUEST["HIDDEN_" . $this->query_name . "_FROMDATE"];
-            $this->range_start = $this->collateRequestDate($this->query_name, "FROMDATE", $this->range_start, SW_PREP_DATEFORMAT);
+            $this->range_start = $this->collateRequestDate($this->query_name, "FROMDATE", $this->range_start, ReporticoApp::getConfig("prep_dateformat"));
         } else {
             if (count($this->defaults) == 0) {
                 $this->defaults[0] = "TODAY";
@@ -547,8 +547,8 @@ class CriteriaColumn extends QueryColumn
             unset($_REQUEST["HIDDEN_" . $this->query_name . "_TODATE"]);
         }
 
-        $this->range_start = parseDate($this->range_start, false, SW_PREP_DATEFORMAT);
-        $text .= $this->formatDateValue($this->query_name . '_FROMDATE', $this->range_start, SW_PREP_DATEFORMAT);
+        $this->range_start = parseDate($this->range_start, false, ReporticoApp::getConfig("prep_dateformat"));
+        $text .= $this->formatDateValue($this->query_name . '_FROMDATE', $this->range_start, ReporticoApp::getConfig("prep_dateformat"));
 
         return $text;
 
@@ -566,11 +566,11 @@ class CriteriaColumn extends QueryColumn
         if (!array_key_exists("clearform", $_REQUEST) && array_key_exists("MANUAL_" . $this->query_name . "_FROMDATE", $_REQUEST)) {
 
             $this->range_start = $_REQUEST["MANUAL_" . $this->query_name . "_FROMDATE"];
-            $this->range_start = $this->collateRequestDate($this->query_name, "FROMDATE", $this->range_start, SW_PREP_DATEFORMAT);
+            $this->range_start = $this->collateRequestDate($this->query_name, "FROMDATE", $this->range_start, ReporticoApp::getConfig("prep_dateformat"));
         } else
         if (!array_key_exists("clearform", $_REQUEST) && array_key_exists("HIDDEN_" . $this->query_name . "_FROMDATE", $_REQUEST)) {
             $this->range_start = $_REQUEST["HIDDEN_" . $this->query_name . "_FROMDATE"];
-            $this->range_start = $this->collateRequestDate($this->query_name, "FROMDATE", $this->range_start, SW_PREP_DATEFORMAT);
+            $this->range_start = $this->collateRequestDate($this->query_name, "FROMDATE", $this->range_start, ReporticoApp::getConfig("prep_dateformat"));
         } else {
             // User reset form or first time in, set defaults and clear existing form info
             if (count($this->defaults) == 0) {
@@ -593,25 +593,25 @@ class CriteriaColumn extends QueryColumn
             $this->range_end = "TODAY";
         }
 
-        $this->range_start = parseDate($this->range_start, false, SW_PREP_DATEFORMAT);
-        $text .= $this->formatDateValue($this->query_name . '_FROMDATE', $this->range_start, SW_PREP_DATEFORMAT);
+        $this->range_start = parseDate($this->range_start, false, ReporticoApp::getConfig("prep_dateformat"));
+        $text .= $this->formatDateValue($this->query_name . '_FROMDATE', $this->range_start, ReporticoApp::getConfig("prep_dateformat"));
 
         $text .= "&nbsp;- ";
 
         if (array_key_exists("MANUAL_" . $this->query_name . "_TODATE", $_REQUEST)) {
             $this->range_end = $_REQUEST["MANUAL_" . $this->query_name . "_TODATE"];
-            $this->range_end = $this->collateRequestDate($this->query_name, "TODATE", $this->range_end, SW_PREP_DATEFORMAT);
+            $this->range_end = $this->collateRequestDate($this->query_name, "TODATE", $this->range_end, ReporticoApp::getConfig("prep_dateformat"));
         } else if (array_key_exists("HIDDEN_" . $this->query_name . "_TODATE", $_REQUEST)) {
             $this->range_end = $_REQUEST["HIDDEN_" . $this->query_name . "_TODATE"];
-            $this->range_end = $this->collateRequestDate($this->query_name, "TODATE", $this->range_end, SW_PREP_DATEFORMAT);
+            $this->range_end = $this->collateRequestDate($this->query_name, "TODATE", $this->range_end, ReporticoApp::getConfig("prep_dateformat"));
         }
 
         if (!$this->range_end) {
             $this->range_end = "TODAY";
         }
 
-        $this->range_end = parseDate($this->range_end, false, SW_PREP_DATEFORMAT);
-        $text .= $this->formatDateValue($this->query_name . '_TODATE', $this->range_end, SW_PREP_DATEFORMAT);
+        $this->range_end = parseDate($this->range_end, false, ReporticoApp::getConfig("prep_dateformat"));
+        $text .= $this->formatDateValue($this->query_name . '_TODATE', $this->range_end, ReporticoApp::getConfig("prep_dateformat"));
         return $text;
     }
 
@@ -1799,8 +1799,8 @@ class CriteriaColumn extends QueryColumn
             case "DATE":
                 $cls = "";
                 if ($this->column_value) {
-                    $val1 = parseDate($this->column_value, false, SW_PREP_DATEFORMAT);
-                    $val1 = convertYMDtoLocal($val1, SW_PREP_DATEFORMAT, SW_DB_DATEFORMAT);
+                    $val1 = parseDate($this->column_value, false, ReporticoApp::getConfig("prep_dateformat"));
+                    $val1 = convertYMDtoLocal($val1, ReporticoApp::getConfig("prep_dateformat"), ReporticoApp::getConfig("db_dateformat"));
                     if ($lhs) {
                         if ($this->table_name && $this->column_name) {
                             $cls .= " AND " . $this->table_name . "." . $this->column_name;
@@ -1830,10 +1830,10 @@ class CriteriaColumn extends QueryColumn
                     // If daterange value here is a range in a single value then its been
                     // run directly from command line and needs splitting up using "-"
 
-                    $val1 = parseDate($this->column_value, false, SW_PREP_DATEFORMAT);
-                    $val2 = parseDate($this->column_value2, false, SW_PREP_DATEFORMAT);
-                    $val1 = convertYMDtoLocal($val1, SW_PREP_DATEFORMAT, SW_DB_DATEFORMAT);
-                    $val2 = convertYMDtoLocal($val2, SW_PREP_DATEFORMAT, SW_DB_DATEFORMAT);
+                    $val1 = parseDate($this->column_value, false, ReporticoApp::getConfig("prep_dateformat"));
+                    $val2 = parseDate($this->column_value2, false, ReporticoApp::getConfig("prep_dateformat"));
+                    $val1 = convertYMDtoLocal($val1, ReporticoApp::getConfig("prep_dateformat"), ReporticoApp::getConfig("db_dateformat"));
+                    $val2 = convertYMDtoLocal($val2, ReporticoApp::getConfig("prep_dateformat"), ReporticoApp::getConfig("db_dateformat"));
                     if ($lhs) {
                         if ($this->table_name && $this->column_name) {
                             $cls .= " AND " . $this->table_name . "." . $this->column_name;

@@ -106,7 +106,7 @@ class Reportico extends ReporticoObject
     public $static_menu = false;
     public $projectitems = array();
     public $target_style = false;
-    public $targetFormat = false;
+    public $target_format = false;
     public $lineno = 0;
     public $groupvals = array();
     public $email_recipients = false;
@@ -126,6 +126,7 @@ class Reportico extends ReporticoObject
     public $target_show_group_trailers = false;
     public $target_showColumnHeaders = false;
     public $target_show_criteria = false;
+    public $criteria_block_label = false;
 
     public $show_form_panel = false;
     public $status_message = "";
@@ -359,11 +360,11 @@ class Reportico extends ReporticoObject
     public function &createGraph()
     {
         $engine = $this->charting_engine;
-        if ($this->targetFormat == "HTML") {
+        if ($this->target_format == "HTML") {
             $engine = $this->charting_engine_html;
         }
 
-        if (getRequestItem("targetFormat", "HTML") == "PDF") {
+        if (getRequestItem("target_format", "HTML") == "PDF") {
             $engine = $this->charting_engine;
         }
 
@@ -1593,35 +1594,35 @@ class Reportico extends ReporticoObject
 
         // If external page has supplied an initial output format then use it
         if ($this->initial_output_format) {
-            $_REQUEST["targetFormat"] = $this->initial_output_format;
+            $_REQUEST["target_format"] = $this->initial_output_format;
         }
 
         // If printable HTML requested force output type to HTML
         if (getRequestItem("printable_html")) {
-            $_REQUEST["targetFormat"] = "HTML";
+            $_REQUEST["target_format"] = "HTML";
         }
 
         // Prompt user for report destination if target not already set - default to HTML if not set
-        if (!array_key_exists("targetFormat", $_REQUEST) && $execute_mode == "EXECUTE") {
-            $_REQUEST["targetFormat"] = "HTML";
+        if (!array_key_exists("target_format", $_REQUEST) && $execute_mode == "EXECUTE") {
+            $_REQUEST["target_format"] = "HTML";
         }
 
-        if (array_key_exists("targetFormat", $_REQUEST) && $execute_mode == "EXECUTE" && count($this->targets) == 0) {
-            $tf = $_REQUEST["targetFormat"];
-            if (isset($_GET["targetFormat"])) {
-                $tf = $_GET["targetFormat"];
+        if (array_key_exists("target_format", $_REQUEST) && $execute_mode == "EXECUTE" && count($this->targets) == 0) {
+            $tf = $_REQUEST["target_format"];
+            if (isset($_GET["target_format"])) {
+                $tf = $_GET["target_format"];
             }
 
-            $this->targetFormat = strtolower($tf);
+            $this->target_format = strtolower($tf);
 
-            if ($this->targetFormat == "pdf") {
+            if ($this->target_format == "pdf") {
                 $this->pdf_engine_file = "Report" . strtoupper($this->pdf_engine) . ".php";
                 require_once $this->pdf_engine_file;
             } else {
-                require_once "Report" . ucwords($this->targetFormat) . ".php";
+                require_once "Report" . ucwords($this->target_format) . ".php";
             }
 
-            $this->targetFormat = strtoupper($tf);
+            $this->target_format = strtoupper($tf);
             switch ($tf) {
                 case "CSV":
                 case "csv":
@@ -3638,7 +3639,7 @@ class Reportico extends ReporticoObject
                 $this->reportProgress("Ready", "READY");
                 $this->first_criteria_selection = true;
                 // Must find ALternative to THIs for first time in testing!!!
-                if (array_key_exists("targetFormat", $_REQUEST)) {
+                if (array_key_exists("target_format", $_REQUEST)) {
                     $this->first_criteria_selection = false;
                     setReporticoSessionParam("firstTimeIn", false);
                 }
@@ -3648,15 +3649,15 @@ class Reportico extends ReporticoObject
                 }
 
                 // Default output to HTML in PREPARE mode first time in
-                if (getReporticoSessionParam("firstTimeIn") && !isset($_REQUEST["targetFormat"])) {
-                    $this->targetFormat = "HTML";
-                    setReporticoSessionParam("targetFormat", "HTML");
+                if (getReporticoSessionParam("firstTimeIn") && !isset($_REQUEST["target_format"])) {
+                    $this->target_format = "HTML";
+                    setReporticoSessionParam("target_format", "HTML");
                 }
 
                 // Default style to TABLE in PREPARE mode first time in
                 //if ( getReporticoSessionParam("firstTimeIn") && !isset($_REQUEST["target_style"]))
                 //{
-                //$this->targetFormat = "TABLE";
+                //$this->target_format = "TABLE";
                 //setReporticoSessionParam("target_style","TABLE");
                 //echo "set table ";
                 //}
@@ -3667,20 +3668,20 @@ class Reportico extends ReporticoObject
 
                 // If external page has supplied an initial output format then use it
                 if ($this->initial_output_format) {
-                    $_REQUEST["targetFormat"] = $this->initial_output_format;
+                    $_REQUEST["target_format"] = $this->initial_output_format;
                 }
 
                 // If printable HTML requested force output type to HTML
                 if (getRequestItem("printable_html")) {
-                    $_REQUEST["targetFormat"] = "HTML";
+                    $_REQUEST["target_format"] = "HTML";
                 }
 
                 // Prompt user for report destination if target not already set - default to HTML if not set
-                if (!array_key_exists("targetFormat", $_REQUEST) && $mode == "EXECUTE") {
-                    $_REQUEST["targetFormat"] = "HTML";
+                if (!array_key_exists("target_format", $_REQUEST) && $mode == "EXECUTE") {
+                    $_REQUEST["target_format"] = "HTML";
                 }
 
-                $this->targetFormat = strtoupper($_REQUEST["targetFormat"]);
+                $this->target_format = strtoupper($_REQUEST["target_format"]);
 
                 if (array_key_exists("submit", $_REQUEST)) {
                     $this->first_criteria_selection = false;
@@ -3960,7 +3961,7 @@ class Reportico extends ReporticoObject
                     $text = $this->executeQuery(false);
                 }
 
-                if ($this->targetFormat == "SOAP") {
+                if ($this->target_format == "SOAP") {
                     closeReporticoSession();
                     return;
                 }
@@ -3970,7 +3971,7 @@ class Reportico extends ReporticoObject
                     // If errors and this is an ajax request return json ajax response for first message
                     $runfromcriteriascreen = getRequestItem("user_criteria_entered", false);
                     global $g_no_data;
-                    //if ( $g_no_data && getRequestItem("new_reportico_window",  false ) && !$g_debug_mode && $this->targetFormat == "HTML" && $runfromcriteriascreen && $this->reportico_ajax_mode && count($g_system_errors) == 1 )
+                    //if ( $g_no_data && getRequestItem("new_reportico_window",  false ) && !$g_debug_mode && $this->target_format == "HTML" && $runfromcriteriascreen && $this->reportico_ajax_mode && count($g_system_errors) == 1 )
                     //
                     //{
                     //header("HTTP/1.0 404 Not Found", true);
@@ -4019,7 +4020,7 @@ class Reportico extends ReporticoObject
                         $old_error_handler = set_error_handler("Reportico\ErrorHandler");
                     }
                 } else {
-                    if ($this->targetFormat != "HTML") {
+                    if ($this->target_format != "HTML") {
                         if ($draw) {
                             echo $text;
                         }
@@ -4145,7 +4146,7 @@ class Reportico extends ReporticoObject
             case "SOAPSAVE":
                 $this->handleXmlQueryInput($mode);
                 $this->xmlout = new XmlWriter($this);
-                $this->xmlout->generateWebService($this->xmloutfile);
+                //$this->xmlout->generateWebService($this->xmloutfile);
                 break;
         }
 

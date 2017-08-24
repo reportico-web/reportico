@@ -387,7 +387,7 @@ class Report extends ReporticoObject
 
             if (
                 ($ph->getAttribute("ShowInHTML") == "yes" && preg_match("/ReportHtml/", get_class($this)))
-                || ($ph->getAttribute("ShowInPDF") == "yes" && $this->query->targetFormat == "PDF")
+                || ($ph->getAttribute("ShowInPDF") == "yes" && $this->query->target_format == "PDF")
             ) {
                 $this->formatPageHeader($ph);
             }
@@ -407,7 +407,7 @@ class Report extends ReporticoObject
 
             if (
                 ($ph->getAttribute("ShowInHTML") == "yes" && preg_match("/ReportHtml/", get_class($this)))
-                || ($ph->getAttribute("ShowInPDF") == "yes" && $this->query->targetFormat == "PDF")
+                || ($ph->getAttribute("ShowInPDF") == "yes" && $this->query->target_format == "PDF")
             ) {
                 $this->formatPageFooter($ph);
             }
@@ -640,7 +640,7 @@ class Report extends ReporticoObject
                         // Only one pass through
                         $number_group_rows = 0;
                         for ($passno = 1; $passno <= 2; $passno++) {
-                            if ($this->query->targetFormat == "PDF") {
+                            if ($this->query->target_format == "PDF") {
                                 if ($passno == 1) {
                                     $this->draw_mode = "CALCULATE";
                                 }
@@ -726,7 +726,7 @@ class Report extends ReporticoObject
                 $this->formatGroupTrailerEnd();
             }
 
-            if ($group_changed && $this->query->targetFormat == "PDF") {
+            if ($group_changed && $this->query->target_format == "PDF") {
                 $this->endOfPageBlock();
             }
 
@@ -740,7 +740,7 @@ class Report extends ReporticoObject
                     // to allow calculation of line height. Otherwise
                     // Only one pass through
                     for ($passno = 1; $passno <= 2; $passno++) {
-                        if ($this->query->targetFormat == "PDF") {
+                        if ($this->query->target_format == "PDF") {
                             if ($passno == 1) {
                                 $this->draw_mode = "CALCULATE";
                             }
@@ -757,7 +757,7 @@ class Report extends ReporticoObject
 
                         }
                         // Column Trailers
-                        if ($this->query->targetFormat == "PDF") {
+                        if ($this->query->target_format == "PDF") {
                             foreach ($group->trailers_by_column as $kk => $trailer) {
                                 foreach ($trailer as $kk2 => $colgrp) {
                                     if ($colgrp["ShowInPDF"] == "yes") {
@@ -794,7 +794,7 @@ class Report extends ReporticoObject
                                 $graph->title_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->title, true);
                                 $graph->xtitle_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->xtitle, true);
                                 $graph->ytitle_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->ytitle, true);
-                                if ($url_string = $graph->generateUrlParams($this->query->targetFormat)) {
+                                if ($url_string = $graph->generateUrlParams($this->query->target_format)) {
                                     $this->plotGraph($graph, $graph_ct);
                                     $graph_ct++;
                                 }
@@ -922,11 +922,11 @@ class Report extends ReporticoObject
         }
 
         // Show column headers for HTML/CSV on group change, or on first line of report, or on new page
-        if ((!$this->page_started && ($this->query->targetFormat == "HTML" || $this->query->targetFormat == "HTMLPRINT")) ||
-            ($this->query->targetFormat != "CSV" && $changect > 0) ||
+        if ((!$this->page_started && ($this->query->target_format == "HTML" || $this->query->target_format == "HTMLPRINT")) ||
+            ($this->query->target_format != "CSV" && $changect > 0) ||
             $this->page_line_count == 0) {
             $this->formatReportDetailStart();
-            if ($this->query->targetFormat == "PDF") {
+            if ($this->query->target_format == "PDF") {
                 $this->column_header_required = true;
             } else {
                 $this->formatHeaders();

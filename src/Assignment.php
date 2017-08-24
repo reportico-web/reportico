@@ -250,7 +250,7 @@ class Assignment extends ReporticoObject
             $out_string);
 
         $out_string = preg_replace('/{TARGET_FORMAT}/',
-            '$this->targetFormat',
+            '$this->target_format',
             $out_string);
 
         $out_string = preg_replace('/old\({([^}]*)},{([^}]*)}\)/',

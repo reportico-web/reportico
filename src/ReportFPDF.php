@@ -684,7 +684,7 @@ class ReportFPDF extends Report
             }
 
             if (preg_match("/^\//", $link)) {
-                $link = SW_HTTP_URLHOST . "/" . $link;
+                $link = ReporticoApp::getConfig(http_urlhost"). "/" . $link;
             }
 
         }
@@ -1119,7 +1119,7 @@ class ReportFPDF extends Report
         $this->endLine();
 
         $tmpnam = tempnam(ReporticoApp::getConfig("tmp_dir"), "gph");
-        if (defined("SW_GRAPH_ENGINE") && SW_GRAPH_ENGINE == "PCHART") {
+        if ( ReporticoApp::getConfig("graph_engine") == "PCHART") {
             unlink($tmpnam);
             $img = $graph->generateGraphImage($tmpnam . ".png");
         } else /* If jpgraph */

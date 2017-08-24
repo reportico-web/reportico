@@ -98,7 +98,7 @@ class ReportHtml extends Report
                     $this->text .= '<div class="swRepRefreshBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'refreshReport=1&execute_mode=EXECUTE&reportico_session_name=' . reporticoSessionName() . '" title="' . templateXlate("GO_REFRESH") . '">&nbsp;</a></div>';
                 }
 
-                $this->text .= '<div class="reporticoJSONExecute"><a class="swJSONExecute1 testy" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'refreshReport=1&targetFormat=JSON&execute_mode=EXECUTE&reportico_session_name=' . reporticoSessionName() . '" title="' . templateXlate("GO_REFRESH") . '">&nbsp;</a></div>';
+                $this->text .= '<div class="reporticoJSONExecute"><a class="swJSONExecute1 testy" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'refreshReport=1&target_format=JSON&execute_mode=EXECUTE&reportico_session_name=' . reporticoSessionName() . '" title="' . templateXlate("GO_REFRESH") . '">&nbsp;</a></div>';
             } else {
                 $this->text .= '<div class="swRepPrintBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'printReport=1&execute_mode=EXECUTE&reportico_session_name=' . reporticoSessionName() . '" title="' . templateXlate("GO_PRINT") . '">' . templateXlate("GO_PRINT") . '</a></div>';
             }
@@ -789,7 +789,7 @@ class ReportHtml extends Report
             $this->text .= '</div>';
 
         } else {
-            //$this->text .= '<div class="prepareAjaxExecuteIgnore swPDFBox1"><a class="swLinkMenu5 swPDFBox" target="_blank" href="'.$this->query->getActionUrl().'?'.$forward.'refreshReport=1&targetFormat=PDF&execute_mode=EXECUTE&reportico_session_name='.reporticoSessionName().'" title="Print PDF">&nbsp;</a></div>';
+            //$this->text .= '<div class="prepareAjaxExecuteIgnore swPDFBox1"><a class="swLinkMenu5 swPDFBox" target="_blank" href="'.$this->query->getActionUrl().'?'.$forward.'refreshReport=1&target_format=PDF&execute_mode=EXECUTE&reportico_session_name='.reporticoSessionName().'" title="Print PDF">&nbsp;</a></div>';
             $this->text .= '<div class="swRepButtons">';
             $this->text .= '<div class="swRepPrintBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'printReport=1&execute_mode=EXECUTE&reportico_session_name=' . reporticoSessionName() . '" title="' . templateXlate("GO_PRINT") . '">' . '&nbsp;' . '</a></div>';
             $this->text .= '</div>';

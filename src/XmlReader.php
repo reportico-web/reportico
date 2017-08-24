@@ -1711,8 +1711,8 @@ class XmlReader
                     $reader->xml2query();
 
                     $content = "Drill";
-                    $url = $this->query->getActionUrl() . "?xmlin=" . $updates["DrilldownReport"] . "&execute_mode=EXECUTE&targetFormat=HTML&target_show_body=1&project=" . ReporticoApp::getConfig("project");
-                    $startbit = "'<a target=\"_blank\" href=\"" . $this->query->getActionUrl() . "?xmlin=" . $updates["DrilldownReport"] . "&execute_mode=EXECUTE&targetFormat=HTML&target_show_body=1&project=" . ReporticoApp::getConfig("project");
+                    $url = $this->query->getActionUrl() . "?xmlin=" . $updates["DrilldownReport"] . "&execute_mode=EXECUTE&target_format=HTML&target_show_body=1&project=" . ReporticoApp::getConfig("project");
+                    $startbit = "'<a target=\"_blank\" href=\"" . $this->query->getActionUrl() . "?xmlin=" . $updates["DrilldownReport"] . "&execute_mode=EXECUTE&target_format=HTML&target_show_body=1&project=" . ReporticoApp::getConfig("project");
                     $midbit = "";
                     foreach ($q->lookup_queries as $k => $v) {
 

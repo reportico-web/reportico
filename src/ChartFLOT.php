@@ -234,7 +234,7 @@ class ChartFLOT
 		return $outtext;
 	}
 
-	function generateUrlParams($targetFormat, $sessionPlaceholder=false)
+	function generateUrlParams($target_format, $sessionPlaceholder=false)
 	{
 		$this->applyDefaults();
 

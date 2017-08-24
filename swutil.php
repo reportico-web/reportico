@@ -715,9 +715,9 @@ function ErrorHandler($errno, $errstr, $errfile, $errline)
         "errsource" => $g_code_source,
         "errct" => 1,
     );
-    echo "<PRE>";
-    var_dump($g_system_errors);
-    echo "</PRE>";
+    //echo "<PRE>";
+    //var_dump($g_system_errors);
+    //echo "</PRE>";
 
     $g_error_status = 1;
 

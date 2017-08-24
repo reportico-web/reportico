@@ -218,7 +218,7 @@ class ChartJpgraph
 		return $outtext;
 	}
 
-	function generateUrlParams($targetFormat, $sessionPlaceholder=false)
+	function generateUrlParams($target_format, $sessionPlaceholder=false)
 	{
 		$this->applyDefaults();
 
@@ -288,7 +288,7 @@ class ChartJpgraph
 		}
 
 		$dyngraph = "dyngraph.php";
-        if ( defined("SW_GRAPH_ENGINE") && SW_GRAPH_ENGINE == "PCHART" )
+        if ( ReporticoApp::getConfig("graph_engine") == "PCHART" )
 		    $dyngraph = "dyngraph_pchart.php";
 
         $dr = getReporticoUrlPath();

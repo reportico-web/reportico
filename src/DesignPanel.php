@@ -438,7 +438,7 @@ class DesignPanel
                     $this->smarty->assign('SHOW_OUTPUT', false);
                 }
 
-                $op = sessionRequestItem("targetFormat", "HTML");
+                $op = sessionRequestItem("target_format", "HTML");
                 $output_types = array(
                     "HTML" => "",
                     "PDF" => "",

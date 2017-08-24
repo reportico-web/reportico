@@ -223,7 +223,7 @@ class ChartPchart
         return $outtext;
     }
 
-    public function generateUrlParams($targetFormat, $sessionPlaceholder = false)
+    public function generateUrlParams($target_format, $sessionPlaceholder = false)
     {
         $this->applyDefaults();
 
@@ -232,7 +232,7 @@ class ChartPchart
         $url .= "title=" . $this->convertSpecialChars($this->title_actual);
         $url .= "&xtitle=" . $this->convertSpecialChars($this->xtitle_actual);
         $url .= "&ytitle=" . $this->convertSpecialChars($this->ytitle_actual);
-        if ($targetFormat == "PDF") {
+        if ($target_format == "PDF") {
             $url .= "&width=" . $this->width_pdf_actual;
             $url .= "&height=" . $this->height_pdf_actual;
         } else {

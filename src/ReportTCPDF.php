@@ -2539,7 +2539,7 @@ class ReportTCPDF extends Report
         if ($column_item->output_images) {
             $str = file_get_contents($column_item->output_images["image"]);
             if ($str) {
-                $tmpnam = tempnam(SW_TMP_DIR, "dbi");
+                $tmpnam = tempnam(ReporticoApp::getConfig("tmp_dir"), "dbi");
                 unlink($tmpnam);
                 $width = $column_item->abs_column_width;
                 $height = 20;
