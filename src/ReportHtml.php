@@ -92,15 +92,15 @@ class ReportHtml extends Report
             if (!getRequestItem("printable_html")) {
                 // Show Go Back Button ( if user is not in "SINGLE REPORT RUN " )
                 if (!$this->query->access_mode || ($this->query->access_mode != "REPORTOUTPUT")) {
-                    $this->text .= '<div class="swRepBackBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'execute_mode=PREPARE&reporticoSessionName=' . reporticoSessionName() . '" title="' . templateXlate("GO_BACK") . '">&nbsp;</a></div>';
+                    $this->text .= '<div class="swRepBackBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'execute_mode=PREPARE&reportico_session_name=' . reporticoSessionName() . '" title="' . templateXlate("GO_BACK") . '">&nbsp;</a></div>';
                 }
                 if (getReporticoSessionParam("show_refresh_button")) {
-                    $this->text .= '<div class="swRepRefreshBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'refreshReport=1&execute_mode=EXECUTE&reporticoSessionName=' . reporticoSessionName() . '" title="' . templateXlate("GO_REFRESH") . '">&nbsp;</a></div>';
+                    $this->text .= '<div class="swRepRefreshBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'refreshReport=1&execute_mode=EXECUTE&reportico_session_name=' . reporticoSessionName() . '" title="' . templateXlate("GO_REFRESH") . '">&nbsp;</a></div>';
                 }
 
-                $this->text .= '<div class="reporticoJSONExecute"><a class="swJSONExecute1 testy" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'refreshReport=1&targetFormat=JSON&execute_mode=EXECUTE&reporticoSessionName=' . reporticoSessionName() . '" title="' . templateXlate("GO_REFRESH") . '">&nbsp;</a></div>';
+                $this->text .= '<div class="reporticoJSONExecute"><a class="swJSONExecute1 testy" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'refreshReport=1&targetFormat=JSON&execute_mode=EXECUTE&reportico_session_name=' . reporticoSessionName() . '" title="' . templateXlate("GO_REFRESH") . '">&nbsp;</a></div>';
             } else {
-                $this->text .= '<div class="swRepPrintBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'printReport=1&execute_mode=EXECUTE&reporticoSessionName=' . reporticoSessionName() . '" title="' . templateXlate("GO_PRINT") . '">' . templateXlate("GO_PRINT") . '</a></div>';
+                $this->text .= '<div class="swRepPrintBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'printReport=1&execute_mode=EXECUTE&reportico_session_name=' . reporticoSessionName() . '" title="' . templateXlate("GO_PRINT") . '">' . templateXlate("GO_PRINT") . '</a></div>';
             }
             $this->text .= '</div>';
 
@@ -262,7 +262,7 @@ class ReportHtml extends Report
             }
 
             // Add drilldown namespace normally specified in frameworks
-            $url .= '&clear_session=1&reporticoSessionName=NS_drilldown' . reporticoNamespace();
+            $url .= '&clear_session=1&reportico_session_name=NS_drilldown' . reporticoNamespace();
         }
 
         if ($hyperlinks["label"] == "<SELF>") {
@@ -562,8 +562,8 @@ class ReportHtml extends Report
             $this->page_started = false;
         }
         $this->graph_sessionPlaceholder++;
-        $graph->width_actual = checkForDefault("GraphWidth", $graph->width);
-        $graph->height_actual = checkForDefault("GraphHeight", $graph->height);
+        $graph->width_actual = ReporticoApp::getDefaultConfig("GraphWidth", $graph->width);
+        $graph->height_actual = ReporticoApp::getDefaultConfig("GraphHeight", $graph->height);
         $graph->title_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->title, true);
         $graph->xtitle_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->xtitle, true);
         $graph->ytitle_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->ytitle, true);
@@ -780,18 +780,18 @@ class ReportHtml extends Report
         if (!getRequestItem("printable_html")) {
             if (!$this->query->access_mode || ($this->query->access_mode != "REPORTOUTPUT")) {
                 $this->text .= '<div class="swRepButtons">';
-                $this->text .= '<div class="swRepBackBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'execute_mode=PREPARE&reporticoSessionName=' . reporticoSessionName() . '" title="' . templateXlate("GO_BACK") . '">&nbsp;</a></div>';
+                $this->text .= '<div class="swRepBackBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'execute_mode=PREPARE&reportico_session_name=' . reporticoSessionName() . '" title="' . templateXlate("GO_BACK") . '">&nbsp;</a></div>';
             }
             if (getReporticoSessionParam("show_refresh_button")) {
-                $this->text .= '<div class="swRepRefreshBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'refreshReport=1&execute_mode=EXECUTE&reporticoSessionName=' . reporticoSessionName() . '" title="' . templateXlate("GO_REFRESH") . '">&nbsp;</a></div>';
+                $this->text .= '<div class="swRepRefreshBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'refreshReport=1&execute_mode=EXECUTE&reportico_session_name=' . reporticoSessionName() . '" title="' . templateXlate("GO_REFRESH") . '">&nbsp;</a></div>';
             }
 
             $this->text .= '</div>';
 
         } else {
-            //$this->text .= '<div class="prepareAjaxExecuteIgnore swPDFBox1"><a class="swLinkMenu5 swPDFBox" target="_blank" href="'.$this->query->getActionUrl().'?'.$forward.'refreshReport=1&targetFormat=PDF&execute_mode=EXECUTE&reporticoSessionName='.reporticoSessionName().'" title="Print PDF">&nbsp;</a></div>';
+            //$this->text .= '<div class="prepareAjaxExecuteIgnore swPDFBox1"><a class="swLinkMenu5 swPDFBox" target="_blank" href="'.$this->query->getActionUrl().'?'.$forward.'refreshReport=1&targetFormat=PDF&execute_mode=EXECUTE&reportico_session_name='.reporticoSessionName().'" title="Print PDF">&nbsp;</a></div>';
             $this->text .= '<div class="swRepButtons">';
-            $this->text .= '<div class="swRepPrintBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'printReport=1&execute_mode=EXECUTE&reporticoSessionName=' . reporticoSessionName() . '" title="' . templateXlate("GO_PRINT") . '">' . '&nbsp;' . '</a></div>';
+            $this->text .= '<div class="swRepPrintBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'printReport=1&execute_mode=EXECUTE&reportico_session_name=' . reporticoSessionName() . '" title="' . templateXlate("GO_PRINT") . '">' . '&nbsp;' . '</a></div>';
             $this->text .= '</div>';
         }
 

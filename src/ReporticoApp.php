@@ -131,8 +131,8 @@ class ReporticoApp
         $session_name = session_id();
 
         // Check for Posted Session Name and use that if specified
-        if (isset($_REQUEST['reporticoSessionName'])) {
-            $session_name = $_REQUEST['reporticoSessionName'];
+        if (isset($_REQUEST['reportico_session_name'])) {
+            $session_name = $_REQUEST['reportico_session_name'];
             if (preg_match("/_/", $session_name)) {
                 $ar = explode("_", $session_name);
                 ReporticoApp::set("session_namespace", $ar[1]);
@@ -811,7 +811,7 @@ class ReporticoApp
 
     public static function getDefaultConfig($in_code)
     {
-        $out_val = $in_code;
+        $out_val = "";
         if (ReporticoApp::isSetConfig($in_code)) {
             $out_val = ReporticoApp::getConfig($in_code);
         } else if (ReporticoApp::isSetConfig("pdf_" . $in_code)) {

@@ -3037,12 +3037,12 @@ class Reportico extends ReporticoObject
             $url_join_char = "?";
         }
 
-        $this->prepare_url = $calling_script . "{$url_join_char}execute_mode=PREPARE&amp;reporticoSessionName=" . reporticoSessionName();
-        $this->menu_url = $calling_script . "{$url_join_char}execute_mode=MENU&amp;reporticoSessionName=" . reporticoSessionName();
-        $this->admin_menu_url = $calling_script . "{$url_join_char}project=admin&amp;execute_mode=MENU&amp;reporticoSessionName=" . reporticoSessionName();
-        $this->configure_project_url = $calling_script . "{$url_join_char}execute_mode=PREPARE&amp;xmlin=configureproject.xml&amp;reporticoSessionName=" . reporticoSessionName();
-        $this->delete_project_url = $calling_script . "{$url_join_char}execute_mode=PREPARE&amp;xmlin=deleteproject.xml&amp;reporticoSessionName=" . reporticoSessionName();
-        $this->create_report_url = $calling_script . "{$url_join_char}execute_mode=PREPARE&amp;xmlin=&amp;reporticoSessionName=" . reporticoSessionName();
+        $this->prepare_url = $calling_script . "{$url_join_char}execute_mode=PREPARE&amp;reportico_session_name=" . reporticoSessionName();
+        $this->menu_url = $calling_script . "{$url_join_char}execute_mode=MENU&amp;reportico_session_name=" . reporticoSessionName();
+        $this->admin_menu_url = $calling_script . "{$url_join_char}project=admin&amp;execute_mode=MENU&amp;reportico_session_name=" . reporticoSessionName();
+        $this->configure_project_url = $calling_script . "{$url_join_char}execute_mode=PREPARE&amp;xmlin=configureproject.xml&amp;reportico_session_name=" . reporticoSessionName();
+        $this->delete_project_url = $calling_script . "{$url_join_char}execute_mode=PREPARE&amp;xmlin=deleteproject.xml&amp;reportico_session_name=" . reporticoSessionName();
+        $this->create_report_url = $calling_script . "{$url_join_char}execute_mode=PREPARE&amp;xmlin=&amp;reportico_session_name=" . reporticoSessionName();
 
         if ($forward_url_params) {
             $this->prepare_url .= "&" . $forward_url_params;
@@ -5289,7 +5289,7 @@ class Reportico extends ReporticoObject
             $params .= "&" . $forward_url_params;
         }
 
-        $params .= "&reporticoSessionName=" . reporticoSessionName();
+        $params .= "&reportico_session_name=" . reporticoSessionName();
 
         $result = '<img width="' . $width . '" src=\'' . $imagegetpath . '?' . $params . '&reportico_call_mode=dbimage&imagesql=' . $imagesql . '\'>';
 

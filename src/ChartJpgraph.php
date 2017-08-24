@@ -301,7 +301,7 @@ class ChartJpgraph
         if ( $forward_url_params )
             $url .= "&".$forward_url_params;
         $url .= "&reportico_call_mode=graph_jpgraph";
-        $url .= "&reporticoSessionName=".reporticoSessionName();
+        $url .= "&reportico_session_name=".reporticoSessionName();
 		$result = '<img class="swRepGraph" src=\''.$dyngraph.'?'.$url.'\'>';
 
 		return $result;
@@ -432,46 +432,46 @@ class ChartJpgraph
 
 	function applyDefaults ()
 	{
-		$this->xaxiscolor_actual = checkForDefault("XAxisColor", $this->xaxiscolor);
-		$this->xticklabelinterval_actual = checkForDefault("XTickLabelInterval", $this->xticklabelinterval);
-		$this->xtickinterval_actual = checkForDefault("XTickInterval", $this->xtickinterval);
-		$this->yaxiscolor_actual = checkForDefault("YAxisColor", $this->yaxiscolor);
-		$this->yticklabelinterval_actual = checkForDefault("YTickLabelInterval", $this->yticklabelinterval);
-		$this->ytickinterval_actual = checkForDefault("YTickInterval", $this->ytickinterval);
-		$this->graphcolor_actual = checkForDefault("GraphColor", $this->graphcolor);
-		$this->marginbottom_actual = checkForDefault("MarginBottom", $this->marginbottom);
-		$this->margintop_actual = checkForDefault("MarginTop", $this->margintop);
-		$this->marginleft_actual = checkForDefault("MarginLeft", $this->marginleft);
-		$this->marginright_actual = checkForDefault("MarginRight", $this->marginright);
-		$this->margincolor_actual = checkForDefault("MarginColor", $this->margincolor);
-		$this->gridpos_actual = checkForDefault("GridPosition", $this->gridpos);
-		$this->xgriddisplay_actual = checkForDefault("XGridDisplay", $this->xgriddisplay);
-		$this->xgridcolor_actual = checkForDefault("XGridColor", $this->xgridcolor);
-		$this->ygriddisplay_actual = checkForDefault("YGridDisplay", $this->ygriddisplay);
-		$this->ygridcolor_actual = checkForDefault("YGridColor", $this->ygridcolor);
+		$this->xaxiscolor_actual = ReporticoApp::getDefaultConfig("XAxisColor", $this->xaxiscolor);
+		$this->xticklabelinterval_actual = ReporticoApp::getDefaultConfig("XTickLabelInterval", $this->xticklabelinterval);
+		$this->xtickinterval_actual = ReporticoApp::getDefaultConfig("XTickInterval", $this->xtickinterval);
+		$this->yaxiscolor_actual = ReporticoApp::getDefaultConfig("YAxisColor", $this->yaxiscolor);
+		$this->yticklabelinterval_actual = ReporticoApp::getDefaultConfig("YTickLabelInterval", $this->yticklabelinterval);
+		$this->ytickinterval_actual = ReporticoApp::getDefaultConfig("YTickInterval", $this->ytickinterval);
+		$this->graphcolor_actual = ReporticoApp::getDefaultConfig("GraphColor", $this->graphcolor);
+		$this->marginbottom_actual = ReporticoApp::getDefaultConfig("MarginBottom", $this->marginbottom);
+		$this->margintop_actual = ReporticoApp::getDefaultConfig("MarginTop", $this->margintop);
+		$this->marginleft_actual = ReporticoApp::getDefaultConfig("MarginLeft", $this->marginleft);
+		$this->marginright_actual = ReporticoApp::getDefaultConfig("MarginRight", $this->marginright);
+		$this->margincolor_actual = ReporticoApp::getDefaultConfig("MarginColor", $this->margincolor);
+		$this->gridpos_actual = ReporticoApp::getDefaultConfig("GridPosition", $this->gridpos);
+		$this->xgriddisplay_actual = ReporticoApp::getDefaultConfig("XGridDisplay", $this->xgriddisplay);
+		$this->xgridcolor_actual = ReporticoApp::getDefaultConfig("XGridColor", $this->xgridcolor);
+		$this->ygriddisplay_actual = ReporticoApp::getDefaultConfig("YGridDisplay", $this->ygriddisplay);
+		$this->ygridcolor_actual = ReporticoApp::getDefaultConfig("YGridColor", $this->ygridcolor);
 
-		$this->titlefont_actual = checkForDefault("TitleFont", $this->titlefont);
-		$this->titlefontstyle_actual = checkForDefault("TitleFontStyle", $this->titlefontstyle);
-		$this->titlefontsize_actual = checkForDefault("TitleFontSize", $this->titlefontsize);
-		$this->titlecolor_actual = checkForDefault("TitleColor", $this->titlecolor);
-		$this->xtitlefont_actual = checkForDefault("XTitleFont", $this->xtitlefont);
-		$this->xtitlefontstyle_actual = checkForDefault("XTitleFontStyle", $this->xtitlefontstyle);
-		$this->xtitlefontsize_actual = checkForDefault("XTitleFontSize", $this->xtitlefontsize);
-		$this->xtitlecolor_actual = checkForDefault("XTitleColor", $this->xtitlecolor);
-		$this->ytitlefont_actual = checkForDefault("YTitleFont", $this->ytitlefont);
-		$this->ytitlefontstyle_actual = checkForDefault("YTitleFontStyle", $this->ytitlefontstyle);
-		$this->ytitlefontsize_actual = checkForDefault("YTitleFontSize", $this->ytitlefontsize);
-		$this->ytitlecolor_actual = checkForDefault("YTitleColor", $this->ytitlecolor);
-		$this->xaxisfont_actual = checkForDefault("XAxisFont", $this->xaxisfont);
-		$this->xaxisfontstyle_actual = checkForDefault("XAxisFontStyle", $this->xaxisfontstyle);
-		$this->xaxisfontsize_actual = checkForDefault("XAxisFontSize", $this->xaxisfontsize);
-		$this->xaxisfontcolor_actual = checkForDefault("XAxisFontColor", $this->xaxisfontcolor);
-		$this->xaxiscolor_actual = checkForDefault("XAxisColor", $this->xaxiscolor);
-		$this->yaxisfont_actual = checkForDefault("YAxisFont", $this->yaxisfont);
-		$this->yaxisfontstyle_actual = checkForDefault("YAxisFontStyle", $this->yaxisfontstyle);
-		$this->yaxisfontsize_actual = checkForDefault("YAxisFontSize", $this->yaxisfontsize);
-		$this->yaxisfontcolor_actual = checkForDefault("YAxisFontColor", $this->yaxisfontcolor);
-		$this->yaxiscolor_actual = checkForDefault("YAxisColor", $this->yaxiscolor);
+		$this->titlefont_actual = ReporticoApp::getDefaultConfig("TitleFont", $this->titlefont);
+		$this->titlefontstyle_actual = ReporticoApp::getDefaultConfig("TitleFontStyle", $this->titlefontstyle);
+		$this->titlefontsize_actual = ReporticoApp::getDefaultConfig("TitleFontSize", $this->titlefontsize);
+		$this->titlecolor_actual = ReporticoApp::getDefaultConfig("TitleColor", $this->titlecolor);
+		$this->xtitlefont_actual = ReporticoApp::getDefaultConfig("XTitleFont", $this->xtitlefont);
+		$this->xtitlefontstyle_actual = ReporticoApp::getDefaultConfig("XTitleFontStyle", $this->xtitlefontstyle);
+		$this->xtitlefontsize_actual = ReporticoApp::getDefaultConfig("XTitleFontSize", $this->xtitlefontsize);
+		$this->xtitlecolor_actual = ReporticoApp::getDefaultConfig("XTitleColor", $this->xtitlecolor);
+		$this->ytitlefont_actual = ReporticoApp::getDefaultConfig("YTitleFont", $this->ytitlefont);
+		$this->ytitlefontstyle_actual = ReporticoApp::getDefaultConfig("YTitleFontStyle", $this->ytitlefontstyle);
+		$this->ytitlefontsize_actual = ReporticoApp::getDefaultConfig("YTitleFontSize", $this->ytitlefontsize);
+		$this->ytitlecolor_actual = ReporticoApp::getDefaultConfig("YTitleColor", $this->ytitlecolor);
+		$this->xaxisfont_actual = ReporticoApp::getDefaultConfig("XAxisFont", $this->xaxisfont);
+		$this->xaxisfontstyle_actual = ReporticoApp::getDefaultConfig("XAxisFontStyle", $this->xaxisfontstyle);
+		$this->xaxisfontsize_actual = ReporticoApp::getDefaultConfig("XAxisFontSize", $this->xaxisfontsize);
+		$this->xaxisfontcolor_actual = ReporticoApp::getDefaultConfig("XAxisFontColor", $this->xaxisfontcolor);
+		$this->xaxiscolor_actual = ReporticoApp::getDefaultConfig("XAxisColor", $this->xaxiscolor);
+		$this->yaxisfont_actual = ReporticoApp::getDefaultConfig("YAxisFont", $this->yaxisfont);
+		$this->yaxisfontstyle_actual = ReporticoApp::getDefaultConfig("YAxisFontStyle", $this->yaxisfontstyle);
+		$this->yaxisfontsize_actual = ReporticoApp::getDefaultConfig("YAxisFontSize", $this->yaxisfontsize);
+		$this->yaxisfontcolor_actual = ReporticoApp::getDefaultConfig("YAxisFontColor", $this->yaxisfontcolor);
+		$this->yaxiscolor_actual = ReporticoApp::getDefaultConfig("YAxisColor", $this->yaxiscolor);
 
 	}
 

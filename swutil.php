@@ -54,8 +54,8 @@ function setUpReporticoSession()
     $session_name = session_id();
 
     // Check for Posted Session Name and use that if specified
-    if (isset($_REQUEST['reporticoSessionName'])) {
-        $session_name = $_REQUEST['reporticoSessionName'];
+    if (isset($_REQUEST['reportico_session_name'])) {
+        $session_name = $_REQUEST['reportico_session_name'];
         if (preg_match("/_/", $session_name)) {
             $ar = explode("_", $session_name);
             ReporticoApp::set("session_namespace", $ar[1]);
@@ -723,68 +723,9 @@ function ErrorHandler($errno, $errstr, $errfile, $errline)
 
 }
 
-// error handler function
-function hasDefault($in_code)
+function backtrace()
 {
-    if (substr($in_code, 0, 1) == REPORTICO_DEFAULT_INDICATOR) {
-        return true;
-    }
-    return false;
-}
-
-function getDefault($in_code)
-{
-    $out_val = false;
-    global $g_reportico_config;
-
-    $out_val(ReporticoApp::getConfig($in_code));
-    return $out_val;
-}
-
-// error handler function
-function checkForDefault($in_code, $in_val)
-{
-    global $g_reportico_config;
-    $out_val = $in_val;
-    if (!$in_val) {
-        $out_val = $in_val;
-        if (isset($g_reportico_config) && $g_reportico_config) {
-            if (isset($g_reportico_config[$in_code])) {
-                $out_val = $g_reportico_config[$in_code];
-            }
-
-            if (isset($g_reportico_config["pdf_" . $in_code])) {
-                $out_val = $g_reportico_config["pdf_" . $in_code];
-            }
-
-            if (isset($g_reportico_config["chart_" . $in_code])) {
-                $out_val = $g_reportico_config["chart_" . $in_code];
-            }
-
-        } else if (defined("SW_DEFAULT_" . $in_code)) {
-            $out_val = constant("SW_DEFAULT_" . $in_code);
-        }
-    } else
-    if (substr($in_val, 0, 1) == REPORTICO_DEFAULT_INDICATOR) {
-        $out_val = substr($in_val, 1);
-        if (isset($g_reportico_config) && $g_reportico_config) {
-            if (isset($g_reportico_config[$in_code])) {
-                $out_val = $g_reportico_config[$in_code];
-            }
-
-            if (isset($g_reportico_config["pdf_" . $in_code])) {
-                $out_val = $g_reportico_config["pdf_" . $in_code];
-            }
-
-            if (isset($g_reportico_config["chart_" . $in_code])) {
-                $out_val = $g_reportico_config["chart_" . $in_code];
-            }
-
-        } else if (defined("SW_DEFAULT_" . $in_code)) {
-            $out_val = constant("SW_DEFAULT_" . $in_code);
-        }
-    }
-    return $out_val;
+    debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
 }
 
 // Look for a file in the include path, or the path of the current source file

@@ -789,8 +789,8 @@ class Report extends ReporticoObject
                         getReporticoSessionParam("target_show_graph")) {
                         if ($graphs = &$this->query->getGraphByName($group->group_name)) {
                             foreach ($graphs as $graph) {
-                                $graph->width_pdf_actual = checkForDefault("GraphWidthPDF", $graph->width_pdf);
-                                $graph->height_pdf_actual = checkForDefault("GraphHeightPDF", $graph->height_pdf);
+                                $graph->width_pdf_actual = ReporticoApp::getDefaultConfig("GraphWidthPDF", $graph->width_pdf);
+                                $graph->height_pdf_actual = ReporticoApp::getDefaultConfig("GraphHeightPDF", $graph->height_pdf);
                                 $graph->title_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->title, true);
                                 $graph->xtitle_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->xtitle, true);
                                 $graph->ytitle_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->ytitle, true);

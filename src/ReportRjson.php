@@ -124,14 +124,14 @@ class ReportRjson extends Report
         if (!getRequestItem("printable_rjson")) {
             // Show Go Back Button ( if user is not in "SINGLE REPORT RUN " )
             if (!$this->query->access_mode || ($this->query->access_mode != "REPORTOUTPUT")) {
-                $this->jar["attributes"]["show_prepare_button"] .= $this->query->getActionUrl() . '?' . $forward . 'execute_mode=PREPARE&reporticoSessionName=' . reporticoSessionName();
+                $this->jar["attributes"]["show_prepare_button"] .= $this->query->getActionUrl() . '?' . $forward . 'execute_mode=PREPARE&reportico_session_name=' . reporticoSessionName();
             }
             if (getReporticoSessionParam("show_refresh_button")) {
-                $this->jar["attributes"]["show_refresh_button"] .= $this->query->getActionUrl() . '?' . $forward . 'refreshReport=1&execute_mode=EXECUTE&reporticoSessionName=' . reporticoSessionName();
+                $this->jar["attributes"]["show_refresh_button"] .= $this->query->getActionUrl() . '?' . $forward . 'refreshReport=1&execute_mode=EXECUTE&reportico_session_name=' . reporticoSessionName();
             }
 
         } else {
-            $this->jar["attributes"]["show_print_button"] .= $this->query->getActionUrl() . '?' . $forward . 'printReport=1&execute_mode=EXECUTE&reporticoSessionName=' . reporticoSessionName();
+            $this->jar["attributes"]["show_print_button"] .= $this->query->getActionUrl() . '?' . $forward . 'printReport=1&execute_mode=EXECUTE&reportico_session_name=' . reporticoSessionName();
         }
 
         $this->jar["attributes"]["column_header_styles"] = $this->query->output_header_styles;
@@ -342,8 +342,8 @@ class ReportRjson extends Report
             $this->page_started = false;
         }
         $this->graph_sessionPlaceholder++;
-        $graph->width_actual = checkForDefault("GraphWidth", $graph->width);
-        $graph->height_actual = checkForDefault("GraphHeight", $graph->height);
+        $graph->width_actual = ReporticoApp::getDefaultConfig("GraphWidth", $graph->width);
+        $graph->height_actual = ReporticoApp::getDefaultConfig("GraphHeight", $graph->height);
         $graph->title_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->title, true);
         $graph->xtitle_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->xtitle, true);
         $graph->ytitle_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->ytitle, true);
