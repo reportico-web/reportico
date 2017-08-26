@@ -469,8 +469,6 @@ class XmlWriter
     public function writeFile($filename)
     {
 
-        global $g_project;
-
         if (!$filename) {
             trigger_error(ReporticoLang::templateXlate("UNABLE_TO_SAVE") . templateXlate("SPECIFYXML"), E_USER_ERROR);
             return false;

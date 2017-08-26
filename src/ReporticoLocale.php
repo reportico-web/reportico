@@ -18,7 +18,7 @@ class ReporticoLocale
         $to_format = self::getLocaleDateFormat($to_format);
 
         if (!class_exists("\DateTime", false) || !method_exists("\DateTime", "createFromFormat")) {
-            //handleError("This version of PHP does not have the \DateTime class. Must be PHP >= 5.3 to use date criteria");
+            //ReporticoApp::handleError("This version of PHP does not have the \DateTime class. Must be PHP >= 5.3 to use date criteria");
             //return false;
             $retval = reformatDate($from_format, $to_format, $in_time);
             return $retval;
@@ -27,12 +27,12 @@ class ReporticoLocale
             $datetime = \DateTime::createFromFormat($from_format, $in_time);
 
             if (!$datetime) {
-                handleError("Date value '$in_time' is expected in date format $from_format");
+                ReporticoApp::handleError("Date value '$in_time' is expected in date format $from_format");
                 return false;
             }
             $retval = $datetime->format($to_format);
         } catch (Exception $e) {
-            handleError("Error in date formatting<BR>" . $e->getMessage());
+            ReporticoApp::handleError("Error in date formatting<BR>" . $e->getMessage());
             return "";
         }
         return $retval;
@@ -245,13 +245,13 @@ class ReporticoLocale
         }
 
         if (!class_exists("\DateTime", false)) {
-            handleError("This version of PHP does not have the DateTime class. Must be PHP >= 5.3 to use date criteria");
+            ReporticoApp::handleError("This version of PHP does not have the DateTime class. Must be PHP >= 5.3 to use date criteria");
             return false;
         }
         try {
             $datetime = new \DateTime("@$new_time");
         } catch (Exception $e) {
-            handleError("Error in date formatting<BR>" . $e->getMessage());
+            ReporticoApp::handleError("Error in date formatting<BR>" . $e->getMessage());
             return "";
         }
 

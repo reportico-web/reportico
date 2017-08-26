@@ -6,9 +6,19 @@ namespace Reportico;
 
 class ReporticoApp
 {
+    const DEFAULT_INDICATOR = '.';
+    const DEBUG_NONE = 0;
+    const DEBUG_LOW = 1;
+    const DEBUG_MEDIUM = 2;
+    const DEBUG_HIGH = 3;
+
     private static $_instance;
 
     private $variables;
+
+    private $system_errors;
+    private $system_debug;
+
 
     private function __construct()
     {}
@@ -26,6 +36,8 @@ class ReporticoApp
         if (true === is_null(self::$_instance)) {
             self::$_instance = new self();
             self::$_instance->variables = [];
+            self::$_instance->system_errors = [];
+            self::$_instance->system_debug = [];
             self::$_instance->variables["config"] = [];
         }
 
@@ -114,6 +126,17 @@ class ReporticoApp
         $instance = self::getInstance();
         return $instance->isSetConfigVariable($var);
     }
+    public static function &getSystemErrors()
+    {
+        $instance = self::getInstance();
+        return $instance->system_errors;
+    }
+
+    public static function &getSystemDebug()
+    {
+        $instance = self::getInstance();
+        return $instance->system_debug;
+    }
 
     public static function show()
     {
@@ -126,7 +149,7 @@ class ReporticoApp
 // error handler function
     public function hasDefault($in_code)
     {
-        if (substr($in_code, 0, 1) == REPORTICO_DEFAULT_INDICATOR) {
+        if (substr($in_code, 0, 1) == ReporticoApp::DEFAULT_INDICATOR) {
             return true;
         }
         return false;
@@ -165,7 +188,7 @@ class ReporticoApp
             }
 
         } else
-        if (substr($in_val, 0, 1) == REPORTICO_DEFAULT_INDICATOR) {
+        if (substr($in_val, 0, 1) == ReporticoApp::DEFAULT_INDICATOR) {
             $out_val = substr($in_val, 1);
             if (ReporticoApp::isSetConfig($in_code)) {
                 $out_val = ReporticoApp::getConfig($in_code);
@@ -181,6 +204,83 @@ class ReporticoApp
         return $out_val;
     }
 
+    // User Error Handler
+    static function handleError($errstr, $type = E_USER_ERROR)
+    {
+        self::set("errors", true);
+
+        trigger_error($errstr, $type);
+    }
+
+    // exception handler function
+    static function ExceptionHandler($exception)
+    {
+        echo "<PRE>";
+        echo $exception->getMessage();
+        echo $exception->getTraceAsString();
+        echo "</PRE>";
+    }
+
+    // error handler function
+    static function ErrorHandler($errno, $errstr, $errfile, $errline)
+    {
+        switch ($errno) {
+            case E_ERROR:
+                $errtype = ReporticoLang::translate("Error");
+                break;
+            case E_NOTICE:
+                $errtype = ReporticoLang::translate("Notice");
+                break;
+            case E_USER_ERROR:
+                $errtype = ReporticoLang::translate("Error");
+                break;
+            case E_USER_WARNING:
+                $errtype = ReporticoLang::translate("");
+                break;
+            case E_USER_NOTICE:
+                $errtype = ReporticoLang::translate("");
+                break;
+            case E_WARNING:
+                $errtype = ReporticoLang::translate("");
+                break;
+
+            default:
+                $errtype = ReporticoLang::translate("Fatal Error");
+
+        }
+
+        // Avoid adding duplicate errors
+        $errors = self::getSystemErrors();
+        foreach ( self::getSystemErrors() as $k => $val) {
+            if ($val["errstr"] == $errstr) {
+                $errors[$k]["errct"] = $ct+1;
+                return;
+            }
+        }
+
+        $errors[] =
+                array(
+                "errno" => $errno,
+                "errstr" => $errstr,
+                "errfile" => $errfile,
+                "errline" => $errline,
+                "errtype" => $errtype,
+                "errarea" => self::get("code_area"),
+                "errsource" => self::get("code_source"),
+                "errct" => 1,
+                );
+        //echo "<PRE>";
+        //var_dump($errors);
+        //echo "</PRE>";
+
+        self::set("error_status", 1);
+
+    }
+
+    static function backtrace()
+    {
+        debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+    }
 
 
 }

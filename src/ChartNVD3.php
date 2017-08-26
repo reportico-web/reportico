@@ -290,8 +290,7 @@ class ChartNVD3
 
         }
 
-        global $g_session_namespace;
-        $sessionPlaceholder = $sessionPlaceholder . "_" . $g_session_namespace;
+        $sessionPlaceholder = $sessionPlaceholder . "_" . ReporticoApp::get("session_namespace");
 
         $js = "";
         $js .= "<div class=\"reportico-chart-container\" style=\"width: " . $this->width_actual . "px;height: " . $this->height_actual . "px\"> " . $this->convertSpecialChars($this->title_actual);

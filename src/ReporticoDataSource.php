@@ -373,14 +373,14 @@ class ReporticoDataSource extends ReporticoObject
 
         $dbtype = ReporticoApp::getConfig("db_type", false);
         if ($dbtype && $dbtype == "existingconnection" && !$this->external_connection) {
-            handleError("Project defined to use existing connection but none set.");
+            ReporticoApp::handleError("Project defined to use existing connection but none set.");
             return false;
         }
 
         if ($dbtype && preg_match("/^byname_/", $dbtype)) {
             $connection_name = preg_replace("/byname_/", "", $dbtype);
             if (!isset($this->available_connections[$connection_name])) {
-                handleError("Connection name \"$connection \" not found in framework connection set");
+                ReporticoApp::handleError("Connection name \"$connection \" not found in framework connection set");
                 return false;
             }
             $useConnection = $this->available_connections[$connection_name];
@@ -450,7 +450,7 @@ class ReporticoDataSource extends ReporticoObject
                     $connected = $this->ado_connection->Connect($this->_conn_host_name,
                         $this->_conn_user_name, $this->_conn_password, $this->_conn_database);
                 } else {
-                    handleError("Attempt to connect to Informix Database Failed. Informix PHP Driver is not Available");
+                    ReporticoApp::handleError("Attempt to connect to Informix Database Failed. Informix PHP Driver is not Available");
                 }
 
                 break;
@@ -489,7 +489,7 @@ class ReporticoDataSource extends ReporticoObject
                         trigger_error("PDO driver for mssql not found. Drivers \"dblib\" and \"mssql\" not found. Available drivers are " . $this->pdoDriversAsString(), E_USER_NOTICE);
                     }
                 } else {
-                    handleError("Attempt to connect to MSSQL Database Failed. PDO Support does not seem to be Available");
+                    ReporticoApp::handleError("Attempt to connect to MSSQL Database Failed. PDO Support does not seem to be Available");
                 }
 
                 break;
@@ -505,7 +505,7 @@ class ReporticoDataSource extends ReporticoObject
                     "dbname=" . $this->_conn_database;
                     $connected = $this->ado_connection->Connect($cnstr, $this->_conn_user_name, $this->_conn_password);
                 } else {
-                    handleError("Attempt to connect to MSSQL Database Failed. PDO Support does not seem to be Available");
+                    ReporticoApp::handleError("Attempt to connect to MSSQL Database Failed. PDO Support does not seem to be Available");
                 }
 
                 break;
@@ -522,7 +522,7 @@ class ReporticoDataSource extends ReporticoObject
 
                     $connected = $this->ado_connection->Connect($cnstr, $this->_conn_user_name, $this->_conn_password);
                 } else {
-                    handleError("Attempt to connect to MSSQL Database Failed. PDO Support does not seem to be Available");
+                    ReporticoApp::handleError("Attempt to connect to MSSQL Database Failed. PDO Support does not seem to be Available");
                 }
 
                 break;
@@ -553,7 +553,7 @@ class ReporticoDataSource extends ReporticoObject
                         $connected = $this->ado_connection->Connect($cnstr, $this->_conn_user_name, $this->_conn_password);
                     }
                 } else {
-                    handleError("Attempt to connect to Oracle Database Failed. PDO Support does not seem to be Available");
+                    ReporticoApp::handleError("Attempt to connect to Oracle Database Failed. PDO Support does not seem to be Available");
                 }
 
                 break;
@@ -591,7 +591,7 @@ class ReporticoDataSource extends ReporticoObject
                         }
                     }
                 } else {
-                    handleError("Attempt to connect to PostgreSQL Database Failed. PDO Support does not seem to be Available");
+                    ReporticoApp::handleError("Attempt to connect to PostgreSQL Database Failed. PDO Support does not seem to be Available");
                 }
 
                 break;
@@ -631,7 +631,7 @@ class ReporticoDataSource extends ReporticoObject
                         }
                     }
                 } else {
-                    handleError("Attempt to connect to MySQL Database Failed. PDO Support does not seem to be Available");
+                    ReporticoApp::handleError("Attempt to connect to MySQL Database Failed. PDO Support does not seem to be Available");
                 }
 
                 break;
@@ -642,7 +642,7 @@ class ReporticoDataSource extends ReporticoObject
                     $cnstr = "sqlite:" . $this->_conn_database;
                     $connected = $this->ado_connection->Connect($cnstr, '', '');
                 } else {
-                    handleError("Attempt to connect to SQLite-3 Database Failed. PDO Driver is not Available");
+                    ReporticoApp::handleError("Attempt to connect to SQLite-3 Database Failed. PDO Driver is not Available");
                 }
 
                 break;
@@ -671,7 +671,7 @@ class ReporticoDataSource extends ReporticoObject
                     "database=" . $this->_conn_database;
                     $connected = $this->ado_connection->Connect($cnstr, $this->_conn_user_name, $this->_conn_password);
                 } else {
-                    handleError("Attempt to connect to Informix Database Failed. PDO Support does not seem to be Available");
+                    ReporticoApp::handleError("Attempt to connect to Informix Database Failed. PDO Support does not seem to be Available");
                 }
 
                 break;
@@ -684,11 +684,11 @@ class ReporticoDataSource extends ReporticoObject
                 break;
 
             case "unknown":
-                handleError("Database driver of unknown specified - please configure your project database connectivity");
+                ReporticoApp::handleError("Database driver of unknown specified - please configure your project database connectivity");
                 break;
 
             case "SW_FRAMEWORK_DB_DRIVER":
-                handleError("You have configured your project to connnect to a database held within a web framework or Content Management System. You need to set constants SW_FRAMEWORK_DB_DRIVER, SW_FRAMEWORK_DB_USER,SW_FRAMEWORK_DB_PASSWORD,SW_FRAMEWORK_DB_HOST,SW_FRAMEWORK_DB_DATABASE from within the calling framework in order to run in this way. You are probably not trying to run from within a framework");
+                ReporticoApp::handleError("You have configured your project to connnect to a database held within a web framework or Content Management System. You need to set constants SW_FRAMEWORK_DB_DRIVER, SW_FRAMEWORK_DB_USER,SW_FRAMEWORK_DB_PASSWORD,SW_FRAMEWORK_DB_HOST,SW_FRAMEWORK_DB_DATABASE from within the calling framework in order to run in this way. You are probably not trying to run from within a framework");
                 break;
 
             default:
@@ -705,7 +705,7 @@ class ReporticoDataSource extends ReporticoObject
             $connected = true;
         } else {
             if ($this->ado_connection && !$connected && $this->_conn_driver != "unknown") {
-                handleError("Error in Connection to $this->_conn_driver database :" . $this->ado_connection->ErrorMsg());
+                ReporticoApp::handleError("Error in Connection to $this->_conn_driver database :" . $this->ado_connection->ErrorMsg());
             }
 
         }

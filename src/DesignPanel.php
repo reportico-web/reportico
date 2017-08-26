@@ -165,7 +165,6 @@ class DesignPanel
 
                 // For Admin options title should be translatable
                 // Also for configureproject.xml
-                global $g_project;
                 if ($this->query->xmlinput == "configureproject.xml" || ReporticoApp::getConfig("project") == "admin") {
                     $reporttitle = $this->query->deriveAttribute("ReportTitle", "Set Report Title");
                     $this->smarty->assign('TITLE', ReporticoLang::translate($reporttitle));
@@ -535,12 +534,8 @@ class DesignPanel
                     $this->smarty->assign('STATUSMSG', $this->query->status_message);
                 }
 
-                global $g_system_debug;
-                if (!$g_system_debug) {
-                    $g_system_debug = array();
-                }
-
-                foreach ($g_system_debug as $val) {
+                $debug = ReporticoApp::getSystemDebug();
+                foreach ($debug as $val) {
 
                     $msg .= "<hr>" . $val["dbgarea"] . " - " . $val["dbgstr"] . "\n";
                 }
@@ -555,15 +550,12 @@ class DesignPanel
             case "ERROR":
                 $msg = "";
 
-                global $g_system_errors;
                 $lastval = false;
                 $duptypect = 0;
-                if (!$g_system_errors) {
-                    $g_system_errors = array();
-                }
 
                 $ct = 0;
-                foreach ($g_system_errors as $val) {
+                $errors = ReporticoApp::getSystemErrors();
+                foreach ($errors as $val) {
 
                     if ($val["errno"] == E_USER_ERROR || $val["errno"] == E_USER_WARNING || $val["errno"] == E_USER_NOTICE) {
                         if ($ct++ > 0) {
@@ -614,12 +606,8 @@ class DesignPanel
                     $this->smarty->assign('STATUSMSG', $this->query->status_message);
                 }
 
-                global $g_system_debug;
-                if (!$g_system_debug) {
-                    $g_system_debug = array();
-                }
-
-                foreach ($g_system_debug as $val) {
+                $debug = ReporticoApp::getSystemDebug();
+                foreach ($debug as $val) {
 
                     $debugmsg .= "<hr>" . $val["dbgarea"] . " - " . $val["dbgstr"] . "\n";
                 }

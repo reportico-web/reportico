@@ -56,8 +56,6 @@ class ReporticoObject
     // {constant,<VALUE>} - returns defined PHP constants
     public function &deriveMetaValue($to_parse)
     {
-        global $g_project;
-
         $parsed = $to_parse;
         if (preg_match("/{constant,SW_PROJECT}/", $parsed)) {
             $parsed = ReporticoApp::getConfig("project");
@@ -128,7 +126,7 @@ class ReporticoObject
     public function setFormat($format_type, $format_value)
     {
         if (!array_key_exists($format_type, $this->formats)) {
-            handleError("Format Type " . $format_type . " Unknown.");
+            ReporticoApp::handleError("Format Type " . $format_type . " Unknown.");
         }
 
         $this->formats[$format_type] = $format_value;

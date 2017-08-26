@@ -519,7 +519,7 @@ class Reportico extends ReporticoObject
         }
 
         if (!$this->checkColumnNameR("setLookupDisplay", $query_name)) {
-            handleError("Failure in Lookup Display: Unknown Column Name $query_name");
+            ReporticoApp::handleError("Failure in Lookup Display: Unknown Column Name $query_name");
             return;
         }
 
@@ -555,7 +555,7 @@ class Reportico extends ReporticoObject
     public function checkPageHeaderName($in_scope, $in_name)
     {
         if (!array_key_exists($in_name, $this->pageHeaders)) {
-            handleError("$in_scope: Group $in_name unknown");
+            ReporticoApp::handleError("$in_scope: Group $in_name unknown");
         }
     }
 
@@ -565,7 +565,7 @@ class Reportico extends ReporticoObject
     public function checkPageFooterName($in_scope, $in_name)
     {
         if (!array_key_exists($in_name, $this->pageFooters)) {
-            handleError("$in_scope: Group $in_name unknown");
+            ReporticoApp::handleError("$in_scope: Group $in_name unknown");
         }
     }
 
@@ -575,7 +575,7 @@ class Reportico extends ReporticoObject
     public function checkGroupNameR($in_scope, $in_column_name)
     {
         if (!($qc = ReporticoUtility::getGroupColumn($in_column_name, $this->groups))) {
-            handleError("$in_scope: Group $in_column_name unknown");
+            ReporticoApp::handleError("$in_scope: Group $in_column_name unknown");
             return (false);
         } else {
             return true;
@@ -589,7 +589,7 @@ class Reportico extends ReporticoObject
     public function checkGroupName($in_scope, $in_column_name)
     {
         if (!($qc = ReporticoUtility::getGroupColumn($in_column_name, $this->groups))) {
-            handleError("$in_scope: Group $in_column_name unknown");
+            ReporticoApp::handleError("$in_scope: Group $in_column_name unknown");
         }
     }
 
@@ -599,7 +599,7 @@ class Reportico extends ReporticoObject
     public function checkColumnNameR($in_scope, $in_column_name)
     {
         if (!($cl = ReporticoUtility::getQueryColumn($in_column_name, $this->columns))) {
-            handleError("$in_scope: Column $in_column_name unknown");
+            ReporticoApp::handleError("$in_scope: Column $in_column_name unknown");
             return false;
         } else {
             return true;
@@ -613,7 +613,7 @@ class Reportico extends ReporticoObject
     public function checkColumnName($in_scope, $in_column_name)
     {
         if (!($cl = ReporticoUtility::getQueryColumn($in_column_name, $this->columns))) {
-            handleError("$in_scope: Column $in_column_name unknown");
+            ReporticoApp::handleError("$in_scope: Column $in_column_name unknown");
         }
     }
 
@@ -649,7 +649,7 @@ class Reportico extends ReporticoObject
     public function checkCriteriaName($in_scope, $in_column_name)
     {
         if (!array_key_exists($in_column_name, $this->lookup_queries)) {
-            handleError("$in_scope: Column $in_column_name unknown");
+            ReporticoApp::handleError("$in_scope: Column $in_column_name unknown");
         }
     }
 
@@ -659,7 +659,7 @@ class Reportico extends ReporticoObject
     public function checkCriteriaNameR($in_scope, $in_column_name)
     {
         if (!array_key_exists($in_column_name, $this->lookup_queries)) {
-            //handleError("$in_scope: Column $in_column_name unknown");
+            //ReporticoApp::handleError("$in_scope: Column $in_column_name unknown");
             return false;
         }
         return true;
@@ -671,11 +671,11 @@ class Reportico extends ReporticoObject
     {
 
         if (!$this->checkCriteriaNameR("set_criteria_link", $link_from)) {
-            handleError("Failure in Criteria Link: Unknown Lookup Name $link_from");
+            ReporticoApp::handleError("Failure in Criteria Link: Unknown Lookup Name $link_from");
             return;
         }
         if (!$this->checkCriteriaNameR("set_criteria_link", $link_to)) {
-            handleError("Failure in Criteria Link: Unknown Lookup Name $link_to");
+            ReporticoApp::handleError("Failure in Criteria Link: Unknown Lookup Name $link_to");
             return;
         }
 
@@ -689,7 +689,7 @@ class Reportico extends ReporticoObject
         $ltq = &$this->lookup_queries[$link_to]->lookup_query;
 
         if (!$lfq) {
-            handleError("set_criteria_link: No Lookup For $link_from");
+            ReporticoApp::handleError("set_criteria_link: No Lookup For $link_from");
         }
 
         $this->lookup_queries[$link_from]->lookup_query->addCriteriaLink($clause, $link_from, $link_to, $ltq, $link_number);
@@ -1069,7 +1069,7 @@ class Reportico extends ReporticoObject
             $this->allow_maintain != "DEMO" &&
             $this->allow_maintain != "FULL" &&
             !$this->parent_query) {
-            handleError("Report Maintenance Mode Disallowed");
+            ReporticoApp::handleError("Report Maintenance Mode Disallowed");
             $this->execute_mode = "PREPARE";
         }
         if (array_key_exists('execute_mode', $_REQUEST)) {
@@ -2324,7 +2324,7 @@ class Reportico extends ReporticoObject
     {
         $tn = (int) $trailer_number;
         if (!$this->checkGroupNameR("createGroupTrailer", $query_name)) {
-            handleError("Failure in Group Column Trailer: Unknown Group Name $query_name");
+            ReporticoApp::handleError("Failure in Group Column Trailer: Unknown Group Name $query_name");
             return;
         }
 
@@ -2349,17 +2349,17 @@ class Reportico extends ReporticoObject
     {
         $tn = (int) $trailer_number;
         if (!$this->checkGroupNameR("createGroupTrailer", $query_name)) {
-            handleError("Failure in Group Column Trailer: Unknown Group Name $query_name");
+            ReporticoApp::handleError("Failure in Group Column Trailer: Unknown Group Name $query_name");
             return;
         }
 
         if (!$this->checkColumnNameR("createGroupTrailer", $trailer_column)) {
-            handleError("Failure in Group Column Trailer: Unknown Column $trailer_column");
+            ReporticoApp::handleError("Failure in Group Column Trailer: Unknown Column $trailer_column");
             return;
         }
 
         if (!$this->checkColumnNameR("createGroupTrailer", $value_column)) {
-            handleError("Failure in Group Column Trailer: Unknown Column $value_column");
+            ReporticoApp::handleError("Failure in Group Column Trailer: Unknown Column $value_column");
             return;
         }
 
@@ -2408,12 +2408,12 @@ class Reportico extends ReporticoObject
     {
         $hn = (int) $header_number;
         if (!$this->checkGroupNameR("createGroupHeader", $query_name)) {
-            handleError("Failure in Group Column Header: Unknown Group Name $query_name");
+            ReporticoApp::handleError("Failure in Group Column Header: Unknown Group Name $query_name");
             return;
         }
 
         if (!$this->checkColumnNameR("createGroupHeader", $header_column)) {
-            handleError("Failure in Group Column Header: Unknown Column $header_column");
+            ReporticoApp::handleError("Failure in Group Column Header: Unknown Column $header_column");
             return;
         }
 
@@ -2436,7 +2436,7 @@ class Reportico extends ReporticoObject
 
         $hn = (int) $header_number;
         if (!$this->checkGroupNameR("delete_group_header", $query_name)) {
-            handleError("Failure in Group Column Header: Unknown Group Name $query_name");
+            ReporticoApp::handleError("Failure in Group Column Header: Unknown Group Name $query_name");
             return;
         }
 
@@ -3288,16 +3288,16 @@ class Reportico extends ReporticoObject
     {
         foreach ($this->lookup_queries as $col) {
             if ($col->required == "yes") {
-                //handleError( "Mandatory" );
+                //ReporticoApp::handleError( "Mandatory" );
                 if (!$this->lookup_queries[$col->query_name]->column_value) {
                     if (true || ReporticoUtility::getRequestItem("new_reportico_window", false)) {
                         $this->http_response_code = 500;
                         $this->return_to_caller = true;
-                        handleError(ReporticoLang::templateXlate("REQUIRED_CRITERIA") . " - " . ReporticoLang::translate($this->lookup_queries[$col->query_name]->deriveAttribute("column_title", "")));
+                        ReporticoApp::handleError(ReporticoLang::templateXlate("REQUIRED_CRITERIA") . " - " . ReporticoLang::translate($this->lookup_queries[$col->query_name]->deriveAttribute("column_title", "")));
                         //echo '<div class="swError">'.ReporticoLang::templateXlate("REQUIRED_CRITERIA")." - ".ReporticoLang::translate($this->lookup_queries[$col->query_name]->deriveAttribute("column_title", ""))."</div>";
                         return;
                     } else {
-                        handleError(ReporticoLang::templateXlate("REQUIRED_CRITERIA") . " - " . ReporticoLang::translate($this->lookup_queries[$col->query_name]->deriveAttribute("column_title", ""))
+                        ReporticoApp::handleError(ReporticoLang::templateXlate("REQUIRED_CRITERIA") . " - " . ReporticoLang::translate($this->lookup_queries[$col->query_name]->deriveAttribute("column_title", ""))
                             , E_USER_ERROR);
                     }
 
@@ -3475,7 +3475,7 @@ class Reportico extends ReporticoObject
         if ($do_defaults) {
             $custom_functions = array();
 
-            $old_error_handler = set_error_handler("Reportico\ErrorHandler", 0);
+            $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler", 0);
             if (@file_exists($this->projects_folder . "/" . ReporticoApp::getconfig("project") . "/reporticoDefaults.php")) {
                 include_once $this->projects_folder . "/" . ReporticoApp::getconfig("project") . "/reporticoDefaults.php";
             } else if (@file_exists(__DIR__ . "/reporticoDefaults.php")) {
@@ -3486,7 +3486,7 @@ class Reportico extends ReporticoObject
                 reporticoDefaults($this);
             }
 
-            $old_error_handler = set_error_handler("Reportico\ErrorHandler");
+            $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
         }
 
     }
@@ -3529,12 +3529,6 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function execute($mode = false, $draw = true)
     {
-        global $g_system_errors;
-        global $g_system_debug;
-        global $g_code_area;
-        global $g_code_source;
-        global $g_debug_mode;
-
         if ($this->session_namespace) {
             ReporticoApp::set("session_namespace", $this->session_namespace);
         }
@@ -3553,8 +3547,8 @@ class Reportico extends ReporticoObject
             $mode = $this->getExecuteMode();
         }
 
-        $old_error_handler = set_error_handler("Reportico\ErrorHandler");
-        set_exception_handler("Reportico\ExceptionHandler");
+        $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
+        set_exception_handler("Reportico\ReporticoApp::ExceptionHandler");
 
         // If new session, we need to use initial project, report etc, otherwise ignore them
         $this->handleInitialSettings();
@@ -3620,7 +3614,7 @@ class Reportico extends ReporticoObject
             die;
         }
 
-        $g_debug_mode = ReporticoUtility::getRequestItem("debug_mode", "0", $this->first_criteria_selection);
+        ReporticoApp::set("debug_mode", ReporticoUtility::getRequestItem("debug_mode", "0", $this->first_criteria_selection));
 
         if (!$mode) {
             $mode = $this->getExecuteMode();
@@ -3815,11 +3809,11 @@ class Reportico extends ReporticoObject
 
                 if ($this->return_output_to_caller) {
                     $txt = $this->panels["MAIN"]->smarty->fetch($template);
-                    $old_error_handler = set_error_handler("Reportico\ErrorHandler");
+                    $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
                     return $txt;
                 } else {
                     $this->panels["MAIN"]->smarty->display($template);
-                    $old_error_handler = set_error_handler("Reportico\ErrorHandler");
+                    $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
                 }
                 break;
 
@@ -3849,11 +3843,11 @@ class Reportico extends ReporticoObject
 
                 if ($this->return_output_to_caller) {
                     $txt = $this->panels["MAIN"]->smarty->fetch($template);
-                    $old_error_handler = set_error_handler("Reportico\ErrorHandler");
+                    $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
                     return $txt;
                 } else {
                     $this->panels["MAIN"]->smarty->display($template);
-                    $old_error_handler = set_error_handler("Reportico\ErrorHandler");
+                    $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
                 }
                 break;
 
@@ -3900,11 +3894,11 @@ class Reportico extends ReporticoObject
 
                 if ($this->return_output_to_caller) {
                     $txt = $this->panels["MAIN"]->smarty->fetch($template);
-                    $old_error_handler = set_error_handler("Reportico\ErrorHandler");
+                    $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
                     return $txt;
                 } else {
                     $this->panels["MAIN"]->smarty->display($template);
-                    $old_error_handler = set_error_handler("Reportico\ErrorHandler");
+                    $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
                 }
                 break;
 
@@ -3940,9 +3934,9 @@ class Reportico extends ReporticoObject
                 $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
                 $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
 
-                $g_code_area = "Main Query";
+                ReporticoApp::set("code_area", "Main Query");
                 $this->buildQuery(false, "");
-                $g_code_area = false;
+                ReporticoApp::set("code_area", false);
                 ReporticoLang::loadModeLanguagePack("execute", $this->output_charset);
                 ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->smarty);
                 $this->checkCriteriaValidity();
@@ -3966,17 +3960,17 @@ class Reportico extends ReporticoObject
                 }
 
                 // Situtations where we dont want to switch results page - no data found, debug mode, not logged in
-                if ((count($g_system_errors) > 0 || $g_debug_mode || count($g_system_debug) > 0 || !ReporticoSession::getReporticoSessionParam("loggedin"))) {
+                if ((count(ReporticoApp::getSystemErrors()) > 0 || ReporticoApp::get("debug_mode") || count(ReporticoApp::getSystemDebug()) > 0 || !ReporticoSession::getReporticoSessionParam("loggedin"))) {
                     // If errors and this is an ajax request return json ajax response for first message
                     $runfromcriteriascreen = ReporticoUtility::getRequestItem("user_criteria_entered", false);
-                    global $g_no_data;
-                    //if ( $g_no_data && ReporticoUtility::getRequestItem("new_reportico_window",  false ) && !$g_debug_mode && $this->target_format == "HTML" && $runfromcriteriascreen && $this->reportico_ajax_mode && count($g_system_errors) == 1 )
+
+                    //if ( ReporticoApp::get("no_data") && ReporticoUtility::getRequestItem("new_reportico_window",  false ) && !ReporticoApp::get("debug_mode") && $this->target_format == "HTML" && $runfromcriteriascreen && $this->reportico_ajax_mode && count(ReporticoApp::getSystemErrors()) == 1 )
                     //
                     //{
                     //header("HTTP/1.0 404 Not Found", true);
                     //$response_array = array();
-                    //$response_array["errno"] = $g_system_errors[0]["errno"];
-                    //$response_array["errmsg"] = $g_system_errors[0]["errstr"];
+                    //$response_array["errno"] = (ReporticoApp::getSystemErrors())[0]["errno"];
+                    //$response_array["errmsg"] = (ReporticoApp::getSystemErrors())[0]["errstr"];
                     //echo json_encode($response_array);
                     //die;
                     //}
@@ -4012,11 +4006,11 @@ class Reportico extends ReporticoObject
 
                     if (false && $this->return_output_to_caller) {
                         $txt = $this->panels["MAIN"]->smarty->fetch($template);
-                        $old_error_handler = set_error_handler("Reportico\ErrorHandler");
+                        $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
                         return $txt;
                     } else {
                         $this->panels["MAIN"]->smarty->display($template);
-                        $old_error_handler = set_error_handler("Reportico\ErrorHandler");
+                        $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
                     }
                 } else {
                     if ($this->target_format != "HTML") {
@@ -4075,11 +4069,11 @@ class Reportico extends ReporticoObject
 
                             if ($this->return_output_to_caller) {
                                 $txt = $this->panels["MAIN"]->smarty->fetch($template);
-                                $old_error_handler = set_error_handler("Reportico\ErrorHandler");
+                                $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
                                 return $txt;
                             } else {
                                 $this->panels["MAIN"]->smarty->display($template);
-                                $old_error_handler = set_error_handler("Reportico\ErrorHandler");
+                                $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
                             }
 
                         }
@@ -4167,8 +4161,6 @@ class Reportico extends ReporticoObject
         ReporticoLang::loadModeLanguagePack("admin", $this->output_charset);
         ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->smarty);
 
-        global $g_projpath;
-
         if (ReporticoApp::getConfig("project") != "admin") {
             return;
         }
@@ -4178,8 +4170,8 @@ class Reportico extends ReporticoObject
             foreach (ReporticoApp::get("static_menu") as $menuitem) {
                 if ($menuitem["title"] == "<AUTO>") {
                     // Generate Menu from XML files
-                    if (is_dir($g_projpath)) {
-                        if ($dh = opendir($g_projpath)) {
+                    if (is_dir(ReporticoApp::get("projpath"))) {
+                        if ($dh = opendir(ReporticoApp::get("projpath"))) {
                             while (($file = readdir($dh)) !== false) {
                                 $mtch = "/" . $menuitem["report"] . "/";
                                 if (preg_match($mtch, $file)) {
@@ -4197,7 +4189,7 @@ class Reportico extends ReporticoObject
             }
 
             if ($ct == 0) {
-                handleError("No Menu Items Available - Check Language - " . ReporticoApp::get("language"));
+                ReporticoApp::handleError("No Menu Items Available - Check Language - " . ReporticoApp::get("language"));
             }
 
             // Generate list of projects to choose from by finding all folders above the
@@ -4237,8 +4229,6 @@ class Reportico extends ReporticoObject
     public function buildMenu()
     {
 
-        global $g_projpath;
-
         if (!$this->static_menu && !is_array($this->static_menu)) {
             $this->static_menu = ReporticoApp::get("static_menu");
         }
@@ -4263,8 +4253,8 @@ class Reportico extends ReporticoObject
             foreach ($this->static_menu as $menuitem) {
                 if ($menuitem["title"] == "<AUTO>") {
                     // Generate Menu from XML files
-                    if (is_dir($g_projpath)) {
-                        if ($dh = opendir($g_projpath)) {
+                    if (is_dir(ReporticoApp::get("projpath"))) {
+                        if ($dh = opendir(ReporticoApp::get("projpath"))) {
                             while (($file = readdir($dh)) !== false) {
                                 $mtch = "/^" . $menuitem["report"] . "/";
                                 if (preg_match($mtch, $file)) {
@@ -4283,7 +4273,7 @@ class Reportico extends ReporticoObject
             }
 
             if ($ct == 0) {
-                handleError("No Menu Items Available - Check Language - " . ReporticoApp::get("language"));
+                ReporticoApp::handleError("No Menu Items Available - Check Language - " . ReporticoApp::get("language"));
             }
 
         }
@@ -4307,10 +4297,10 @@ class Reportico extends ReporticoObject
             }
             if (!$recordSet) {
                 if ($errorMessage) {
-                    handleError("Query Failed<BR><BR>" . $nsql . "<br><br>" .
+                    ReporticoApp::handleError("Query Failed<BR><BR>" . $nsql . "<br><br>" .
                         $errorMessage);
                 } else {
-                    handleError("Query Failed<BR><BR>" . $nsql . "<br><br>" .
+                    ReporticoApp::handleError("Query Failed<BR><BR>" . $nsql . "<br><br>" .
                         "Status " . $conn->ErrorNo() . " - " .
                         $conn->ErrorMsg());
                 }
@@ -4338,10 +4328,6 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function executeQuery($in_criteria_name)
     {
-        global $g_code_area;
-        global $g_code_source;
-        global $g_error_status;
-
         $text = "";
 
         $this->fetchColumnAttributes();
@@ -4384,9 +4370,9 @@ class Reportico extends ReporticoObject
             //$conn->debug = true;
 
             foreach ($this->pre_sql as $sql) {
-                $g_code_area = "Custom User SQLs";
+                ReporticoApp::set("code_area", "Custom User SQLs");
                 $nsql = Assignment::reporticoMetaSqlCriteria($this, $sql, true);
-                handleDebug("Pre-SQL" . $nsql, REPORTICO_DEBUG_LOW);
+                handleDebug("Pre-SQL" . $nsql, ReporticoApp::DEBUG_LOW);
                 $recordSet = false;
                 $errorCode = false;
                 $errorMessage = false;
@@ -4398,16 +4384,16 @@ class Reportico extends ReporticoObject
                 }
                 if (!$recordSet) {
                     if ($errorMessage) {
-                        handleError("Pre-Query Failed<BR><BR>" . $nsql . "<br><br>" .
+                        ReporticoApp::handleError("Pre-Query Failed<BR><BR>" . $nsql . "<br><br>" .
                             $errorMessage);
                     } else {
-                        handleError("Pre-Query Failed<BR><BR>" . $nsql . "<br><br>" .
+                        ReporticoApp::handleError("Pre-Query Failed<BR><BR>" . $nsql . "<br><br>" .
                             "Status " . $conn->ErrorNo() . " - " .
                             $conn->ErrorMsg());
                     }
 
                 }
-                $g_code_area = "";
+                ReporticoApp::set("code_area", "");
             }
             if (!$in_criteria_name) {
                 // Execute Any Pre Execute Code, if not specified then
@@ -4429,7 +4415,7 @@ class Reportico extends ReporticoObject
                 }
                 if ($code) {
                     $code = "";
-                    $g_code_area = "";
+                    ReporticoApp::set("code_area", "");
                     $code = "\$lk =& \$this->lookup_queries;" . $code;
                     $code = "\$ds =& \$this->datasource->ado_connection;" . $code;
                     $code = "\$_criteria =& \$this->lookup_queries;" . $code;
@@ -4439,8 +4425,7 @@ class Reportico extends ReporticoObject
                     $code = "\$_connection =& \$this->datasource->ado_connection;" . $code;
 
                     // set to the user defined error handler
-                    global $g_eval_code;
-                    $g_eval_code = $code;
+                    ReporticoApp::set("eval_code", $code);
                     // If parse error in eval code then use output buffering contents to show user the error
                     $ob_level = ob_get_level();
                     if ($ob_level > 0) {
@@ -4476,16 +4461,16 @@ class Reportico extends ReporticoObject
                     } else {
                         echo $eval_output;
                     }
-                    $g_code_area = "";
-                    $g_code_source = "";
+                    ReporticoApp::set("code_area", "");
+                    ReporticoApp::set("code_source", "");
                 }
             }
             $recordSet = false;
 
             if ($in_criteria_name) {
-                $g_code_area = "Criteria " . $in_criteria_name;
+                ReporticoApp::set("code_area", "Criteria " . $in_criteria_name);
             } else {
-                $g_code_area = "Main Report Query";
+                ReporticoApp::set("code_area", "Main Report Query");
             }
 
             // User may have flagged returning before SQL performed
@@ -4502,22 +4487,22 @@ class Reportico extends ReporticoObject
                 $recordSet = $conn;
             } else {
                 try {
-                    if (!$g_error_status && $conn != false) {
+                    if (!ReporticoApp::get("error_status") && $conn != false) {
                         $recordSet = $conn->Execute($this->query_statement);
                     }
 
                 } catch (PDOException $ex) {
                     $errorCode = $ex->getCode();
                     $errorMessage = $ex->getMessage();
-                    $g_error_status = 1;
+                    ReporticoApp::set("error_status", 1);
                 }
             }
             if ($conn && !$recordSet) {
                 if ($errorMessage) {
-                    handleError("Query Failed<BR><BR>" . $this->query_statement . "<br><br>" .
+                    ReporticoApp::handleError("Query Failed<BR><BR>" . $this->query_statement . "<br><br>" .
                         $errorMessage);
                 } else {
-                    handleError("Query Failed<BR><BR>" . $this->query_statement . "<br><br>" .
+                    ReporticoApp::handleError("Query Failed<BR><BR>" . $this->query_statement . "<br><br>" .
                         "Status " . $conn->ErrorNo() . " - " .
                         $conn->ErrorMsg());
                 }
@@ -4525,13 +4510,13 @@ class Reportico extends ReporticoObject
             }
 
             if ($conn != false) {
-                handleDebug($this->query_statement, REPORTICO_DEBUG_LOW);
+                handleDebug($this->query_statement, ReporticoApp::DEBUG_LOW);
             }
 
             // Begin Target Output
-            //handleError("set");
-            if (!$recordSet || $g_error_status) {
-                //handleError("stop");
+            //ReporticoApp::handleError("set");
+            if (!$recordSet || ReporticoApp::get("error_status")) {
+                //ReporticoApp::handleError("stop");
                 return;
             }
 
@@ -4546,17 +4531,17 @@ class Reportico extends ReporticoObject
                 }
                 $this->query_count++;
 
-                $g_code_area = "Build Column";
+                ReporticoApp::set("code_area", "Build Column");
                 $this->buildColumnResults($line);
 
-                $g_code_area = "Assignment";
+                ReporticoApp::set("code_area", "Assignment");
 
                 if ($_counter < 1) {
                     $target->setDefaultStyles();
                     $this->charsetEncodeDbToOutput();
                     $this->assign();
                 }
-                $g_code_source = false;
+                ReporticoApp::set("code_source", false);
 
                 // Skip line if required
                 if ($this->output_skipline) {
@@ -4565,24 +4550,23 @@ class Reportico extends ReporticoObject
                     continue;
                 }
 
-                $g_code_area = "Line Output";
+                ReporticoApp::set("code_area", "Line Output");
                 $target->eachLine($line);
 
-                $g_code_area = "Store Output";
+                ReporticoApp::set("code_area", "Store Output");
                 $this->storeColumnResults();
                 if ($recordSet->EOF) {
                     break;
                 }
 
             }
-            $g_code_area = "";
+            ReporticoApp::set("code_area", "");
 
-            global $g_no_data;
-            $g_no_data = false;
+            ReporticoApp::set("no_data", false);
 
             if ($this->query_count == 0 && !$in_criteria_name && (!$this->access_mode || $this->access_mode != "REPORTOUTPUT")) {
-                $g_no_data = true;
-                handleError(ReporticoLang::templateXlate("NO_DATA_FOUND"), E_USER_WARNING);
+                ReporticoApp::set("no_data", true);
+                ReporticoApp::handleError(ReporticoLang::templateXlate("NO_DATA_FOUND"), E_USER_WARNING);
                 return;
             }
 
@@ -4723,10 +4707,6 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function assign()
     {
-        global $g_debug_mode;
-        global $g_code_area;
-        global $g_code_source;
-
         // Clear any styles or instructions left over from previous rows
         foreach ($this->columns as $col) {
 
@@ -4741,9 +4721,9 @@ class Reportico extends ReporticoObject
             if (!$col) {
                 continue;
             }
-            $g_code_area = "Assignment";
-            $g_code_source = "<BR>In Assignment if " . $assign->criteria . "<BR>";
-            $g_code_source = "<BR>In Assignment " . $assign->query_name . "=" . $assign->expression;
+            ReporticoApp::set("code_area", "Assignment");
+            ReporticoApp::set("code_source", "<BR>In Assignment if " . $assign->criteria . "<BR>");
+            ReporticoApp::set("code_source", "<BR>In Assignment " . $assign->query_name . "=" . $assign->expression);
             if ($this->test($assign->criteria)) {
                 if ($assign->non_assignment_operation) {
                     $a = $assign->expression . ';';
@@ -4753,9 +4733,9 @@ class Reportico extends ReporticoObject
 
                 $r = eval($a);
 
-                if ( /*REPORTICO_DEBUG ||*/$g_debug_mode) {
+                if ( ReporticoApp::get("debug_mode")) {
                     handleDebug("Assignment " . $assign->query_name . " = " . $assign->expression .
-                        " => " . $col->column_value, REPORTICO_DEBUG_HIGH);
+                        " => " . $col->column_value, ReporticoApp::DEBUG_HIGH);
                 }
 
             }
@@ -4826,7 +4806,7 @@ class Reportico extends ReporticoObject
 
         $col = ReporticoUtility::getQueryColumn($query_name, $this->columns);
         if (!$col) {
-            handleError("The report includes a changed assignment involving a column ($query_name) that does not exist within the report. Perhaps a group needs to be deleted");
+            ReporticoApp::handleError("The report includes a changed assignment involving a column ($query_name) that does not exist within the report. Perhaps a group needs to be deleted");
             return $result;
         }
 
@@ -4846,7 +4826,7 @@ class Reportico extends ReporticoObject
 
         $col = ReporticoUtility::getQueryColumn($query_name, $this->columns);
         if (!$col) {
-            handleError("The report includes an assignment involving a column ($query_name) that does not exist within the report. Perhaps a group needs to be deleted");
+            ReporticoApp::handleError("The report includes an assignment involving a column ($query_name) that does not exist within the report. Perhaps a group needs to be deleted");
             return 0;
         }
         $col->reset_flag = true;
@@ -4863,7 +4843,7 @@ class Reportico extends ReporticoObject
 
         $col = ReporticoUtility::getQueryColumn($query_name, $this->columns);
         if (!$col) {
-            handleError("The report includes an assignment involving a column ($query_name) that does not exist within the report. Perhaps a group needs to be deleted");
+            ReporticoApp::handleError("The report includes an assignment involving a column ($query_name) that does not exist within the report. Perhaps a group needs to be deleted");
             return 0;
         }
         $res = ReporticoUtility::getQueryColumn($result_name, $this->columns);
@@ -4999,7 +4979,7 @@ class Reportico extends ReporticoObject
 
         $col = ReporticoUtility::getQueryColumn($query_name, $this->columns);
         if (!$col) {
-            handleError("The report includes an sum assignment involving a group or column ($query_name) that does not exist within the report");
+            ReporticoApp::handleError("The report includes an sum assignment involving a group or column ($query_name) that does not exist within the report");
             return 0;
         }
         $result = str_replace(",", "", $col->column_value);
@@ -5048,7 +5028,7 @@ class Reportico extends ReporticoObject
 
         $col = ReporticoUtility::getQueryColumn($query_name, $this->columns);
         if (!$col) {
-            handleError("The report includes an assignment involving a group or column ($query_name) that does not exist within the report");
+            ReporticoApp::handleError("The report includes an assignment involving a group or column ($query_name) that does not exist within the report");
             return 0;
         }
 
@@ -5093,7 +5073,7 @@ class Reportico extends ReporticoObject
 
         $col = ReporticoUtility::getQueryColumn($query_name, $this->columns);
         if (!$col) {
-            handleError("The report includes an assignment involving a group or column ($query_name) that does not exist within the report");
+            ReporticoApp::handleError("The report includes an assignment involving a group or column ($query_name) that does not exist within the report");
             return 0;
         }
 
@@ -5147,7 +5127,7 @@ class Reportico extends ReporticoObject
 
         $col = ReporticoUtility::getQueryColumn($query_name, $this->columns);
         if (!$col) {
-            handleError("The report includes an assignment involving a group or column ($query_name) that does not exist within the report");
+            ReporticoApp::handleError("The report includes an assignment involving a group or column ($query_name) that does not exist within the report");
             return 0;
         }
 
@@ -5196,7 +5176,7 @@ class Reportico extends ReporticoObject
 
         $col = ReporticoUtility::getQueryColumn($query_name, $this->columns);
         if (!$col) {
-            handleError("The report includes an assignment involving a group or column ($query_name) that does not exist within the report");
+            ReporticoApp::handleError("The report includes an assignment involving a group or column ($query_name) that does not exist within the report");
             return 0;
         }
 
@@ -5244,7 +5224,7 @@ class Reportico extends ReporticoObject
     {
         $col = ReporticoUtility::getQueryColumn($query_name, $this->columns);
         if (!$col) {
-            handleError("The report includes an assignment involving a group or column ($query_name) that does not exist within the report");
+            ReporticoApp::handleError("The report includes an assignment involving a group or column ($query_name) that does not exist within the report");
             return 0;
         }
 
@@ -5378,32 +5358,32 @@ class Reportico extends ReporticoObject
         $proj_conf = $proj_dir . "/config.php";
         $proj_template = $proj_dir . "/adminconfig.template";
 
-        $old_error_handler = set_error_handler("Reportico\ErrorHandler", 0);
+        $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler", 0);
         if (!@file_exists($proj_parent)) {
-            $old_error_handler = set_error_handler("Reportico\ErrorHandler");
+            $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
             return "Projects area $proj_parent does not exist - cannot write project";
         }
 
         if (@file_exists($proj_conf)) {
             if (!is_writeable($proj_conf)) {
-                $old_error_handler = set_error_handler("Reportico\ErrorHandler");
+                $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
                 return "Projects config file $proj_conf is not writeable - cannot write config file - change permissions to continue";
             }
         }
 
         if (!is_writeable($proj_dir)) {
-            $old_error_handler = set_error_handler("Reportico\ErrorHandler");
+            $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
             return "Projects area $proj_dir is not writeable - cannot write project password in config.php - change permissions to continue";
         }
 
         if (!@file_exists($proj_conf)) {
             if (!@file_exists($proj_template)) {
-                $old_error_handler = set_error_handler("Reportico\ErrorHandler");
+                $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
                 return "Projects config template file $proj_template does not exist - please contact reportico.org";
             }
         }
 
-        $old_error_handler = set_error_handler("Reportico\ErrorHandler");
+        $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
 
         if (@file_exists($proj_conf)) {
             $txt = file_get_contents($proj_conf);
@@ -5446,8 +5426,6 @@ class Reportico extends ReporticoObject
  */
     public function setProjectEnvironment($initial_project = false, $project_folder = "projects", $admin_project_folder = "projects")
     {
-        global $g_projpath;
-
         $target_menu = "";
         $project = "";
 
@@ -5522,23 +5500,23 @@ class Reportico extends ReporticoObject
         if (!$projpath) {
             ReporticoUtility::findFileToInclude("config.php", $configfile);
             if (ReporticoApp::get("included_config") && ReporticoApp::get("included_config") != $configfile) {
-                handleError("Cannot load two different instances on a single page from different projects.", E_USER_ERROR);
+                ReporticoApp::handleError("Cannot load two different instances on a single page from different projects.", E_USER_ERROR);
             } else {
                 ReporticoApp::set("included_config", $configfile);
                 include_once $configfile;
             }
-            $g_projpath = false;
+            ReporticoApp::set("projpath", false);
             ReporticoApp::setConfig("project", false);
             ReporticoApp::setConfig("static_menu", false);
             ReporticoApp::setConfig("admin_menu", false);
             ReporticoApp::set('menu_title', '');
             ReporticoApp::setConfig("dropdown_menu", false);
-            $old_error_handler = set_error_handler("Reportico\ErrorHandler");
-            handleError("Project Directory $project not found. Check INCLUDE_PATH or project name");
+            $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
+            ReporticoApp::handleError("Project Directory $project not found. Check INCLUDE_PATH or project name");
             return;
         }
 
-        $g_projpath = $projpath;
+        ReporticoApp::set("projpath", $projpath);
         if (!is_file($configfile)) {
             ReporticoUtility::findFileToInclude($configfile, $configfile);
         }
@@ -5553,11 +5531,11 @@ class Reportico extends ReporticoObject
 
         if ($configfile) {
             if (!is_file($configfile)) {
-                handleError("Config file $menufile not found in project $project", E_USER_WARNING);
+                ReporticoApp::handleError("Config file $menufile not found in project $project", E_USER_WARNING);
             }
 
             if (ReporticoApp::get("included_config") && ReporticoApp::get("included_config") != $configfile) {
-                handleError("Cannot load two different instances on a single page from different projects.", E_USER_ERROR);
+                ReporticoApp::handleError("Cannot load two different instances on a single page from different projects.", E_USER_ERROR);
             } else {
                 include_once $configfile;
                 ReporticoApp::set("included_config", $configfile);
@@ -5568,13 +5546,13 @@ class Reportico extends ReporticoObject
             }
 
             //else
-            //handleError("Menu Definition file $menufile not found in project $project", E_USER_WARNING);
+            //ReporticoApp::handleError("Menu Definition file $menufile not found in project $project", E_USER_WARNING);
 
         } else {
             ReporticoUtility::findFileToInclude("config.php", $configfile);
             if ($configfile) {
                 if (ReporticoApp::get("included_config") && ReporticoApp::get("included_config") != $configfile) {
-                    handleError("Cannot load two different instances on a single page from different projects.", E_USER_ERROR);
+                    ReporticoApp::handleError("Cannot load two different instances on a single page from different projects.", E_USER_ERROR);
                 } else {
                     include_once $configfile;
                     ReporticoApp::set("included_config", $configfile);
@@ -5583,11 +5561,11 @@ class Reportico extends ReporticoObject
             ReporticoApp::set('project', false);
             ReporticoApp::setConfig("static_menu", false);
             ReporticoApp::setConfig("admin_menu", false);
-            $g_projpath = false;
+            ReporticoApp::set("projpath", false);
             ReporticoApp::set('menu_title', '');
             ReporticoApp::setConfig("dropdown_menu", false);
-            $old_error_handler = set_error_handler("Reportico\ErrorHandler");
-            handleError("Configuration Definition file config.php not found in project $project", E_USER_ERROR);
+            $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
+            ReporticoApp::handleError("Configuration Definition file config.php not found in project $project", E_USER_ERROR);
         }
 
         // Ensure a Database and Output Character Set Encoding is set

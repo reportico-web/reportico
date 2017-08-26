@@ -124,7 +124,7 @@ class Assignment extends ReporticoObject
                             $clause = $cl->column_value;
                         }
                     } else {
-                        handleError("Unknown Criteria Item $crit in Query $in_string");
+                        ReporticoApp::handleError("Unknown Criteria Item $crit in Query $in_string");
                         return $in_string;
                     }
                 } else {
@@ -200,7 +200,7 @@ class Assignment extends ReporticoObject
                     //}
                     else {
                         echo "Unknown Criteria Item $crit in Query $in_string";
-                        //handleError( "Unknown Criteria Item $crit in Query $in_string");
+                        //ReporticoApp::handleError( "Unknown Criteria Item $crit in Query $in_string");
                         return $in_string;
                     }
                 }

@@ -586,7 +586,7 @@ class XmlReader
         return $ct;
     }
 
-    public function &analyse_form_item($tag)
+    public function &analyseFormItem($tag)
     {
         $anal = array();
         $qr = false;
@@ -846,7 +846,7 @@ class XmlReader
             $this->query->reportlink_report_item = 0;
         }
 
-        $anal = $this->analyse_form_item($match);
+        $anal = $this->analyseFormItem($match);
 
         // Based on results of analysis, decide what element we are updating ( column, query,
         // datasource etc )
@@ -867,7 +867,7 @@ class XmlReader
                         }
 
                         if (!$found) {
-                            $this->query->create_query_column($v->query_name, "", "", "", "",
+                            $this->query->createQueryColumn($v->query_name, "", "", "", "",
                                 '####.###', false);
                         }
 
@@ -893,7 +893,7 @@ class XmlReader
 
             case "plot":
                 $qr = &$anal["graph"];
-                $qr->create_plot("");
+                $qr->createPlot("");
                 break;
 
             case "pgft":
@@ -992,7 +992,7 @@ class XmlReader
                 $updates[$matches[1]] = stripslashes($v);
             }
         }
-        $anal = $this->analyse_form_item($match);
+        $anal = $this->analyseFormItem($match);
 
         // Based on results of analysis, decide what element we are updating ( column, query,
         // datasource etc )
@@ -1018,7 +1018,7 @@ class XmlReader
 
             case "plot":
                 $qr = &$anal["graph"];
-                $qr->create_plot("");
+                $qr->createPlot("");
                 break;
 
             case "pgft":
@@ -1091,7 +1091,7 @@ class XmlReader
     public function moveupMaintainFields($match)
     {
         $ret = false;
-        $anal = $this->analyse_form_item($match);
+        $anal = $this->analyseFormItem($match);
 
         // Based on results of analysis, decide what element we are updating ( column, query,
         // datasource etc )
@@ -1138,7 +1138,7 @@ class XmlReader
                 break;
 
             case "qcol":
-                $anal["quer"]->remove_column($anal["colname"]);
+                $anal["quer"]->removeColumn($anal["colname"]);
                 break;
 
             case "ghdr":
@@ -1185,7 +1185,7 @@ class XmlReader
         $ret = false;
         $match_key = "/^set_" . $match . "_(.*)/";
 
-        $anal = $this->analyse_form_item($match);
+        $anal = $this->analyseFormItem($match);
 
         // Based on results of analysis, decide what element we are updating ( column, query,
         // datasource etc )
@@ -1230,7 +1230,7 @@ class XmlReader
                 break;
 
             case "qcol":
-                $anal["quer"]->remove_column($anal["colname"]);
+                $anal["quer"]->removeColumn($anal["colname"]);
                 break;
 
             case "ghdr":
@@ -1283,7 +1283,7 @@ class XmlReader
             }
         }
 
-        $anal = $this->analyse_form_item($match);
+        $anal = $this->analyseFormItem($match);
 
         // Based on results of analysis, decide what element we are updating ( column, query,
         // datasource etc )
@@ -1320,7 +1320,7 @@ class XmlReader
                 break;
 
             case "qcol":
-                $anal["quer"]->remove_column($anal["colname"]);
+                $anal["quer"]->removeColumn($anal["colname"]);
                 break;
 
             case "ghdr":
@@ -1490,7 +1490,7 @@ class XmlReader
         // Validate user entry
         $this->validateMaintainFields($updates);
 
-        $anal = $this->analyse_form_item($match);
+        $anal = $this->analyseFormItem($match);
 
         // Based on results of analysis, decide what element we are updating ( column, query,
         // datasource etc )
@@ -1499,7 +1499,7 @@ class XmlReader
                 $qr = &$anal["quer"];
                 $maintain_sql = $updates["QuerySql"];
                 $sql = $updates["QuerySql"];
-                if ($qr->login_check(false)) {
+                if ($qr->loginCheck(false)) {
                     $p = new SqlParser($sql);
                     if ($p->parse()) {
                         $p->importIntoQuery($qr);
@@ -1748,7 +1748,7 @@ class XmlReader
                     }
 
                     if (!$found) {
-                        $anal["quer"]->create_query_column($assignname, "", "", "", "",
+                        $anal["quer"]->createQueryColumn($assignname, "", "", "", "",
                             '####.###',
                             false);
                     }
@@ -1850,8 +1850,8 @@ class XmlReader
 
             case "qcol":
                 $cn = $anal["colname"];
-                $anal["quer"]->remove_column("NewColumn");
-                $anal["quer"]->create_query_column($updates["Name"], "", "", "", "",
+                $anal["quer"]->removeColumn("NewColumn");
+                $anal["quer"]->createQueryColumn($updates["Name"], "", "", "", "",
                     '####.###',
                     false
                 );
@@ -2146,7 +2146,7 @@ class XmlReader
                         $sql = stripslashes($_REQUEST["mainquerqury_SQL"]);
 
                         $maintain_sql = $sql;
-                        if ($this->query->login_check()) {
+                        if ($this->query->loginCheck()) {
                             $p = new SqlParser($sql);
                             if ($p->parse()) {
                                 $p->importIntoQuery($qr);
@@ -4779,7 +4779,7 @@ return $text;
                             return;
                         }
 
-                        $this->query->create_order_column
+                        $this->query->createQueryColumn
                         (
                             $col["Name"],
                             $col["OrderType"]
@@ -4951,7 +4951,7 @@ return $text;
                                 $gphi["MarginTop"], $gphi["MarginBottom"]);
                         }
                         foreach ($gphi["Plots"] as $pltk => $pltv) {
-                            $pl = &$gph->create_plot($pltv["PlotColumn"]);
+                            $pl = &$gph->createPlot($pltv["PlotColumn"]);
                             $pl["type"] = $pltv["PlotType"];
                             $pl["fillcolor"] = $pltv["FillColor"];
                             $pl["linecolor"] = $pltv["LineColor"];
@@ -5063,7 +5063,7 @@ return $text;
                     if (!$linked_report && ($coc = &$this->getArrayElement($ciq, "OrderColumns"))) {
                         // Generate QueryColumn for each column found
                         foreach ($coc as $col) {
-                            $critquery->create_order_column
+                            $critquery->createOrderColumn
                             (
                                 $col["Name"],
                                 $col["OrderType"]

@@ -87,9 +87,7 @@ class CriteriaColumn extends QueryColumn
     // -----------------------------------------------------------------------------
     public function executeCriteriaLookup($in_is_expanding = false, $no_warnings = false)
     {
-        global $g_code_area;
-
-        $g_code_area = "Criteria " . $this->query_name;
+        ReporticoApp::set("code_area", "Criteria " . $this->query_name);
         $rep = new ReportArray();
 
         $this->lookup_query->rowselection = true;
@@ -98,7 +96,7 @@ class CriteriaColumn extends QueryColumn
         $this->lookup_query->addTarget($rep);
         $this->lookup_query->buildQuery($in_is_expanding, $this->query_name, false, $no_warnings);
         $this->lookup_query->executeQuery($this->query_name);
-        $g_code_area = "";
+        ReporticoApp::set("code_area", "");
     }
 
     // -----------------------------------------------------------------------------
@@ -500,7 +498,7 @@ class CriteriaColumn extends QueryColumn
         $retval = $in_default;
         if (array_key_exists($this->query_name . "_" . $in_tag . "_DAY", $_REQUEST)) {
             if (!class_exists("DateTime", false)) {
-                handleError("This version of PHP does not have the DateTime class. Must be PHP >= 5.3 to use date criteria");
+                ReporticoApp::handleError("This version of PHP does not have the DateTime class. Must be PHP >= 5.3 to use date criteria");
                 return $retval;
             }
             $dy = $_REQUEST[$this->query_name . "_" . $in_tag . "_DAY"];
@@ -1619,7 +1617,7 @@ class CriteriaColumn extends QueryColumn
                 break;
 
             default:
-                handleError("Unknown Criteria clause type $in_type for criteria " . $this->query_name);
+                ReporticoApp::handleError("Unknown Criteria clause type $in_type for criteria " . $this->query_name);
                 break;
         }
         return $cls;

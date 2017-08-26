@@ -437,14 +437,14 @@ class ReportFPDF extends Report
                         break;
 
                     default:
-                        //handleError("Unknown Page Sizing Option ".$match[2]);
+                        //ReporticoApp::handleError("Unknown Page Sizing Option ".$match[2]);
                         break;
 
                 }
             }
         } else {
             $height = $height_string;
-            //handleError("Unknown Page Sizing Option $height_string");
+            //ReporticoApp::handleError("Unknown Page Sizing Option $height_string");
         }
 
         return $height;
@@ -473,14 +473,14 @@ class ReportFPDF extends Report
                         break;
 
                         //default:
-                        //handleError("Unknown age Sizing Option $width_string");
+                        //ReporticoApp::handleError("Unknown age Sizing Option $width_string");
                         //break;
 
                 }
             }
         } else {
             $width = $width_string;
-            //handleError("Unknown Page Sizing Option $width_string");
+            //ReporticoApp::handleError("Unknown Page Sizing Option $width_string");
         }
 
         return $width;

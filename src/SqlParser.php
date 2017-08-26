@@ -130,7 +130,7 @@ class SqlParser
         $in_query->order_set = array();
         foreach ($this->orders as $col) {
             if (($qc = ReporticoUtility::getQueryColumn($col["name"], $in_query->columns))) {
-                $in_query->create_order_column($col["name"], $col["type"]);
+                $in_query->createOrderColumn($col["name"], $col["type"]);
             }
 
         }
@@ -139,7 +139,7 @@ class SqlParser
         // imported SQL
         foreach ($delete_columns as $k => $v) {
             if ($v) {
-                $in_query->remove_column($k);
+                $in_query->removeColumn($k);
             }
         }
 
@@ -603,9 +603,9 @@ class SqlParser
         // Begin Target Output
         if (!$recordSet) {
             if ($errorMessage) {
-                handleError("Error in Connection:  " . $errorMessage . "<BR><BR>(Note that if the error warns of a missing temporary table that will be created at runtime, it is safe to ignore this message)");
+                ReporticoApp::handleError("Error in Connection:  " . $errorMessage . "<BR><BR>(Note that if the error warns of a missing temporary table that will be created at runtime, it is safe to ignore this message)");
             } else {
-                handleError("Error ( " . $conn->ErrorNo() . ") in Connection:  " . $conn->ErrorMsg() . "<BR><BR>(Note that if the error warns of a missing temporary table that will be created at runtime, it is safe to ignore this message)");
+                ReporticoApp::handleError("Error ( " . $conn->ErrorNo() . ") in Connection:  " . $conn->ErrorMsg() . "<BR><BR>(Note that if the error warns of a missing temporary table that will be created at runtime, it is safe to ignore this message)");
             }
 
             return false;

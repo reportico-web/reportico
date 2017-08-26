@@ -519,7 +519,7 @@ class ChartJpgraph
 
         if ( !function_exists( "imagecreatefromstring" ) )
 		{
-			handleError("Graph Option Not Available. Requires GD2");
+			ReporticoApp::handleError("Graph Option Not Available. Requires GD2");
 			return;
 		}
 

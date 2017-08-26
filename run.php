@@ -44,7 +44,6 @@
     // Include Reportico - for embedding reportico in a script running from outside the Reportico directory, 
     // just include the full path to the file reportico.php
 	//require_once('<FULL_PATH_TO_REPORTICO>/reportico.php');
-	require_once('reportico.inc.php');
 
     // Only turn on output buffering if necessary, normally leave this uncommented
 	//ob_start();
