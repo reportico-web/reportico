@@ -1193,7 +1193,7 @@ class Reportico extends ReporticoObject
                 $this->defaults = $this->lookup_queries[$col->query_name]->defaults;
                 if (isset($this->defaults)) {
                     if ($this->lookup_queries[$col->query_name]->criteria_type == "DATERANGE") {
-                        if (!convertDateRangeDefaultsToDates("DATERANGE",
+                        if (!ReporticoLocale::convertDateRangeDefaultsToDates("DATERANGE",
                             $this->lookup_queries[$col->query_name]->column_value,
                             $this->lookup_queries[$col->query_name]->column_value,
                             $this->lookup_queries[$col->query_name]->column_value2)) {
@@ -1203,8 +1203,8 @@ class Reportico extends ReporticoObject
                     }
                     if ($this->lookup_queries[$col->query_name]->criteria_type == "DATE") {
                         $dummy = "";
-                        if (!convertDateRangeDefaultsToDates("DATE", $this->defaults[0], $this->range_start, $dummy)) {
-                            if (!convertDateRangeDefaultsToDates("DATE",
+                        if (!ReporticoLocale::convertDateRangeDefaultsToDates("DATE", $this->defaults[0], $this->range_start, $dummy)) {
+                            if (!ReporticoLocale::convertDateRangeDefaultsToDates("DATE",
                                 $this->lookup_queries[$col->query_name]->column_value,
                                 $this->lookup_queries[$col->query_name]->column_value,
                                 $this->lookup_queries[$col->query_name]->column_value2)) {
@@ -1424,7 +1424,7 @@ class Reportico extends ReporticoObject
                     $val2 = false;
                     $criteriaval = $this->initial_execution_parameters[$col->query_name];
                     if ($col->criteria_type == "DATERANGE") {
-                        if (!convertDateRangeDefaultsToDates("DATERANGE",
+                        if (!ReporticoLocale::convertDateRangeDefaultsToDates("DATERANGE",
                             $criteriaval,
                             $val1,
                             $val2)) {
@@ -1438,7 +1438,7 @@ class Reportico extends ReporticoObject
                             }
                         }
                     } else if ($col->criteria_type == "DATE") {
-                        if (!convertDateRangeDefaultsToDates("DATE",
+                        if (!ReporticoLocale::convertDateRangeDefaultsToDates("DATE",
                             $criteriaval,
                             $val1,
                             $val2)) {
@@ -1734,7 +1734,7 @@ class Reportico extends ReporticoObject
                         ReporticoSession::setReporticoSessionParam('admin_password', "1");
                         $loggedon = "ADMIN";
                     } else {
-                        $smarty->assign('ADMIN_PASSWORD_ERROR', templateXlate("PASSWORD_ERROR"));
+                        $smarty->assign('ADMIN_PASSWORD_ERROR', ReporticoLang::templateXlate("PASSWORD_ERROR"));
                     }
                 }
             }
@@ -2809,8 +2809,8 @@ class Reportico extends ReporticoObject
         $smarty->assign('AJAX_ENABLED', AJAX_ENABLED);
 
         // Date format for ui Datepicker
-        $smarty->assign('AJAX_DATEPICKER_LANGUAGE', getDatepickerLanguage(ReporticoApp::get("language")));
-        $smarty->assign('AJAX_DATEPICKER_FORMAT', getDatepickerFormat(ReporticoApp::getConfig("prep_dateformat")));
+        $smarty->assign('AJAX_DATEPICKER_LANGUAGE', ReporticoLocale::getDatepickerLanguage(ReporticoApp::get("language")));
+        $smarty->assign('AJAX_DATEPICKER_FORMAT', ReporticoLocale::getDatepickerFormat(ReporticoApp::getConfig("prep_dateformat")));
 
         $smarty->assign('SHOW_OPEN_LOGIN', false);
         $smarty->assign('DB_LOGGEDON', false);
@@ -3119,7 +3119,7 @@ class Reportico extends ReporticoObject
 
         // If no admin password then force user to enter one and  a language
         if (ReporticoApp::getConfig("project") == "admin" && ReporticoApp::getConfig("admin_password") == "PROMPT") {
-            $smarty->assign('LANGUAGES', availableLanguages());
+            $smarty->assign('LANGUAGES', ReporticoLang::availableLanguages());
             // New Admin password submitted, attempt to set password and go to MENU option
             if (array_key_exists("submit_admin_password", $_REQUEST)) {
                 $smarty->assign('SET_ADMIN_PASSWORD_ERROR',
@@ -3294,11 +3294,11 @@ class Reportico extends ReporticoObject
                     if (true || getRequestItem("new_reportico_window", false)) {
                         $this->http_response_code = 500;
                         $this->return_to_caller = true;
-                        handleError(templateXlate("REQUIRED_CRITERIA") . " - " . swTranslate($this->lookup_queries[$col->query_name]->deriveAttribute("column_title", "")));
-                        //echo '<div class="swError">'.templateXlate("REQUIRED_CRITERIA")." - ".swTranslate($this->lookup_queries[$col->query_name]->deriveAttribute("column_title", ""))."</div>";
+                        handleError(ReporticoLang::templateXlate("REQUIRED_CRITERIA") . " - " . ReporticoLang::translate($this->lookup_queries[$col->query_name]->deriveAttribute("column_title", "")));
+                        //echo '<div class="swError">'.ReporticoLang::templateXlate("REQUIRED_CRITERIA")." - ".ReporticoLang::translate($this->lookup_queries[$col->query_name]->deriveAttribute("column_title", ""))."</div>";
                         return;
                     } else {
-                        handleError(templateXlate("REQUIRED_CRITERIA") . " - " . swTranslate($this->lookup_queries[$col->query_name]->deriveAttribute("column_title", ""))
+                        handleError(ReporticoLang::templateXlate("REQUIRED_CRITERIA") . " - " . ReporticoLang::translate($this->lookup_queries[$col->query_name]->deriveAttribute("column_title", ""))
                             , E_USER_ERROR);
                     }
 
@@ -3546,7 +3546,7 @@ class Reportico extends ReporticoObject
 
         // If a session namespace doesnt exist create one
         if (!ReporticoSession::existsReporticoSession() || isset($_REQUEST['clear_session']) || $this->clear_reportico_session) {
-            initializeReporticoNamespace(ReporticoApp::get("session_namespace_key"));
+            ReporticoSession::initializeReporticoNamespace(ReporticoApp::get("session_namespace_key"));
         }
 
         // Work out the mode (ADMIN, PREPARE, MENU, EXECUTE, MAINTAIN based on all parameters )
@@ -3602,8 +3602,8 @@ class Reportico extends ReporticoObject
 
         // Convert input and out charsets into their PHP versions
         // for later iconv use
-        $this->db_charset = dbCharsetToPhpCharset(ReporticoApp::getConfig("db_encoding", "UTF8"));
-        $this->output_charset = outputCharsetToPhpCharset(ReporticoApp::getConfig("output_encoding", "UTF8"));
+        $this->db_charset = ReporticoLocale::dbCharsetToPhpCharset(ReporticoApp::getConfig("db_encoding", "UTF8"));
+        $this->output_charset = ReporticoLocale::outputCharsetToPhpCharset(ReporticoApp::getConfig("output_encoding", "UTF8"));
 
         // Ensure Smarty Template folder exists and is writeable
         $include_template_dir = $this->compiled_templates_folder;
@@ -3767,7 +3767,7 @@ class Reportico extends ReporticoObject
 
         switch ($mode) {
             case "CRITERIA":
-                loadModeLanguagePack("languages", $this->output_charset);
+                ReporticoLang::loadModeLanguagePack("languages", $this->output_charset);
                 $this->initializePanels($mode);
                 $this->handleXmlQueryInput($mode);
                 $this->setRequestColumns();
@@ -3799,7 +3799,7 @@ class Reportico extends ReporticoObject
                 $this->buildAdminScreen();
                 $text = $this->panels["BODY"]->drawSmarty();
                 $this->panels["MAIN"]->smarty->debugging = false;
-                $this->panels["MAIN"]->smarty->assign('LANGUAGES', availableLanguages());
+                $this->panels["MAIN"]->smarty->assign('LANGUAGES', ReporticoLang::availableLanguages());
                 $this->panels["MAIN"]->smarty->assign('CONTENT', $txt);
                 $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
                 $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
@@ -3828,14 +3828,14 @@ class Reportico extends ReporticoObject
                 $this->handleXmlQueryInput($mode);
                 $this->setRequestColumns();
                 $this->buildMenu();
-                loadModeLanguagePack("languages", $this->output_charset);
-                loadModeLanguagePack("menu", $this->output_charset);
-                localiseTemplateStrings($this->panels["MAIN"]->smarty);
+                ReporticoLang::loadModeLanguagePack("languages", $this->output_charset);
+                ReporticoLang::loadModeLanguagePack("menu", $this->output_charset);
+                ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->smarty);
 
                 $text = $this->panels["BODY"]->drawSmarty();
                 $this->panels["MAIN"]->smarty->debugging = false;
                 $this->panels["MAIN"]->smarty->assign('CONTENT', $text);
-                $this->panels["MAIN"]->smarty->assign('LANGUAGES', availableLanguages());
+                $this->panels["MAIN"]->smarty->assign('LANGUAGES', ReporticoLang::availableLanguages());
                 $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
                 $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
                 $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
@@ -3859,7 +3859,7 @@ class Reportico extends ReporticoObject
                 break;
 
             case "PREPARE":
-                loadModeLanguagePack("languages", $this->output_charset);
+                ReporticoLang::loadModeLanguagePack("languages", $this->output_charset);
                 $this->initializePanels($mode);
                 $this->handleXmlQueryInput($mode);
                 $this->setRequestColumns();
@@ -3867,12 +3867,12 @@ class Reportico extends ReporticoObject
                 if ($this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml" || $this->xmlinput == "createproject.xml" || $this->xmlinput == "generate_tutorial.xml") {
                     // If configuring project then use project language strings from admin project
                     // found in projects/admin/lang.php
-                    loadProjectLanguagePack("admin", $this->output_charset);
+                    ReporticoLang::loadProjectLanguagePack("admin", $this->output_charset);
                     $this->panels["MAIN"]->smarty->assign('SHOW_MINIMAINTAIN', false);
                     $this->panels["MAIN"]->smarty->assign('IS_ADMIN_SCREEN', true);
                 }
-                loadModeLanguagePack("prepare", $this->output_charset);
-                localiseTemplateStrings($this->panels["MAIN"]->smarty);
+                ReporticoLang::loadModeLanguagePack("prepare", $this->output_charset);
+                ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->smarty);
 
                 $text = $this->panels["BODY"]->drawSmarty();
                 $this->panels["MAIN"]->smarty->debugging = false;
@@ -3910,7 +3910,7 @@ class Reportico extends ReporticoObject
                 break;
 
             case "EXECUTE":
-                loadModeLanguagePack("languages", $this->output_charset);
+                ReporticoLang::loadModeLanguagePack("languages", $this->output_charset);
                 $this->initializePanels($mode);
                 $this->handleXmlQueryInput($mode);
 
@@ -3944,14 +3944,14 @@ class Reportico extends ReporticoObject
                 $g_code_area = "Main Query";
                 $this->buildQuery(false, "");
                 $g_code_area = false;
-                loadModeLanguagePack("execute", $this->output_charset);
-                localiseTemplateStrings($this->panels["MAIN"]->smarty);
+                ReporticoLang::loadModeLanguagePack("execute", $this->output_charset);
+                ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->smarty);
                 $this->checkCriteriaValidity();
 
                 if ($this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml" || $this->xmlinput == "createproject.xml") {
                     // If configuring project then use project language strings from admin project
                     // found in projects/admin/lang.php
-                    loadProjectLanguagePack("admin", $this->output_charset);
+                    ReporticoLang::loadProjectLanguagePack("admin", $this->output_charset);
                 }
 
                 if (!ReporticoSession::getReporticoSessionParam("loggedin", false)) {
@@ -3990,19 +3990,19 @@ class Reportico extends ReporticoObject
                     $text = $this->panels["BODY"]->drawSmarty();
 
                     $this->panels["MAIN"]->smarty->debugging = false;
-                    $title = swTranslate($this->deriveAttribute("ReportTitle", "Unknown"));
+                    $title = ReporticoLang::translate($this->deriveAttribute("ReportTitle", "Unknown"));
                     $this->panels["MAIN"]->smarty->assign('TITLE', $title);
                     $this->panels["MAIN"]->smarty->assign('CONTENT', $text);
                     if ($this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml" || $this->xmlinput == "createproject.xml" || $this->xmlinput == "generate_tutorial.xml") {
                         // If configuring project then use project language strings from admin project
                         // found in projects/admin/lang.php
-                        loadProjectLanguagePack("admin", $this->output_charset);
+                        ReporticoLang::loadProjectLanguagePack("admin", $this->output_charset);
                         $this->panels["MAIN"]->smarty->assign('SHOW_MINIMAINTAIN', false);
                         $this->panels["MAIN"]->smarty->assign('IS_ADMIN_SCREEN', true);
                     }
-                    loadModeLanguagePack("languages", $this->output_charset, true);
-                    loadModeLanguagePack("prepare", $this->output_charset);
-                    localiseTemplateStrings($this->panels["MAIN"]->smarty);
+                    ReporticoLang::loadModeLanguagePack("languages", $this->output_charset, true);
+                    ReporticoLang::loadModeLanguagePack("prepare", $this->output_charset);
+                    ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->smarty);
                     $reportname = preg_replace("/.xml/", "", $this->xmloutfile . '_execute.tpl');
                     restore_error_handler();
 
@@ -4026,7 +4026,7 @@ class Reportico extends ReporticoObject
                         }
 
                     } else {
-                        $title = swTranslate($this->deriveAttribute("ReportTitle", "Unknown"));
+                        $title = ReporticoLang::translate($this->deriveAttribute("ReportTitle", "Unknown"));
 
                         $pagestyle = $this->targets[0]->getStyleTags($this->output_reportbody_styles);
 
@@ -4045,9 +4045,9 @@ class Reportico extends ReporticoObject
 
                             $recipients = explode(',', $this->email_recipients);
                             foreach ($recipients as $rec) {
-                                loadModeLanguagePack("languages", $this->output_charset, true);
-                                loadModeLanguagePack("execute", $this->output_charset);
-                                localiseTemplateStrings($this->panels["MAIN"]->smarty);
+                                ReporticoLang::loadModeLanguagePack("languages", $this->output_charset, true);
+                                ReporticoLang::loadModeLanguagePack("execute", $this->output_charset);
+                                ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->smarty);
                                 $template = $this->getTemplatePath('execute.tpl');
                                 $mailtext = $this->panels["MAIN"]->smarty->fetch($template, null, null, false);
                                 //$boundary = '-----=' . md5( uniqid ( rand() ) );
@@ -4066,9 +4066,9 @@ class Reportico extends ReporticoObject
                                 mail($rec, "$title", $message, $headers);
                             }
                         } else {
-                            loadModeLanguagePack("languages", $this->output_charset, true);
-                            loadModeLanguagePack("execute", $this->output_charset);
-                            localiseTemplateStrings($this->panels["MAIN"]->smarty);
+                            ReporticoLang::loadModeLanguagePack("languages", $this->output_charset, true);
+                            ReporticoLang::loadModeLanguagePack("execute", $this->output_charset);
+                            ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->smarty);
                             $reportname = preg_replace("/.xml/", "", $this->xmloutfile . '_execute.tpl');
                             restore_error_handler();
 
@@ -4097,8 +4097,8 @@ class Reportico extends ReporticoObject
                         break;
                     }
 
-                    loadModeLanguagePack("maintain", $this->output_charset);
-                    localiseTemplateStrings($this->panels["MAIN"]->smarty);
+                    ReporticoLang::loadModeLanguagePack("maintain", $this->output_charset);
+                    ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->smarty);
                     $this->xmlin->handleUserEntry();
                     ReporticoSession::setReporticoSessionParam("xmlintext", $this->xmlintext);
 
@@ -4164,9 +4164,9 @@ class Reportico extends ReporticoObject
         $p = new DesignPanel($this, "ADMIN");
         $this->initializePanels("ADMIN");
         $this->setAttribute("ReportTitle", ReporticoApp::get('menu_title'));
-        loadModeLanguagePack("languages", $this->output_charset);
-        loadModeLanguagePack("admin", $this->output_charset);
-        localiseTemplateStrings($this->panels["MAIN"]->smarty);
+        ReporticoLang::loadModeLanguagePack("languages", $this->output_charset);
+        ReporticoLang::loadModeLanguagePack("admin", $this->output_charset);
+        ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->smarty);
 
         global $g_projpath;
 
@@ -4192,7 +4192,7 @@ class Reportico extends ReporticoObject
                         }
                     }
                 } else {
-                    $this->panels["MENU"]->setMenuItem($menuitem["report"], templateXlate($menuitem["title"]));
+                    $this->panels["MENU"]->setMenuItem($menuitem["report"], ReporticoLang::templateXlate($menuitem["title"]));
                 }
                 $ct++;
             }
@@ -4270,14 +4270,14 @@ class Reportico extends ReporticoObject
                                 $mtch = "/^" . $menuitem["report"] . "/";
                                 if (preg_match($mtch, $file)) {
                                     $repxml = new XmlReader($this, $file, false, "ReportTitle");
-                                    $this->panels["MENU"]->setMenuItem($file, swTranslate($repxml->search_response));
+                                    $this->panels["MENU"]->setMenuItem($file, ReporticoLang::translate($repxml->search_response));
                                 }
                             }
                             closedir($dh);
                         }
                     }
                 } else {
-                    $this->panels["MENU"]->setMenuItem($menuitem["report"], swTranslate($menuitem["title"]));
+                    $this->panels["MENU"]->setMenuItem($menuitem["report"], ReporticoLang::translate($menuitem["title"]));
                 }
 
                 $ct++;
@@ -4583,7 +4583,7 @@ class Reportico extends ReporticoObject
 
             if ($this->query_count == 0 && !$in_criteria_name && (!$this->access_mode || $this->access_mode != "REPORTOUTPUT")) {
                 $g_no_data = true;
-                handleError(templateXlate("NO_DATA_FOUND"), E_USER_WARNING);
+                handleError(ReporticoLang::templateXlate("NO_DATA_FOUND"), E_USER_WARNING);
                 return;
             }
 
@@ -5312,7 +5312,7 @@ class Reportico extends ReporticoObject
                 $projtitle = $v["title"];
             }
 
-            $menu[$k]["title"] = swTranslate($projtitle);
+            $menu[$k]["title"] = ReporticoLang::translate($projtitle);
             foreach ($v["items"] as $k1 => $menuitem) {
                 if (!isset($menuitem["reportname"]) || $menuitem["reportname"] == "<AUTO>") {
                     // Generate Menu from XML files
@@ -5335,7 +5335,7 @@ class Reportico extends ReporticoObject
                     if (is_file($filename)) {
                         $query = false;
                         $repxml = new XmlReader($query, $filename, false, "ReportTitle");
-                        $menu[$k]["items"][$k1]["reportname"] = swTranslate($repxml->search_response);
+                        $menu[$k]["items"][$k1]["reportname"] = ReporticoLang::translate($repxml->search_response);
                         $menu[$k]["items"][$k1]["project"] = $project;
                     }
                 }
@@ -5367,11 +5367,11 @@ class Reportico extends ReporticoObject
         }
 
         if ($password1 != $password2) {
-            return swTranslate("The passwords are not identical please reenter");
+            return ReporticoLang::translate("The passwords are not identical please reenter");
         }
 
         if (strlen($password1) == 0) {
-            return swTranslate("The password may not be blank");
+            return ReporticoLang::translate("The password may not be blank");
         }
 
         $proj_parent = findBestLocationInIncludePath($this->admin_projects_folder);
@@ -5613,7 +5613,7 @@ class Reportico extends ReporticoObject
 
         $language = "en_gb";
         // Default language to first language in avaible_languages
-        $langs = availableLanguages();
+        $langs = ReporticoLang::availableLanguages();
         if (count($langs) > 0) {
             $language = $langs[0]["value"];
         }
@@ -5657,7 +5657,7 @@ class Reportico extends ReporticoObject
         }
 
         // Include project specific language translations
-        loadProjectLanguagePack($project, outputCharsetToPhpCharset(ReporticoApp::getConfig("output_encoding", "UTF8")));
+        ReporticoLang::loadProjectLanguagePack($project, ReporticoLocale::outputCharsetToPhpCharset(ReporticoApp::getConfig("output_encoding", "UTF8")));
 
         return $project;
     }

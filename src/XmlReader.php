@@ -910,7 +910,7 @@ class XmlReader
                 $cr = &$anal["crit"];
                 $this->query->set_criteria_link(
                     $cr->query_name, $cr->query_name,
-                    templateXlate("ENTERCLAUSE"));
+                    ReporticoLang::templateXlate("ENTERCLAUSE"));
                 break;
 
             case "pgft":
@@ -925,7 +925,7 @@ class XmlReader
 
             case "psql":
                 $qr = &$anal["quer"];
-                $qr->add_pre_sql("-- " . templateXlate("ENTERSQL"));
+                $qr->add_pre_sql("-- " . ReporticoLang::templateXlate("ENTERSQL"));
                 break;
 
             case "crit":
@@ -1030,7 +1030,7 @@ class XmlReader
                 $cr = &$anal["crit"];
                 $this->query->set_criteria_link(
                     $cr->query_name, $cr->query_name,
-                    templateXlate("ENTERCLAUSE"));
+                    ReporticoLang::templateXlate("ENTERCLAUSE"));
                 break;
 
             case "pgft":
@@ -1045,7 +1045,7 @@ class XmlReader
 
             case "psql":
                 $qr = &$anal["quer"];
-                $qr->add_pre_sql("-- " . templateXlate("ENTERSQL"));
+                $qr->add_pre_sql("-- " . ReporticoLang::templateXlate("ENTERSQL"));
                 break;
 
             case "crit":
@@ -1457,7 +1457,7 @@ class XmlReader
 
         if ($invalid) {
             $updates[$k] = false;
-            trigger_error(templateXlate("INVALIDENTRY") . "'" . $current_value . "' " . templateXlate("FORFIELD") . " " . templateXlate($this->field_display[$current_key]["Title"]) . " - " . templateXlate($this->field_display[$current_key]["Validate"]), E_USER_NOTICE);
+            trigger_error(ReporticoLang::templateXlate("INVALIDENTRY") . "'" . $current_value . "' " . templateXlate("FORFIELD") . " " . templateXlate($this->field_display[$current_key]["Title"]) . " - " . templateXlate($this->field_display[$current_key]["Validate"]), E_USER_NOTICE);
 
         }
     }
@@ -1595,7 +1595,7 @@ class XmlReader
 
                 if (!$updates["AssignStyleBorderStyle"] || $updates["AssignStyleBorderStyle"] == "NOBORDER") {
                     if ($updates["AssignStyleBorderSize"] || $updates["AssignStyleBorderColor"]) {
-                        trigger_error(templateXlate("SETBORDERSTYLE"), E_USER_ERROR);
+                        trigger_error(ReporticoLang::templateXlate("SETBORDERSTYLE"), E_USER_ERROR);
                     }
 
                 } else {
@@ -1626,7 +1626,7 @@ class XmlReader
                 if ($updates["AssignStyleMargin"]) {
                     $styletxt .= "applyStyle('" . $updates["AssignStyleLocType"] . "', 'margin', '" . $updates["AssignStyleMargin"] . "');";
                     if ($updates["AssignStyleLocType"] == "PAGE" && !$updates["AssignStyleWidth"]) {
-                        handleDebug(templateXlate("PAGEMARGINWITHWIDTH"), 0);
+                        handleDebug(ReporticoLang::templateXlate("PAGEMARGINWITHWIDTH"), 0);
                     }
                 }
                 if ($updates["AssignStylePadding"]) {
@@ -1931,7 +1931,7 @@ class XmlReader
                 $graph = &$qr->graphs[$anal["number"]];
 
                 if (!array_key_exists("GraphColumn", $updates)) {
-                    trigger_error(templateXlate("MUSTADDGROUP"), E_USER_ERROR);
+                    trigger_error(ReporticoLang::templateXlate("MUSTADDGROUP"), E_USER_ERROR);
                 } else {
                     $graph->setGraphColumn($updates["GraphColumn"]);
                 }
@@ -2110,7 +2110,7 @@ class XmlReader
                 case "SAVE":
                     $xmlsavefile = $this->query->xmloutfile;
                     if (!$xmlsavefile) {
-                        trigger_error(templateXlate("UNABLE_TO_SAVE") . templateXlate("SPECIFYXML"), E_USER_ERROR);
+                        trigger_error(ReporticoLang::templateXlate("UNABLE_TO_SAVE") . templateXlate("SPECIFYXML"), E_USER_ERROR);
                     }
 
                     break;
@@ -2121,7 +2121,7 @@ class XmlReader
 
                     if (!$xmlsavefile) {
                         header("HTTP/1.0 404 Not Found", true);
-                        echo '<div class="swError">' . templateXlate("UNABLE_TO_SAVE") . templateXlate("SPECIFYXML") . "</div>";
+                        echo '<div class="swError">' . ReporticoLang::templateXlate("UNABLE_TO_SAVE") . templateXlate("SPECIFYXML") . "</div>";
                         die;
                     }
 
@@ -2227,7 +2227,7 @@ class XmlReader
                 ReporticoSession::setReporticoSessionParam("xmlin", $xmlsavefile);
                 ReporticoSession::unsetReporticoSessionParam("xmlintext");
             } else {
-                trigger_error(templateXlate("SAFENOSAVE"), E_USER_ERROR);
+                trigger_error(ReporticoLang::templateXlate("SAFENOSAVE"), E_USER_ERROR);
             }
 
         }
@@ -2240,7 +2240,7 @@ class XmlReader
                 ReporticoSession::setReporticoSessionParam("xmlin", false);
                 ReporticoSession::unsetReporticoSessionParam("xmlintext");
             } else {
-                trigger_error(templateXlate("SAFENODEL"), E_USER_ERROR);
+                trigger_error(ReporticoLang::templateXlate("SAFENODEL"), E_USER_ERROR);
             }
 
         }
@@ -2262,7 +2262,7 @@ class XmlReader
     {
         $text = "";
         $text .= '<TD>';
-        $text .= '<input class="' . $this->query->getBootstrapStyle('design_ok') . 'swMntButton reporticoSubmit" type="submit" name="submit_' . $in_tag . '_ADD" value="' . templateXlate("ADD") . '">';
+        $text .= '<input class="' . $this->query->getBootstrapStyle('design_ok') . 'swMntButton reporticoSubmit" type="submit" name="submit_' . $in_tag . '_ADD" value="' . ReporticoLang::templateXlate("ADD") . '">';
         $text .= '</TD>';
 
         // Show Import/Link options
@@ -2359,11 +2359,11 @@ class XmlReader
         // Show options options to import or link
         $listarr = array();
         if ($link_or_import == "IMPORT" || $link_or_import == "LINKANDIMPORT") {
-            $listarr["import"] = templateXlate("IMPORTREPORT");
+            $listarr["import"] = ReporticoLang::templateXlate("IMPORTREPORT");
         }
 
         if ($link_or_import == "LINK" || $link_or_import == "LINKANDIMPORT") {
-            $listarr["linkto"] = templateXlate("MAKELINKTOREPORT");
+            $listarr["linkto"] = ReporticoLang::templateXlate("MAKELINKTOREPORT");
         }
 
         $text .= $this->drawArrayDropdown("linkorimport_" . $this->id, $listarr, $this->query->reportlink_or_import, false, false, true);
@@ -2372,25 +2372,25 @@ class XmlReader
 
         // Draw report names we can link to
         $text .= $this->drawSelectFileList($this->query->reports_path, "/.*\.xml/", false, $preselectedvalue, true, false, "reportlink");
-        $text .= '<input class="' . $this->query->getBootstrapStyle('design_ok') . 'swMntButton reporticoSubmit" style="margin-right: 20px" type="submit" name="submit_' . $this->id . '_REPORTLINK" value="' . templateXlate("OK") . '">';
+        $text .= '<input class="' . $this->query->getBootstrapStyle('design_ok') . 'swMntButton reporticoSubmit" style="margin-right: 20px" type="submit" name="submit_' . $this->id . '_REPORTLINK" value="' . ReporticoLang::templateXlate("OK") . '">';
 
         if ($this->query->reportlink_report) {
             // Draw report criteria items we can link to
             $q = loadExistingReport($this->query->reportlink_report, $this->query->projects_folder);
             if (!$q) {
-                trigger_error(templateXlate("NOOPENLINK") . $this->query->reportlink_report, E_USER_NOTICE);
+                trigger_error(ReporticoLang::templateXlate("NOOPENLINK") . $this->query->reportlink_report, E_USER_NOTICE);
             } else if (!$q->lookup_queries || count($q->lookup_queries) == 0) {
-                trigger_error(templateXlate("NOCRITLINK") . $this->query->reportlink_report, E_USER_NOTICE);
+                trigger_error(ReporticoLang::templateXlate("NOCRITLINK") . $this->query->reportlink_report, E_USER_NOTICE);
             } else {
                 if ($link_or_import == "LINK") {
-                    $text .= templateXlate("MAKELINKTOREPORTITEM");
+                    $text .= ReporticoLang::templateXlate("MAKELINKTOREPORTITEM");
                 } else {
-                    $text .= templateXlate("IMPORTREPORT");
+                    $text .= ReporticoLang::templateXlate("IMPORTREPORT");
                 }
 
                 $text .= "&nbsp;";
                 $listarr = array();
-                $listarr["ALLITEMS"] = templateXlate("ALLITEMS");
+                $listarr["ALLITEMS"] = ReporticoLang::templateXlate("ALLITEMS");
                 if ($tag == "mainquercrit") {
                     $lq = $q->lookup_queries;
                     foreach ($lq as $k => $v) {
@@ -2430,7 +2430,7 @@ class XmlReader
                 }
 
                 $text .= $this->drawArrayDropdown("reportlinkitem_" . $this->id, $listarr, false, false, false, true);
-                $text .= '<input class="' . $this->query->getBootstrapStyle('design_ok') . 'swMntButton reporticoSubmit" style="margin-right: 20px" type="submit" name="submit_' . $this->id . '_REPORTLINKITEM" value="' . templateXlate("OK") . '">';
+                $text .= '<input class="' . $this->query->getBootstrapStyle('design_ok') . 'swMntButton reporticoSubmit" style="margin-right: 20px" type="submit" name="submit_' . $this->id . '_REPORTLINKITEM" value="' . ReporticoLang::templateXlate("OK") . '">';
             }
         }
 
@@ -2490,7 +2490,7 @@ class XmlReader
                 closedir($dh);
             }
         } else {
-            trigger_error(templateXlate("NOOPENDIR") . $this->query->reports_path, E_USER_NOTICE);
+            trigger_error(ReporticoLang::templateXlate("NOOPENDIR") . $this->query->reports_path, E_USER_NOTICE);
         }
 
         $text = $this->drawArrayDropdown($fieldtype . "_" . $this->id . $showtag, $keys, $preselectedvalue, true, false);
@@ -2581,7 +2581,7 @@ class XmlReader
     {
 
         $text = "";
-        $in_value = templateXlate($in_value);
+        $in_value = ReporticoLang::templateXlate($in_value);
 
         // Only draw horizontal tab buttons if not mini maintain or they are relevant to tag
         if ($partialMaintain = getRequestItem("partialMaintain", false)) {
@@ -2753,16 +2753,16 @@ class XmlReader
 
                         $text .= '<TR>';
                         $text .= '<TD colspan="2">';
-                        $text .= '&nbsp;&nbsp;' . templateXlate('PROJECT') . ReporticoApp::getConfig("project") . '&nbsp;&nbsp;&nbsp;&nbsp;';
+                        $text .= '&nbsp;&nbsp;' . ReporticoLang::templateXlate('PROJECT') . ReporticoApp::getConfig("project") . '&nbsp;&nbsp;&nbsp;&nbsp;';
                         if ($this->query->xmloutfile == "configureproject") {
-                            $text .= templateXlate('REPORT_FILE') . ' <input style="display: inline" type="text" name="xmlout" value="">';
+                            $text .= ReporticoLang::templateXlate('REPORT_FILE') . ' <input style="display: inline" type="text" name="xmlout" value="">';
                         } else {
-                            $text .= templateXlate('REPORT_FILE') . ' <input type="text" style="display: inline" name="xmlout" value="' . $this->query->xmloutfile . '">';
+                            $text .= ReporticoLang::templateXlate('REPORT_FILE') . ' <input type="text" style="display: inline" name="xmlout" value="' . $this->query->xmloutfile . '">';
                         }
 
-                        $text .= '&nbsp;&nbsp;<input class="' . $this->query->getBootstrapStyle('button_admin') . 'swLinkMenu reporticoSubmit" type="submit" name="submit_xxx_SAVE" value="' . templateXlate("SAVE") . '">';
-                        $text .= '&nbsp;&nbsp;<input class="' . $this->query->getBootstrapStyle('button_admin') . 'swLinkMenu reporticoSubmit" type="submit" name="submit_maintain_NEW" value="' . templateXlate("NEW_REPORT") . '">';
-                        $text .= '<input class="' . $this->query->getBootstrapStyle('button_delete') . 'swLinkMenu reporticoSubmit" style="margin-left: 80px" type="submit" name="submit_xxx_DELETEREPORT" value="' . templateXlate("DELETE_REPORT") . '">';
+                        $text .= '&nbsp;&nbsp;<input class="' . $this->query->getBootstrapStyle('button_admin') . 'swLinkMenu reporticoSubmit" type="submit" name="submit_xxx_SAVE" value="' . ReporticoLang::templateXlate("SAVE") . '">';
+                        $text .= '&nbsp;&nbsp;<input class="' . $this->query->getBootstrapStyle('button_admin') . 'swLinkMenu reporticoSubmit" type="submit" name="submit_maintain_NEW" value="' . ReporticoLang::templateXlate("NEW_REPORT") . '">';
+                        $text .= '<input class="' . $this->query->getBootstrapStyle('button_delete') . 'swLinkMenu reporticoSubmit" style="margin-left: 80px" type="submit" name="submit_xxx_DELETEREPORT" value="' . ReporticoLang::templateXlate("DELETE_REPORT") . '">';
                         $text .= '</TD>';
                         $text .= '</TR>';
                         //$text .= '<TR>';
@@ -3524,7 +3524,7 @@ class XmlReader
         $parent->id = $in_parent;
         $blocktype = "assignTypeStyle";
         $text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="' . $blocktype .
-        '" href="javascript:toggleLine(\'' . $blocktype . '\')">+</a><b>' . templateXlate("OUTPUTSTYLESWIZARD") . '</b></TD></TR>';
+        '" href="javascript:toggleLine(\'' . $blocktype . '\')">+</a><b>' . ReporticoLang::templateXlate("OUTPUTSTYLESWIZARD") . '</b></TD></TR>';
         $val = false;
 
         // Extract existing styles into wizard elements
@@ -3711,7 +3711,7 @@ class XmlReader
 
         if (!$updates["${type}StyleBorderStyle"] || $updates["${type}StyleBorderStyle"] == "NOBORDER") {
             if ($updates["${type}StyleBorderSize"] || $updates["${type}StyleBorderColor"]) {
-                trigger_error(templateXlate("SETBORDERSTYLE"), E_USER_ERROR);
+                trigger_error(ReporticoLang::templateXlate("SETBORDERSTYLE"), E_USER_ERROR);
             }
 
         } else {
@@ -3876,14 +3876,14 @@ class XmlReader
             }
         }
         if ($translate) {
-            $text .= templateXlate($title);
+            $text .= ReporticoLang::templateXlate($title);
         } else {
             $text .= $title;
         }
 
         if ($edit_mode == "SAFE") {
             if (ReporticoApp::getConfig('safe_design_mode')) {
-                $text .= "<br>" . templateXlate("SAFEOFF");
+                $text .= "<br>" . ReporticoLang::templateXlate("SAFEOFF");
             } else {
                 $text .= "";
             }
@@ -4004,7 +4004,7 @@ class XmlReader
                         closedir($dh);
                     }
                 } else {
-                    trigger_error(templateXlate("NOOPENDIR") . $this->query->reports_path, E_USER_NOTICE);
+                    trigger_error(ReporticoLang::templateXlate("NOOPENDIR") . $this->query->reports_path, E_USER_NOTICE);
                 }
 
                 $text .= $this->drawArrayDropdown("set_" . $this->id . "_" . $showtag . $shadow, $keys, $val, false, $translateoptions);
@@ -4038,7 +4038,7 @@ class XmlReader
                         closedir($dh);
                     }
                 } else {
-                    trigger_error(templateXlate("NOOPENDIR") . $fontdir, E_USER_NOTICE);
+                    trigger_error(ReporticoLang::templateXlate("NOOPENDIR") . $fontdir, E_USER_NOTICE);
                 }
 
                 if (!in_array($val, $keys)) {
@@ -4207,7 +4207,7 @@ class XmlReader
             $text .= "\n<!-- TAG 1-->";
             $text .= '<TD colspan="1">';
             if ($type != "TEXTFIELDNOOK") {
-                $text .= '<input class="' . $this->query->getBootstrapStyle('design_ok') . 'swMntButton reporticoSubmit" type="submit" name="submit_' . $this->id . '_SET" value="' . templateXlate("OK") . '">';
+                $text .= '<input class="' . $this->query->getBootstrapStyle('design_ok') . 'swMntButton reporticoSubmit" type="submit" name="submit_' . $this->id . '_SET" value="' . ReporticoLang::templateXlate("OK") . '">';
             } else {
                 $text .= "&nbsp;";
             }
@@ -4241,7 +4241,7 @@ class XmlReader
         foreach ($ar as $k => $v) {
             $label = $v;
             if ($translateoptions) {
-                $label = templateXlate($v);
+                $label = ReporticoLang::templateXlate($v);
             }
 
             $idval = $v;
@@ -4334,7 +4334,7 @@ class XmlReader
 
         if (!$updates["${type}StyleBorderStyle"] || $updates["${type}StyleBorderStyle"] == "NOBORDER") {
             if ($updates["${type}StyleBorderSize"] || $updates["${type}StyleBorderColor"]) {
-                trigger_error(templateXlate("SETBORDERSTYLE"), E_USER_ERROR);
+                trigger_error(ReporticoLang::templateXlate("SETBORDERSTYLE"), E_USER_ERROR);
             }
 
         } else {
@@ -4390,7 +4390,7 @@ $tagct = 1;
 $tmpid = $this->id;
 $this->id = $in_parent;
 $blocktype = "assignTypeStyle";
-$text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="'.$blocktype.'" href="javascript:toggleLine(\''.$blocktype.'\')">+</a><b>'.templateXlate("OUTPUTSTYLESWIZARD").'</b></TD></TR>';
+$text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="'.$blocktype.'" href="javascript:toggleLine(\''.$blocktype.'\')">+</a><b>'.ReporticoLang::templateXlate("OUTPUTSTYLESWIZARD").'</b></TD></TR>';
 $val = false;
 
 // Extract existing styles into wizard elements
@@ -4458,7 +4458,7 @@ $text .= $this->display_maintain_field("${type}StyleBackgroundImage", $styles["b
 
 //$tagct = 1;
 //$blocktype = "assignTypeDbg";
-//$text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="'.$blocktype.'" href="javascript:toggleLine(\''.$blocktype.'\')">+</a><b>'.templateXlate("DATABASEGRAPHICWIZARD").'</b></TD></TR>';
+//$text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="'.$blocktype.'" href="javascript:toggleLine(\''.$blocktype.'\')">+</a><b>'.ReporticoLang::templateXlate("DATABASEGRAPHICWIZARD").'</b></TD></TR>';
 //$text .= $this->display_maintain_field("AssignGraphicBlobCol", false, $tagct, true, false, $blocktype); $tagct++;
 //$text .= $this->display_maintain_field("AssignGraphicBlobTab", false, $tagct, true, false, $blocktype); $tagct++;
 //$text .= $this->display_maintain_field("AssignGraphicBlobMatch", false, $tagct, true, false, $blocktype); $tagct++;
@@ -4479,7 +4479,7 @@ return $text;
         $this->id = $in_parent;
         $text .= '<TR><TD>&nbsp;</TD></TD>';
         $blocktype = "assignTypeImageUrl";
-        $text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="' . $blocktype . '" href="javascript:toggleLine(\'' . $blocktype . '\')">+</a><b>' . templateXlate("OUTPUTIMAGE") . '</b></TD></TR>';
+        $text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="' . $blocktype . '" href="javascript:toggleLine(\'' . $blocktype . '\')">+</a><b>' . ReporticoLang::templateXlate("OUTPUTIMAGE") . '</b></TD></TR>';
         $text .= $this->display_maintain_field("AssignImageUrl", false, $tagct, true, false, $blocktype);
         $tagct++;
 
@@ -4487,7 +4487,7 @@ return $text;
         $tmpid = $this->id;
         $this->id = $in_parent;
         $blocktype = "assignTypeHyper";
-        $text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="' . $blocktype . '" href="javascript:toggleLine(\'' . $blocktype . '\')">+</a><b>' . templateXlate("OUTPUTHYPERLINK") . '</b></TD></TR>';
+        $text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="' . $blocktype . '" href="javascript:toggleLine(\'' . $blocktype . '\')">+</a><b>' . ReporticoLang::templateXlate("OUTPUTHYPERLINK") . '</b></TD></TR>';
         $text .= $this->display_maintain_field("AssignHyperlinkLabel", false, $tagct, true, false, $blocktype);
         $tagct++;
         $text .= $this->display_maintain_field("AssignHyperlinkUrl", false, $tagct, true, false, $blocktype);
@@ -4497,7 +4497,7 @@ return $text;
         $tmpid = $this->id;
         $this->id = $in_parent;
         $blocktype = "assignTypeStyle";
-        $text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="' . $blocktype . '" href="javascript:toggleLine(\'' . $blocktype . '\')">+</a><b>' . templateXlate("OUTPUTSTYLESWIZARD") . '</b></TD></TR>';
+        $text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="' . $blocktype . '" href="javascript:toggleLine(\'' . $blocktype . '\')">+</a><b>' . ReporticoLang::templateXlate("OUTPUTSTYLESWIZARD") . '</b></TD></TR>';
         $text .= $this->display_maintain_field("AssignStyleLocType", false, $tagct, true, false, $blocktype);
         $tagct++;
         $text .= $this->display_maintain_field("AssignStyleFgColor", false, $tagct, true, false, $blocktype);
@@ -4527,7 +4527,7 @@ return $text;
         $tmpid = $this->id;
         $this->id = $in_parent;
         $blocktype = "assignTypeAgg";
-        $text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="' . $blocktype . '" href="javascript:toggleLine(\'' . $blocktype . '\')">+</a><b>' . templateXlate("AGGREGATESWIZARD") . '</b></TD></TR>';
+        $text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="' . $blocktype . '" href="javascript:toggleLine(\'' . $blocktype . '\')">+</a><b>' . ReporticoLang::templateXlate("AGGREGATESWIZARD") . '</b></TD></TR>';
         $text .= $this->display_maintain_field("AssignAggType", false, $tagct, true, false, $blocktype);
         $tagct++;
         $text .= $this->display_maintain_field("AssignAggCol", false, $tagct, true, false, $blocktype);
@@ -4537,7 +4537,7 @@ return $text;
 
         $tagct = 1;
         $blocktype = "assignTypeDbg";
-        $text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="' . $blocktype . '" href="javascript:toggleLine(\'' . $blocktype . '\')">+</a><b>' . templateXlate("DATABASEGRAPHICWIZARD") . '</b></TD></TR>';
+        $text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="' . $blocktype . '" href="javascript:toggleLine(\'' . $blocktype . '\')">+</a><b>' . ReporticoLang::templateXlate("DATABASEGRAPHICWIZARD") . '</b></TD></TR>';
         $text .= $this->display_maintain_field("AssignGraphicBlobCol", false, $tagct, true, false, $blocktype);
         $tagct++;
         $text .= $this->display_maintain_field("AssignGraphicBlobTab", false, $tagct, true, false, $blocktype);
@@ -4552,7 +4552,7 @@ return $text;
         $tagct = 1;
         $blocktype = "assignTypeDrill";
         $text .= '<TR><TD>&nbsp;</TD></TD>';
-        $text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="' . $blocktype . '" href="javascript:toggleLine(\'' . $blocktype . '\')">-</a><b>' . templateXlate("DRILLDOWNWIZARD") . '</b></TD></TR>';
+        $text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="' . $blocktype . '" href="javascript:toggleLine(\'' . $blocktype . '\')">-</a><b>' . ReporticoLang::templateXlate("DRILLDOWNWIZARD") . '</b></TD></TR>';
         $text .= $this->display_maintain_field("DrilldownReport", $this->query->drilldown_report, $tagct, true, false, $blocktype, true);
 
         $tagct++;
@@ -4564,7 +4564,7 @@ return $text;
             $reader->xml2query();
             foreach ($q->lookup_queries as $k => $v) {
 
-                $text .= $this->display_maintain_field("DrilldownColumn" . " " . $v->query_name, false, $tagct, false, templateXlate("DRILLDOWNCOLUMN") . " " . $v->query_name, $blocktype, true);
+                $text .= $this->display_maintain_field("DrilldownColumn" . " " . $v->query_name, false, $tagct, false, ReporticoLang::templateXlate("DRILLDOWNCOLUMN") . " " . $v->query_name, $blocktype, true);
             }
             unset($q);
         }
@@ -4617,7 +4617,7 @@ return $text;
         $text .= '<DIV class="side-nav-container affix-top">';
         $text .= '<UL class="' . $this->query->getBootstrapStyle('vtabs') . 'swMntMidSectionTable">';
 
-        $defaulttext = templateXlate($paneltype);
+        $defaulttext = ReporticoLang::templateXlate($paneltype);
         $ct = 0;
         foreach ($ar as $key => $val) {
             $drawup = false;
@@ -4646,23 +4646,23 @@ return $text;
 
             if ($paneltype == "ASSIGNMENT") {
                 if (preg_match("/applyStyle *\([ \"']*CELL/", $val["Expression"])) {
-                    $labtext = templateXlate("CELLSTYLE") . " " . $val[$labindex];
+                    $labtext = ReporticoLang::templateXlate("CELLSTYLE") . " " . $val[$labindex];
                 } else if (preg_match("/applyStyle *\([ \"']*ROW/", $val["Expression"])) {
-                    $labtext = templateXlate("ROWSTYLE");
+                    $labtext = ReporticoLang::templateXlate("ROWSTYLE");
                 } else if (preg_match("/applyStyle *\([ \"']*PAGE/", $val["Expression"])) {
-                    $labtext = templateXlate("PAGESTYLE");
+                    $labtext = ReporticoLang::templateXlate("PAGESTYLE");
                 } else if (preg_match("/applyStyle *\([ \"']*BODY/", $val["Expression"])) {
-                    $labtext = templateXlate("REPORTBODYSTYLE");
+                    $labtext = ReporticoLang::templateXlate("REPORTBODYSTYLE");
                 } else if (preg_match("/applyStyle *\([ \"']*ALLCELLS/", $val["Expression"])) {
-                    $labtext = templateXlate("ALLCELLSSTYLE");
+                    $labtext = ReporticoLang::templateXlate("ALLCELLSSTYLE");
                 } else if (preg_match("/applyStyle *\([ \"']*COLUMNHEADERS/", $val["Expression"])) {
-                    $labtext = templateXlate("COLUMNHEADERSTYLE");
+                    $labtext = ReporticoLang::templateXlate("COLUMNHEADERSTYLE");
                 } else if (preg_match("/applyStyle *\([ \"']*GROUPHEADERLABEL/", $val["Expression"])) {
-                    $labtext = templateXlate("GRPHEADERLABELSTYLE");
+                    $labtext = ReporticoLang::templateXlate("GRPHEADERLABELSTYLE");
                 } else if (preg_match("/applyStyle *\([ \"']*GROUPHEADERVALUE/", $val["Expression"])) {
-                    $labtext = templateXlate("GRPHEADERVALUESTYLE");
+                    $labtext = ReporticoLang::templateXlate("GRPHEADERVALUESTYLE");
                 } else if (preg_match("/applyStyle *\([ \"']*GROUPTRAILER/", $val["Expression"])) {
-                    $labtext = templateXlate("GROUPTRAILERSTYLE");
+                    $labtext = ReporticoLang::templateXlate("GROUPTRAILERSTYLE");
                 }
 
             }

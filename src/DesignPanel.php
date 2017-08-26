@@ -168,9 +168,9 @@ class DesignPanel
                 global $g_project;
                 if ($this->query->xmlinput == "configureproject.xml" || ReporticoApp::getConfig("project") == "admin") {
                     $reporttitle = $this->query->deriveAttribute("ReportTitle", "Set Report Title");
-                    $this->smarty->assign('TITLE', swTranslate($reporttitle));
+                    $this->smarty->assign('TITLE', ReporticoLang::translate($reporttitle));
                 } else {
-                    $reporttitle = swTranslate($this->query->deriveAttribute("ReportTitle", "Set Report Title"));
+                    $reporttitle = ReporticoLang::translate($this->query->deriveAttribute("ReportTitle", "Set Report Title"));
                     $this->smarty->assign('TITLE', $reporttitle);
                 }
 
@@ -257,7 +257,7 @@ class DesignPanel
 
                         $dispcrit[] = array(
                             "name" => $col->query_name,
-                            "title" => swTranslate($crittitle),
+                            "title" => ReporticoLang::translate($crittitle),
                             "entry" => $critsel,
                             "entry" => $critsel,
                             "hidden" => $crithidden,
@@ -267,7 +267,7 @@ class DesignPanel
                             "required" => $critrequired,
                             "visible" => $visible,
                             "expand" => $critexp,
-                            "tooltip" => swTranslate($col->criteria_help),
+                            "tooltip" => ReporticoLang::translate($col->criteria_help),
                         );
                         $lastdisplaygroup = $critdisplaygroup;
                     }
@@ -284,7 +284,7 @@ class DesignPanel
                     $this->smarty->assign("EXPANDED_ITEM", $this->query->expand_col->query_name);
                     $this->smarty->assign("EXPANDED_SEARCH_VALUE", false);
                     $title = $this->query->expand_col->deriveAttribute("column_title", $this->query->expand_col->query_name);
-                    $this->smarty->assign("EXPANDED_TITLE", swTranslate($title));
+                    $this->smarty->assign("EXPANDED_TITLE", ReporticoLang::translate($title));
 
                     // Only use then expand value if Search was press
                     $expval = "";
@@ -305,7 +305,7 @@ class DesignPanel
 
                     $text .= $this->query->expand_col->expand_template();
                 } else {
-                    if (!($desc = swTranslateReportDesc($this->query->xmloutfile))) {
+                    if (!($desc = ReporticoLang::translateReportDesc($this->query->xmloutfile))) {
                         $desc = $this->query->deriveAttribute("ReportDescription", false);
                     }
 
@@ -546,7 +546,7 @@ class DesignPanel
                 }
 
                 if ($msg) {
-                    $msg = "<BR><B>" . templateXlate("INFORMATION") . "</B>" . $msg;
+                    $msg = "<BR><B>" . ReporticoLang::templateXlate("INFORMATION") . "</B>" . $msg;
                 }
 
                 $this->smarty->assign('STATUSMSG', $msg);
@@ -625,7 +625,7 @@ class DesignPanel
                 }
 
                 if ($debugmsg) {
-                    $debugmsg = "<BR><B>" . templateXlate("INFORMATION") . "</B>" . $debugmsg;
+                    $debugmsg = "<BR><B>" . ReporticoLang::templateXlate("INFORMATION") . "</B>" . $debugmsg;
                 }
 
                 if (false && $msg && $this->query->reportico_ajax_called) {

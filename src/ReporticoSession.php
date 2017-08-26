@@ -6,29 +6,12 @@ namespace Reportico;
 
 class ReporticoSession
 {
-    private static $_instance;
 
     private function __construct()
     {}
 
     private function __clone()
     {}
-
-    /**
-     * Get the instance of the class
-     *
-     * @return SingletonClass
-     */
-    public static function getInstance()
-    {
-        if (true === is_null(self::$_instance)) {
-            self::$_instance = new self();
-            self::$_instance->variables = [];
-            self::$_instance->variables["config"] = [];
-        }
-
-        return self::$_instance;
-    }
 
     // Ensure that sessions from different browser windows on same devide
     // target separate SESSION_ID

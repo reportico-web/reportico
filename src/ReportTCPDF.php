@@ -1004,7 +1004,7 @@ class ReportTCPDF extends Report
                 $group_label = ucwords(strtolower($group_label));
             }
 
-            $group_label = swTranslate($group_label);
+            $group_label = ReporticoLang::translate($group_label);
 
             // Fetch Group Header Label End Column + display
             $group_xpos = $trailer_col->abs_column_start;
@@ -2123,7 +2123,7 @@ class ReportTCPDF extends Report
                 $group_label = str_replace("_", " ", $group_label);
                 $group_label = ucwords(strtolower($group_label));
             }
-            $group_label = swTranslate($group_label);
+            $group_label = ReporticoLang::translate($group_label);
 
             $this->yjump = 2;
             // Fetch Group Header Label Start Column + display
@@ -2247,7 +2247,7 @@ class ReportTCPDF extends Report
         $padstring = $column_item->deriveAttribute("column_title", $column_item->query_name);
         $padstring = str_replace("_", " ", $padstring);
         $padstring = ucwords(strtolower($padstring));
-        $padstring = swTranslate($padstring);
+        $padstring = ReporticoLang::translate($padstring);
 
         $just = $this->justifys[$column_item->deriveAttribute("justify", "left")];
 

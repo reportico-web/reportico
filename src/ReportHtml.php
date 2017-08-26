@@ -81,7 +81,7 @@ class ReportHtml extends Report
 
         if ($this->line_count < 1) {
             $title = $this->query->deriveAttribute("ReportTitle", "Unknown");
-            $this->text .= '<H1 class="swRepTitle">' . swTranslate($title) . '</H1>';
+            $this->text .= '<H1 class="swRepTitle">' . ReporticoLang::translate($title) . '</H1>';
             $forward = ReporticoSession::sessionRequestItem('forward_url_get_parameters', '');
             if ($forward) {
                 $forward .= "&";
@@ -92,19 +92,19 @@ class ReportHtml extends Report
             if (!getRequestItem("printable_html")) {
                 // Show Go Back Button ( if user is not in "SINGLE REPORT RUN " )
                 if (!$this->query->access_mode || ($this->query->access_mode != "REPORTOUTPUT")) {
-                    $this->text .= '<div class="swRepBackBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'execute_mode=PREPARE&reportico_session_name=' . ReporticoSession::reporticoSessionName() . '" title="' . templateXlate("GO_BACK") . '">&nbsp;</a></div>';
+                    $this->text .= '<div class="swRepBackBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'execute_mode=PREPARE&reportico_session_name=' . ReporticoSession::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_BACK") . '">&nbsp;</a></div>';
                 }
                 if (ReporticoSession::getReporticoSessionParam("show_refresh_button")) {
-                    $this->text .= '<div class="swRepRefreshBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'refreshReport=1&execute_mode=EXECUTE&reportico_session_name=' . ReporticoSession::reporticoSessionName() . '" title="' . templateXlate("GO_REFRESH") . '">&nbsp;</a></div>';
+                    $this->text .= '<div class="swRepRefreshBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'refreshReport=1&execute_mode=EXECUTE&reportico_session_name=' . ReporticoSession::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_REFRESH") . '">&nbsp;</a></div>';
                 }
 
-                $this->text .= '<div class="reporticoJSONExecute"><a class="swJSONExecute1 testy" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'refreshReport=1&target_format=JSON&execute_mode=EXECUTE&reportico_session_name=' . ReporticoSession::reporticoSessionName() . '" title="' . templateXlate("GO_REFRESH") . '">&nbsp;</a></div>';
+                $this->text .= '<div class="reporticoJSONExecute"><a class="swJSONExecute1 testy" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'refreshReport=1&target_format=JSON&execute_mode=EXECUTE&reportico_session_name=' . ReporticoSession::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_REFRESH") . '">&nbsp;</a></div>';
             } else {
-                $this->text .= '<div class="swRepPrintBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'printReport=1&execute_mode=EXECUTE&reportico_session_name=' . ReporticoSession::reporticoSessionName() . '" title="' . templateXlate("GO_PRINT") . '">' . templateXlate("GO_PRINT") . '</a></div>';
+                $this->text .= '<div class="swRepPrintBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'printReport=1&execute_mode=EXECUTE&reportico_session_name=' . ReporticoSession::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_PRINT") . '">' . ReporticoLang::templateXlate("GO_PRINT") . '</a></div>';
             }
             $this->text .= '</div>';
 
-            $this->text .= '<div class="swRepNoRows">' . templateXlate("NO_DATA_FOUND") . '</div>';
+            $this->text .= '<div class="swRepNoRows">' . ReporticoLang::templateXlate("NO_DATA_FOUND") . '</div>';
         }
 
         if ($this->report_file) {
@@ -175,7 +175,7 @@ class ReportHtml extends Report
         // Create sensible column header label from column name
         $padstring = columnNameToLabel($column_item->query_name);
         $padstring = $column_item->deriveAttribute("column_title", $padstring);
-        $padstring = swTranslate($padstring);
+        $padstring = ReporticoLang::translate($padstring);
 
         $colstyles = array();
         $cw = $column_item->deriveAttribute("ColumnWidthHTML", false);
@@ -498,7 +498,7 @@ class ReportHtml extends Report
             $title = $this->query->deriveAttribute("ReportTitle", "Unknown");
             $this->pageHeaders();
             if ($this->query->output_template_parameters["show_hide_report_output_title"] != "hide") {
-                $this->text .= '<H1 class="swRepTitle">' . swTranslate($title) . '</H1>';
+                $this->text .= '<H1 class="swRepTitle">' . ReporticoLang::translate($title) . '</H1>';
             }
 
             $this->text .= '<TABLE class="swRepGrpHdrBox swNewPage" >';
@@ -524,9 +524,9 @@ class ReportHtml extends Report
         // Create sensible group header label from column name
         $tempstring = columnNameToLabel($col->query_name);
         $tempstring = $col->deriveAttribute("column_title", $tempstring);
-        $tempstring = swTranslate($col->deriveAttribute("column_title", $tempstring));
+        $tempstring = ReporticoLang::translate($col->deriveAttribute("column_title", $tempstring));
 
-        $this->text .= swTranslate($col->deriveAttribute("group_header_label", $tempstring));
+        $this->text .= ReporticoLang::translate($col->deriveAttribute("group_header_label", $tempstring));
         $this->text .= "</TD>";
         $this->text .= '<TD class="swRepGrpHdrDat" ' . $this->getStyleTags($this->query->output_group_header_value_styles) . '>';
         $this->text .= "$padstring";
@@ -613,7 +613,7 @@ class ReportHtml extends Report
                 $group_label = str_replace("_", " ", $group_label);
                 $group_label = ucwords(strtolower($group_label));
             }
-            $group_label = swTranslate($group_label);
+            $group_label = ReporticoLang::translate($group_label);
             $padstring = $value_col["GroupTrailerValueColumn"]->old_column_value;
             if ($value_col["GroupTrailerValueColumn"]->output_images) {
                 $padstring = $this->formatImages($value_col["GroupTrailerValueColumn"]->output_images);
@@ -780,10 +780,10 @@ class ReportHtml extends Report
         if (!getRequestItem("printable_html")) {
             if (!$this->query->access_mode || ($this->query->access_mode != "REPORTOUTPUT")) {
                 $this->text .= '<div class="swRepButtons">';
-                $this->text .= '<div class="swRepBackBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'execute_mode=PREPARE&reportico_session_name=' . ReporticoSession::reporticoSessionName() . '" title="' . templateXlate("GO_BACK") . '">&nbsp;</a></div>';
+                $this->text .= '<div class="swRepBackBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'execute_mode=PREPARE&reportico_session_name=' . ReporticoSession::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_BACK") . '">&nbsp;</a></div>';
             }
             if (ReporticoSession::getReporticoSessionParam("show_refresh_button")) {
-                $this->text .= '<div class="swRepRefreshBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'refreshReport=1&execute_mode=EXECUTE&reportico_session_name=' . ReporticoSession::reporticoSessionName() . '" title="' . templateXlate("GO_REFRESH") . '">&nbsp;</a></div>';
+                $this->text .= '<div class="swRepRefreshBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'refreshReport=1&execute_mode=EXECUTE&reportico_session_name=' . ReporticoSession::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_REFRESH") . '">&nbsp;</a></div>';
             }
 
             $this->text .= '</div>';
@@ -791,7 +791,7 @@ class ReportHtml extends Report
         } else {
             //$this->text .= '<div class="prepareAjaxExecuteIgnore swPDFBox1"><a class="swLinkMenu5 swPDFBox" target="_blank" href="'.$this->query->getActionUrl().'?'.$forward.'refreshReport=1&target_format=PDF&execute_mode=EXECUTE&reportico_session_name='.ReporticoSession::reporticoSessionName().'" title="Print PDF">&nbsp;</a></div>';
             $this->text .= '<div class="swRepButtons">';
-            $this->text .= '<div class="swRepPrintBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'printReport=1&execute_mode=EXECUTE&reportico_session_name=' . ReporticoSession::reporticoSessionName() . '" title="' . templateXlate("GO_PRINT") . '">' . '&nbsp;' . '</a></div>';
+            $this->text .= '<div class="swRepPrintBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'printReport=1&execute_mode=EXECUTE&reportico_session_name=' . ReporticoSession::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_PRINT") . '">' . '&nbsp;' . '</a></div>';
             $this->text .= '</div>';
         }
 
@@ -800,7 +800,7 @@ class ReportHtml extends Report
 
         $title = $this->query->deriveAttribute("ReportTitle", "Unknown");
         if ($this->query->output_template_parameters["show_hide_report_output_title"] != "hide") {
-            $this->text .= '<H1 class="swRepTitle">' . swTranslate($title) . '</H1>';
+            $this->text .= '<H1 class="swRepTitle">' . ReporticoLang::translate($title) . '</H1>';
         }
 
     }

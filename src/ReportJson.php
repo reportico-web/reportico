@@ -112,7 +112,7 @@ class ReportJson extends Report
             $coltitle = $col->deriveAttribute("column_title", $col->query_name);
             $coltitle = str_replace("_", " ", $coltitle);
             $coltitle = ucwords(strtolower($coltitle));
-            $coltitle = swTranslate($coltitle);
+            $coltitle = ReporticoLang::translate($coltitle);
 
             $disp = $col->deriveAttribute("column_display", "show");
             if ($disp == "hide") {

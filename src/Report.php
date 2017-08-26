@@ -262,7 +262,7 @@ class Report extends ReporticoObject
             } else {
                 if (getRequestItem($name . "_FROMDATE_DAY", "")) {
                     $label = $crit->deriveAttribute("column_title", $crit->query_name);
-                    $label = swTranslate($label);
+                    $label = ReporticoLang::translate($label);
                     $mth = getRequestItem($name . "_FROMDATE_MONTH", "") + 1;
                     $value = getRequestItem($name . "_FROMDATE_DAY", "") . "/" .
                     $mth . "/" .
@@ -276,7 +276,7 @@ class Report extends ReporticoObject
                     }
                 } else if (getRequestItem("MANUAL_" . $name . "_FROMDATE", "")) {
                     $label = $crit->deriveAttribute("column_title", $crit->query_name);
-                    $label = swTranslate($label);
+                    $label = ReporticoLang::translate($label);
                     $value = getRequestItem("MANUAL_" . $name . "_FROMDATE", "");
                     if (getRequestItem("MANUAL_" . $name . "_TODATE", "")) {
                         $value .= "-";
@@ -285,7 +285,7 @@ class Report extends ReporticoObject
 
                 } else if (getRequestItem("HIDDEN_" . $name . "_FROMDATE", "")) {
                     $label = $crit->deriveAttribute("column_title", $crit->query_name);
-                    $label = swTranslate($label);
+                    $label = ReporticoLang::translate($label);
                     $value = getRequestItem("HIDDEN_" . $name . "_FROMDATE", "");
                     if (getRequestItem("HIDDEN_" . $name . "_TODATE", "")) {
                         $value .= "-";
@@ -294,11 +294,11 @@ class Report extends ReporticoObject
 
                 } else if (getRequestItem("EXPANDED_" . $name, "")) {
                     $label = $crit->deriveAttribute("column_title", $crit->query_name);
-                    $label = swTranslate($label);
+                    $label = ReporticoLang::translate($label);
                     $value .= implode(getRequestItem("EXPANDED_" . $name, ""), ",");
                 } else if (getRequestItem("MANUAL_" . $name, "")) {
                     $label = $crit->deriveAttribute("column_title", $crit->query_name);
-                    $label = swTranslate($label);
+                    $label = ReporticoLang::translate($label);
                     $value .= getRequestItem("MANUAL_" . $name, "");
 
                 }
@@ -320,7 +320,7 @@ class Report extends ReporticoObject
                 } else {
                     if (getRequestItem($name . "_FROMDATE_DAY", "")) {
                         $label = $crit->deriveAttribute("column_title", $crit->query_name);
-                        $label = swTranslate($label);
+                        $label = ReporticoLang::translate($label);
                         $mth = getRequestItem($name . "_FROMDATE_MONTH", "") + 1;
                         $value = getRequestItem($name . "_FROMDATE_DAY", "") . "/" .
                         $mth . "/" .
@@ -334,7 +334,7 @@ class Report extends ReporticoObject
                         }
                     } else if (getRequestItem("MANUAL_" . $name . "_FROMDATE", "")) {
                         $label = $crit->deriveAttribute("column_title", $crit->query_name);
-                        $label = swTranslate($label);
+                        $label = ReporticoLang::translate($label);
                         $value = getRequestItem("MANUAL_" . $name . "_FROMDATE", "");
                         if (getRequestItem("MANUAL_" . $name . "_TODATE", "")) {
                             $value .= "-";
@@ -343,7 +343,7 @@ class Report extends ReporticoObject
 
                     } else if (getRequestItem("HIDDEN_" . $name . "_FROMDATE", "")) {
                         $label = $crit->deriveAttribute("column_title", $crit->query_name);
-                        $label = swTranslate($label);
+                        $label = ReporticoLang::translate($label);
                         $value = getRequestItem("HIDDEN_" . $name . "_FROMDATE", "");
                         if (getRequestItem("HIDDEN_" . $name . "_TODATE", "")) {
                             $value .= "-";
@@ -352,11 +352,11 @@ class Report extends ReporticoObject
 
                     } else if (getRequestItem("EXPANDED_" . $name, "")) {
                         $label = $crit->deriveAttribute("column_title", $crit->query_name);
-                        $label = swTranslate($label);
+                        $label = ReporticoLang::translate($label);
                         $value .= implode(getRequestItem("EXPANDED_" . $name, ""), ",");
                     } else if (getRequestItem("MANUAL_" . $name, "")) {
                         $label = $crit->deriveAttribute("column_title", $crit->query_name);
-                        $label = swTranslate($label);
+                        $label = ReporticoLang::translate($label);
                         $value .= getRequestItem("MANUAL_" . $name, "");
 
                     }

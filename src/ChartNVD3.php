@@ -604,7 +604,7 @@ class ChartNVD3
 
 
             //Configure how the tooltip looks.
-            chart" . $sessionPlaceholder . ".tooltipContent(function(key) {
+            chart" . $sessionPlaceholder . ".tooltipContent(ReporticoLang::function(key) {
                 return '<h3>' + key + '</h3>';
             });
 

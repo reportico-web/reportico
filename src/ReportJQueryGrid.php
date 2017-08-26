@@ -163,7 +163,7 @@ class ReportJQueryGrid extends Report
                     $coltitle = $col->deriveAttribute("column_title", $col->query_name);
                     $coltitle = str_replace("_", " ", $coltitle);
                     $coltitle = ucwords(strtolower($coltitle));
-                    $coltitle = swTranslate($coltitle);
+                    $coltitle = ReporticoLang::translate($coltitle);
 
                     if ($col->query_name == $this->key_column) {
                         $this->results[count($this->results) - 1]["id"][] = $qn->column_value;
@@ -227,7 +227,7 @@ class ReportJQueryGrid extends Report
             $coltitle = $col->deriveAttribute("column_title", $col->query_name);
             $coltitle = str_replace("_", " ", $coltitle);
             $coltitle = ucwords(strtolower($coltitle));
-            $coltitle = swTranslate($coltitle);
+            $coltitle = ReporticoLang::translate($coltitle);
 
             if ($col->query_name == $this->key_column) {
                 $this->results[count($this->results) - 1]["id"] = $qn->column_value;

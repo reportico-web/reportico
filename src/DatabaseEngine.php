@@ -123,7 +123,7 @@ class DatabaseEngine
         if ( is_file ( $filename ) )
         {
             require_once($filename);
-            custom_project_modifications(&$this, $return_status);
+            custom_project_modifications($this, $return_status);
         }
         else
         {

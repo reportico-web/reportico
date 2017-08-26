@@ -101,7 +101,7 @@ class ReportCsv extends Report
         $padstring = $column_item->deriveAttribute("column_title", $column_item->query_name);
         $padstring = str_replace("_", " ", $padstring);
         $padstring = ucwords(strtolower($padstring));
-        $padstring = swTranslate($padstring);
+        $padstring = ReporticoLang::translate($padstring);
 
         $this->text .= '"' . $padstring . '"' . ",";
     }
@@ -205,7 +205,7 @@ class ReportCsv extends Report
                 $qn = getQueryColumn($col->query_name, $this->query->columns);
                 $tempstring = str_replace("_", " ", $col->query_name);
                 $tempstring = ucwords(strtolower($tempstring));
-                $this->text .= "\"" . swTranslate($col->deriveAttribute("column_title", $tempstring)) . "\"";
+                $this->text .= "\"" . ReporticoLang::translate($col->deriveAttribute("column_title", $tempstring)) . "\"";
                 $this->text .= ",";
             }
         }
@@ -227,7 +227,7 @@ class ReportCsv extends Report
         $padstring = $qn->column_value;
         $tempstring = str_replace("_", " ", $col->query_name);
         $tempstring = ucwords(strtolower($tempstring));
-        $this->text .= swTranslate($col->deriveAttribute("column_title", $tempstring));
+        $this->text .= ReporticoLang::translate($col->deriveAttribute("column_title", $tempstring));
         $this->text .= ": ";
         $this->text .= "$padstring";
         $this->text .= "\n";
@@ -264,7 +264,7 @@ class ReportCsv extends Report
                 $group_label = str_replace("_", " ", $group_label);
                 $group_label = ucwords(strtolower($group_label));
             }
-            $group_label = swTranslate($group_label);
+            $group_label = ReporticoLang::translate($group_label);
             $padstring = $value_col["GroupTrailerValueColumn"]->old_column_value;
             if ($group_label == "BLANK") {
                 $this->text .= "\"$padstring\"";

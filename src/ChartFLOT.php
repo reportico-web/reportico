@@ -33,6 +33,7 @@
  * @version $Id: swgraph_flot.php,v 1.15 2013/09/26 19:23:06 peter Exp $
  */
 
+namespace Reportico;
 
 error_reporting(E_ALL);
 
@@ -55,7 +56,6 @@ else
     die;
 }
 
-namespace Reportico;
 
 /**
  * Class reportico_graph

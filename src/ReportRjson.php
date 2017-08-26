@@ -110,7 +110,7 @@ class ReportRjson extends Report
     public function setupReportAttributes()
     {
         $title = $this->query->deriveAttribute("ReportTitle", "Unknown");
-        $this->jar["title"] .= swTranslate($title);
+        $this->jar["title"] .= ReporticoLang::translate($title);
         if ($this->query->output_template_parameters["show_hide_report_output_title"] == "hide") {
             $this->jar["attributes"]["hide_title"] = true;
         }
@@ -162,7 +162,7 @@ class ReportRjson extends Report
             // Create sensible column header label from column name
             $label = columnNameToLabel($col->query_name);
             $label = $col->deriveAttribute("column_title", $label);
-            $label = swTranslate($label);
+            $label = ReporticoLang::translate($label);
 
             $this->jar["columns"][$col->query_name] = array();
             $this->jar["columns"][$col->query_name]["label"] = $label;
@@ -300,7 +300,7 @@ class ReportRjson extends Report
         // Create sensible group header label from column name
         $tempstring = columnNameToLabel($col->query_name);
         $tempstring = $col->deriveAttribute("column_title", $tempstring);
-        $tempstring = swTranslate($col->deriveAttribute("column_title", $tempstring));
+        $tempstring = ReporticoLang::translate($col->deriveAttribute("column_title", $tempstring));
 
         if (!isset($this->jar["pages"][$this->page_count]["groups"]["headers"])) {
             $this->jar["pages"][$this->page_count]["groups"]["headers"] = array();
@@ -380,7 +380,7 @@ class ReportRjson extends Report
                 $group_label = str_replace("_", " ", $group_label);
                 $group_label = ucwords(strtolower($group_label));
             }
-            $group_label = swTranslate($group_label);
+            $group_label = ReporticoLang::translate($group_label);
             $padstring = $value_col->old_column_value;
             if ($value_col->output_images) {
                 $padstring = $this->formatImages($value_col->output_images);

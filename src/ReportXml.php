@@ -87,7 +87,7 @@ class ReportXml extends Report
     public function arrayToXML1($root_element_name, $ar)
     {
         $xml = new SimpleXMLElement("<?xml version=\"1.0\"?><" . $root_element_name . "></" . $root_element_name . ">");
-        $f = create_function('$f,$c,$a', '
+        $f = create_ReporticoLang::function('$f,$c,$a', '
             		foreach($a as $k=>$v) {
                 		if(is_array($v)) {
                     		$ch=$c->addChild($k);
@@ -149,7 +149,7 @@ class ReportXml extends Report
             $coltitle = $col->deriveAttribute("column_title", $col->query_name);
             $coltitle = str_replace("_", " ", $coltitle);
             $coltitle = ucwords(strtolower($coltitle));
-            $coltitle = swTranslate($coltitle);
+            $coltitle = ReporticoLang::translate($coltitle);
 
             $disp = $col->deriveAttribute("column_display", "show");
             if ($disp == "hide") {

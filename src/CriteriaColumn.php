@@ -114,7 +114,7 @@ class CriteriaColumn extends QueryColumn
         } else {
             if (getRequestItem($name . "_FROMDATE_DAY", "")) {
                 $label = $this->deriveAttribute("column_title", $this->query_name);
-                $label = swTranslate($label);
+                $label = ReporticoLang::translate($label);
                 $mth = getRequestItem($name . "_FROMDATE_MONTH", "") + 1;
                 $value = getRequestItem($name . "_FROMDATE_DAY", "") . "/" .
                 $mth . "/" .
@@ -128,7 +128,7 @@ class CriteriaColumn extends QueryColumn
                 }
             } else if (getRequestItem("MANUAL_" . $name . "_FROMDATE", "")) {
                 $label = $this->deriveAttribute("column_title", $this->query_name);
-                $label = swTranslate($label);
+                $label = ReporticoLang::translate($label);
                 $value = getRequestItem("MANUAL_" . $name . "_FROMDATE", "");
                 if (getRequestItem("MANUAL_" . $name . "_TODATE", "")) {
                     $value .= "-";
@@ -137,7 +137,7 @@ class CriteriaColumn extends QueryColumn
 
             } else if (getRequestItem("HIDDEN_" . $name . "_FROMDATE", "")) {
                 $label = $this->deriveAttribute("column_title", $this->query_name);
-                $label = swTranslate($label);
+                $label = ReporticoLang::translate($label);
                 $value = getRequestItem("HIDDEN_" . $name . "_FROMDATE", "");
                 if (getRequestItem("HIDDEN_" . $name . "_TODATE", "")) {
                     $value .= "-";
@@ -146,11 +146,11 @@ class CriteriaColumn extends QueryColumn
 
             } else if (getRequestItem("EXPANDED_" . $name, "")) {
                 $label = $this->deriveAttribute("column_title", $this->query_name);
-                $label = swTranslate($label);
+                $label = ReporticoLang::translate($label);
                 $value .= implode(getRequestItem("EXPANDED_" . $name, ""), ",");
             } else if (getRequestItem("MANUAL_" . $name, "")) {
                 $label = $this->deriveAttribute("column_title", $this->query_name);
-                $label = swTranslate($label);
+                $label = ReporticoLang::translate($label);
                 $value .= getRequestItem("MANUAL_" . $name, "");
             }
         }
@@ -388,9 +388,9 @@ class CriteriaColumn extends QueryColumn
                 $this->criteria_list = $in_list;
             } else
             if ($in_list == "{languages}") {
-                $langs = availableLanguages();
+                $langs = ReporticoLang::availableLanguages();
                 foreach ($langs as $k => $v) {
-                    $choices[] = templateXlate($v["value"]) . "=" . $v["value"];
+                    $choices[] = ReporticoLang::templateXlate($v["value"]) . "=" . $v["value"];
                 }
                 $this->criteria_list = $in_list;
             } else {
@@ -509,7 +509,7 @@ class CriteriaColumn extends QueryColumn
             $retval = sprintf("%02d-%02d-%04d", $dy, $mn, $yr);
 
             $datetime = DateTime::createFromFormat("d-m-Y", $retval);
-            $in_format = getLocaleDateFormat($in_format);
+            $in_format = ReporticoLocale::getLocaleDateFormat($in_format);
             $retval = $datetime->format($in_format);
         }
         return ($retval);
@@ -538,7 +538,7 @@ class CriteriaColumn extends QueryColumn
             }
             if ($this->defaults[0]) {
                 $dummy = "";
-                if (!convertDateRangeDefaultsToDates("DATE", $this->defaults[0], $this->range_start, $dummy)) {
+                if (!ReporticoLocale::convertDateRangeDefaultsToDates("DATE", $this->defaults[0], $this->range_start, $dummy)) {
                     trigger_error("Date default '" . $this->defaults[0] . "' is not a valid date. Should be in date format (e.g. yyyy-mm-dd, dd/mm/yyyy) or a date type (TODAY, TOMMORROW etc", E_USER_ERROR);
                 }
 
@@ -547,7 +547,7 @@ class CriteriaColumn extends QueryColumn
             unset($_REQUEST["HIDDEN_" . $this->query_name . "_TODATE"]);
         }
 
-        $this->range_start = parseDate($this->range_start, false, ReporticoApp::getConfig("prep_dateformat"));
+        $this->range_start = ReporticoLocale::parseDate($this->range_start, false, ReporticoApp::getConfig("prep_dateformat"));
         $text .= $this->formatDateValue($this->query_name . '_FROMDATE', $this->range_start, ReporticoApp::getConfig("prep_dateformat"));
 
         return $text;
@@ -578,7 +578,7 @@ class CriteriaColumn extends QueryColumn
             }
 
             if ($this->defaults[0]) {
-                if (!convertDateRangeDefaultsToDates("DATERANGE", $this->defaults[0], $this->range_start, $this->range_end)) {
+                if (!ReporticoLocale::convertDateRangeDefaultsToDates("DATERANGE", $this->defaults[0], $this->range_start, $this->range_end)) {
                     trigger_error("Date default '" . $this->defaults[0] . "' is not a valid date range. Should be 2 values separated by '-'. Each one should be in date format (e.g. yyyy-mm-dd, dd/mm/yyyy) or a date type (TODAY, TOMMORROW etc", E_USER_ERROR);
                 }
 
@@ -593,7 +593,7 @@ class CriteriaColumn extends QueryColumn
             $this->range_end = "TODAY";
         }
 
-        $this->range_start = parseDate($this->range_start, false, ReporticoApp::getConfig("prep_dateformat"));
+        $this->range_start = ReporticoLocale::parseDate($this->range_start, false, ReporticoApp::getConfig("prep_dateformat"));
         $text .= $this->formatDateValue($this->query_name . '_FROMDATE', $this->range_start, ReporticoApp::getConfig("prep_dateformat"));
 
         $text .= "&nbsp;- ";
@@ -610,7 +610,7 @@ class CriteriaColumn extends QueryColumn
             $this->range_end = "TODAY";
         }
 
-        $this->range_end = parseDate($this->range_end, false, ReporticoApp::getConfig("prep_dateformat"));
+        $this->range_end = ReporticoLocale::parseDate($this->range_end, false, ReporticoApp::getConfig("prep_dateformat"));
         $text .= $this->formatDateValue($this->query_name . '_TODATE', $this->range_end, ReporticoApp::getConfig("prep_dateformat"));
         return $text;
     }
@@ -627,7 +627,7 @@ class CriteriaColumn extends QueryColumn
             return $text;
         }
 
-        $in_label = getLocaleDateFormat($in_label);
+        $in_label = ReporticoLocale::getLocaleDateFormat($in_label);
 
         $dy_tag = $in_tag . "_DAY";
         $mn_tag = $in_tag . "_MONTH";
@@ -673,8 +673,8 @@ class CriteriaColumn extends QueryColumn
                 $dyinput .= '</SELECT>';
 
                 $mtinput = '<SELECT name="' . $mn_tag . '">';
-                $cal = array(swTranslate('January'), swTranslate('February'), swTranslate('March'), swTranslate('April'), swTranslate('May'), swTranslate('June'),
-                    swTranslate('July'), swTranslate('August'), swTranslate('September'), swTranslate('October'), swTranslate('November'), swTranslate('December'));
+                $cal = array(ReporticoLang::translate('January'), ReporticoLang::translate('February'), ReporticoLang::translate('March'), ReporticoLang::translate('April'), ReporticoLang::translate('May'), ReporticoLang::translate('June'),
+                    ReporticoLang::translate('July'), ReporticoLang::translate('August'), ReporticoLang::translate('September'), ReporticoLang::translate('October'), ReporticoLang::translate('November'), ReporticoLang::translate('December'));
                 for ($ct = 0; $ct <= 11; $ct++) {
                     $checked = "";
                     if ($ct == $mn - 1) {
@@ -944,11 +944,11 @@ class CriteriaColumn extends QueryColumn
                         break;
 
                     case "RADIO":
-                        $text .= '<INPUT type="radio" name="' . $tag_pref . $this->query_name . '" value="' . $ret . '" ' . $checked . '>' . swTranslate($lab) . '<BR>';
+                        $text .= '<INPUT type="radio" name="' . $tag_pref . $this->query_name . '" value="' . $ret . '" ' . $checked . '>' . ReporticoLang::translate($lab) . '<BR>';
                         break;
 
                     case "CHECKBOX":
-                        $text .= '<INPUT type="checkbox" name="' . $tag_pref . $this->query_name . '[]" value="' . $ret . '" ' . $checked . '>' . swTranslate($lab) . '<BR>';
+                        $text .= '<INPUT type="checkbox" name="' . $tag_pref . $this->query_name . '[]" value="' . $ret . '" ' . $checked . '>' . ReporticoLang::translate($lab) . '<BR>';
                         break;
 
                     default:
@@ -1799,7 +1799,7 @@ class CriteriaColumn extends QueryColumn
             case "DATE":
                 $cls = "";
                 if ($this->column_value) {
-                    $val1 = parseDate($this->column_value, false, ReporticoApp::getConfig("prep_dateformat"));
+                    $val1 = ReporticoLocale::parseDate($this->column_value, false, ReporticoApp::getConfig("prep_dateformat"));
                     $val1 = convertYMDtoLocal($val1, ReporticoApp::getConfig("prep_dateformat"), ReporticoApp::getConfig("db_dateformat"));
                     if ($lhs) {
                         if ($this->table_name && $this->column_name) {
@@ -1830,8 +1830,8 @@ class CriteriaColumn extends QueryColumn
                     // If daterange value here is a range in a single value then its been
                     // run directly from command line and needs splitting up using "-"
 
-                    $val1 = parseDate($this->column_value, false, ReporticoApp::getConfig("prep_dateformat"));
-                    $val2 = parseDate($this->column_value2, false, ReporticoApp::getConfig("prep_dateformat"));
+                    $val1 = ReporticoLocale::parseDate($this->column_value, false, ReporticoApp::getConfig("prep_dateformat"));
+                    $val2 = ReporticoLocale::parseDate($this->column_value2, false, ReporticoApp::getConfig("prep_dateformat"));
                     $val1 = convertYMDtoLocal($val1, ReporticoApp::getConfig("prep_dateformat"), ReporticoApp::getConfig("db_dateformat"));
                     $val2 = convertYMDtoLocal($val2, ReporticoApp::getConfig("prep_dateformat"), ReporticoApp::getConfig("db_dateformat"));
                     if ($lhs) {
@@ -2008,7 +2008,7 @@ class CriteriaColumn extends QueryColumn
     public function &expand()
     {
         $text = "";
-        $text .= templateXlate("Search") . " ";
+        $text .= ReporticoLang::templateXlate("Search") . " ";
         $text .= $this->deriveAttribute("column_title", $this->query_name);
         $text .= " :<br>";
 
@@ -2030,7 +2030,7 @@ class CriteriaColumn extends QueryColumn
 
         $tag .= ' value="' . $expval . '">';
         $text .= $tag;
-        $text .= '<input class="btn btn-sm btn-default swPrpSubmit" type="submit" name="EXPANDSEARCH_' . $this->query_name . '" value="' . templateXlate("Search") . '">';
+        $text .= '<input class="btn btn-sm btn-default swPrpSubmit" type="submit" name="EXPANDSEARCH_' . $this->query_name . '" value="' . ReporticoLang::templateXlate("Search") . '">';
         $text .= "<br>";
 
         $type = $this->criteria_type;

@@ -431,7 +431,7 @@ class XmlWriter
     {
 
         if (!$filename) {
-            trigger_error(templateXlate("UNABLE_TO_REMOVE") . templateXlate("SPECIFYXML"), E_USER_ERROR);
+            trigger_error(ReporticoLang::templateXlate("UNABLE_TO_REMOVE") . templateXlate("SPECIFYXML"), E_USER_ERROR);
             return false;
         }
 
@@ -447,14 +447,14 @@ class XmlWriter
         if ($projdir && is_dir($projdir)) {
             $fn = $projdir . "/" . $filename;
             if (!is_file($fn)) {
-                trigger_error(templateXlate("UNABLE_TO_REMOVE") . " $filename  - " . templateXlate("NOFILE"), E_USER_ERROR);
+                trigger_error(ReporticoLang::templateXlate("UNABLE_TO_REMOVE") . " $filename  - " . templateXlate("NOFILE"), E_USER_ERROR);
             } else if (!is_writeable($fn)) {
-                trigger_error(templateXlate("UNABLE_TO_REMOVE") . " $filename  - " . templateXlate("NOWRITE"), E_USER_ERROR);
+                trigger_error(ReporticoLang::templateXlate("UNABLE_TO_REMOVE") . " $filename  - " . templateXlate("NOWRITE"), E_USER_ERROR);
             } else {
                 if (!unlink($fn)) {
-                    trigger_error(templateXlate("UNABLE_TO_REMOVE") . " $filename  - " . templateXlate("NOWRITE"), E_USER_ERROR);
+                    trigger_error(ReporticoLang::templateXlate("UNABLE_TO_REMOVE") . " $filename  - " . templateXlate("NOWRITE"), E_USER_ERROR);
                 } else {
-                    handleDebug(templateXlate("REPORTFILE") . " $filename " . templateXlate("DELETEOKACT"), 0);
+                    handleDebug(ReporticoLang::templateXlate("REPORTFILE") . " $filename " . templateXlate("DELETEOKACT"), 0);
                 }
 
             }
@@ -472,7 +472,7 @@ class XmlWriter
         global $g_project;
 
         if (!$filename) {
-            trigger_error(templateXlate("UNABLE_TO_SAVE") . templateXlate("SPECIFYXML"), E_USER_ERROR);
+            trigger_error(ReporticoLang::templateXlate("UNABLE_TO_SAVE") . templateXlate("SPECIFYXML"), E_USER_ERROR);
             return false;
         }
 
