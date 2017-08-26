@@ -456,14 +456,14 @@ class XmlReader
                 }
 
                 if ($readfile && !is_file($readfile)) {
-                    findFileToInclude($readfile, $readfile);
+                    ReporticoUtility::findFileToInclude($readfile, $readfile);
                 }
 
                 if ($readfile && is_file($readfile)) {
                     $readfile = $readfile;
                 } else {
                     if (!is_file($adminfile)) {
-                        findFileToInclude($adminfile, $readfile);
+                        ReporticoUtility::findFileToInclude($adminfile, $readfile);
                         if (is_file($readfile)) {
                             $readfile = $readfile;
                         }
@@ -856,7 +856,7 @@ class XmlReader
                 break;
 
             case "assg":
-                $q = loadExistingReport($this->query->reportlink_report, $this->query->projects_folder);
+                $q = ReporticoUtility::loadExistingReport($this->query->reportlink_report, $this->query->projects_folder);
                 foreach ($q->assignment as $k => $v) {
                     if (strval($this->query->reportlink_report_item) == "ALLITEMS" || $this->query->reportlink_report_item == $k) {
                         $found = false;
@@ -877,7 +877,7 @@ class XmlReader
                 break;
 
             case "pghd":
-                $q = loadExistingReport($this->query->reportlink_report, $this->query->projects_folder);
+                $q = ReporticoUtility::loadExistingReport($this->query->reportlink_report, $this->query->projects_folder);
                 foreach ($q->pageHeaders as $k => $v) {
                     if (strval($this->query->reportlink_report_item) == "ALLITEMS" || $this->query->reportlink_report_item == $k) {
                         $this->query->pageHeaders[] = $v;
@@ -897,7 +897,7 @@ class XmlReader
                 break;
 
             case "pgft":
-                $q = loadExistingReport($this->query->reportlink_report, $this->query->projects_folder);
+                $q = ReporticoUtility::loadExistingReport($this->query->reportlink_report, $this->query->projects_folder);
                 foreach ($q->pageFooters as $k => $v) {
                     if (strval($this->query->reportlink_report_item) == "ALLITEMS" || $this->query->reportlink_report_item == $k) {
                         $this->query->pageFooters[] = $v;
@@ -925,11 +925,11 @@ class XmlReader
 
             case "psql":
                 $qr = &$anal["quer"];
-                $qr->add_pre_sql("-- " . ReporticoLang::templateXlate("ENTERSQL"));
+                $qr->addPreSql("-- " . ReporticoLang::templateXlate("ENTERSQL"));
                 break;
 
             case "crit":
-                $q = loadExistingReport($this->query->reportlink_report, $this->query->projects_folder);
+                $q = ReporticoUtility::loadExistingReport($this->query->reportlink_report, $this->query->projects_folder);
                 foreach ($q->lookup_queries as $k => $v) {
                     if ($this->query->reportlink_report_item == "ALLITEMS" ||
                         $this->query->reportlink_report_item == $v->query_name) {
@@ -1045,7 +1045,7 @@ class XmlReader
 
             case "psql":
                 $qr = &$anal["quer"];
-                $qr->add_pre_sql("-- " . ReporticoLang::templateXlate("ENTERSQL"));
+                $qr->addPreSql("-- " . ReporticoLang::templateXlate("ENTERSQL"));
                 break;
 
             case "crit":
@@ -1739,7 +1739,7 @@ class XmlReader
 
                 $updateitem = &$anal["item"];
 
-                if ($assignname = keyValueInArray($updates, "AssignNameNew")) {
+                if ($assignname = ReporticoUtility::keyValueInArray($updates, "AssignNameNew")) {
                     $found = false;
                     foreach ($anal["quer"]->columns as $querycol) {
                         if ($querycol->query_name == $assignname) {
@@ -2348,8 +2348,8 @@ class XmlReader
                 $text .= '<img class="swMntHelpImage" alt="tab" src="' . $helpimg . '">';
                 $text .= '</a>&nbsp;';
             } else {
-                $helpimg = findBestUrlInIncludePath("images/help.png");
-                $dr = getReporticoUrlPath();
+                $helpimg = ReporticoUtility::findBestUrlInIncludePath("images/help.png");
+                $dr = ReporticoUtility::getReporticoUrlPath();
                 $text .= '<a target="_blank" href="' . $this->helpPath($helppage, $striptag) . '">';
                 $text .= '<img class="swMntHelpImage" alt="tab" src="' . $dr . $helpimg . '">';
                 $text .= '</a>&nbsp;';
@@ -2376,7 +2376,7 @@ class XmlReader
 
         if ($this->query->reportlink_report) {
             // Draw report criteria items we can link to
-            $q = loadExistingReport($this->query->reportlink_report, $this->query->projects_folder);
+            $q = ReporticoUtility::loadExistingReport($this->query->reportlink_report, $this->query->projects_folder);
             if (!$q) {
                 trigger_error(ReporticoLang::templateXlate("NOOPENLINK") . $this->query->reportlink_report, E_USER_NOTICE);
             } else if (!$q->lookup_queries || count($q->lookup_queries) == 0) {
@@ -2476,7 +2476,7 @@ class XmlReader
         if (is_dir($this->query->reports_path)) {
             $testpath = $this->query->reports_path;
         } else {
-            $testpath = findBestLocationInIncludePath($this->query->reports_path);
+            $testpath = ReporticoUtility::findBestLocationInIncludePath($this->query->reports_path);
         }
 
         if (is_dir($testpath)) {
@@ -2584,7 +2584,7 @@ class XmlReader
         $in_value = ReporticoLang::templateXlate($in_value);
 
         // Only draw horizontal tab buttons if not mini maintain or they are relevant to tag
-        if ($partialMaintain = getRequestItem("partialMaintain", false)) {
+        if ($partialMaintain = ReporticoUtility::getRequestItem("partialMaintain", false)) {
             if (preg_match("/_ANY$/", $partialMaintain)) {
                 $match1 = preg_replace("/_ANY/", "", $partialMaintain);
                 $match2 = substr($in_tag, 0, strlen($match1));
@@ -2747,7 +2747,7 @@ class XmlReader
                     case "CogModule":
                         $this->id = "main";
                         $text .= '<TABLE class="swMntMainBox">';
-                        if (getRequestItem("partialMaintain", false)) {
+                        if (ReporticoUtility::getRequestItem("partialMaintain", false)) {
                             break;
                         }
 
@@ -3784,7 +3784,7 @@ class XmlReader
         $text = "";
         $striptag = preg_replace("/ .*/", "", $tag);
         $showtag = preg_replace("/ /", "_", $tag);
-        $partialMaintain = getRequestItem("partialMaintain", false);
+        $partialMaintain = ReporticoUtility::getRequestItem("partialMaintain", false);
         if ($partialMaintain) {
             $x = $this->id . "_" . $showtag;
             if ($partialMaintain != $x && !preg_match("/_ANY/", $partialMaintain)) {
@@ -3868,8 +3868,8 @@ class XmlReader
                 $text .= '<img class="swMntHelpImage" alt="tab" src="' . $helpimg . '">';
                 $text .= '</a>&nbsp;';
             } else {
-                $helpimg = findBestUrlInIncludePath("images/help.png");
-                $dr = getReporticoUrlPath();
+                $helpimg = ReporticoUtility::findBestUrlInIncludePath("images/help.png");
+                $dr = ReporticoUtility::getReporticoUrlPath();
                 $text .= '<a target="_blank" href="' . $this->helpPath($this->id, $striptag) . '">';
                 $text .= '<img class="swMntHelpImage" alt="tab" src="' . $dr . $helpimg . '">';
                 $text .= '</a>&nbsp;';
@@ -3989,7 +3989,7 @@ class XmlReader
                 if (is_dir($this->query->reports_path)) {
                     $testpath = $this->query->reports_path;
                 } else {
-                    $testpath = findBestLocationInIncludePath($this->query->reports_path);
+                    $testpath = ReporticoUtility::findBestLocationInIncludePath($this->query->reports_path);
                 }
 
                 echo $testpath . "!!";
@@ -4024,7 +4024,7 @@ class XmlReader
                 if (is_dir($fontdir)) {
                     $testpath = $fontdir;
                 } else {
-                    $testpath = findBestLocationInIncludePath($fontdir);
+                    $testpath = ReporticoUtility::findBestLocationInIncludePath($fontdir);
                 }
 
                 if (is_dir($testpath)) {
@@ -4196,7 +4196,7 @@ class XmlReader
 
         $text .= '</TD>';
 
-        if ($partial = getRequestItem("partialMaintain", false)) {
+        if ($partial = ReporticoUtility::getRequestItem("partialMaintain", false)) {
             $arr = explode("_", $partial);
             if (count($arr) > 1) {
                 $partial = $arr[1];
@@ -4803,7 +4803,7 @@ return $text;
             // Generate Query Assignments
             if (($pq = &$this->getArrayElement($qu, "PreSQLS"))) {
                 foreach ($pq as $col) {
-                    $this->query->add_pre_sql($col["SQLText"]);
+                    $this->query->addPreSql($col["SQLText"]);
                 }
             }
 

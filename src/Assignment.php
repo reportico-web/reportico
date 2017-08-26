@@ -117,7 +117,7 @@ class Assignment extends ReporticoObject
                     $label = "";
                     if (array_key_exists($crit, $in_query->lookup_queries)) {
                         $clause = $in_query->lookup_queries[$crit]->criteriaSummaryText($label, $clause);
-                    } else if ($cl = getQueryColumn($crit, $this->query->columns)) {
+                    } else if ($cl = ReporticoUtility::getQueryColumn($crit, $this->query->columns)) {
                         if ($prev_col_value) {
                             $clause = $cl->old_column_value;
                         } else {
@@ -186,7 +186,7 @@ class Assignment extends ReporticoObject
                         if ($execute_mode == "MAINTAIN" && !$clause) {
                             $clause = "'DUMMY'";
                         }
-                    } else if ($cl = getQueryColumn($crit, $in_query->columns)) {
+                    } else if ($cl = ReporticoUtility::getQueryColumn($crit, $in_query->columns)) {
                         if ($prev_col_value) {
                             $clause = $cl->old_column_value;
                         } else {
@@ -355,7 +355,7 @@ class Assignment extends ReporticoObject
 
         $out_string = preg_replace('/{([^}]*)}/',
             //'$this->columns[\'\1\']->column_value',
-            '$this->getQueryColumnValue(\'\1\', $this->columns)',
+            '$this->ReporticoUtility::getQueryColumnValue(\'\1\', $this->columns)',
             $out_string);
 
         return $out_string;

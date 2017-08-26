@@ -202,7 +202,7 @@ class ChartJpgraph
 				switch ( $v["datatype"] )
 				{
 					case "hhmmss":
-						$this->plot[$k]["data"][] = hhmmssToSeconds($in_val);
+						$this->plot[$k]["data"][] = ReporticoUtility::hhmmssToSeconds($in_val);
 						break;
 
 					default:
@@ -291,8 +291,8 @@ class ChartJpgraph
         if ( ReporticoApp::getConfig("graph_engine") == "PCHART" )
 		    $dyngraph = "dyngraph_pchart.php";
 
-        $dr = getReporticoUrlPath();
-        $dyngraph = $dr."/".findBestUrlInIncludePath( $dyngraph );
+        $dr = ReporticoUtility::getReporticoUrlPath();
+        $dyngraph = $dr."/".ReporticoUtility::findBestUrlInIncludePath( $dyngraph );
         if ( $this->reportico->framework_parent )
         {
             $dyngraph = "";

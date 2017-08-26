@@ -147,7 +147,7 @@ class ReportCsv extends Report
         foreach ($this->query->groups as $name => $group) {
             if (count($group->headers) > 0) {
                 foreach ($group->headers as $gphk => $col) {
-                    $qn = getQueryColumn($col["GroupHeaderColumn"]->query_name, $this->query->columns);
+                    $qn = ReporticoUtility::getQueryColumn($col["GroupHeaderColumn"]->query_name, $this->query->columns);
                     $padstring = $qn->column_value;
                     $this->text .= "\"" . $padstring . "\"";
                     $this->text .= ",";
@@ -202,7 +202,7 @@ class ReportCsv extends Report
         foreach ($this->query->groups as $name => $group) {
             for ($i = 0; $i < count($group->headers); $i++) {
                 $col = &$group->headers[$i]["GroupHeaderColumn"];
-                $qn = getQueryColumn($col->query_name, $this->query->columns);
+                $qn = ReporticoUtility::getQueryColumn($col->query_name, $this->query->columns);
                 $tempstring = str_replace("_", " ", $col->query_name);
                 $tempstring = ucwords(strtolower($tempstring));
                 $this->text .= "\"" . ReporticoLang::translate($col->deriveAttribute("column_title", $tempstring)) . "\"";
@@ -223,7 +223,7 @@ class ReportCsv extends Report
         // the detail.
         return;
 
-        $qn = getQueryColumn($col->query_name, $this->query->columns);
+        $qn = ReporticoUtility::getQueryColumn($col->query_name, $this->query->columns);
         $padstring = $qn->column_value;
         $tempstring = str_replace("_", " ", $col->query_name);
         $tempstring = ucwords(strtolower($tempstring));

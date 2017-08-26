@@ -129,7 +129,7 @@ class SqlParser
         // Delete existing order columns
         $in_query->order_set = array();
         foreach ($this->orders as $col) {
-            if (($qc = getQueryColumn($col["name"], $in_query->columns))) {
+            if (($qc = ReporticoUtility::getQueryColumn($col["name"], $in_query->columns))) {
                 $in_query->create_order_column($col["name"], $col["type"]);
             }
 

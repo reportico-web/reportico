@@ -468,7 +468,7 @@ class DesignPanel
 
                 $this->smarty->assign('OUTPUT_STYLES', $noutput_styles);
 
-                $attach = getRequestItem("target_attachment", "1", $this->query->first_criteria_selection);
+                $attach = ReporticoUtility::getRequestItem("target_attachment", "1", $this->query->first_criteria_selection);
                 if ($attach) {
                     $attach = "checked";
                 }
@@ -484,7 +484,7 @@ class DesignPanel
 
                 if ($this->query->allow_debug && ReporticoApp::getConfig("allow_debug", true)) {
                     $this->smarty->assign("OUTPUT_SHOW_DEBUG", true);
-                    $debug_mode = getRequestItem("debug_mode", "0", $this->query->first_criteria_selection);
+                    $debug_mode = ReporticoUtility::getRequestItem("debug_mode", "0", $this->query->first_criteria_selection);
                     $this->smarty->assign("DEBUG_NONE", "");
                     $this->smarty->assign("DEBUG_LOW", "");
                     $this->smarty->assign("DEBUG_MEDIUM", "");
@@ -519,7 +519,7 @@ class DesignPanel
                         $checked = "checked";
                     }
 
-                    if (!getRequestItem("target_show_graph") && !$this->query->first_criteria_selection) {
+                    if (!ReporticoUtility::getRequestItem("target_show_graph") && !$this->query->first_criteria_selection) {
                         $checked = "";
                     }
 
@@ -676,7 +676,7 @@ class DesignPanel
                 break;
 
             case "ADMIN":
-                $this->smarty->assign('DOCDIR', findBestLocationInIncludePath("doc"));
+                $this->smarty->assign('DOCDIR', ReporticoUtility::findBestLocationInIncludePath("doc"));
                 $this->smarty->assign('PROJECT_ITEMS', $this->query->projectitems);
                 break;
 

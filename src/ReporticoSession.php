@@ -59,7 +59,7 @@ class ReporticoSession
             }
 
             if (isset($_REQUEST['clear_session']) && isset($_SESSION)) {
-                initializeReporticoNamespace(self::reporticoNamespace());
+                self::initializeReporticoNamespace(self::reporticoNamespace());
             }
             return;
         }
@@ -81,7 +81,7 @@ class ReporticoSession
             $session_name = session_id();
 
             if (isset($_REQUEST['clear_session'])) {
-                initializeReporticoNamespace(self::reporticoNamespace());
+                self::initializeReporticoNamespace(self::reporticoNamespace());
             }
         } else {
             if (session_id() != $session_name) {

@@ -157,12 +157,12 @@ class Report extends ReporticoObject
     public function start()
     {
         $this->body_display = "show";
-        if (getRequestItem("hide_output_text")) {
+        if (ReporticoUtility::getRequestItem("hide_output_text")) {
             $this->body_display = false;
         }
 
         $this->graph_display = "show";
-        if (getRequestItem("hide_output_graph")) {
+        if (ReporticoUtility::getRequestItem("hide_output_graph")) {
             $this->graph_display = false;
         }
 
@@ -260,46 +260,46 @@ class Report extends ReporticoObject
                 $label = $crit->deriveAttribute("column_title", $crit->query_name);
                 $value = $crit->criteria_summary;
             } else {
-                if (getRequestItem($name . "_FROMDATE_DAY", "")) {
+                if (ReporticoUtility::getRequestItem($name . "_FROMDATE_DAY", "")) {
                     $label = $crit->deriveAttribute("column_title", $crit->query_name);
                     $label = ReporticoLang::translate($label);
-                    $mth = getRequestItem($name . "_FROMDATE_MONTH", "") + 1;
-                    $value = getRequestItem($name . "_FROMDATE_DAY", "") . "/" .
+                    $mth = ReporticoUtility::getRequestItem($name . "_FROMDATE_MONTH", "") + 1;
+                    $value = ReporticoUtility::getRequestItem($name . "_FROMDATE_DAY", "") . "/" .
                     $mth . "/" .
-                    getRequestItem($name . "_FROMDATE_YEAR", "");
-                    if (getRequestItem($name . "_TODATE_DAY", "")) {
-                        $mth = getRequestItem($name . "_TODATE_MONTH", "") + 1;
+                    ReporticoUtility::getRequestItem($name . "_FROMDATE_YEAR", "");
+                    if (ReporticoUtility::getRequestItem($name . "_TODATE_DAY", "")) {
+                        $mth = ReporticoUtility::getRequestItem($name . "_TODATE_MONTH", "") + 1;
                         $value .= "-";
-                        $value .= getRequestItem($name . "_TODATE_DAY", "") . "/" .
+                        $value .= ReporticoUtility::getRequestItem($name . "_TODATE_DAY", "") . "/" .
                         $mth . "/" .
-                        getRequestItem($name . "_TODATE_YEAR", "");
+                        ReporticoUtility::getRequestItem($name . "_TODATE_YEAR", "");
                     }
-                } else if (getRequestItem("MANUAL_" . $name . "_FROMDATE", "")) {
+                } else if (ReporticoUtility::getRequestItem("MANUAL_" . $name . "_FROMDATE", "")) {
                     $label = $crit->deriveAttribute("column_title", $crit->query_name);
                     $label = ReporticoLang::translate($label);
-                    $value = getRequestItem("MANUAL_" . $name . "_FROMDATE", "");
-                    if (getRequestItem("MANUAL_" . $name . "_TODATE", "")) {
+                    $value = ReporticoUtility::getRequestItem("MANUAL_" . $name . "_FROMDATE", "");
+                    if (ReporticoUtility::getRequestItem("MANUAL_" . $name . "_TODATE", "")) {
                         $value .= "-";
-                        $value .= getRequestItem("MANUAL_" . $name . "_TODATE");
+                        $value .= ReporticoUtility::getRequestItem("MANUAL_" . $name . "_TODATE");
                     }
 
-                } else if (getRequestItem("HIDDEN_" . $name . "_FROMDATE", "")) {
+                } else if (ReporticoUtility::getRequestItem("HIDDEN_" . $name . "_FROMDATE", "")) {
                     $label = $crit->deriveAttribute("column_title", $crit->query_name);
                     $label = ReporticoLang::translate($label);
-                    $value = getRequestItem("HIDDEN_" . $name . "_FROMDATE", "");
-                    if (getRequestItem("HIDDEN_" . $name . "_TODATE", "")) {
+                    $value = ReporticoUtility::getRequestItem("HIDDEN_" . $name . "_FROMDATE", "");
+                    if (ReporticoUtility::getRequestItem("HIDDEN_" . $name . "_TODATE", "")) {
                         $value .= "-";
-                        $value .= getRequestItem("HIDDEN_" . $name . "_TODATE");
+                        $value .= ReporticoUtility::getRequestItem("HIDDEN_" . $name . "_TODATE");
                     }
 
-                } else if (getRequestItem("EXPANDED_" . $name, "")) {
+                } else if (ReporticoUtility::getRequestItem("EXPANDED_" . $name, "")) {
                     $label = $crit->deriveAttribute("column_title", $crit->query_name);
                     $label = ReporticoLang::translate($label);
-                    $value .= implode(getRequestItem("EXPANDED_" . $name, ""), ",");
-                } else if (getRequestItem("MANUAL_" . $name, "")) {
+                    $value .= implode(ReporticoUtility::getRequestItem("EXPANDED_" . $name, ""), ",");
+                } else if (ReporticoUtility::getRequestItem("MANUAL_" . $name, "")) {
                     $label = $crit->deriveAttribute("column_title", $crit->query_name);
                     $label = ReporticoLang::translate($label);
-                    $value .= getRequestItem("MANUAL_" . $name, "");
+                    $value .= ReporticoUtility::getRequestItem("MANUAL_" . $name, "");
 
                 }
             }
@@ -318,46 +318,46 @@ class Report extends ReporticoObject
                     $label = $crit->deriveAttribute("column_title", $crit->query_name);
                     $value = $crit->criteria_summary;
                 } else {
-                    if (getRequestItem($name . "_FROMDATE_DAY", "")) {
+                    if (ReporticoUtility::getRequestItem($name . "_FROMDATE_DAY", "")) {
                         $label = $crit->deriveAttribute("column_title", $crit->query_name);
                         $label = ReporticoLang::translate($label);
-                        $mth = getRequestItem($name . "_FROMDATE_MONTH", "") + 1;
-                        $value = getRequestItem($name . "_FROMDATE_DAY", "") . "/" .
+                        $mth = ReporticoUtility::getRequestItem($name . "_FROMDATE_MONTH", "") + 1;
+                        $value = ReporticoUtility::getRequestItem($name . "_FROMDATE_DAY", "") . "/" .
                         $mth . "/" .
-                        getRequestItem($name . "_FROMDATE_YEAR", "");
-                        if (getRequestItem($name . "_TODATE_DAY", "")) {
-                            $mth = getRequestItem($name . "_TODATE_MONTH", "") + 1;
+                        ReporticoUtility::getRequestItem($name . "_FROMDATE_YEAR", "");
+                        if (ReporticoUtility::getRequestItem($name . "_TODATE_DAY", "")) {
+                            $mth = ReporticoUtility::getRequestItem($name . "_TODATE_MONTH", "") + 1;
                             $value .= "-";
-                            $value .= getRequestItem($name . "_TODATE_DAY", "") . "/" .
+                            $value .= ReporticoUtility::getRequestItem($name . "_TODATE_DAY", "") . "/" .
                             $mth . "/" .
-                            getRequestItem($name . "_TODATE_YEAR", "");
+                            ReporticoUtility::getRequestItem($name . "_TODATE_YEAR", "");
                         }
-                    } else if (getRequestItem("MANUAL_" . $name . "_FROMDATE", "")) {
+                    } else if (ReporticoUtility::getRequestItem("MANUAL_" . $name . "_FROMDATE", "")) {
                         $label = $crit->deriveAttribute("column_title", $crit->query_name);
                         $label = ReporticoLang::translate($label);
-                        $value = getRequestItem("MANUAL_" . $name . "_FROMDATE", "");
-                        if (getRequestItem("MANUAL_" . $name . "_TODATE", "")) {
+                        $value = ReporticoUtility::getRequestItem("MANUAL_" . $name . "_FROMDATE", "");
+                        if (ReporticoUtility::getRequestItem("MANUAL_" . $name . "_TODATE", "")) {
                             $value .= "-";
-                            $value .= getRequestItem("MANUAL_" . $name . "_TODATE");
+                            $value .= ReporticoUtility::getRequestItem("MANUAL_" . $name . "_TODATE");
                         }
 
-                    } else if (getRequestItem("HIDDEN_" . $name . "_FROMDATE", "")) {
+                    } else if (ReporticoUtility::getRequestItem("HIDDEN_" . $name . "_FROMDATE", "")) {
                         $label = $crit->deriveAttribute("column_title", $crit->query_name);
                         $label = ReporticoLang::translate($label);
-                        $value = getRequestItem("HIDDEN_" . $name . "_FROMDATE", "");
-                        if (getRequestItem("HIDDEN_" . $name . "_TODATE", "")) {
+                        $value = ReporticoUtility::getRequestItem("HIDDEN_" . $name . "_FROMDATE", "");
+                        if (ReporticoUtility::getRequestItem("HIDDEN_" . $name . "_TODATE", "")) {
                             $value .= "-";
-                            $value .= getRequestItem("HIDDEN_" . $name . "_TODATE");
+                            $value .= ReporticoUtility::getRequestItem("HIDDEN_" . $name . "_TODATE");
                         }
 
-                    } else if (getRequestItem("EXPANDED_" . $name, "")) {
+                    } else if (ReporticoUtility::getRequestItem("EXPANDED_" . $name, "")) {
                         $label = $crit->deriveAttribute("column_title", $crit->query_name);
                         $label = ReporticoLang::translate($label);
-                        $value .= implode(getRequestItem("EXPANDED_" . $name, ""), ",");
-                    } else if (getRequestItem("MANUAL_" . $name, "")) {
+                        $value .= implode(ReporticoUtility::getRequestItem("EXPANDED_" . $name, ""), ",");
+                    } else if (ReporticoUtility::getRequestItem("MANUAL_" . $name, "")) {
                         $label = $crit->deriveAttribute("column_title", $crit->query_name);
                         $label = ReporticoLang::translate($label);
-                        $value .= getRequestItem("MANUAL_" . $name, "");
+                        $value .= ReporticoUtility::getRequestItem("MANUAL_" . $name, "");
 
                     }
                 }
@@ -564,11 +564,11 @@ class Report extends ReporticoObject
 
             foreach ($gr->plot as $k1 => $v1) {
                 $pl = &$gr->plot[$k1];
-                $col = getQueryColumn($pl["name"], $this->query->columns);
+                $col = ReporticoUtility::getQueryColumn($pl["name"], $this->query->columns);
                 $gr->addPlotValue($pl["name"], $k1, $col->column_value);
             }
             if ($gr->xlabel_column) {
-                $col1 = getQueryColumn($gr->xlabel_column, $this->query->columns);
+                $col1 = ReporticoUtility::getQueryColumn($gr->xlabel_column, $this->query->columns);
                 $gr->addXlabel($col1->column_value);
             }
         }
@@ -785,7 +785,7 @@ class Report extends ReporticoObject
 
                     if (function_exists("imagecreatefromstring") &&
                         $this->graph_display &&
-                        //getCheckboxValue("target_show_graph"))
+                        //ReporticoUtility::getCheckboxValue("target_show_graph"))
                         ReporticoSession::getReporticoSessionParam("target_show_graph")) {
                         if ($graphs = &$this->query->getGraphByName($group->group_name)) {
                             foreach ($graphs as $graph) {

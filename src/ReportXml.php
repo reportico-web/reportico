@@ -134,7 +134,7 @@ class ReportXml extends Report
         $this->results["data"][$linekey] = array();
 
         if ($this->line_ct == 0) {
-            $qn = getQueryColumn("golap", $this->columns);
+            $qn = ReporticoUtility::getQueryColumn("golap", $this->columns);
             if ($qn) {
                 $arr = explode(",", $qn->column_value);
                 foreach ($arr as $k => $v) {
@@ -145,7 +145,7 @@ class ReportXml extends Report
         }
 
         foreach ($this->query->display_order_set["column"] as $col) {
-            $qn = getQueryColumn($col->query_name, $this->columns);
+            $qn = ReporticoUtility::getQueryColumn($col->query_name, $this->columns);
             $coltitle = $col->deriveAttribute("column_title", $col->query_name);
             $coltitle = str_replace("_", " ", $coltitle);
             $coltitle = ucwords(strtolower($coltitle));

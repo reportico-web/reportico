@@ -41,7 +41,7 @@ if (function_exists("imagecreatefromstring")) {
     include_once "pChart/pData.class";
     include_once "pChart/pCache.class";
 
-    $fontpath = findBestLocationInIncludePath("pChart/fonts");
+    $fontpath = ReporticoUtility::findBestLocationInIncludePath("pChart/fonts");
     define("PCHARTFONTS_DIR", $fontpath . "/");
 } else {
     echo "GD not installed ( imagecreatefromstring function does not exist )";
@@ -207,7 +207,7 @@ class ChartPchart
             if ($v["name"] == $in_query && $v["number"] == $plot_no) {
                 switch ($v["datatype"]) {
                     case "hhmmss":
-                        $this->plot[$k]["data"][] = hhmmssToSeconds($in_val);
+                        $this->plot[$k]["data"][] = ReporticoUtility::hhmmssToSeconds($in_val);
                         break;
 
                     default:
@@ -306,8 +306,8 @@ class ChartPchart
             $dyngraph = "dyngraph_pchart.php";
         }
 
-        $dr = getReporticoUrlPath();
-        $dyngraph = $dr . "/" . findBestUrlInIncludePath($dyngraph);
+        $dr = ReporticoUtility::getReporticoUrlPath();
+        $dyngraph = $dr . "/" . ReporticoUtility::findBestUrlInIncludePath($dyngraph);
 
         if ($this->reportico->framework_parent) {
             $dyngraph = "";
@@ -641,7 +641,7 @@ $graph->SetGridDepth(DEPTH_FRONT);
         $graphImage->Antialias = true;
 
 // Add gradient fill from chosen background color to white
-        $startgradient = htmltorgb("#ffffff");
+        $startgradient = ReporticoUtility::htmltorgb("#ffffff");
 //$graphImage->drawGradientArea(0,0,$width,$height,DIRECTION_VERTICAL,array(
         //"StartR"=>$startgradient[0], "StartG"=>$startgradient[1], "StartB"=>$startgradient[2],
         //"EndR"=>$color[0], "EndG"=>$color[1], "EndB"=>$color[2],"Alpha"=>100));
@@ -681,7 +681,7 @@ $graph->SetGridDepth(DEPTH_FRONT);
 
             // Set plot colors
             if ($v["linecolor"]) {
-                $graphImage->Palette[$k] = htmltorgbPchart($v["linecolor"]);
+                $graphImage->Palette[$k] = ReporticoUtility::htmltorgbPchart($v["linecolor"]);
             }
 
             $url .= "&plotlinecolor$k=" . $v["linecolor"];

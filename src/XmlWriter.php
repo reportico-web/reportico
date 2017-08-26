@@ -441,7 +441,7 @@ class XmlWriter
 
         $projdir = $this->query->projects_folder . "/" . ReporticoApp::getConfig("project");
         if (!is_file($projdir)) {
-            findFileToInclude($projdir, $projdir);
+            ReporticoUtility::findFileToInclude($projdir, $projdir);
         }
 
         if ($projdir && is_dir($projdir)) {
@@ -482,7 +482,7 @@ class XmlWriter
 
         $projdir = $this->query->projects_folder . "/" . ReporticoApp::getConfig("project");
         if (!is_file($projdir)) {
-            findFileToInclude($projdir, $projdir);
+            ReporticoUtility::findFileToInclude($projdir, $projdir);
         }
 
         if ($projdir && is_dir($projdir)) {

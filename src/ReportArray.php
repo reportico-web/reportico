@@ -80,7 +80,7 @@ class ReportArray extends Report
         $record = array();
 
         foreach ($this->query->display_order_set["column"] as $col) {
-            $qn = getQueryColumn($col->query_name, $this->columns);
+            $qn = ReporticoUtility::getQueryColumn($col->query_name, $this->columns);
             $this->results[$qn->query_name][] = $qn->column_value;
             $ct = count($this->results[$qn->query_name]);
         }

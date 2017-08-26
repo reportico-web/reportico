@@ -207,7 +207,7 @@ class reportico_graph
             if ($v["name"] == $in_query && $v["number"] == $plot_no) {
                 switch ($v["datatype"]) {
                     case "hhmmss":
-                        $this->plot[$k]["data"][] = hhmmssToSeconds($in_val);
+                        $this->plot[$k]["data"][] = ReporticoUtility::hhmmssToSeconds($in_val);
                         break;
 
                     default:
@@ -307,11 +307,11 @@ class reportico_graph
         }
 
         if (!is_file($dyngraph)) {
-            findFileToInclude($dyngraph, $dyngraph);
-            $dyngraph = getRelativePath(realpath($dyngraph), dirname($_SERVER["SCRIPT_FILENAME"]));
+            ReporticoUtility::findFileToInclude($dyngraph, $dyngraph);
+            $dyngraph = ReporticoUtility::getRelativePath(realpath($dyngraph), dirname($_SERVER["SCRIPT_FILENAME"]));
         }
 
-        $dr = getReporticoUrlPath();
+        $dr = ReporticoUtility::getReporticoUrlPath();
         $result = '<img class="swRepGraph" src=\'' . $dr . $dyngraph . '?' . $url . '\'>';
 
         return $result;
@@ -633,8 +633,8 @@ $graph->SetGridDepth(DEPTH_FRONT);
         $graphImage->Antialias = true;
 
 // Add gradient fill from chosen background color to white
-        $startgradient = $this->htmltorgb("#ffffff");
-        $color = $this->htmltorgb($this->graphcolor);
+        $startgradient = $this->ReporticoUtility::htmltorgb("#ffffff");
+        $color = $this->ReporticoUtility::htmltorgb($this->graphcolor);
         $graphImage->drawGradientArea(0, 0, $this->width_actual, $this->height_actual, DIRECTION_VERTICAL, array(
             "StartR" => $startgradient[0], "StartG" => $startgradient[1], "StartB" => $startgradient[2],
             "EndR" => $color[0], "EndG" => $color[1], "EndB" => $color[2], "Alpha" => 100));
@@ -644,7 +644,7 @@ $graph->SetGridDepth(DEPTH_FRONT);
 
         /* Set the title font and draw it */
         $graphImage->setFontProperties(array("FontName" => PCHARTFONTS_DIR . $this->titlefont, "FontSize" => $this->titlefontsize));
-        $this->titlecolor = $this->htmltorgb($this->titlecolor);
+        $this->titlecolor = $this->ReporticoUtility::htmltorgb($this->titlecolor);
         $graphImage->drawText(20, 30, $this->title_actual, array("R" => $this->titlecolor[0], "G" => $this->titlecolor[1], "B" => $this->titlecolor[2]));
 
         /* Set the default font from the X title font */

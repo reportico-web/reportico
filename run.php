@@ -50,7 +50,7 @@
 	//ob_start();
 	
     // Setup SESSION
-    Reportico\setUpReporticoSession();
+    Reportico\ReporticoSession::setUpReporticoSession();
 	$q = new Reportico\Reportico();
 
     // In design mode, allow sql debugging
@@ -266,7 +266,7 @@
     //$q->static_menu = array ();
 
     // Required PDF Engine set -- to tcpdf ( default ) or fpdf 
-    //$q->pdf_engine = "fpdf";
+    //$q->pdf_engine = "tcpdf";
 
     // How CSV, PDF out is delivered to the browser ( TCPDF output only )
     // either as

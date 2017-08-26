@@ -44,7 +44,7 @@ class ReporticoLang
     // Load the relevant localisation strings from the language folder
     static function loadModeLanguagePack($mode, $output_encoding = "utf-8", $replace = false)
     {
-        $langfile = findBestLocationInIncludePath("language");
+        $langfile = ReporticoUtility::findBestLocationInIncludePath("language");
 
         // Look for encoding specific language file
         if (ReporticoApp::isSetConfig("SW_OUTPUT_ENCODING") && ReporticoApp::getConfig("SW_OUTPUT_ENCODING") != "UTF8" && is_dir($langfile . "/" . ReporticoApp::getConfig("language") . "/" . ReporticoApp::getConfig("SW_OUTPUT_ENCODING") . "/" . $mode)) {
@@ -86,13 +86,13 @@ class ReporticoLang
         if (is_file($langfile)) {
             include $langfile;
         } else {
-            findFileToInclude($langfile, $langfile);
+            ReporticoUtility::findFileToInclude($langfile, $langfile);
             if (is_file($langfile)) {
                 include $langfile;
             } else {
                 $langfile = "projects/$project/lang.php";
                 if (!is_file($langfile)) {
-                    findFileToInclude($langfile, $langfile);
+                    ReporticoUtility::findFileToInclude($langfile, $langfile);
                 }
 
                 if (is_file($langfile)) {
@@ -145,50 +145,12 @@ class ReporticoLang
     }
 
 
-    // For backward compatibility ensures that date formats anything expressed in
-    // formats sutiable for the date function ( e.g. Y-m-d ) are converted to
-    // locale formats ( e.g. %Y-%m-%d )
-    static function getLocaleDateFormat($in_format)
-    {
-
-        $out_format = $in_format;
-        if ($in_format == "%d/%m/%Y") {
-            $out_format = "d-m-Y";
-        }
-
-        if ($in_format == "%Y/%m/%d") {
-            $out_format = "Y-m-d";
-        }
-
-        if ($in_format == "%m/%Y/%d") {
-            $out_format = "m-Y-d";
-        }
-
-        if ($in_format == "%d-%m-%Y") {
-            $out_format = "d-m-Y";
-        }
-
-        if ($in_format == "%Y-%m-%d") {
-            $out_format = "Y-m-d";
-        }
-
-        if ($in_format == "%m-%Y-%d") {
-            $out_format = "m-Y-d";
-        }
-
-        if (!$in_format) {
-            $in_format = "d-m-Y";
-        }
-
-        return ($out_format);
-    }
-
     // availableLanguages for each folder in language create an entry.
     // Used to generate language selection box
     static function availableLanguages()
     {
         $langs = array();
-        $lang_dir = findBestLocationInIncludePath("language");
+        $lang_dir = ReporticoUtility::findBestLocationInIncludePath("language");
     //echo $lang_dir; die;
         if (is_dir($lang_dir)) {
             // Place english at the start

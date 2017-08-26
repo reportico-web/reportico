@@ -7,6 +7,36 @@ namespace Reportico;
 class ReporticoLocale
 {
 
+    static function convertYMDtoLocal($in_time, $from_format, $to_format)
+    {
+        // Allow a time to be blank
+        if (trim($in_time) == "") {
+            return " ";
+        }
+
+        $from_format = self::getLocaleDateFormat($from_format);
+        $to_format = self::getLocaleDateFormat($to_format);
+
+        if (!class_exists("\DateTime", false) || !method_exists("\DateTime", "createFromFormat")) {
+            //handleError("This version of PHP does not have the \DateTime class. Must be PHP >= 5.3 to use date criteria");
+            //return false;
+            $retval = reformatDate($from_format, $to_format, $in_time);
+            return $retval;
+        }
+        try {
+            $datetime = \DateTime::createFromFormat($from_format, $in_time);
+
+            if (!$datetime) {
+                handleError("Date value '$in_time' is expected in date format $from_format");
+                return false;
+            }
+            $retval = $datetime->format($to_format);
+        } catch (Exception $e) {
+            handleError("Error in date formatting<BR>" . $e->getMessage());
+            return "";
+        }
+        return $retval;
+    }
     // Based on the users working language, returns the language code
     // for loading the apprpriate data picket
     static function getDatepickerLanguage($in_format)
@@ -98,7 +128,7 @@ class ReporticoLocale
             return " ";
         }
 
-        $in_mask = ReporticoLang::getLocaleDateFormat($in_mask);
+        $in_mask = self::getLocaleDateFormat($in_mask);
         if (!$in_time) {
             $in_time = time();
         }

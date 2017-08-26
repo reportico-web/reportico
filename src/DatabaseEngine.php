@@ -114,7 +114,7 @@ class DatabaseEngine
     
     function performProjectModifications ($project)
     {
-        $filename = findBestLocationInIncludePath( "projects/".$project."/modification_rules.php");
+        $filename = ReporticoUtility::findBestLocationInIncludePath( "projects/".$project."/modification_rules.php");
         $return_status = array (
                     "errstat" => 0,
                     "msgtext" => "Modification sucessful"

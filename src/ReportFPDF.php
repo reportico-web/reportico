@@ -191,7 +191,7 @@ class ReportFPDF extends Report
 
         // If font used is a Unicode Truetype font then
         // use Unicode PDF generator
-        $pdf_path = findBestLocationInIncludePath("fpdf");
+        $pdf_path = ReporticoUtility::findBestLocationInIncludePath("fpdf");
 
         $this->document = new \FPDF($this->orientations[$this->orientation], 'pt', $this->page_type);
 
@@ -223,7 +223,7 @@ class ReportFPDF extends Report
         $looping = true;
 
         foreach ($this->query->display_order_set["column"] as $k => $w) {
-            $col = getQueryColumn($w->query_name, $this->query->columns);
+            $col = ReporticoUtility::getQueryColumn($w->query_name, $this->query->columns);
             $startcol = $col->attributes["ColumnStartPDF"];
             $colwidth = $col->attributes["ColumnWidthPDF"];
             if ($startcol) {
@@ -261,7 +261,7 @@ class ReportFPDF extends Report
                 }
 
                 {
-                    $col = getQueryColumn($w->query_name, $this->query->columns);
+                    $col = ReporticoUtility::getQueryColumn($w->query_name, $this->query->columns);
                     $startcol = $col->abs_column_start;
                     $colwidth = $col->abs_column_width;
                     if ($startcol) {
@@ -1012,13 +1012,13 @@ class ReportFPDF extends Report
                 $this->applyStyleTags($this->query->output_group_header_value_styles);
             }
 
-            $qn = getQueryColumn($col->query_name, $this->query->columns);
+            $qn = ReporticoUtility::getQueryColumn($col->query_name, $this->query->columns);
             if ($contenttype == "graphic" || preg_match("/imagesql=/", $qn->column_value)) {
                 if ($this->draw_mode == "CALCULATE") {
                     continue;
                 }
 
-                $qn = getQueryColumn($col->query_name, $this->query->columns);
+                $qn = ReporticoUtility::getQueryColumn($col->query_name, $this->query->columns);
                 $sql = @preg_replace("/.*imagesql=/", "", $qn->column_value);
                 $sql = @preg_replace("/'>$/", "", $sql);
                 $str =
@@ -1461,7 +1461,7 @@ class ReportFPDF extends Report
                             $this->vsize = $v;
                         }
                         if ($k == "border-color" || $k == "color" || $k == "background-color") {
-                            $v = htmltorgb($v);
+                            $v = ReporticoUtility::htmltorgb($v);
                             if ($k == "border-color") {
                                 $this->document->SetDrawColor($v[0], $v[1], $v[2]);
                             }
@@ -1672,9 +1672,9 @@ class ReportFPDF extends Report
         $max_height = $this->vsize;
         foreach ($this->columns as $col) {
             $contenttype = $col->deriveAttribute("content_type", $col->query_name);
-            $qn = getQueryColumn($col->query_name, $this->query->columns);
+            $qn = ReporticoUtility::getQueryColumn($col->query_name, $this->query->columns);
             if ($contenttype == "graphic" || preg_match("/imagesql=/", $qn->column_value)) {
-                $qn = getQueryColumn($col->query_name, $this->query->columns);
+                $qn = ReporticoUtility::getQueryColumn($col->query_name, $this->query->columns);
                 $sql = @preg_replace("/.*imagesql=/", "", $qn->column_value);
                 $sql = @preg_replace("/'>$/", "", $sql);
                 $str =

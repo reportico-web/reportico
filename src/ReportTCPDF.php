@@ -310,7 +310,7 @@ class ReportTCPDF extends Report
         if ($this->pdfDriver == "tcpdf") {
             // If font used is a Unicode Truetype font then
             // use Unicode PDF generator
-            $pdf_path = findBestLocationInIncludePath("tcpdf");
+            $pdf_path = ReporticoUtility::findBestLocationInIncludePath("tcpdf");
             $this->document = new \TCPDF($this->orientations[$this->orientation], 'pt', $this->page_type, true, 'UTF-8', false);
             $this->document->setPrintHeader(false);
 
@@ -328,7 +328,7 @@ class ReportTCPDF extends Report
             // $this->document->AddFont($this->fontName, '', $this->fontName.'.php');
             // }
         } else {
-            $pdf_path = findBestLocationInIncludePath("fpdf");
+            $pdf_path = ReporticoUtility::findBestLocationInIncludePath("fpdf");
             require_once $pdf_path . "/fpdf.php";
             require_once $pdf_path . "/ufpdf.php";
 
@@ -663,7 +663,7 @@ class ReportTCPDF extends Report
         $looping = true;
 
         foreach ($this->query->display_order_set["column"] as $k => $w) {
-            $col = getQueryColumn($w->query_name, $this->query->columns);
+            $col = ReporticoUtility::getQueryColumn($w->query_name, $this->query->columns);
             $startcol = $col->attributes["ColumnStartPDF"];
             $colwidth = $col->attributes["ColumnWidthPDF"];
             if ($col->output_cell_styles && isset($col->output_cell_styles["width"])) {
@@ -705,7 +705,7 @@ class ReportTCPDF extends Report
                 }
 
                 {
-                    $col = getQueryColumn($w->query_name, $this->query->columns);
+                    $col = ReporticoUtility::getQueryColumn($w->query_name, $this->query->columns);
                     $startcol = $col->abs_column_start;
                     $colwidth = $col->abs_column_width;
                     if ($startcol) {
@@ -2164,7 +2164,7 @@ class ReportTCPDF extends Report
                 $this->applyStyleTags("GROUPHEADERVALUE", $this->query->output_group_header_value_styles);
             }
 
-            $qn = getQueryColumn($col->query_name, $this->query->columns);
+            $qn = ReporticoUtility::getQueryColumn($col->query_name, $this->query->columns);
             if ($contenttype == "graphic" || preg_match("/imagesql=/", $qn->column_value)) {
                 if ($this->draw_mode == "CALCULATE") {
                     if (ReporticoSession::sessionRequestItem("target_style", "TABLE") != "FORM") {
@@ -2175,7 +2175,7 @@ class ReportTCPDF extends Report
                     continue;
                 }
 
-                $qn = getQueryColumn($col->query_name, $this->query->columns);
+                $qn = ReporticoUtility::getQueryColumn($col->query_name, $this->query->columns);
                 $sql = @preg_replace("/.*imagesql=/", "", $qn->column_value);
                 $sql = @preg_replace("/'>$/", "", $sql);
                 $str =
@@ -3107,7 +3107,7 @@ class ReportTCPDF extends Report
                             //$this->vsize = $v;
                         }
                         if ($k == "border-color" || $k == "color" || $k == "background-color") {
-                            $v = htmltorgb($v);
+                            $v = ReporticoUtility::htmltorgb($v);
                             if ($k == "border-color") {
                                 $this->document->SetDrawColor($v[0], $v[1], $v[2]);
                             }
@@ -3470,9 +3470,9 @@ class ReportTCPDF extends Report
         $max_height = $this->vsize;
         foreach ($this->columns as $col) {
             $contenttype = $col->deriveAttribute("content_type", $col->query_name);
-            $qn = getQueryColumn($col->query_name, $this->query->columns);
+            $qn = ReporticoUtility::getQueryColumn($col->query_name, $this->query->columns);
             if ($contenttype == "graphic" || preg_match("/imagesql=/", $qn->column_value)) {
-                $qn = getQueryColumn($col->query_name, $this->query->columns);
+                $qn = ReporticoUtility::getQueryColumn($col->query_name, $this->query->columns);
                 $sql = @preg_replace("/.*imagesql=/", "", $qn->column_value);
                 $sql = @preg_replace("/'>$/", "", $sql);
                 $str =

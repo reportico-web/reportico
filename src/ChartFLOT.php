@@ -47,7 +47,7 @@ if ( function_exists( "imagecreatefromstring" ) )
     include("pChart/pData.class");
     include("pChart/pCache.class");
 
-    $fontpath = findBestLocationInIncludePath( "pChart/fonts" );
+    $fontpath = ReporticoUtility::findBestLocationInIncludePath( "pChart/fonts" );
     define ( "PCHARTFONTS_DIR", $fontpath."/" );
 }
 else
@@ -218,7 +218,7 @@ class ChartFLOT
 				switch ( $v["datatype"] )
 				{
 					case "hhmmss":
-						$this->plot[$k]["data"][] = hhmmssToSeconds($in_val);
+						$this->plot[$k]["data"][] = ReporticoUtility::hhmmssToSeconds($in_val);
 						break;
 
 					default:

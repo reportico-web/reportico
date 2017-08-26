@@ -89,7 +89,7 @@ class ReportHtml extends Report
 
             $this->text .= '<div class="swRepButtons">';
             // In printable html mode dont show back box
-            if (!getRequestItem("printable_html")) {
+            if (!ReporticoUtility::getRequestItem("printable_html")) {
                 // Show Go Back Button ( if user is not in "SINGLE REPORT RUN " )
                 if (!$this->query->access_mode || ($this->query->access_mode != "REPORTOUTPUT")) {
                     $this->text .= '<div class="swRepBackBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'execute_mode=PREPARE&reportico_session_name=' . ReporticoSession::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_BACK") . '">&nbsp;</a></div>';
@@ -173,7 +173,7 @@ class ReportHtml extends Report
         }
 
         // Create sensible column header label from column name
-        $padstring = columnNameToLabel($column_item->query_name);
+        $padstring = ReporticoUtility::columnNameToLabel($column_item->query_name);
         $padstring = $column_item->deriveAttribute("column_title", $padstring);
         $padstring = ReporticoLang::translate($padstring);
 
@@ -517,12 +517,12 @@ class ReportHtml extends Report
 
         $this->text .= '<TR class="swRepGrpHdrRow">';
         $this->text .= '<TD class="swRepGrpHdrLbl" ' . $this->getStyleTags($this->query->output_group_header_label_styles) . '>';
-        $qn = getQueryColumn($col->query_name, $this->query->columns);
+        $qn = ReporticoUtility::getQueryColumn($col->query_name, $this->query->columns);
 
         $padstring = $qn->column_value;
 
         // Create sensible group header label from column name
-        $tempstring = columnNameToLabel($col->query_name);
+        $tempstring = ReporticoUtility::columnNameToLabel($col->query_name);
         $tempstring = $col->deriveAttribute("column_title", $tempstring);
         $tempstring = ReporticoLang::translate($col->deriveAttribute("column_title", $tempstring));
 
@@ -777,7 +777,7 @@ class ReportHtml extends Report
             $url_join_char = "?";
         }
 
-        if (!getRequestItem("printable_html")) {
+        if (!ReporticoUtility::getRequestItem("printable_html")) {
             if (!$this->query->access_mode || ($this->query->access_mode != "REPORTOUTPUT")) {
                 $this->text .= '<div class="swRepButtons">';
                 $this->text .= '<div class="swRepBackBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'execute_mode=PREPARE&reportico_session_name=' . ReporticoSession::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_BACK") . '">&nbsp;</a></div>';

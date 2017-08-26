@@ -70,7 +70,7 @@ class ReportJQueryGrid extends Report
             "index" => "options",
             "jsonmap" => "Options",
             "width" => "80");
-        $this->dataonly = getRequestItem("dataonly", false);
+        $this->dataonly = ReporticoUtility::getRequestItem("dataonly", false);
     }
 
     public function finish()
@@ -86,13 +86,13 @@ class ReportJQueryGrid extends Report
         $retarr["colmodel"] = $this->colmodel;
         $retarr["colnames"] = $this->colnames;
 
-        $page = getRequestItem("page", "");
+        $page = ReporticoUtility::getRequestItem("page", "");
         $numrecords = 1000000;
         if (!$page) {
             $page = 1;
         }
 
-        $rows = getRequestItem("rows", "");
+        $rows = ReporticoUtility::getRequestItem("rows", "");
         if (!$rows) {
             $rows = $numrecords;
         }
@@ -159,7 +159,7 @@ class ReportJQueryGrid extends Report
         foreach ($this->query->groups as $name => $group) {
             if (count($group->headers) > 0) {
                 foreach ($group->headers as $gphk => $col) {
-                    $qn = getQueryColumn($col->query_name, $this->query->columns);
+                    $qn = ReporticoUtility::getQueryColumn($col->query_name, $this->query->columns);
                     $coltitle = $col->deriveAttribute("column_title", $col->query_name);
                     $coltitle = str_replace("_", " ", $coltitle);
                     $coltitle = ucwords(strtolower($coltitle));
@@ -223,7 +223,7 @@ class ReportJQueryGrid extends Report
         }
 
         foreach ($this->query->display_order_set["column"] as $col) {
-            $qn = getQueryColumn($col->query_name, $this->columns);
+            $qn = ReporticoUtility::getQueryColumn($col->query_name, $this->columns);
             $coltitle = $col->deriveAttribute("column_title", $col->query_name);
             $coltitle = str_replace("_", " ", $coltitle);
             $coltitle = ucwords(strtolower($coltitle));

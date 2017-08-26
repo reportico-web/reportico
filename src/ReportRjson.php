@@ -121,7 +121,7 @@ class ReportRjson extends Report
         }
 
         // In printable rjson mode dont show back box
-        if (!getRequestItem("printable_rjson")) {
+        if (!ReporticoUtility::getRequestItem("printable_rjson")) {
             // Show Go Back Button ( if user is not in "SINGLE REPORT RUN " )
             if (!$this->query->access_mode || ($this->query->access_mode != "REPORTOUTPUT")) {
                 $this->jar["attributes"]["show_prepare_button"] .= $this->query->getActionUrl() . '?' . $forward . 'execute_mode=PREPARE&reportico_session_name=' . ReporticoSession::reporticoSessionName();
@@ -145,7 +145,7 @@ class ReportRjson extends Report
         foreach ($this->query->groups as $name => $group) {
             if (count($group->headers) > 0) {
                 foreach ($group->headers as $gphk => $col) {
-                    $qn = getQueryColumn($col->query_name, $this->query->columns);
+                    $qn = ReporticoUtility::getQueryColumn($col->query_name, $this->query->columns);
                     $this->jar["groups"][$col->query_name] = array();
                     $this->jar["groups"][$col->query_name]["group_header"] = true;
                 }
@@ -160,7 +160,7 @@ class ReportRjson extends Report
             }
 
             // Create sensible column header label from column name
-            $label = columnNameToLabel($col->query_name);
+            $label = ReporticoUtility::columnNameToLabel($col->query_name);
             $label = $col->deriveAttribute("column_title", $label);
             $label = ReporticoLang::translate($label);
 
@@ -295,10 +295,10 @@ class ReportRjson extends Report
     public function formatGroupHeader(&$col) // HTML
 
     {
-        $qn = getQueryColumn($col->query_name, $this->query->columns);
+        $qn = ReporticoUtility::getQueryColumn($col->query_name, $this->query->columns);
 
         // Create sensible group header label from column name
-        $tempstring = columnNameToLabel($col->query_name);
+        $tempstring = ReporticoUtility::columnNameToLabel($col->query_name);
         $tempstring = $col->deriveAttribute("column_title", $tempstring);
         $tempstring = ReporticoLang::translate($col->deriveAttribute("column_title", $tempstring));
 

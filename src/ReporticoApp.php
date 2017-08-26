@@ -123,6 +123,64 @@ class ReporticoApp
         echo "</PRE>";
     }
 
+// error handler function
+    public function hasDefault($in_code)
+    {
+        if (substr($in_code, 0, 1) == REPORTICO_DEFAULT_INDICATOR) {
+            return true;
+        }
+        return false;
+    }
+
+    public static function getDefaultConfig($in_code)
+    {
+        $out_val = "";
+        if (ReporticoApp::isSetConfig($in_code)) {
+            $out_val = ReporticoApp::getConfig($in_code);
+        } else if (ReporticoApp::isSetConfig("pdf_" . $in_code)) {
+            $out_val = ReporticoApp::getConfig("pdf_" . $in_code);
+        } else if (ReporticoApp::isSetConfig("chart_" . $in_code)) {
+            $out_val = ReporticoApp::getConfig("chart_" . $in_code);
+        } else if (ReporticoApp::isSetConfig("DEFAULT_" . $in_code)) {
+            $out_val = ReporticoApp::getConfig("DEFAULT_" . $in_code);
+        }
+
+        return $out_val;
+    }
+
+// error handler function
+    public static function checkForDefaultConfig($in_code, $in_val)
+    {
+        $out_val = $in_val;
+        if (!$in_val) {
+            $out_val = $in_val;
+            if (ReporticoApp::isSetConfig($in_code)) {
+                $out_val = ReporticoApp::getConfig($in_code);
+            } else if (ReporticoApp::isSetConfig("pdf_" . $in_code)) {
+                $out_val = ReporticoApp::getConfig("pdf_" . $in_code);
+            } else if (ReporticoApp::isSetConfig("chart_" . $in_code)) {
+                $out_val = ReporticoApp::getConfig("chart_" . $in_code);
+            } else if (ReporticoApp::isSetConfig("DEFAULT_" . $in_code)) {
+                $out_val = ReporticoApp::getConfig("DEFAULT_" . $in_code);
+            }
+
+        } else
+        if (substr($in_val, 0, 1) == REPORTICO_DEFAULT_INDICATOR) {
+            $out_val = substr($in_val, 1);
+            if (ReporticoApp::isSetConfig($in_code)) {
+                $out_val = ReporticoApp::getConfig($in_code);
+            } else if (ReporticoApp::isSetConfig("pdf_" . $in_code)) {
+                $out_val = ReporticoApp::getConfig("pdf_" . $in_code);
+            } else if (ReporticoApp::isSetConfig("chart_" . $in_code)) {
+                $out_val = ReporticoApp::getConfig("chart_" . $in_code);
+            } else if (ReporticoApp::isSetConfig("DEFAULT_" . $in_code)) {
+                $out_val = ReporticoApp::getConfig("DEFAULT_" . $in_code);
+            }
+
+        }
+        return $out_val;
+    }
+
 
 
 }

@@ -112,46 +112,46 @@ class CriteriaColumn extends QueryColumn
             $label = $this->deriveAttribute("column_title", $this->query_name);
             $value = $this->criteria_summary;
         } else {
-            if (getRequestItem($name . "_FROMDATE_DAY", "")) {
+            if (ReporticoUtility::getRequestItem($name . "_FROMDATE_DAY", "")) {
                 $label = $this->deriveAttribute("column_title", $this->query_name);
                 $label = ReporticoLang::translate($label);
-                $mth = getRequestItem($name . "_FROMDATE_MONTH", "") + 1;
-                $value = getRequestItem($name . "_FROMDATE_DAY", "") . "/" .
+                $mth = ReporticoUtility::getRequestItem($name . "_FROMDATE_MONTH", "") + 1;
+                $value = ReporticoUtility::getRequestItem($name . "_FROMDATE_DAY", "") . "/" .
                 $mth . "/" .
-                getRequestItem($name . "_FROMDATE_YEAR", "");
-                if (getRequestItem($name . "_TODATE_DAY", "")) {
-                    $mth = getRequestItem($name . "_TODATE_MONTH", "") + 1;
+                ReporticoUtility::getRequestItem($name . "_FROMDATE_YEAR", "");
+                if (ReporticoUtility::getRequestItem($name . "_TODATE_DAY", "")) {
+                    $mth = ReporticoUtility::getRequestItem($name . "_TODATE_MONTH", "") + 1;
                     $value .= "-";
-                    $value .= getRequestItem($name . "_TODATE_DAY", "") . "/" .
+                    $value .= ReporticoUtility::getRequestItem($name . "_TODATE_DAY", "") . "/" .
                     $mth . "/" .
-                    getRequestItem($name . "_TODATE_YEAR", "");
+                    ReporticoUtility::getRequestItem($name . "_TODATE_YEAR", "");
                 }
-            } else if (getRequestItem("MANUAL_" . $name . "_FROMDATE", "")) {
+            } else if (ReporticoUtility::getRequestItem("MANUAL_" . $name . "_FROMDATE", "")) {
                 $label = $this->deriveAttribute("column_title", $this->query_name);
                 $label = ReporticoLang::translate($label);
-                $value = getRequestItem("MANUAL_" . $name . "_FROMDATE", "");
-                if (getRequestItem("MANUAL_" . $name . "_TODATE", "")) {
+                $value = ReporticoUtility::getRequestItem("MANUAL_" . $name . "_FROMDATE", "");
+                if (ReporticoUtility::getRequestItem("MANUAL_" . $name . "_TODATE", "")) {
                     $value .= "-";
-                    $value .= getRequestItem("MANUAL_" . $name . "_TODATE");
+                    $value .= ReporticoUtility::getRequestItem("MANUAL_" . $name . "_TODATE");
                 }
 
-            } else if (getRequestItem("HIDDEN_" . $name . "_FROMDATE", "")) {
+            } else if (ReporticoUtility::getRequestItem("HIDDEN_" . $name . "_FROMDATE", "")) {
                 $label = $this->deriveAttribute("column_title", $this->query_name);
                 $label = ReporticoLang::translate($label);
-                $value = getRequestItem("HIDDEN_" . $name . "_FROMDATE", "");
-                if (getRequestItem("HIDDEN_" . $name . "_TODATE", "")) {
+                $value = ReporticoUtility::getRequestItem("HIDDEN_" . $name . "_FROMDATE", "");
+                if (ReporticoUtility::getRequestItem("HIDDEN_" . $name . "_TODATE", "")) {
                     $value .= "-";
-                    $value .= getRequestItem("HIDDEN_" . $name . "_TODATE");
+                    $value .= ReporticoUtility::getRequestItem("HIDDEN_" . $name . "_TODATE");
                 }
 
-            } else if (getRequestItem("EXPANDED_" . $name, "")) {
+            } else if (ReporticoUtility::getRequestItem("EXPANDED_" . $name, "")) {
                 $label = $this->deriveAttribute("column_title", $this->query_name);
                 $label = ReporticoLang::translate($label);
-                $value .= implode(getRequestItem("EXPANDED_" . $name, ""), ",");
-            } else if (getRequestItem("MANUAL_" . $name, "")) {
+                $value .= implode(ReporticoUtility::getRequestItem("EXPANDED_" . $name, ""), ",");
+            } else if (ReporticoUtility::getRequestItem("MANUAL_" . $name, "")) {
                 $label = $this->deriveAttribute("column_title", $this->query_name);
                 $label = ReporticoLang::translate($label);
-                $value .= getRequestItem("MANUAL_" . $name, "");
+                $value .= ReporticoUtility::getRequestItem("MANUAL_" . $name, "");
             }
         }
     }
@@ -177,20 +177,20 @@ class CriteriaColumn extends QueryColumn
         $expanded_params = array();
         $manual_override = false;
 
-        if (getRequestItem("MANUAL_" . $this->query_name . "_FROMDATE", "")) {
-            $this->criteria_summary = getRequestItem("MANUAL_" . $this->query_name . "_FROMDATE", "");
-            if (getRequestItem("MANUAL_" . $this->query_name . "_TODATE", "")) {
+        if (ReporticoUtility::getRequestItem("MANUAL_" . $this->query_name . "_FROMDATE", "")) {
+            $this->criteria_summary = ReporticoUtility::getRequestItem("MANUAL_" . $this->query_name . "_FROMDATE", "");
+            if (ReporticoUtility::getRequestItem("MANUAL_" . $this->query_name . "_TODATE", "")) {
                 $this->criteria_summary .= "-";
-                $this->criteria_summary .= getRequestItem("MANUAL_" . $this->query_name . "_TODATE");
+                $this->criteria_summary .= ReporticoUtility::getRequestItem("MANUAL_" . $this->query_name . "_TODATE");
             }
             return;
         }
 
-        if (getRequestItem("HIDDEN_" . $this->query_name . "_FROMDATE", "")) {
-            $this->criteria_summary = getRequestItem("HIDDEN_" . $this->query_name . "_FROMDATE", "");
-            if (getRequestItem("HIDDEN_" . $this->query_name . "_TODATE", "")) {
+        if (ReporticoUtility::getRequestItem("HIDDEN_" . $this->query_name . "_FROMDATE", "")) {
+            $this->criteria_summary = ReporticoUtility::getRequestItem("HIDDEN_" . $this->query_name . "_FROMDATE", "");
+            if (ReporticoUtility::getRequestItem("HIDDEN_" . $this->query_name . "_TODATE", "")) {
                 $this->criteria_summary .= "-";
-                $this->criteria_summary .= getRequestItem("HIDDEN_" . $this->query_name . "_TODATE");
+                $this->criteria_summary .= ReporticoUtility::getRequestItem("HIDDEN_" . $this->query_name . "_TODATE");
             }
             return;
         }
@@ -1800,7 +1800,7 @@ class CriteriaColumn extends QueryColumn
                 $cls = "";
                 if ($this->column_value) {
                     $val1 = ReporticoLocale::parseDate($this->column_value, false, ReporticoApp::getConfig("prep_dateformat"));
-                    $val1 = convertYMDtoLocal($val1, ReporticoApp::getConfig("prep_dateformat"), ReporticoApp::getConfig("db_dateformat"));
+                    $val1 = ReporticoLocale::convertYMDtoLocal($val1, ReporticoApp::getConfig("prep_dateformat"), ReporticoApp::getConfig("db_dateformat"));
                     if ($lhs) {
                         if ($this->table_name && $this->column_name) {
                             $cls .= " AND " . $this->table_name . "." . $this->column_name;
@@ -1832,8 +1832,8 @@ class CriteriaColumn extends QueryColumn
 
                     $val1 = ReporticoLocale::parseDate($this->column_value, false, ReporticoApp::getConfig("prep_dateformat"));
                     $val2 = ReporticoLocale::parseDate($this->column_value2, false, ReporticoApp::getConfig("prep_dateformat"));
-                    $val1 = convertYMDtoLocal($val1, ReporticoApp::getConfig("prep_dateformat"), ReporticoApp::getConfig("db_dateformat"));
-                    $val2 = convertYMDtoLocal($val2, ReporticoApp::getConfig("prep_dateformat"), ReporticoApp::getConfig("db_dateformat"));
+                    $val1 = ReporticoLocale::convertYMDtoLocal($val1, ReporticoApp::getConfig("prep_dateformat"), ReporticoApp::getConfig("db_dateformat"));
+                    $val2 = ReporticoLocale::convertYMDtoLocal($val2, ReporticoApp::getConfig("prep_dateformat"), ReporticoApp::getConfig("db_dateformat"));
                     if ($lhs) {
                         if ($this->table_name && $this->column_name) {
                             $cls .= " AND " . $this->table_name . "." . $this->column_name;
