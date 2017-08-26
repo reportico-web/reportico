@@ -1,0 +1,86 @@
+ul.jd_menu {
+    position: relative;
+    margin-left: 0px;
+    margin-top: 0px !important;
+    margin-bottom: 8px !important;
+    padding: 0px !important;
+    height: 19px;
+    list-style-type: none !important;
+    background-color: #888;
+    border: 0px solid #70777D;
+    border-top: 1px solid #A5AFB8;
+    border-left: 1px solid #A5AFB8;
+}
+ul.jd_menu ul {
+    display: none;
+}
+ul.jd_menu a, 
+ul.jd_menu a:active,
+ul.jd_menu a:link,
+ul.jd_menu a:visited
+{
+    text-decoration: none;
+    color: #FFF;
+}
+ul.jd_menu li {
+    float: left;
+    font-family: Tahoma, sans-serif;
+    font-size: 12px;
+    padding: 2px 6px 4px 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    color: #FFF;
+}
+ul.jd_menu li.jd_menu_hover_toolbar {
+    padding-left: 5px;
+    border-left: 1px solid #ABB5BC;
+    padding-right: 5px;
+    border-right: 1px solid #929AA1;
+    border-right: 1px solid #70777D;
+    color: #FFF;
+    background: url(gradient-alt.png) repeat-x;
+}
+ul.jd_menu a.jd_menu_hover_toolbar {
+    color: #FFF;
+}
+
+/* -- Sub-Menus Styling -- */
+ul.jd_menu ul {
+    position: absolute;
+    display: none;
+    list-style-type: none !important;
+    margin: 0px;
+    padding: 0px;
+
+    background: #ABB5BC;
+    border: 1px solid #70777D;
+}
+ul.jd_menu ul li {
+    float: none;
+    margin: 0px;
+    padding: 3px 10px 3px 4px;
+    width: 300px;
+    font-size: 14px;
+    background: #FDFCFC;
+    border: none;
+    color: #70777D;
+}
+ul.jd_menu ul li.jd_menu_hover {
+    background: url(gradient.png) repeat-x;
+    padding-top: 2px;
+    border-top: 1px solid #ABB5BC;
+    padding-bottom: 2px;
+    border-bottom: 1px solid #929AA1;
+    color: #FFF;
+}
+ul.jd_menu ul a, 
+ul.jd_menu ul a:active,
+ul.jd_menu ul a:link,
+ul.jd_menu ul a:visited {
+    text-decoration: none;
+    color: #70777D;
+}
+ul.jd_menu ul a.jd_menu_hover {
+    color: #FFF;
+}
+
