@@ -355,7 +355,7 @@ class Assignment extends ReporticoObject
 
         $out_string = preg_replace('/{([^}]*)}/',
             //'$this->columns[\'\1\']->column_value',
-            '$this->ReporticoUtility::getQueryColumnValue(\'\1\', $this->columns)',
+            '$this->getQueryColumnValue(\'\1\', $this->columns)',
             $out_string);
 
         return $out_string;

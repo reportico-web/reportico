@@ -4016,9 +4016,11 @@ class XmlReader
                 $keys[] = "";
 
                 if ($this->query->pdf_engine == "fpdf") {
-                    $fontdir = "src/fpdf/font";
+                    //$fontdir = "src/fpdf/font";
+                    $fontdir = "vendor/setasign/fpdf/font";
                 } else {
-                    $fontdir = "src/tcpdf/fonts";
+                    //$fontdir = "src/tcpdf/fonts";
+                    $fontdir = "vendor/tecnickcom/tcpdf/fonts";
                 }
 
                 if (is_dir($fontdir)) {

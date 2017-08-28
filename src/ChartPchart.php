@@ -164,7 +164,7 @@ class ChartPchart
         $this->graph_column = $in_val;
     }
 
-    public function &create_plot($in_query)
+    public function &createPlot($in_query)
     {
         $pl = array(
             "number" => count($this->plot),
