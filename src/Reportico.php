@@ -4420,6 +4420,7 @@ class Reportico extends ReporticoObject
                     $code = "if ( \$_connection )" . $code;
                     $code = "\$_pdo = false;" . $code;
                     $code = "\$_connection =& \$this->datasource->ado_connection;" . $code;
+                    $code = "namespace Reportico;" . $code;
 
                     // set to the user defined error handler
                     ReporticoApp::set("eval_code", $code);
