@@ -155,9 +155,9 @@ class ReporticoApp
         return false;
     }
 
-    public static function getDefaultConfig($in_code)
+    public static function getDefaultConfig($in_code, $in_default = "")
     {
-        $out_val = "";
+        $out_val = $in_default;
         if (ReporticoApp::isSetConfig($in_code)) {
             $out_val = ReporticoApp::getConfig($in_code);
         } else if (ReporticoApp::isSetConfig("pdf_" . $in_code)) {
@@ -202,6 +202,19 @@ class ReporticoApp
 
         }
         return $out_val;
+    }
+
+    // Debug Message Handler
+    static function handleDebug($dbgstr, $in_level)
+    {
+        if ( ReporticoApp::get("debug_mode") >= $in_level )
+        {   
+            $debug = &self::getSystemDebug();
+            $debug[] = array (
+            "dbgstr" => $dbgstr,
+            "dbgarea" => ReporticoApp::get("code_area")
+            );
+        }
     }
 
     // User Error Handler
@@ -250,7 +263,7 @@ class ReporticoApp
         }
 
         // Avoid adding duplicate errors
-        $errors = self::getSystemErrors();
+        $errors = &self::getSystemErrors();
         foreach ( self::getSystemErrors() as $k => $val) {
             if ($val["errstr"] == $errstr) {
                 $errors[$k]["errct"] = $ct+1;

@@ -479,7 +479,7 @@ class SqlParser
                     $colalias = "column" . $in_colno;
                     $auto_gen_alias = $colalias;
                     if ($warn_empty_aliases) {
-                        handleDebug("Expression <b>($in_string)</b> is unnamed and will be given the name <b>$colalias</b>. You might like to provide your own column alias for this expression.", 0);
+                        ReporticoApp::handleDebug("Expression <b>($in_string)</b> is unnamed and will be given the name <b>$colalias</b>. You might like to provide your own column alias for this expression.", 0);
                     }
 
                 }
@@ -502,7 +502,7 @@ class SqlParser
                     $colalias = "column" . $in_colno;
                     $auto_gen_alias = $colalias;
                     if ($warn_empty_aliases) {
-                        handleDebug("Expression <b>($in_string)</b> is unnamed and will be given the name <b>$colalias</b>. You might like to provide your own column alias for this expression.", 0);
+                        ReporticoApp::handleDebug("Expression <b>($in_string)</b> is unnamed and will be given the name <b>$colalias</b>. You might like to provide your own column alias for this expression.", 0);
                     }
 
                 }
@@ -515,7 +515,7 @@ class SqlParser
                 $colalias = "column" . $in_colno;
                 $auto_gen_alias = $colalias;
                 if ($warn_empty_aliases) {
-                    handleDebug("Expression <b>($in_string)</b> is unnamed and will be given the name <b>$colalias</b>. You might like to provide your own column alias for this expression.", 0);
+                    ReporticoApp::handleDebug("Expression <b>($in_string)</b> is unnamed and will be given the name <b>$colalias</b>. You might like to provide your own column alias for this expression.", 0);
                 }
 
             }

@@ -454,7 +454,7 @@ class XmlWriter
                 if (!unlink($fn)) {
                     trigger_error(ReporticoLang::templateXlate("UNABLE_TO_REMOVE") . " $filename  - " . templateXlate("NOWRITE"), E_USER_ERROR);
                 } else {
-                    handleDebug(ReporticoLang::templateXlate("REPORTFILE") . " $filename " . templateXlate("DELETEOKACT"), 0);
+                    ReporticoApp::handleDebug(ReporticoLang::templateXlate("REPORTFILE") . " $filename " . templateXlate("DELETEOKACT"), 0);
                 }
 
             }

@@ -4372,7 +4372,7 @@ class Reportico extends ReporticoObject
             foreach ($this->pre_sql as $sql) {
                 ReporticoApp::set("code_area", "Custom User SQLs");
                 $nsql = Assignment::reporticoMetaSqlCriteria($this, $sql, true);
-                handleDebug("Pre-SQL" . $nsql, ReporticoApp::DEBUG_LOW);
+                ReporticoApp::handleDebug("Pre-SQL" . $nsql, ReporticoApp::DEBUG_LOW);
                 $recordSet = false;
                 $errorCode = false;
                 $errorMessage = false;
@@ -4405,16 +4405,13 @@ class Reportico extends ReporticoObject
                     } else {
                         $source_path = ReporticoUtility::findBestLocationInIncludePath($this->projects_folder . "/" . ReporticoApp::getConfig("project") . "/" . ReporticoSession::getReporticoSessionParam("xmlin") . ".xml.php");
                     }
-
                     if (is_file($source_path)) {
                         $code = file_get_contents($source_path);
                     } else {
                         $code = false;
                     }
-
                 }
                 if ($code) {
-                    $code = "";
                     ReporticoApp::set("code_area", "");
                     $code = "\$lk =& \$this->lookup_queries;" . $code;
                     $code = "\$ds =& \$this->datasource->ado_connection;" . $code;
@@ -4510,7 +4507,7 @@ class Reportico extends ReporticoObject
             }
 
             if ($conn != false) {
-                handleDebug($this->query_statement, ReporticoApp::DEBUG_LOW);
+                ReporticoApp::handleDebug($this->query_statement, ReporticoApp::DEBUG_LOW);
             }
 
             // Begin Target Output
@@ -4734,7 +4731,7 @@ class Reportico extends ReporticoObject
                 $r = eval($a);
 
                 if ( ReporticoApp::get("debug_mode")) {
-                    handleDebug("Assignment " . $assign->query_name . " = " . $assign->expression .
+                    ReporticoApp::handleDebug("Assignment " . $assign->query_name . " = " . $assign->expression .
                         " => " . $col->column_value, ReporticoApp::DEBUG_HIGH);
                 }
 

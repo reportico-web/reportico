@@ -554,7 +554,7 @@ class DesignPanel
                 $duptypect = 0;
 
                 $ct = 0;
-                $errors = ReporticoApp::getSystemErrors();
+                $errors = &ReporticoApp::getSystemErrors();
                 foreach ($errors as $val) {
 
                     if ($val["errno"] == E_USER_ERROR || $val["errno"] == E_USER_WARNING || $val["errno"] == E_USER_NOTICE) {

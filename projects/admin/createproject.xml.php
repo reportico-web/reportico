@@ -35,7 +35,7 @@ $test->protocol = $protocol;
 $test->connect(true);
 
 if ( $test->connected )
-    handleDebug("Connection to Database succeeded", 0);
+    ReporticoApp::handleDebug("Connection to Database succeeded", 0);
 else
    trigger_error("Connection to Database failed", E_USER_NOTICE);
 
@@ -108,7 +108,7 @@ $txt = file_get_contents($lang_template);
 $retval = file_put_contents($proj_lang, $txt);
 
 
-handleDebug("Project Created", 0);
+ReporticoApp::handleDebug("Project Created", 0);
 
 
 ?>

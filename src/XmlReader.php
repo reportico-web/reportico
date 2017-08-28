@@ -1626,7 +1626,7 @@ class XmlReader
                 if ($updates["AssignStyleMargin"]) {
                     $styletxt .= "applyStyle('" . $updates["AssignStyleLocType"] . "', 'margin', '" . $updates["AssignStyleMargin"] . "');";
                     if ($updates["AssignStyleLocType"] == "PAGE" && !$updates["AssignStyleWidth"]) {
-                        handleDebug(ReporticoLang::templateXlate("PAGEMARGINWITHWIDTH"), 0);
+                        ReporticoApp::handleDebug(ReporticoLang::templateXlate("PAGEMARGINWITHWIDTH"), 0);
                     }
                 }
                 if ($updates["AssignStylePadding"]) {

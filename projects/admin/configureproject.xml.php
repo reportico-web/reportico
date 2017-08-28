@@ -76,7 +76,9 @@ if ( $_configure_mode != "DELETE" )
     {
         $test->connect(true);
         if ( $test->connected )
-            handleDebug("Connection to Database succeeded", 0);
+        {
+            ReporticoApp::handleDebug("Connection to Database succeeded", 0);
+        }
         else
         {
             trigger_error("Connection to Database failed", E_USER_NOTICE);
@@ -91,7 +93,7 @@ else
     $configparams["SW_PROJECT_TITLE"] = SW_PROJECT_TITLE;
 }
 
-$proj_parent = findBestLocationInIncludePath( "projects" );
+$proj_parent = ReporticoUtility::findBestLocationInIncludePath( "projects" );
 $proj_dir = $proj_parent."/".$configparams["SW_PROJECT"];
 $proj_conf = $proj_dir."/config.php";
 $proj_menu = $proj_dir."/menu.php";
@@ -157,7 +159,7 @@ if ( file_exists ( $proj_conf ) && $_configure_mode == "DELETE" )
     if ( !($status = rename ( $proj_conf, $proj_conf.".deleted" )) )
         trigger_error ("Failed to disable $proj_conf file. Possible permission, configuration problem", E_USER_NOTICE);
     else
-	    handleDebug("Project Deleted Successfully", 0);
+	    ReporticoApp::handleDebug("Project Deleted Successfully", 0);
     ReporticoApp::set("no_sql",true);
     
     return;
@@ -190,7 +192,7 @@ else
         {
             if ( $configparams["SW_DB_TYPE"] == "framework" )
             {
-                handleDebug ("Warning - This project was created with an older version of reportico which cannot use the connection details of an application framework. In order to connect to a framework the project configuration file ".$configparams["SW_PROJECT"]."/config.php was updated. Any manually made modifications are saved as the original config.php was backed up to the file config.php.orig.", 0);
+                ReporticoApp::handleDebug ("Warning - This project was created with an older version of reportico which cannot use the connection details of an application framework. In order to connect to a framework the project configuration file ".$configparams["SW_PROJECT"]."/config.php was updated. Any manually made modifications are saved as the original config.php was backed up to the file config.php.orig.", 0);
 	            $retval = file_put_contents($proj_conf.".orig", $txt);
             }
         }
@@ -213,7 +215,7 @@ $matches = array();
 
 //if ( $configparams["SW_DB_TYPE"] == "framework" )
 //{
-        //handleDebug("Connection to Database not checked as framework database connections have been used", 0);
+        //ReporticoApp::handleDebug("Connection to Database not checked as framework database connections have been used", 0);
 //}
 
 // If this is a reportico pre 2.8 then it wont handle "framework" type
@@ -294,14 +296,14 @@ if ( $_configure_mode == "CREATE" )
 }
 
 if ( $configparams["SW_PROJECT"] != "tutorials" )
-if ( !$configparams["SW_PROJECT_PASSWORD"] ) handleDebug ("Warning - Project password not set - any user will be able to run reports in this project", 0);
+if ( !$configparams["SW_PROJECT_PASSWORD"] ) ReporticoApp::handleDebug ("Warning - Project password not set - any user will be able to run reports in this project", 0);
 
 if ( $_configure_mode == "CREATETUTORIALS" )
-	handleDebug("Tutorials Project Created Successfully, now use the \"Generate the Tutorial Tables\" option to create and populate the tutorial tables", 0);
+	ReporticoApp::handleDebug("Tutorials Project Created Successfully, now use the \"Generate the Tutorial Tables\" option to create and populate the tutorial tables", 0);
 else if ( $_configure_mode == "CREATE" )
-	handleDebug("Project Created Successfully", 0);
+	ReporticoApp::handleDebug("Project Created Successfully", 0);
 else
-	handleDebug("Project Configuration Updated Successfully", 0);
+	ReporticoApp::handleDebug("Project Configuration Updated Successfully", 0);
 
 $g_debug_mode = false;
 
