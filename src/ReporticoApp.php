@@ -157,7 +157,6 @@ class ReporticoApp
 
     public static function getDefaultConfig($in_code, $in_default = "")
     {
-        echo "try $in_code, $in_default<BR>";
         $out_val = $in_default;
         if (ReporticoApp::isSetConfig($in_code)) {
             $out_val = ReporticoApp::getConfig($in_code);
