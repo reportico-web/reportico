@@ -3476,13 +3476,13 @@ class Reportico extends ReporticoObject
             $custom_functions = array();
 
             $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler", 0);
-            if (@file_exists($this->projects_folder . "/" . ReporticoApp::getconfig("project") . "/reporticoDefaults.php")) {
-                include_once $this->projects_folder . "/" . ReporticoApp::getconfig("project") . "/reporticoDefaults.php";
-            } else if (@file_exists(__DIR__ . "/reporticoDefaults.php")) {
-                include_once __DIR__ . "/reporticoDefaults.php";
+            if (@file_exists($this->projects_folder . "/" . ReporticoApp::getconfig("project") . "/ReporticoDefaults.php")) {
+                include_once $this->projects_folder . "/" . ReporticoApp::getconfig("project") . "/ReporticoDefaults.php";
+            } else if (@file_exists(__DIR__ . "/ReporticoDefaults.php")) {
+                include_once __DIR__ . "/ReporticoDefaults.php";
             }
 
-            if (function_exists("reporticoDefaults")) {
+            if (function_exists("ReporticoDefaults")) {
                 reporticoDefaults($this);
             }
 
