@@ -1255,6 +1255,8 @@ class ReportTCPDF extends Report
             $bottommargin = $this->absMetric($margin[2]);
             $leftmargin = $this->absMetric($margin[3]);
         }
+$this->debugFile(print_r($this->stylestack["margin"], true));
+$this->debugFile("here we go $leftmargin");
 
         // Add padding
         $toppad = 0;
@@ -2952,15 +2954,16 @@ class ReportTCPDF extends Report
                                     $tmp[0] = $tmp[2] = $ar[1];
                                     $tmp[1] = $tmp[3] = $ar[2];
                                 }
-                            } else if (count($ar) == 3) {
+                               else if (count($ar) == 3) {
                                 $tmp[0] = $ar[0];
                                 $tmp[1] = $ar[1];
                                 $tmp[2] = $ar[2];
-                            } else if (count($ar) == 4) {
+                                } else if (count($ar) == 4) {
                                 $tmp[0] = $ar[0];
                                 $tmp[1] = $ar[1];
                                 $tmp[2] = $ar[2];
                                 $tmp[3] = $ar[3];
+                                }
                             }
                             $v = $tmp;
                         }
@@ -2976,15 +2979,16 @@ class ReportTCPDF extends Report
                                     $tmp[0] = $tmp[2] = $ar[1];
                                     $tmp[1] = $tmp[3] = $ar[2];
                                 }
-                            } else if (count($ar) == 3) {
-                                $tmp[0] = $ar[0];
-                                $tmp[1] = $ar[1];
-                                $tmp[2] = $ar[2];
-                            } else if (count($ar) == 4) {
-                                $tmp[0] = $ar[0];
-                                $tmp[1] = $ar[1];
-                                $tmp[2] = $ar[2];
-                                $tmp[3] = $ar[3];
+                                else if (count($ar) == 3) {
+                                    $tmp[0] = $ar[0];
+                                    $tmp[1] = $ar[1];
+                                    $tmp[2] = $ar[2];
+                                } else if (count($ar) == 4) {
+                                    $tmp[0] = $ar[0];
+                                    $tmp[1] = $ar[1];
+                                    $tmp[2] = $ar[2];
+                                    $tmp[3] = $ar[3];
+                                }
                             }
                             $v = $tmp;
                         }
@@ -3650,9 +3654,10 @@ class ReportTCPDF extends Report
 
         $y = $this->abs_top_margin + ($this->vsize * ($header->line - 1));
         $this->setPosition($tw, $y);
-
         $tx = $header->text;
+$this->debugFile("got $tw, $y, $tx");
         $styles = $this->fetchCellStyles($tx);
+$this->debugFile("got $tw, $y, $tx go for ".print_r($styles, true));
         $this->applyStyleTags("PAGEHEADER", $styles);
         $this->drawCell($wd, $this->vsize, $tx, "PBF", 0, $just);
         $this->unapplyStyleTags("PAGEHEADER", $styles);
