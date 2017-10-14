@@ -1,9 +1,21 @@
 <?php
 
+ 
 namespace Reportico;
 
-//Class to store global var
-
+/**
+ * Class used to store Global var
+ * 
+ * This class is based on the singloton architecture. 
+ * Global variable can be set or get by Get and Set functions.
+ * 
+ * By default variables are stored in the general variables array.
+ * The config variables are stored in the specific config array witch is 
+ * a subdivision of the variable array
+ * 
+ * COnfig variable could be constant prefixed by SW_
+ * 
+ */
 class ReporticoApp
 {
     const DEFAULT_INDICATOR = '.';
@@ -44,6 +56,17 @@ class ReporticoApp
         return self::$_instance;
     }
 
+    /**
+     * Return the value of a config variable
+     * 
+     * If the config variable doesn't exist, a default value is returned
+     * 
+     * @param mixed $var Variable name
+     * @param mixed $default Default value
+     * 
+     * @return mixed Variable value
+     * 
+     */
     private function getConfigVariable($var, $default = null)
     {
 
@@ -63,6 +86,13 @@ class ReporticoApp
 
     }
 
+    /**
+     * Check if a config variable is defined
+     * 
+     * @param mixed $var Config variable name
+     * 
+     * @return bool
+     */
     private function isSetConfigVariable($var)
     {
         if (preg_match("/^SW_/", $var)) {
@@ -79,11 +109,26 @@ class ReporticoApp
         }
     }
 
+    /**
+     * Set a config variable with a value
+     * 
+     * @param mixed $var Config variable name
+     * @param mixed $value  Value of the config variable
+     * 
+     * @return void
+     */
     private function setConfigVariable($var, $value)
     {
         $this->variables["config"][$var] = $value;
     }
 
+    /**
+     * Return the variable value
+     * 
+     * @param mixed $var variable name
+     * 
+     * @return mixed|null
+     */
     private function getVariable($var)
     {
         if (isset($this->variables[$var])) {
@@ -93,39 +138,90 @@ class ReporticoApp
         }
     }
 
+    /**
+     * Set a variable with a value
+     * 
+     * @param mixed $var Variable name
+     * @param mixed $value  Value of the variable
+     * 
+     * @return void
+     */
     private function setVariable($var, $value)
     {
         $this->variables[$var] = $value;
     }
 
-    //
+    
+    /**
+     * Return the value of a variable
+     * 
+     * @param mixed $var Variable name
+     * 
+     * @return mixed|null
+     */
     public static function get($var)
     {
         $instance = self::getInstance();
         return $instance->getVariable($var);
     }
+    
+    /**
+     * Set a variable with a value
+     * 
+     * @param mixed $var Variable name
+     * @param mixed $value  Value of the variable
+     * 
+     * @return void
+     */
     public static function set($var, $value)
     {
         $instance = self::getInstance();
         return $instance->setVariable($var, $value);
     }
 
+    /**
+     * Return the value of a config variable
+     * 
+     * @param mixed $var Variable name
+     * 
+     * @return mixed|null
+     */
     public static function getConfig($var, $default = null)
     {
         $instance = self::getInstance();
         return $instance->getConfigVariable($var, $default);
     }
 
+    /**
+     * Set a config variable with a value
+     * 
+     * @todo check if the variable name is not a constant. If it is, we could 
+     * set the variable.
+     * 
+     * @param mixed $var Variable name
+     * @param mixed $value  Value of the variable
+     * 
+     * @return void
+     */
     public static function setConfig($var, $value)
     {
         $instance = self::getInstance();
         return $instance->setConfigVariable($var, $value);
     }
+    
+    /**
+     * Check if a config variable is defined
+     * 
+     * @param mixed $var Variable name
+     * 
+     * @return bool
+     */
     public static function isSetConfig($var)
     {
         $instance = self::getInstance();
         return $instance->isSetConfigVariable($var);
     }
+    
     public static function &getSystemErrors()
     {
         $instance = self::getInstance();

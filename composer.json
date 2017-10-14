@@ -19,7 +19,8 @@
         "setasign/fpdf": "1.7",
         "adodb/adodb-php": "^5.20",
         "tecnickcom/tcpdf": "^6.2",
-        "smarty/smarty": "^3.1"
+        "smarty/smarty": "^3.1",
+        "monolog/monolog": "^1.23"
     },
      "autoload": {
         "psr-4": {

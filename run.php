@@ -31,7 +31,8 @@
     require_once(__DIR__ .'/vendor/autoload.php');
     // set error reporting level
 	error_reporting(E_ALL);
-
+    Reportico\ReporticoLog::activeDebugMode();
+    
     // Set the timezone according to system defaults
     date_default_timezone_set(@date_default_timezone_get());
 

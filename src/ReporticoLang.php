@@ -10,15 +10,20 @@ class ReporticoLang
     static function &translate($in_string)
     {
         $out_string = &$in_string;
-        if ((ReporticoApp::get("translations"))) {
-            if (array_key_exists(ReporticoApp::getConfig("language"), (ReporticoApp::get("translations")))) {
-                $langset = &(ReporticoApp::get("translations"))[ReporticoApp::getConfig("language")];
+        
+        $langage = ReporticoApp::getConfig("language");
+        $translations = ReporticoApp::get("translations");
+        
+        if ($translations) {
+            if (array_key_exists($langage, $translations)) {
+                $langset = &$translations[$langage];
                 if (isset($langset[$in_string])) {
                     $out_string = &$langset[$in_string];
                 }
 
             }
         }
+        
 
         return $out_string;
     }
@@ -28,13 +33,17 @@ class ReporticoLang
     {
         $in_report = preg_replace("/\.xml$/", "", $in_report);
         $out_string = false;
-        if (ReporticoApp::get("report_desc")) {
-            if (array_key_exists(ReporticoApp::getConfig("language"), ReporticoApp::get("report_desc"))) {
-                $langset = &(ReporticoApp::get("report_desc"))[ReporticoApp::getConfig("language")];
+        
+        $langage = ReporticoApp::getConfig("language");
+        $report_desc = ReporticoApp::get("report_desc");
+        
+        
+        if ($report_desc) {
+            if (array_key_exists($langage, $report_desc)) {
+                $langset = &$report_desc[$langage];
                 if (isset($langset[$in_report])) {
                     $out_string = &$langset[$in_report];
                 }
-
             }
         }
 
@@ -62,11 +71,13 @@ class ReporticoLang
                         $locale_arr["template"][$k] = iconv("utf-8", $output_encoding, $v);
                     }
                 }
-                if (!(ReporticoApp::get("locale")) || !is_array((ReporticoApp::get("locale"))) || $replace) {
+                
+                $local = ReporticoApp::get("locale");
+                if (!($local) || !is_array(($local)) || $replace) {
                     ReporticoApp::set("locale", $locale_arr);
                 } else {
-                    if (is_array((ReporticoApp::get("locale"))["template"]) && is_array($locale_arr) && is_array($locale_arr["template"])) {
-                        $arr = array("template" => array_merge((ReporticoApp::get("locale"))["template"], $locale_arr["template"]));
+                    if (is_array($local["template"]) && is_array($locale_arr) && is_array($locale_arr["template"])) {
+                        $arr = array("template" => array_merge($local["template"], $locale_arr["template"]));
                         ReporticoApp::set("locale", $arr);
                     }
                 }
@@ -101,11 +112,13 @@ class ReporticoLang
             }
         }
 
-        if (isset((ReporticoApp::get("translations"))[ReporticoApp::getConfig("language")]) && is_array((ReporticoApp::get("translations"))[ReporticoApp::getConfig("language")])) {
+        $translation = ReporticoApp::get("translations");
+        $langage = ReporticoApp::getConfig("language");
+        if (isset($translation[$langage]) && is_array($translation[$langage])) {
             // Convert UTF-8 mode to output character set if differen from native language pack
             if (strtolower($output_encoding) != "utf-8") {
-                foreach ((ReporticoApp::get("translations"))[ReporticoApp::getConfig("language")] as $k => $v) {
-                    (ReporticoApp::get("translations"))["template"][$k] = iconv("utf-8", $output_encoding, $v);
+                foreach ($translation[$langage] as $k => $v) {
+                    $translation["template"][$k] = iconv("utf-8", $output_encoding, $v);
                 }
             }
         }
@@ -114,8 +127,9 @@ class ReporticoLang
     // Set local language strings in templates
     static function localiseTemplateStrings(&$in_smarty, $in_template = "")
     {
-        if (ReporticoApp::get("locale")) {
-            foreach ((ReporticoApp::get("locale"))["template"] as $key => $string) {
+        $local = ReporticoApp::get("locale");
+        if ($local) {
+            foreach ($local["template"] as $key => $string) {
                 $in_smarty->assign($key, $string);
             }
         }
@@ -132,9 +146,10 @@ class ReporticoLang
         }
 
         $out_string = "T_" . $in_string;
-        if ((ReporticoApp::get("locale"))) {
-            if (array_key_exists($out_string, (ReporticoApp::get("locale"))["template"])) {
-                $out_string = (ReporticoApp::get("locale"))["template"][$out_string];
+        $local = ReporticoApp::get("locale");
+        if ($local) {
+            if (array_key_exists($out_string, $local["template"])) {
+                $out_string = $local["template"][$out_string];
             }
             else
                 $out_string = $in_string;

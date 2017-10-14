@@ -872,8 +872,8 @@ input.swAdminButton2
 
 .swMntMidSection
 {
-    width: 216px;
-    background-color: #eeeeff;
+   /* width: 216px;
+    background-color: #eeeeff;*/
     border-right: solid black 1px;
 }
 
@@ -936,7 +936,7 @@ input.swAdminButton2
 {
     width: 100%;
     border: 2px solid #CCCCFF;
-    background-color : #000000;
+    /*background-color : #000000;*/
     padding: 5px 5px 5px 5px;
     margin: 0px 0px 0px 0px;
 }

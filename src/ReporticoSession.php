@@ -2,8 +2,10 @@
 
 namespace Reportico;
 
-//Class to store global var
-
+/**
+ * Class to store global var
+ * 
+ */
 class ReporticoSession
 {
 
@@ -79,7 +81,7 @@ class ReporticoSession
             //unsetReporticoSessionParam("template");
             //session_regenerate_id(false);
             $session_name = session_id();
-
+            
             if (isset($_REQUEST['clear_session'])) {
                 self::initializeReporticoNamespace(self::reporticoNamespace());
             }
@@ -90,8 +92,25 @@ class ReporticoSession
             }
             $session_name = session_id();
         }
+        
+        ReporticoLog::debug("Final session name : $session_name");
     }
 
+    /**
+     * Does global reportico session exist
+     * 
+     * @return bool
+     */
+    static function existsReporticoSession()
+    {
+        if (isset($_SESSION[ReporticoApp::get("session_namespace_key")])) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+    
     /*
      * Cleanly shuts doen session
      */
@@ -143,74 +162,73 @@ class ReporticoSession
         return ($ret);
     }
 
-    /*
-     ** Returns if a particular reeportico session parameter is set
-     ** using current session namespace
+    /**
+     * Check if a particular reeportico session parameter is set
+     * using current session namespace
+     * 
+     * @param string $param Session parameter name
+     * @param string $session_name Session name
+     * 
+     * @return bool 
      */
     static function issetReporticoSessionParam($param, $session_name = false)
     {
-        if (!$session_name) {
-            return isset($_SESSION[ReporticoApp::get("session_namespace_key")][$param]);
-        } else {
-            return isset($_SESSION[$session_name][$param]);
-        }
-
+        if (!$session_name)
+            $session_name = ReporticoApp::get("session_namespace_key");
+        
+        return isset($_SESSION[$session_name][$param]);
     }
 
-    /*
-     ** Sets a reportico session_param
-     ** using current session namespace
+    /**
+     * Sets a reportico session_param using current session namespace
+     * 
+     * @param string $param Session parameter name
+     * @param mixed $value Session parameter value
+     * @param string $namespace Namespace session
+     * @param array|bool ???? 
+     * 
+     * @return void
      */
     static function setReporticoSessionParam($param, $value, $namespace = false, $array = false)
     {
-        if (!$namespace) {
-            $_SESSION[ReporticoApp::get("session_namespace_key")][$param] = $value;
+        if (!$namespace)
+            $namespace = ReporticoApp::get("session_namespace_key");
+        
+        if (!$array) {
+            $_SESSION[$namespace][$param] = $value;
         } else {
-            if (!$array) {
-                $_SESSION[$namespace][$param] = $value;
-            } else {
-                $_SESSION[$namespace][$array][$param] = $value;
-            }
+            $_SESSION[$namespace][$array][$param] = $value;
         }
+    
     }
 
-    /*
-     ** Gets the value of a reportico session_param
-     ** using current session namespace
+    /**
+     * Return the value of a reportico session_param
+     * using current session namespace
+     * 
+     * @param string $param Session parameter name
+     * 
+     * @return mixed
      */
     static function getReporticoSessionParam($param)
     {
-        if (isset($_SESSION[ReporticoApp::get("session_namespace_key")][$param])) {
+        if(self::issetReporticoSessionParam($param))
             return $_SESSION[ReporticoApp::get("session_namespace_key")][$param];
-        } else {
+        else
             return false;
-        }
-
     }
 
-    /*
-     ** Does global reportico session exist
-     */
-    static function existsReporticoSession()
-    {
-        if (isset($_SESSION[ReporticoApp::get("session_namespace_key")])) {
-            return true;
-        } else {
-            return false;
-        }
-
-    }
-
-    /*
-     ** Clears a reportico session_param
-     ** using current session namespace
+    /**
+     * Clears a reportico session_param using current session namespace
+     * 
+     * @param string $param Session parameter name
+     * @return void
      */
     static function unsetReporticoSessionParam($param)
     {
         if (isset($_SESSION[ReporticoApp::get("session_namespace_key")][$param])) {
             unset($_SESSION[ReporticoApp::get("session_namespace_key")][$param]);
         }
-
     }
 
     /*

@@ -26,7 +26,7 @@ class ReporticoLog
         //** Log management ***
         $this->logger = new Logger('reportico');
         //We store in reportico.log file all NOTICE message and above (WARNING, ERROR, etc.)
-        $this->logger->pushHandler(new StreamHandler('log/reportico.log', Logger::WARNING));
+        $this->logger->pushHandler(new StreamHandler('log/reportico.log', Logger::INFO));
 
         error_reporting(0);
     }
@@ -36,26 +36,45 @@ class ReporticoLog
         return $this->debug_mode;
     }
 
-    public function setDebugMode($value)
+    private function setDebugMode($value)
     {
         $this->debug_mode = $value;
 
-        if ($this->getDebugMode()) {
+        if ($this->debug_mode) {
             $browserHanlder = new \Monolog\Handler\BrowserConsoleHandler(\Monolog\Logger::DEBUG);
             $this->logger->pushHandler($browserHanlder);
         }
 
         error_reporting(E_ALL);
     }
+    
+    /*
+    * Shortcut function to activate debug mode
+    */
+    public static function activeDebugMode($TrueOrFalse = true){
+        $log = new ReporticoLog();
+        $log->getI()->setDebugMode($TrueOrFalse);
+        if($TrueOrFalse)
+            ReporticoLog::debug("*** Debug activation ****");
+        else
+            ReporticoLog::debug("*** Debug desactivation ****");
+    }
+    
+    
 
-    public function info($message)
+    /*
+    * Function to store information Log
+    */
+    public static function info($message)
     {
-        $this->logger->info($message);
+        $log = new ReporticoLog();
+        $log->getI()->logger->info($message);
     }
 
-    public function debug($message)
+    public static function debug($message)
     {
-        $this->logger->debug($message);
+         $log = new ReporticoLog();
+        $log->getI()->logger->debug($message);
     }
 
     /**
