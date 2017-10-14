@@ -55,12 +55,6 @@ class ReportHtml extends Report
     {
         Report::start();
 
-        $this->debug("HTML Start **");
-
-        //pdf_set_info($this->document,'Creator', 'God');
-        //pdf_set_info($this->document,'Author', 'Peter');
-        //pdf_set_info($this->document,'Title', 'The Title');
-
         $this->page_line_count = 0;
         $this->abs_top_margin = $this->absPagingHeight($this->getAttribute("TopMargin"));
         $this->abs_bottom_margin = $this->absPagingHeight($this->getAttribute("BottomMargin"));
@@ -71,7 +65,6 @@ class ReportHtml extends Report
     public function finish()
     {
         Report::finish();
-        $this->debug("HTML End **");
 
         if (preg_match("/\?/", $this->query->getActionUrl())) {
             $url_join_char = "&";
@@ -831,8 +824,6 @@ class ReportHtml extends Report
 
     public function finishPage()
     {
-        $this->debug("HTML Finish Page");
-        //pdf_end_page($this->document);
     }
 
     public function publish()
