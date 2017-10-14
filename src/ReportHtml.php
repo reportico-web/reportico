@@ -130,7 +130,7 @@ class ReportHtml extends Report
     public function absPagingHeight($height_string)
     {
         $height = (int) $height_string;
-        if (strstr($height_string, "%")) {
+        if ($this->page_height && strstr($height_string, "%")) {
             $height = (int)
             ($this->page_height * $height_string) / 100;
         }
