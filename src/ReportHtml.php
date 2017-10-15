@@ -267,6 +267,34 @@ class ReportHtml extends Report
         return $txt;
     }
 
+    public static function extractStylesAndTextFromStringStandalone($text, $styles, &$attributes, $parent_styleset = false, $grandparent_styleset = false)
+    {
+        $outtext = "";
+        $style_arr = ReportHtml::fetchCellStylesStandalone($text);
+
+        $widthset = false;
+
+        if ($style_arr) {
+            foreach ($style_arr as $k => $v) {
+                if ($k == "width") {
+                    $widthset = true;
+                }
+
+                if ($k == "background-image") {
+                    $styles .= "background: url('$v') no-repeat;";
+                } else {
+                    $styles .= "$k:$v;";
+                }
+
+            }
+        }
+
+        // If no width specified default to 100%
+        //if ( !$widthset )
+        //$styles .= "width:100%;";
+
+        return "<div style='$styles'>$text</div>";
+    }
     public function extractStylesAndTextFromString(&$text, &$styles, &$attributes, $parent_styleset = false, $grandparent_styleset = false)
     {
         $outtext = "";
@@ -345,6 +373,43 @@ class ReportHtml extends Report
         return;
     }
 
+    public static function fetchCellStylesStandalone(&$tx)
+    {
+        $styles = false;
+        $matches = array();
+        if (preg_match("/{STYLE[ ,]*([^}].*)}/", $tx, $matches)) {
+            if (isset($matches[1])) {
+                $stylearr = explode(";", $matches[1]);
+                $tx = preg_replace("/{STYLE[ ,]*[^}].*}/", "", $tx);
+                foreach ($stylearr as $v) {
+                    if (!$v) {
+                        continue;
+                    }
+
+                    $style = explode(":", $v);
+                    if (count($style) >= 2) {
+                        $name = trim($style[0]);
+                        $value = trim($style[1]);
+//echo "$name = $value, ";
+                        if (is_numeric($value)) {
+                            if ($name == "width") {
+                                $value .= "px";
+                            }
+
+                        }
+                        $styles[$name] = $value;
+                    }
+                }
+            }
+        }
+//echo "<BR>";
+
+        //$tx = $this->reporticoStringToPhp($tx);
+        //$tx = Assignment::reporticoMetaSqlCriteria($this->query, $tx);
+        $tx = preg_replace("/<\/*u>/", "", $tx);
+
+        return $styles;
+    }
     public function fetchCellStyles(&$tx)
     {
         $styles = false;

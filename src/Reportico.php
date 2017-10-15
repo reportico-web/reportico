@@ -1643,6 +1643,48 @@ class Reportico extends ReporticoObject
                 $request->setOrientation('portrait');
                 $request->setMargin('1cm');
 
+
+                //$headertext = '<div style="position:relative">';
+                $headertext .= '';
+                $headertext .= '<h1>Header <span style="float:right">%pageNum% / %pageTotal%</span></h1>';
+                $headertext .= ReportHtml::extractStylesAndTextFromStringStandalone("Northwind Suppliers<br>1 Northwind Road<BR>Somewhere<BR><BR>AA1 BB2{STYLE font-family:times;margin:1mm 0 0 0cm;position: absolute;background-color:#ff0000;border:solid 5px green;}");
+                $headertext .= ReportHtml::extractStylesAndTextFromStringStandalone("<image src='http://127.0.0.1/newarc/images/reportico100.png' style='margin:0 0 0 60px;border: solid 15px green;position: absolute;'>ooo{STYLE height:2cm;background-image:http://127.0.0.1/newarc/images/reportico100.png;margin:0 0 0 60px;left:400px;background-color:#ff0000;position: static;}");
+                //$headertext = '</div>';
+                //echo $headertext; 
+                /*
+                foreach ($this->query->pageHeaders as $header) {
+
+                    $styles = "";
+                    $text = $header->text;
+                    $attr = [];
+
+                    ReportHtml::extractStylesAndTextFromStringStandalone($text, $styles, $attr);
+                    $just = strtolower($header->getAttribute("justify"));
+
+                    $img = "";
+                    if ($styles) {
+                        $matches = array();
+                        if (preg_match("/background: url\('(.*)'\).*;/", $styles, $matches)) {
+                            $styles = preg_replace("/background: url\('(.*)'\).*;/", "", $styles);
+                            if (count($matches) > 1) {
+                                $img = "<img src='" . $matches[1] . "'/>";
+                            }
+                        }
+                        $headertext .= "<DIV class=\"swPageHeader\" style=\"$styles\">";
+                    } else {
+                        $headertext .= "<DIV class=\"swPageHeader\" >";
+                    }
+
+                    $headertext .= "$img$text";
+                    $headertext .= "</DIV>";
+                }
+                */
+
+                //$request->setRepeatingHeader('<h1>Header <span style="float:right">%pageNum% / %pageTotal%</span></h1>');
+                $request->setRepeatingHeader($headertext, 200);
+                $request->setRepeatingFooter('<footer>Footer <span style="font-size: 6px; float:right">%pageNum% / %pageTotal%</span></footer>');
+
+
                 // Get Response
                 $response = $client->getMessageFactory()->createResponse();
 
@@ -1669,6 +1711,7 @@ class Reportico extends ReporticoObject
                     header('Content-Disposition: attachment;filename=' . $attachfile);
                     header("Content-Type: application/pdf");
                     $buf = base64_encode(file_get_contents('/tmp/document.pdf'));
+                    //$buf = file_get_contents('/tmp/document.pdf');
                     $len = strlen($buf);
                     echo $buf;
                     die;
