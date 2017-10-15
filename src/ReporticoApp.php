@@ -364,6 +364,7 @@ class ReporticoApp
 
         // Avoid adding duplicate errors
         $errors = &self::getSystemErrors();
+        $ct = 0;
         foreach ( self::getSystemErrors() as $k => $val) {
             if ($val["errstr"] == $errstr) {
                 $errors[$k]["errct"] = $ct+1;

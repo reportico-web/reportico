@@ -53,9 +53,7 @@
 <script type="text/javascript">var reportico_bootstrap_modal = false;</script>
 <script type="text/javascript">var reportico_bootstrap_styles = false;</script>
 {/if}
-{literal}
 <script type="text/javascript">var reportico_ajax_mode = "{$REPORTICO_AJAX_MODE}";</script>
-{/literal}
 {if $REPORTICO_DYNAMIC_GRIDS}
 <script type="text/javascript">var reportico_dynamic_grids = true;</script>
 {if $REPORTICO_DYNAMIC_GRIDS_SORTABLE}

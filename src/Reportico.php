@@ -1,6 +1,9 @@
 <?php
 
+
 namespace Reportico;
+
+use JonnyW\PhantomJs\Client;
 
 /*
 Reportico - PHP Reporting Tool
@@ -1607,18 +1610,77 @@ class Reportico extends ReporticoObject
             $_REQUEST["target_format"] = "HTML";
         }
 
+
         if (array_key_exists("target_format", $_REQUEST) && $execute_mode == "EXECUTE" && count($this->targets) == 0) {
             $tf = $_REQUEST["target_format"];
             if (isset($_GET["target_format"])) {
                 $tf = $_GET["target_format"];
             }
-
             $this->target_format = strtolower($tf);
 
+
+            if ( $this->target_format == "pdf" && $this->pdf_engine == "phantomjs" )
+                $this->target_format = "html2pdf";
             if ($this->target_format == "pdf") {
                 $this->pdf_engine_file = "Report" . strtoupper($this->pdf_engine) . ".php";
                 require_once $this->pdf_engine_file;
-            } else {
+            }  else if ($this->target_format == "html2pdf") {
+
+
+                $client = Client::getInstance();
+
+                /** 
+                * @see JonnyW\PhantomJs\Http\PdfRequest
+                **/
+                ReporticoSession::closeReporticoSession();
+                session_write_close();
+                $request = $client->getMessageFactory()->createPdfRequest('http://127.0.0.1/newarc/run.php?execute_mode=EXECUTE&target_format=HTML&reportico_session_name=' . ReporticoSession::reporticoSessionName(), 'GET');
+
+                $request->setOutputFile('/tmp/document.pdf');
+                $request->setFormat('A4');
+                $request->setOrientation('portrait');
+                $request->setMargin('1cm');
+
+                // Get Response
+                $response = $client->getMessageFactory()->createResponse();
+
+                // Send the request
+                $client->send($request, $response);
+                //header('content-type: application/pdf');
+                //echo file_get_contents('/tmp/document.pdf');
+                //die;
+
+                // INLINE output is just returned to browser window it is invoked from
+                // with hope that browser uses plugin
+                $attachfile = "reportico.pdf";
+                if ($this->reportfilename) {
+                    $attachfile = preg_replace("/ /", "_", $this->reportfilename . ".pdf");
+                }
+
+                if ($this->pdf_delivery_mode == "INLINE") {
+                    header("Content-Type: application/pdf");
+                    echo file_get_contents('/tmp/document.pdf');
+                    die;
+                }
+                // DOWNLOAD_SAME_WINDOW output is ajaxed back to current browser window and then downloaded
+                else if ($this->pdf_delivery_mode == "DOWNLOAD_SAME_WINDOW" /*&& $this->reportico_ajax_called*/) {
+                    header('Content-Disposition: attachment;filename=' . $attachfile);
+                    header("Content-Type: application/pdf");
+                    $buf = base64_encode(file_get_contents('/tmp/document.pdf'));
+                    $len = strlen($buf);
+                    echo $buf;
+                    die;
+                }
+                // DOWNLOAD_NEW_WINDOW new browser window is opened to download file
+                else {
+                    header('Content-Disposition: attachment;filename=' . $attachfile);
+                    header("Content-Type: application/pdf");
+                    echo file_get_contents('/tmp/document.pdf');
+                    die;
+                }
+
+            }
+            else {
                 require_once "Report" . ucwords($this->target_format) . ".php";
             }
 
@@ -2811,6 +2873,7 @@ class Reportico extends ReporticoObject
         // Date format for ui Datepicker
         $smarty->assign('AJAX_DATEPICKER_LANGUAGE', ReporticoLocale::getDatepickerLanguage(ReporticoApp::get("language")));
         $smarty->assign('AJAX_DATEPICKER_FORMAT', ReporticoLocale::getDatepickerFormat(ReporticoApp::getConfig("prep_dateformat")));
+        $smarty->assign('PDF_DELIVERY_MODE', $this->pdf_delivery_mode);
 
         $smarty->assign('SHOW_OPEN_LOGIN', false);
         $smarty->assign('DB_LOGGEDON', false);
@@ -4072,6 +4135,8 @@ class Reportico extends ReporticoObject
                                 $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
                                 return $txt;
                             } else {
+                                //$txt = $this->panels["MAIN"]->smarty->fetch($template);
+                                //file_put_contents("/tmp/fred1", $txt);
                                 $this->panels["MAIN"]->smarty->display($template);
                                 $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
                             }
