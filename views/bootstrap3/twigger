@@ -1,0 +1,21 @@
+#sed -i "s/{\$\([A-Z0-9_a-z]*\)}/{{ \1 }}/g" *tpl
+sed -i "s/{if \(.*\)}/{% if \1 %}/g" *tpl
+sed -i "s/{\\if}/{% endif  %}/g" *tpl
+sed -i "s/isset(\(.*\))/\1 is defined/g" *tpl
+sed -i "s/count(\(.*\))/\1|length/g" *tpl
+sed -i "s/strlen(\(.*\))/\1|length/g" *tpl
+sed -i "s/{\/if}/{% endif %}/g" *tpl
+sed -i "s/\\$//g" *tpl
+sed -i "s/!/not /g" *tpl
+sed -i "s/{else}/{% else %}/g" *tpl
+sed -i "s/ekse/else/g" *tpl
+sed -i "s/{literal}//g" *tpl
+sed -i "s/{\/literal}//g" *tpl
+sed -i "s/{[A-Z_]*\[\([^\]]*\)]\.\([^}]*\)}/{{ \1.\2 }}/g" *tpl
+sed -i "s/{\/section}/{% endfor %}/g" *tpl
+sed -i "s/{{\(.*\)% }}/\1%}/g" *tpl
+sed -i "s/{section name=\(.*\) loop=\(.*\)}/{% for \1 in \2 %}/g" *tpl
+sed -i "s/&&/and/g" *tpl
+sed -i "s/{[A-Z_]*\[\([^\]]*\)]\.\([a-z_]*\)}/{{ \1.\2 }}/g" *tpl
+sed -i "s/[A-Z_]*\[\([^\]]*\)]\.\([a-z_]*\)/\1.\2/g" *tpl
+

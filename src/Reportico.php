@@ -335,6 +335,9 @@ class Reportico extends ReporticoObject
     public $csrfToken;
     public $plugins = array();
 
+    // Template Engine
+    public $templateEngine = false;
+
     // Response code to return back
     public $http_response_code = 200;
 
@@ -348,6 +351,7 @@ class Reportico extends ReporticoObject
         $this->parent_query = &$this;
 
     }
+
 
     // Dummy functions for yii to work with Reportico
     public function init()
@@ -2885,9 +2889,8 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function initializePanels($mode)
     {
-        $smarty = new \SmartyBC();
-        $smarty->template_dir = ReporticoUtility::findBestLocationInIncludePath("templates");
-        $smarty->compile_dir = ReporticoUtility::findBestLocationInIncludePath("templates_c");
+        //$smarty = new ReporticoTemplateSmarty();
+        $smarty = new ReporticoTemplateTwig();
 
         $dummy = "";
         $version = $this->version;
