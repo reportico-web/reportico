@@ -1,5 +1,5 @@
 <?php
-namespace Reportico;
+namespace Reportico\Engine;
 
 //global $_configure_mode;
 

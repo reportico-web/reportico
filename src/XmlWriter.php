@@ -1,6 +1,6 @@
 <?php
 
-namespace Reportico;
+namespace Reportico\Engine;
 
 /**
  * Class XmlWriter

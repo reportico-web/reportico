@@ -1,6 +1,6 @@
 <?php
 
-namespace Reportico;
+namespace Reportico\Engine;
 
 use Monolog\Handler\BrowserConsoleHandler;
 use Monolog\Handler\StreamHandler;

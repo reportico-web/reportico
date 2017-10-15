@@ -1,4 +1,4 @@
-<?php namespace Reportico;
+<?php namespace Reportico\Engine;
 
 $translations = array (
         "ar_ar" => array (

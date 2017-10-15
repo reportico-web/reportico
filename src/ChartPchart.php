@@ -32,7 +32,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  * @version $Id: swgraph_pchart.php,v 1.17 2014/05/17 15:12:31 peter Exp $
  */
-namespace Reportico;
+namespace Reportico\Engine;
 
 error_reporting(E_ALL);
 

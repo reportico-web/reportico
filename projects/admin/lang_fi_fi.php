@@ -1,5 +1,5 @@
 <?php 
-namespace Reportico;
+namespace Reportico\Engine;
 $translations = array (
 "fi_fi" => array ( 
     "Specify Project Name" => "Valitse Projektin nimi",

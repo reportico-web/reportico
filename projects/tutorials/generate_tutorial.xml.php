@@ -1,4 +1,4 @@
-namespace Reportico;
+namespace Reportico\Engine;
 
 $sql = <<<SQL
 /*Table structure for table `northwind_categories` */

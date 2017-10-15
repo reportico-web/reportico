@@ -32,7 +32,7 @@
  * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  * @version $Id: swgraph.php,v 1.14 2014/05/17 15:12:31 peter Exp $
  */
-namespace Reportico;
+namespace Reportico\Engine;
 
 error_reporting(E_ALL);
 

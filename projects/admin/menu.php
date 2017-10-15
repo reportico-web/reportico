@@ -1,5 +1,5 @@
 <?php
-namespace Reportico;
+namespace Reportico\Engine;
 
 $menu_title = ReporticoApp::getConfig("project_title");
 $menu = array (

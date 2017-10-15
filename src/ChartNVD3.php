@@ -33,7 +33,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * @version $Id: swgraph_nvd3.php,v 1.3 2014/05/17 15:12:31 peter Exp $
  */
 
-namespace Reportico;
+namespace Reportico\Engine;
 
 error_reporting(E_ALL);
 

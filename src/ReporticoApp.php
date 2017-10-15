@@ -1,7 +1,7 @@
 <?php
 
  
-namespace Reportico;
+namespace Reportico\Engine;
 
 /**
  * Class used to store Global var

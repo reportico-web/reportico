@@ -1,6 +1,6 @@
 <?php
 
-namespace Reportico;
+namespace Reportico\Engine;
 
 //Class to store global var
 
@@ -156,13 +156,13 @@ class ReporticoUtility
         if (__DIR__) {
             $selfdir = dirname(__DIR__);
             $new_file_path = $selfdir . "/" . $file_path;
-            $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler", 0);
+            $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler", 0);
             if (@file_exists($new_file_path) || is_dir($new_file_path)) {
                 $new_file_path = $selfdir . "/" . $file_path;
-                $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
+                $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                 return true;
             }
-            $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
+            $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
         }
 
         // else look in incude path
@@ -184,15 +184,15 @@ class ReporticoUtility
             }
         }
         // Turn off Error handling for the following to avoid open_basedir errors
-        $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler", 0);
+        $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler", 0);
         foreach ($_path_array as $_include_path) {
             if (@file_exists($_include_path . "/" . $file_path)) {
                 $new_file_path = $_include_path . "/" . $file_path;
-                $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
+                $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                 return true;
             }
         }
-        $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
+        $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
 
         $new_file_path = $file_path;
         return false;

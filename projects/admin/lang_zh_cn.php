@@ -1,5 +1,5 @@
 <?php
-namespace Reportico;
+namespace Reportico\Engine;
 $translations = array (
 		"zh_cn" => array (
             "Project Name" => "项目名称",

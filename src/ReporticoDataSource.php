@@ -37,7 +37,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * @version $Id: swdb.php,v 1.17 2014/05/17 15:12:31 peter Exp $
  */
 
-namespace Reportico;
+namespace Reportico\Engine;
 
 use \PDO;
 

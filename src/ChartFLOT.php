@@ -33,7 +33,7 @@
  * @version $Id: swgraph_flot.php,v 1.15 2013/09/26 19:23:06 peter Exp $
  */
 
-namespace Reportico;
+namespace Reportico\Engine;
 
 error_reporting(E_ALL);
 

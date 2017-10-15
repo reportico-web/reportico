@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Reportico;
+namespace Reportico\Engine;
 
 use JonnyW\PhantomJs\Client;
 
@@ -3586,7 +3586,7 @@ class Reportico extends ReporticoObject
         if ($do_defaults) {
             $custom_functions = array();
 
-            $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler", 0);
+            $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler", 0);
             if (@file_exists($this->projects_folder . "/" . ReporticoApp::getconfig("project") . "/ReporticoDefaults.php")) {
                 include_once $this->projects_folder . "/" . ReporticoApp::getconfig("project") . "/ReporticoDefaults.php";
             } else if (@file_exists(__DIR__ . "/ReporticoDefaults.php")) {
@@ -3597,7 +3597,7 @@ class Reportico extends ReporticoObject
                 reporticoDefaults($this);
             }
 
-            $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
+            $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
         }
 
     }
@@ -3658,8 +3658,8 @@ class Reportico extends ReporticoObject
             $mode = $this->getExecuteMode();
         }
 
-        $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
-        set_exception_handler("Reportico\ReporticoApp::ExceptionHandler");
+        $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
+        set_exception_handler("Reportico\Engine\ReporticoApp::ExceptionHandler");
 
         // If new session, we need to use initial project, report etc, otherwise ignore them
         $this->handleInitialSettings();
@@ -3920,11 +3920,11 @@ class Reportico extends ReporticoObject
 
                 if ($this->return_output_to_caller) {
                     $txt = $this->panels["MAIN"]->smarty->fetch($template);
-                    $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
+                    $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                     return $txt;
                 } else {
                     $this->panels["MAIN"]->smarty->display($template);
-                    $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
+                    $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                 }
                 break;
 
@@ -3954,11 +3954,11 @@ class Reportico extends ReporticoObject
 
                 if ($this->return_output_to_caller) {
                     $txt = $this->panels["MAIN"]->smarty->fetch($template);
-                    $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
+                    $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                     return $txt;
                 } else {
                     $this->panels["MAIN"]->smarty->display($template);
-                    $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
+                    $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                 }
                 break;
 
@@ -4005,11 +4005,11 @@ class Reportico extends ReporticoObject
 
                 if ($this->return_output_to_caller) {
                     $txt = $this->panels["MAIN"]->smarty->fetch($template);
-                    $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
+                    $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                     return $txt;
                 } else {
                     $this->panels["MAIN"]->smarty->display($template);
-                    $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
+                    $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                 }
                 break;
 
@@ -4117,11 +4117,11 @@ class Reportico extends ReporticoObject
 
                     if (false && $this->return_output_to_caller) {
                         $txt = $this->panels["MAIN"]->smarty->fetch($template);
-                        $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
+                        $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                         return $txt;
                     } else {
                         $this->panels["MAIN"]->smarty->display($template);
-                        $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
+                        $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                     }
                 } else {
                     if ($this->target_format != "HTML") {
@@ -4180,13 +4180,13 @@ class Reportico extends ReporticoObject
 
                             if ($this->return_output_to_caller) {
                                 $txt = $this->panels["MAIN"]->smarty->fetch($template);
-                                $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
+                                $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                                 return $txt;
                             } else {
                                 //$txt = $this->panels["MAIN"]->smarty->fetch($template);
                                 //file_put_contents("/tmp/fred1", $txt);
                                 $this->panels["MAIN"]->smarty->display($template);
-                                $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
+                                $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                             }
 
                         }
@@ -4533,7 +4533,7 @@ class Reportico extends ReporticoObject
                     $code = "if ( \$_connection )" . $code;
                     $code = "\$_pdo = false;" . $code;
                     $code = "\$_connection =& \$this->datasource->ado_connection;" . $code;
-                    $code = "namespace Reportico;" . $code;
+                    $code = "namespace Reportico\Engine;" . $code;
 
                     // set to the user defined error handler
                     ReporticoApp::set("eval_code", $code);
@@ -5469,32 +5469,32 @@ class Reportico extends ReporticoObject
         $proj_conf = $proj_dir . "/config.php";
         $proj_template = $proj_dir . "/adminconfig.template";
 
-        $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler", 0);
+        $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler", 0);
         if (!@file_exists($proj_parent)) {
-            $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
+            $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
             return "Projects area $proj_parent does not exist - cannot write project";
         }
 
         if (@file_exists($proj_conf)) {
             if (!is_writeable($proj_conf)) {
-                $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
+                $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                 return "Projects config file $proj_conf is not writeable - cannot write config file - change permissions to continue";
             }
         }
 
         if (!is_writeable($proj_dir)) {
-            $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
+            $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
             return "Projects area $proj_dir is not writeable - cannot write project password in config.php - change permissions to continue";
         }
 
         if (!@file_exists($proj_conf)) {
             if (!@file_exists($proj_template)) {
-                $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
+                $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                 return "Projects config template file $proj_template does not exist - please contact reportico.org";
             }
         }
 
-        $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
+        $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
 
         if (@file_exists($proj_conf)) {
             $txt = file_get_contents($proj_conf);
@@ -5622,7 +5622,7 @@ class Reportico extends ReporticoObject
             ReporticoApp::setConfig("admin_menu", false);
             ReporticoApp::set('menu_title', '');
             ReporticoApp::setConfig("dropdown_menu", false);
-            $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
+            $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
             ReporticoApp::handleError("Project Directory $project not found. Check INCLUDE_PATH or project name");
             return;
         }
@@ -5675,7 +5675,7 @@ class Reportico extends ReporticoObject
             ReporticoApp::set("projpath", false);
             ReporticoApp::set('menu_title', '');
             ReporticoApp::setConfig("dropdown_menu", false);
-            $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
+            $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
             ReporticoApp::handleError("Configuration Definition file config.php not found in project $project", E_USER_ERROR);
         }
 
