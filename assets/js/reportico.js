@@ -246,6 +246,7 @@ function resizeHeaders()
    });
    reportico_jquery(this).css("height", maxheight + "px");
   });
+
   //reportico_jquery(".swNewPageHeaderBlock").hide();
         //ct = 1;
         //hdrpos = 0;
@@ -261,6 +262,26 @@ function resizeHeaders()
     
 
   //reportico_jquery(".swRepForm").columnize();
+
+  // Resize Custom Headers
+  reportico_jquery(".reporticoGroupCustomHeader,.reporticoGroupCustomTrailer").each(function() {
+    var parenty = reportico_jquery(this).position().top;
+    var maxheight = 0;
+    reportico_jquery(this).find("div").each(function() {
+        var headerheight  = reportico_jquery(this).outerHeight();
+        reportico_jquery(this).find("img").each(function() {
+            var imgheight = reportico_jquery(this).prop("height");
+            if ( imgheight > headerheight )
+                headerheight = imgheight;
+        });
+        var margintop  = parseInt(reportico_jquery(this).css("margin-top"));
+        var marginbottom  = parseInt(reportico_jquery(this).css("margin-bottom"));
+        headerheight += margintop + marginbottom;
+        if ( headerheight > maxheight )
+            maxheight = headerheight;
+   });
+   reportico_jquery(this).css("height", maxheight + "px");
+  });
 
 }
 

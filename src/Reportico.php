@@ -1634,7 +1634,9 @@ class Reportico extends ReporticoObject
                 **/
                 ReporticoSession::closeReporticoSession();
                 session_write_close();
-                $request = $client->getMessageFactory()->createPdfRequest('http://127.0.0.1/newarc/run.php?execute_mode=EXECUTE&target_format=HTML&reportico_session_name=' . ReporticoSession::reporticoSessionName(), 'GET');
+                $url = 'http://127.0.0.1/newarc/run.php?execute_mode=EXECUTE&target_format=HTML&reportico_session_name=' . ReporticoSession::reporticoSessionName();
+                $url .= "&MANUAL_country=UK";
+                $request = $client->getMessageFactory()->createPdfRequest($url, 'GET');
 
                 $request->setOutputFile('/tmp/document.pdf');
                 $request->setFormat('A4');

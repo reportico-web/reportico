@@ -508,6 +508,16 @@ class ReportHtml extends Report
             return;
         }
 
+        if ( $custom)
+        {
+            $style = "";
+            $attr = array();
+            $this->extractStylesAndTextFromString ( $custom, $styles, $attr );
+            $this->text .= "<div style=\"$styles\">$custom </div>";
+            return;
+        }
+
+
         $this->text .= '<TR class="swRepGrpHdrRow">';
         $this->text .= '<TD class="swRepGrpHdrLbl" ' . $this->getStyleTags($this->query->output_group_header_label_styles) . '>';
         $qn = ReporticoUtility::getQueryColumn($col->query_name, $this->query->columns);
@@ -652,6 +662,70 @@ class ReportHtml extends Report
             $this->text .= "</TABLE>";
         }
         $this->page_started = false;
+    }
+
+    public function formatGroupCustomHeaderStart() 
+    {
+        $this->text .= '<div class="reporticoGroupCustomHeader" style="position: relative">'; 
+    }
+
+    public function formatGroupCustomHeaderEnd() 
+    {
+        $this->text .= "</div>"; 
+    }
+
+
+    public function formatCustomHeader(&$col, $custom) // HTML
+    {
+        // If this is the first custom header break a little
+        if (!ReporticoSession::getReporticoSessionParam("target_show_group_headers")) {
+            return;
+        }
+
+        if (!$custom) {
+            return;
+        }
+
+        $style = "";
+        $attr = array();
+        $this->extractStylesAndTextFromString ( $custom, $styles, $attr );
+        $styles .= "position: absolute;";
+        $this->text .= "<div style=\"$styles\">$custom </div>";
+        return;
+
+    }
+
+
+    public function formatGroupCustomTrailerStart() 
+    {
+        $this->text .= '<div class="reporticoGroupCustomTrailer" style="position: relative">'; 
+    }
+
+    public function formatGroupCustomTrailerEnd() 
+    {
+        $this->text .= "</div>"; 
+    }
+
+
+    public function formatCustomTrailer(&$trailer_col, &$value_col) // PDF
+    {
+        // If this is the first custom trailer break a little
+        if (!ReporticoSession::getReporticoSessionParam("target_show_group_trailers")) {
+            return;
+        }
+
+        if (!$value_col["GroupTrailerCustom"]) {
+            return;
+        }
+
+        $style = "";
+        $attr = array();
+        $custom = $value_col["GroupTrailerCustom"];
+        $this->extractStylesAndTextFromString ( $custom, $styles, $attr );
+        $styles .= "position: absolute";
+        $this->text .= "<div style=\"$styles\">$custom </div>";
+        return;
+
     }
 
     public function endLine()

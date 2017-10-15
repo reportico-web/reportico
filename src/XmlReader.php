@@ -1886,7 +1886,7 @@ class XmlReader
 
                 $updateitem = &$anal["item"];
                 $gr = &$anal["group"];
-                $anal["quer"]->set_group_header_by_number
+                $anal["quer"]->setGRoupHeaderByNumber
                 ($anal["groupname"], $anal["number"], $updates["GroupHeaderColumn"], $updates["GroupHeaderCustom"], $updates["ShowInHTML"], $updates["ShowInPDF"]);
                 break;
 
@@ -1905,7 +1905,7 @@ class XmlReader
 
                 $updateitem = &$anal["item"];
                 $gr = &$anal["group"];
-                $anal["quer"]->set_group_trailer_by_number
+                $anal["quer"]->setGroupTrailerByNumber
                 ($anal["groupname"], $anal["number"],
                     $updates["GroupTrailerDisplayColumn"],
                     $updates["GroupTrailerValueColumn"],

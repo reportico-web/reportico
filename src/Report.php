@@ -754,13 +754,23 @@ class Report extends ReporticoObject
                             if ($passno == 2) {
                                 break;
                             }
-
                         }
+
                         // Column Trailers
                         if ($this->query->target_format == "PDF") {
                             foreach ($group->trailers_by_column as $kk => $trailer) {
                                 foreach ($trailer as $kk2 => $colgrp) {
                                     if ($colgrp["ShowInPDF"] == "yes") {
+                                        $this->formatCustomTrailer($w, $colgrp);
+                                    }
+
+                                }
+                            } // foreach
+                        }
+                        if ($this->query->target_format == "HTML") {
+                            foreach ($group->trailers_by_column as $kk => $trailer) {
+                                foreach ($trailer as $kk2 => $colgrp) {
+                                    if ($colgrp["ShowInHTML"] == "yes") {
                                         $this->formatCustomTrailer($w, $colgrp);
                                     }
 
@@ -889,7 +899,8 @@ class Report extends ReporticoObject
                     for ($i = 0; $i < count($group->headers); $i++) {
                         $col = &$group->headers[$i]["GroupHeaderColumn"];
                         $custom = $group->headers[$i]["GroupHeaderCustom"];
-                        if ($group->headers[$i]["ShowInHTML"] == "yes" && preg_match("/ReportHtml/", get_class($this))) {
+                        // Put off HTML Custom headers until later
+                        if ($group->headers[$i]["ShowInHTML"] == "yes" && preg_match("/ReportHtml/", get_class($this)) && !$custom) {
                             $this->formatGroupHeader($col, $custom);
                         }
 
@@ -902,6 +913,7 @@ class Report extends ReporticoObject
                         }
 
                     }
+
                 }
 
                 if ($graphs = &$this->query->getGraphByName($group->group_name)) {
@@ -911,6 +923,23 @@ class Report extends ReporticoObject
                 }
 
                 $this->formatGroupHeaderEnd();
+
+                // For HTML custom headers draw them after the regular ones
+                if ($this->query->target_format == "HTML") {
+                    $this->formatGroupCustomHeaderStart();
+
+                    for ($i = 0; $i < count($group->headers); $i++) {
+                        $col = &$group->headers[$i]["GroupHeaderColumn"];
+                        $custom = $group->headers[$i]["GroupHeaderCustom"];
+                        if ( $custom )
+                            if ($group->headers[$i]["ShowInHTML"] == "yes" && preg_match("/ReportHtml/", get_class($this))) {
+                                $this->formatCustomHeader($col, $custom);
+                            }
+                    }
+
+                    $this->formatGroupCustomHeaderEnd();
+                }
+
                 $this->applyFormat($group, "after_header");
             } else if (($group->group_name == "REPORT_BODY" && $this->line_count == 0) || $this->query->changed($group->group_name)) {
                 if ($graphs = &$this->query->getGraphByName($group->group_name)) {

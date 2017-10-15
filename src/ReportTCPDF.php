@@ -1058,7 +1058,6 @@ class ReportTCPDF extends Report
     }
 
     public function formatCustomTrailer(&$trailer_col, &$value_col) // PDF
-
     {
         // If this is the first custom trailer break a little
         if (!ReporticoSession::getReporticoSessionParam("target_show_group_trailers")) {
