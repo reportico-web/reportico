@@ -1065,7 +1065,7 @@ input.swAdminButton2
 {
     font-size: 10pt;
     width: auto !important;
-    max-width:380px;
+    max-width:280px;
 }
 
 .swMntHelpLink
@@ -1165,7 +1165,7 @@ input.swAdminButton2
     .swRepButtons { display: none; }
     .prepareAjaxExecuteIgnore { display: none; }
     .swRepForm { border: none; }
-    .swRepBody { width: 100%; margin: 0; border: none; }
+    .swRepBody { width: 100%; margin: 0px; border: none; }
 
     .swLastPageFooterBlock { display: block; }
     .swNewPageHeaderBlock { display: block; } 
@@ -1346,3 +1346,13 @@ border-top: 1px solid #e5e5e5;
     padding: 15px !important;
 }
 
+
+.unbreakable {
+    display:inline-block;
+}
+.unbreakable:after {
+    content: '';
+    display:block;
+    height:0px;
+    visibility: hidden;
+}

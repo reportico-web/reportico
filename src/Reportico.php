@@ -147,6 +147,7 @@ class Reportico extends ReporticoObject
     public $projects_folder = "projects";
     public $admin_projects_folder = "projects";
     public $compiled_templates_folder = "templates_c";
+    public $tmp_folder = __DIR__."/../tmp";
 
     public $attributes = array(
         "ReportTitle" => "Set Report Title",
@@ -363,7 +364,7 @@ class Reportico extends ReporticoObject
     public function &createGraph()
     {
         $engine = $this->charting_engine;
-        if ($this->target_format == "HTML") {
+        if ($this->target_format == "HTML" || $this->target_format == "HTML2PDF") {
             $engine = $this->charting_engine_html;
         }
 
@@ -1142,7 +1143,7 @@ class Reportico extends ReporticoObject
         // Store filter group open close state
         if (isset($_REQUEST["closedfilters"]) || isset($_REQUEST["openfilters"])) {
             if (isset($_REQUEST["closedfilters"])) {
-                ReporticoSession::setReporticoSessionParam("closedfilters", $_REQUEST["closedfilters"]);
+                //ReporticoSession::setReporticoSessionParam("closedfilters", $_REQUEST["closedfilters"]);
             } else {
                 ReporticoSession::setReporticoSessionParam("closedfilters", false);
             }
@@ -1610,7 +1611,7 @@ class Reportico extends ReporticoObject
             $_REQUEST["target_format"] = "HTML";
         }
 
-
+         
         if (array_key_exists("target_format", $_REQUEST) && $execute_mode == "EXECUTE" && count($this->targets) == 0) {
             $tf = $_REQUEST["target_format"];
             if (isset($_GET["target_format"])) {
@@ -1618,116 +1619,18 @@ class Reportico extends ReporticoObject
             }
             $this->target_format = strtolower($tf);
 
-
-            if ( $this->target_format == "pdf" && $this->pdf_engine == "phantomjs" )
-                $this->target_format = "html2pdf";
             if ($this->target_format == "pdf") {
                 $this->pdf_engine_file = "Report" . strtoupper($this->pdf_engine) . ".php";
-                require_once $this->pdf_engine_file;
-            }  else if ($this->target_format == "html2pdf") {
-
-
-                $client = Client::getInstance();
-
-                /** 
-                * @see JonnyW\PhantomJs\Http\PdfRequest
-                **/
-                ReporticoSession::closeReporticoSession();
-                session_write_close();
-                $url = 'http://127.0.0.1/newarc/run.php?execute_mode=EXECUTE&target_format=HTML&reportico_session_name=' . ReporticoSession::reporticoSessionName();
-                $url .= "&MANUAL_country=UK";
-                $request = $client->getMessageFactory()->createPdfRequest($url, 'GET');
-
-                $request->setOutputFile('/tmp/document.pdf');
-                $request->setFormat('A4');
-                $request->setOrientation('portrait');
-                $request->setMargin('1cm');
-
-
-                //$headertext = '<div style="position:relative">';
-                $headertext .= '';
-                $headertext .= '<h1>Header <span style="float:right">%pageNum% / %pageTotal%</span></h1>';
-                $headertext .= ReportHtml::extractStylesAndTextFromStringStandalone("Northwind Suppliers<br>1 Northwind Road<BR>Somewhere<BR><BR>AA1 BB2{STYLE font-family:times;margin:1mm 0 0 0cm;position: absolute;background-color:#ff0000;border:solid 5px green;}");
-                $headertext .= ReportHtml::extractStylesAndTextFromStringStandalone("<image src='http://127.0.0.1/newarc/images/reportico100.png' style='margin:0 0 0 60px;border: solid 15px green;position: absolute;'>ooo{STYLE height:2cm;background-image:http://127.0.0.1/newarc/images/reportico100.png;margin:0 0 0 60px;left:400px;background-color:#ff0000;position: static;}");
-                //$headertext = '</div>';
-                //echo $headertext; 
-                /*
-                foreach ($this->query->pageHeaders as $header) {
-
-                    $styles = "";
-                    $text = $header->text;
-                    $attr = [];
-
-                    ReportHtml::extractStylesAndTextFromStringStandalone($text, $styles, $attr);
-                    $just = strtolower($header->getAttribute("justify"));
-
-                    $img = "";
-                    if ($styles) {
-                        $matches = array();
-                        if (preg_match("/background: url\('(.*)'\).*;/", $styles, $matches)) {
-                            $styles = preg_replace("/background: url\('(.*)'\).*;/", "", $styles);
-                            if (count($matches) > 1) {
-                                $img = "<img src='" . $matches[1] . "'/>";
-                            }
-                        }
-                        $headertext .= "<DIV class=\"swPageHeader\" style=\"$styles\">";
-                    } else {
-                        $headertext .= "<DIV class=\"swPageHeader\" >";
-                    }
-
-                    $headertext .= "$img$text";
-                    $headertext .= "</DIV>";
+                if ( $this->pdf_engine == "phantomjs" ) {
+                    require_once "ReportPhantomJSPDF.php";
                 }
-                */
-
-                //$request->setRepeatingHeader('<h1>Header <span style="float:right">%pageNum% / %pageTotal%</span></h1>');
-                $request->setRepeatingHeader($headertext, 200);
-                $request->setRepeatingFooter('<footer>Footer <span style="font-size: 6px; float:right">%pageNum% / %pageTotal%</span></footer>');
-
-
-                // Get Response
-                $response = $client->getMessageFactory()->createResponse();
-
-                // Send the request
-                $client->send($request, $response);
-                //header('content-type: application/pdf');
-                //echo file_get_contents('/tmp/document.pdf');
-                //die;
-
-                // INLINE output is just returned to browser window it is invoked from
-                // with hope that browser uses plugin
-                $attachfile = "reportico.pdf";
-                if ($this->reportfilename) {
-                    $attachfile = preg_replace("/ /", "_", $this->reportfilename . ".pdf");
-                }
-
-                if ($this->pdf_delivery_mode == "INLINE") {
-                    header("Content-Type: application/pdf");
-                    echo file_get_contents('/tmp/document.pdf');
-                    die;
-                }
-                // DOWNLOAD_SAME_WINDOW output is ajaxed back to current browser window and then downloaded
-                else if ($this->pdf_delivery_mode == "DOWNLOAD_SAME_WINDOW" /*&& $this->reportico_ajax_called*/) {
-                    header('Content-Disposition: attachment;filename=' . $attachfile);
-                    header("Content-Type: application/pdf");
-                    $buf = base64_encode(file_get_contents('/tmp/document.pdf'));
-                    //$buf = file_get_contents('/tmp/document.pdf');
-                    $len = strlen($buf);
-                    echo $buf;
-                    die;
-                }
-                // DOWNLOAD_NEW_WINDOW new browser window is opened to download file
-                else {
-                    header('Content-Disposition: attachment;filename=' . $attachfile);
-                    header("Content-Type: application/pdf");
-                    echo file_get_contents('/tmp/document.pdf');
-                    die;
-                }
-
-            }
+                else
+                    require_once $this->pdf_engine_file;
+            } 
             else {
                 require_once "Report" . ucwords($this->target_format) . ".php";
             }
+
 
             $this->target_format = strtoupper($tf);
             switch ($tf) {
@@ -1754,6 +1657,13 @@ class Reportico extends ReporticoObject
                     $rep->setQuery($this);
                     break;
 
+                case "htmlpdf":
+                case "HTML2PDF":
+                    $rep = new ReportHtml2pdf();
+                    $this->addTarget($rep);
+                    $rep->setQuery($this);
+                    break;
+
                 case "htmlgrid":
                 case "HTMLGRID":
                     $rep = new ReportHtml_grid_template();
@@ -1763,7 +1673,9 @@ class Reportico extends ReporticoObject
 
                 case "pdf":
                 case "PDF":
-                    if ($this->pdf_engine == "tcpdf") {
+                    if ($this->pdf_engine == "phantomjs") {
+                        $rep = new ReportPhantomJSPDF();
+                    } else if ($this->pdf_engine == "tcpdf") {
                         $rep = new ReportTCPDF();
                     } else {
                         $rep = new ReportFPDF();
@@ -2256,6 +2168,7 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function buildQuery($in_is_expanding = false, $criteria_name = "", $in_design_mode = false, $no_warnings = false)
     {
+
         if (!$criteria_name) {
             $this->setRequestColumns();
         }
@@ -2536,7 +2449,7 @@ class Reportico extends ReporticoObject
     }
 
     // -----------------------------------------------------------------------------
-    // Function : delete_group_header_by_number
+    // Function : deleteGroupHeaderByNumber
     // -----------------------------------------------------------------------------
     public function deleteGroupHeaderByNumber($query_name, $header_number)
     {
@@ -3672,6 +3585,7 @@ class Reportico extends ReporticoObject
         ReporticoSession::registerSessionParam("external_param2", $this->external_param2);
         ReporticoSession::registerSessionParam("external_param3", $this->external_param3);
 
+
         $this->user_parameters = ReporticoSession::registerSessionParam("user_parameters", $this->user_parameters);
         $this->dropdown_menu = ReporticoSession::registerSessionParam("dropdown_menu", $this->dropdown_menu);
         $this->static_menu = ReporticoSession::registerSessionParam("static_menu", $this->static_menu);
@@ -3798,7 +3712,6 @@ class Reportico extends ReporticoObject
                 } else {
                     ReporticoSession::setReporticoSessionParam("firstTimeIn", false);
                 }
-
                 break;
 
             case "MAINTAIN":
@@ -3827,8 +3740,9 @@ class Reportico extends ReporticoObject
             if (!ReporticoUtility::getRequestItem("printable_html") && ($runfromcriteriascreen || (!ReporticoSession::issetReporticoSessionParam('latestRequest') || !ReporticoSession::getReporticoSessionParam('latestRequest')))) {
                 ReporticoSession::setReporticoSessionParam('latestRequest', $_REQUEST);
             } else {
-                if (!$runfromcriteriascreen && $refreshmode) {
+                if (!$runfromcriteriascreen && ( $refreshmode || $this->target_format == "HTML2PDF" )) {
                     $_REQUEST = ReporticoSession::getReporticoSessionParam('latestRequest');
+                    $_REQUEST["target_format"] = $this->target_format;
                 }
             }
         } else {
@@ -4011,6 +3925,7 @@ class Reportico extends ReporticoObject
                 break;
 
             case "EXECUTE":
+
                 ReporticoLang::loadModeLanguagePack("languages", $this->output_charset);
                 $this->initializePanels($mode);
                 $this->handleXmlQueryInput($mode);
@@ -4049,22 +3964,30 @@ class Reportico extends ReporticoObject
                 ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->smarty);
                 $this->checkCriteriaValidity();
 
+
                 if ($this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml" || $this->xmlinput == "createproject.xml") {
                     // If configuring project then use project language strings from admin project
                     // found in projects/admin/lang.php
                     ReporticoLang::loadProjectLanguagePack("admin", $this->output_charset);
                 }
 
-                if (!ReporticoSession::getReporticoSessionParam("loggedin", false)) {
-                    $text = "you are not logged in ";
-                } else
-                if (!$this->return_to_caller) {
-                    $text = $this->executeQuery(false);
-                }
+                // For PDF output via phantom report will have already been executed so dont rerun it here
+                if ( $_REQUEST["target_format"] == "PDF" && $this->pdf_engine == "phantomjs" ) { 
+                    $target = &$this->targets[0];
+                    $target->start($this);
+                } else {
+                    if (!ReporticoSession::getReporticoSessionParam("loggedin", false)) {
+                        $text = "you are not logged in ";
+                    } else
+                    if (!$this->return_to_caller) {
+                        $text = $this->executeQuery(false);
+                    }
 
-                if ($this->target_format == "SOAP") {
-                    ReporticoSession::closeReporticoSession();
-                    return;
+                    if ($this->target_format == "SOAP") {
+                        ReporticoSession::closeReporticoSession();
+                        return;
+                    }
+
                 }
 
                 // Situtations where we dont want to switch results page - no data found, debug mode, not logged in
@@ -4085,7 +4008,7 @@ class Reportico extends ReporticoObject
 
                     header("HTTP/1.0 500 Not Found", true);
                     $this->initializePanels("PREPARE");
-                    //$this->set_request_columns();
+                    //$this->setRequestColumns();
 
                     $this->panels["FORM"]->setVisibility(false);
                     $text = $this->panels["BODY"]->drawSmarty();
@@ -4121,7 +4044,7 @@ class Reportico extends ReporticoObject
                         $old_error_handler = set_error_handler("Reportico\ReporticoApp::ErrorHandler");
                     }
                 } else {
-                    if ($this->target_format != "HTML") {
+                    if ($this->target_format != "HTML" && $this->target_format != "HTML2PDF") {
                         if ($draw) {
                             echo $text;
                         }
@@ -5871,6 +5794,171 @@ class Reportico extends ReporticoObject
 
         $this->addAssignment($usecolumn, $txt, $condition, true);
 
+    }
+
+    public static function printPDF($engine) {
+
+        $client = Client::getInstance();
+        ReporticoSession::closeReporticoSession();
+        session_write_close();
+
+        // Build URL
+        $url = "${_SERVER["REQUEST_SCHEME"]}://${_SERVER["HTTP_HOST"]}:${_SERVER["SERVER_PORT"]}{$engine->reportico_ajax_script_url}?MANUAL_country=UK&execute_mode=EXECUTE&target_format=HTML2PDF&&reportico_session_name=" . ReporticoSession::reporticoSessionName();
+
+        $request = $client->getMessageFactory()->createPdfRequest($url, 'GET', 4000);
+
+        //$outputfile = tempnam(ReporticoApp::getConfig("tmp_dir"), "pdf")."pdf";
+        $outputfile = tempnam(__DIR__."/../tmp/", "pdf").".pdf";
+        //$outputfile = "/tmp/doc.pdf";
+        $request->setOutputFile($outputfile);
+        $request->setFormat(strtoupper($engine->getAttribute("PageSize")));
+        $request->setOrientation(strtolower($engine->getAttribute("PageOrientation")));
+        $request->setMargin(strtolower($engine->getAttribute("LeftMargin")));
+        $request->setDelay(2);
+
+
+        $headertext .= '';
+        foreach ($engine->pageHeaders as $header) {
+
+            $styles = "";
+            $text = $header->text;
+            $attr = [];
+
+            if ( $header->getAttribute("ShowInPDF") != "yes" ) {
+                continue;
+            }
+
+            if ( $text == "{NOMORE}" )
+                break;
+
+            ReportHtml::extractStylesAndTextFromStringStandalone($text, $styles, $attr);
+            $text = Report::reporticoStringToPhpStandalone($text, $engine);
+            $text = Assignment::reporticoMetaSqlCriteria($engine, $text);
+            $just = strtolower($header->getAttribute("justify"));
+
+            $styles = "position:absolute;$styles";
+
+            if ( $just == "center" || $just == "centre") $styles .= "width: 98%; text-align: center;";
+            if ( $just == "right" ) $styles .= "width: 98%; text-align: right";
+
+
+            $img = "";
+            if ($styles) {
+                $matches = array();
+                if (preg_match("/background: url\('(.*)'\).*;/", $styles, $matches)) {
+                    $styles = preg_replace("/background: url\('(.*)'\).*;/", "", $styles);
+                    if (count($matches) > 1) {
+                        $img = "<img src='" . $matches[1] . "'/>";
+                    }
+                }
+                $headertext .= "<DIV class=\"swPageHeader\" style=\"$styles\">";
+            } else {
+                $headertext .= "<DIV class=\"swPageHeader\" >";
+            }
+
+            $headertext .= "$img$text";
+            $headertext .= "</DIV>";
+        }
+        
+        $footertext .= '';
+        foreach ($engine->pageFooters as $footer) {
+
+            $styles = "";
+            $text = $footer->text;
+            $attr = [];
+
+            if ( $footer->getAttribute("ShowInPDF") != "yes" ) {
+                continue;
+            }
+
+            if ( $text == "{NOMORE}" )
+                break;
+
+            $text = preg_replace("/{PAGE}/i", "%pageNum%", $text); 
+            $text = preg_replace("/{PAGETOTAL}/i", "%pageTotal%", $text); 
+
+            ReportHtml::extractStylesAndTextFromStringStandalone($text, $styles, $attr);
+            $text = Report::reporticoStringToPhpStandalone($text, $engine);
+
+            //$text = Assignment::reporticoMetaSqlCriteria($engine, $text);
+            $just = strtolower($footer->getAttribute("justify"));
+
+            $styles = "position:absolute;$styles";
+
+            if ( $just == "center" || $just == "centre") $styles .= "width: 98%; text-align: center;";
+            if ( $just == "right" ) $styles .= "width: 98%; text-align: right";
+
+            $img = "";
+            if ($styles) {
+                $matches = array();
+                if (preg_match("/background: url\('(.*)'\).*;/", $styles, $matches)) {
+                    $styles = preg_replace("/background: url\('(.*)'\).*;/", "", $styles);
+                    if (count($matches) > 1) {
+                        $img = "<img src='" . $matches[1] . "'/>";
+                    }
+                }
+                $footertext .= "<DIV class=\"swPageFooter\" style=\"$styles\">";
+            } else {
+                $footertext .= "<DIV class=\"swPageFooter\" >";
+            }
+
+            $footertext .= "$img$text";
+            $footertext .= "</DIV>";
+        }
+        $request->setRepeatingHeader('<div style="position:relative">'.$headertext.'</div>', $engine->getAttribute("TopMargin"));
+        $request->setRepeatingFooter('<footer style="margin-top: 5px;border-top: solid 1px">'.$footertext.'</footer>', $engine->getAttribute("BottomMargin"));
+
+
+        // Get Response
+        $response = $client->getMessageFactory()->createResponse();
+
+        // Send the request
+        $client->send($request, $response);
+
+        if($response->getStatus() !== 200) {
+            header("HTTP/1.0 {$response->getStatus()}", true);
+            echo "Failed to produce PDF file error {$response->getContent()} - <BR>";
+            die;
+        }
+
+        //header('content-type: application/pdf');
+        //echo file_get_contents('/tmp/document.pdf');
+        //die;
+
+        // INLINE output is just returned to browser window it is invoked from
+        // with hope that browser uses plugin
+        $attachfile = "reportico.pdf";
+        if ($engine->reportfilename) {
+            $attachfile = preg_replace("/ /", "_", $engine->reportfilename . ".pdf");
+        }
+
+        if ($engine->pdf_delivery_mode == "INLINE") {
+            header("Content-Type: application/pdf");
+            echo file_get_contents($outputfile);
+            unlink($outputfile);
+            die;
+        }
+
+        // DOWNLOAD_SAME_WINDOW output is ajaxed back to current browser window and then downloaded
+        else if ($engine->pdf_delivery_mode == "DOWNLOAD_SAME_WINDOW" /*&& $engine->reportico_ajax_called*/) {
+            header('Content-Disposition: attachment;filename=' . $attachfile);
+            header("Content-Type: application/pdf");
+            $buf = base64_encode(file_get_contents($outputfile));
+            unlink($outputfile);
+            //$buf = file_get_contents($outputfile);
+            $len = strlen($buf);
+            echo $buf;
+            die;
+        }
+        // DOWNLOAD_NEW_WINDOW new browser window is opened to download file
+        else {
+            header('Content-Disposition: attachment;filename=' . $attachfile);
+            header("Content-Type: application/pdf");
+            echo file_get_contents($outputfile);
+            unlink($outputfile);
+            die;
+        }
+        die;
     }
 
 }

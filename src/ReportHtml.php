@@ -267,7 +267,7 @@ class ReportHtml extends Report
         return $txt;
     }
 
-    public static function extractStylesAndTextFromStringStandalone($text, $styles, &$attributes, $parent_styleset = false, $grandparent_styleset = false)
+    public static function extractStylesAndTextFromStringStandalone(&$text, &$styles, &$attributes, $parent_styleset = false, $grandparent_styleset = false)
     {
         $outtext = "";
         $style_arr = ReportHtml::fetchCellStylesStandalone($text);

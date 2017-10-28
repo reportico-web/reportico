@@ -134,8 +134,7 @@ function reporticoDefaults($reportico)
 
         // Create Page No on bottom of PDF page
         $reportico->createPageFooter("F1", 2, "Page: {PAGE}{STYLE border-width: 1 0 0 0; margin: 40 0 0 0; font-style: italic; }");
-    } else // FPDF page headers
-    {
+    } else if ($reportico->pdf_engine == "fpdf") {
         // Create Report Title Page Header on every page of PDF
         $reportico->createPageHeader("H1", 2, "{REPORT_TITLE}{STYLE border-width: 1 0 1 0; margin: 15px 0px 0px 0px; border-color: #000000; font-size: 18; border-style: solid;padding:5px 0px 5px 0px; height:1cm; background-color: #000000; color: #ffffff}");
         $reportico->setPageHeaderAttribute("H1", "ShowInHTML", "no");
@@ -144,6 +143,22 @@ function reporticoDefaults($reportico)
 
         // Create Image on every page of PDF
         $reportico->createPageHeader("H3", 1, "Time: date('Y-m-d H:i:s'){STYLE font-size: 10; text-align: right; font-style: italic;}");
+        $reportico->setPageHeaderAttribute("H3", "ShowInHTML", "no");
+        $reportico->setPageHeaderAttribute("H3", "justify", "right");
+
+        // Create Page No on bottom of PDF page
+        $reportico->createPageFooter("F1", 2, "Page: {PAGE}{STYLE border-width: 1 0 0 0; margin: 40 0 0 0; font-style: italic; }");
+    }
+    else if ($reportico->pdf_engine == "phantomjs") {
+
+        // Create Report Title Page Header on every page of PDF
+        //$reportico->createPageHeader("H1", 2, "{REPORT_TITLE}{STYLE border-width: 1 0 1 0; margin: 15px 0px 0px 0px; border-color: #000000; font-size: 18; border-style: solid 0px 0px 0px 1px black;padding:5px 0px 5px 0px; text-align: center; font-family: freesans;}");
+        //$reportico->setPageHeaderAttribute("H1", "ShowInHTML", "no");
+        //$reportico->setPageHeaderAttribute("H1", "ShowInPDF", "yes");
+        //$reportico->setPageHeaderAttribute("H1", "justify", "center");
+
+        // Create Image on every page of PDF
+        $reportico->createPageHeader("H3", 1, "Time: date('Y-m-d H:i:s'){STYLE width: 100%;font-size: 10; text-align: right; font-style: italic;}");
         $reportico->setPageHeaderAttribute("H3", "ShowInHTML", "no");
         $reportico->setPageHeaderAttribute("H3", "justify", "right");
 

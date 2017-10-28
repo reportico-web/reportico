@@ -231,8 +231,7 @@ class ChartNVD3
 
     public function generateUrlParams($target_format, $sessionPlaceholder = false)
     {
-        $this->applyDefaults();
-
+        $this->applyDefaults($target_format);
         $result = "";
         $url = "";
         $url .= "&graphcolor=" . $this->graphcolor_actual;
@@ -292,10 +291,20 @@ class ChartNVD3
 
         $sessionPlaceholder = $sessionPlaceholder . "_" . ReporticoApp::get("session_namespace");
 
+        $container_width = "100%";
+        //$container_height = "100%";
+        if ( $target_format == "HTML2PDF" ) {
+            $container_width = $this->width_actual . "px";
+            //$container_height = $this->height_actual . "px";
+        }
+        $container_height = $this->height_actual . "px";
+        
         $js = "";
-        $js .= "<div class=\"reportico-chart-container\" style=\"width: " . $this->width_actual . "px;height: " . $this->height_actual . "px\"> " . $this->convertSpecialChars($this->title_actual);
+        $js .= "<div class=\"reportico-chart-container\" style=\"width:$container_width;height:$container_height;\"> " . $this->convertSpecialChars($this->title_actual);
+        //$js .= "<div class=\"reportico-chart-container\" style=\"width: " . $this->width_actual . "px;height: " . $this->height_actual . "px\"> " . $this->convertSpecialChars($this->title_actual);
         //$js .= "<div id=\"reportico_chart$sessionPlaceholder\" class=\"reportico-chart-placeholder\"></div> </div>\n";
 
+        //$js .= "<div class=\"reportico-chart-placeholder\" id=\"reportico_chart$sessionPlaceholder\" style=\"overflow-y: none; width: $container_width; height:$container_height;height:100%;\"></svg></div></div>";
         $js .= "<div class=\"reportico-chart-placeholder\" id=\"reportico_chart$sessionPlaceholder\" style=\"overflow-y: none; width: 100%; height:100%\"><svg style=\"width:100%;height:100%;\"></svg></div></div>";
         $js .= "<script>\n";
         $js .= "var placeholder = 'reportico_chart$sessionPlaceholder';\n";
@@ -459,7 +468,8 @@ class ChartNVD3
 
         $js .= "rotateLabels = -30;";
 
-        $labct = ($labct / $this->xticklabelinterval_actual) + 1;
+        if ( $this->xticklabelinterval_actual > 0 )
+            $labct = ($labct / $this->xticklabelinterval_actual) + 1;
         $labct = floor($labct);
 
         $js .= "labelCount = $labct;";
@@ -799,11 +809,18 @@ class ChartNVD3
             }
 
         } else {
+
+            $chart_dimensions = "";
+            if ( $target_format == "HTML2PDF" ) 
+                $chart_dimensions = ".width({$this->width_actual}).height({$this->height_actual});";
+
+            
             $js .= "
             var chart" . $sessionPlaceholder . " = nv.models.multiChart()
             .margin({top: " . $this->margintop_actual . ", right: " . $this->marginright_actual . ", bottom: " . $this->marginbottom_actual . ", left: " . $this->marginleft_actual . " + 10})
             .labelCount(labelCount)
             .color(colorrange)
+            $chart_dimensions
             ;
 
             chart" . $sessionPlaceholder . ".xAxis
@@ -860,7 +877,7 @@ class ChartNVD3
 
         $js .= "
         }
-    nv.addGraph(reporticoChart_$sessionPlaceholder(this));
+            nv.addGraph(reporticoChart_$sessionPlaceholder(this));
 
 ";
         $js .= "</script>\n";
@@ -991,12 +1008,17 @@ class ChartNVD3
         $this->marginbottom = $in_bt;
     }
 
-    public function applyDefaults()
+    public function applyDefaults($target_format)
     {
         $this->width_actual = ReporticoApp::getDefaultConfig("GraphWidth", $this->width);
         $this->height_actual = ReporticoApp::getDefaultConfig("GraphHeight", $this->height);
         $this->width_pdf_actual = ReporticoApp::getDefaultConfig("GraphWidthPDF", $this->width_pdf);
         $this->height_pdf_actual = ReporticoApp::getDefaultConfig("GraphHeightPDF", $this->height_pdf);
+        if ( $target_format == "HTML2PDF" ) {
+            $this->width_actual = $this->width_pdf_actual;
+            $this->height_actual = $this->height_pdf_actual;
+        }
+
         $this->xaxiscolor_actual = ReporticoApp::getDefaultConfig("XAxisColor", $this->xaxiscolor);
         $this->xticklabelinterval_actual = ReporticoApp::getDefaultConfig("XTickLabelInterval", $this->xticklabelinterval);
         $this->xtickinterval_actual = ReporticoApp::getDefaultConfig("XTickInterval", $this->xtickinterval);

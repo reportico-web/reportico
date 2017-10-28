@@ -1324,13 +1324,13 @@ class XmlReader
                 break;
 
             case "ghdr":
-                $anal["quer"]->delete_group_header_by_number
+                $anal["quer"]->deleteGroupHeaderByNumber
                 ($anal["groupname"], $anal["number"]);
                 break;
 
             case "gtrl":
                 $updateitem = &$anal["item"];
-                $anal["quer"]->delete_group_trailer_by_number
+                $anal["quer"]->deleteGroupTrailerByNumber
                 ($anal["groupname"], $anal["number"]);
                 break;
 
@@ -1457,7 +1457,7 @@ class XmlReader
 
         if ($invalid) {
             $updates[$k] = false;
-            trigger_error(ReporticoLang::templateXlate("INVALIDENTRY") . "'" . $current_value . "' " . templateXlate("FORFIELD") . " " . templateXlate($this->field_display[$current_key]["Title"]) . " - " . templateXlate($this->field_display[$current_key]["Validate"]), E_USER_NOTICE);
+            trigger_error(ReporticoLang::templateXlate("INVALIDENTRY") . "'" . $current_value . "' " . ReporticoLang::templateXlate("FORFIELD") . " " . ReporticoLang::templateXlate($this->field_display[$current_key]["Title"]) . " - " . ReporticoLang::templateXlate($this->field_display[$current_key]["Validate"]), E_USER_NOTICE);
 
         }
     }
@@ -2110,7 +2110,7 @@ class XmlReader
                 case "SAVE":
                     $xmlsavefile = $this->query->xmloutfile;
                     if (!$xmlsavefile) {
-                        trigger_error(ReporticoLang::templateXlate("UNABLE_TO_SAVE") . templateXlate("SPECIFYXML"), E_USER_ERROR);
+                        trigger_error(ReporticoLang::templateXlate("UNABLE_TO_SAVE") . ReporticoLang::templateXlate("SPECIFYXML"), E_USER_ERROR);
                     }
 
                     break;
@@ -2121,7 +2121,7 @@ class XmlReader
 
                     if (!$xmlsavefile) {
                         header("HTTP/1.0 404 Not Found", true);
-                        echo '<div class="swError">' . ReporticoLang::templateXlate("UNABLE_TO_SAVE") . templateXlate("SPECIFYXML") . "</div>";
+                        echo '<div class="swError">' . ReporticoLang::templateXlate("UNABLE_TO_SAVE") . ReporticoLang::templateXlate("SPECIFYXML") . "</div>";
                         die;
                     }
 
