@@ -276,6 +276,8 @@
     // "DOWNLOAD_NEW_WINDOW" - downloaded as attachment from winthin the current browser window
     ////$q->pdf_delivery_mode = "INLINE";
     ////$q->pdf_delivery_mode = "DOWNLOAD_NEW_WINDOW";
+    $q->pdf_delivery_mode = "INLINE";
+    //$q->pdf_delivery_mode = "DOWNLOAD_NEW_WINDOW";
     //$q->pdf_delivery_mode = "DOWNLOAD_SAME_WINDOW";
 
     // Dropdown Menu definition

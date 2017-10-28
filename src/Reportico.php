@@ -3743,6 +3743,7 @@ class Reportico extends ReporticoObject
                 if (!$runfromcriteriascreen && ( $refreshmode || $this->target_format == "HTML2PDF" )) {
                     $_REQUEST = ReporticoSession::getReporticoSessionParam('latestRequest');
                     $_REQUEST["target_format"] = $this->target_format;
+                    $_REQUEST["reportico_ajax_called"] = false;
                 }
             }
         } else {
