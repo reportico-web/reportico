@@ -3996,6 +3996,7 @@ class Reportico extends ReporticoObject
 
                 // Situtations where we dont want to switch results page - no data found, debug mode, not logged in
                 if ((count(ReporticoApp::getSystemErrors()) > 0 || ReporticoApp::get("debug_mode") || count(ReporticoApp::getSystemDebug()) > 0 || !ReporticoSession::getReporticoSessionParam("loggedin"))) {
+
                     // If errors and this is an ajax request return json ajax response for first message
                     $runfromcriteriascreen = ReporticoUtility::getRequestItem("user_criteria_entered", false);
 
@@ -4020,6 +4021,7 @@ class Reportico extends ReporticoObject
                     $this->panels["MAIN"]->smarty->debugging = false;
                     $title = ReporticoLang::translate($this->deriveAttribute("ReportTitle", "Unknown"));
                     $this->panels["MAIN"]->smarty->assign('TITLE', $title);
+                    
                     $this->panels["MAIN"]->smarty->assign('CONTENT', $text);
                     if ($this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml" || $this->xmlinput == "createproject.xml" || $this->xmlinput == "generate_tutorial.xml") {
                         // If configuring project then use project language strings from admin project

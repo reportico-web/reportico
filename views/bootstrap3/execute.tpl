@@ -1,10 +1,11 @@
+{% autoescape false %}
 {% if not REPORTICO_AJAX_CALLED %}
 {% if not EMBEDDED_REPORT %}
 <not DOCTYPE html>
 <HTML>
 <HEAD>
-<TITLE>{{ TITLE }}</TITLE>
-{{ OUTPUT_ENCODING }}
+<TITLE>{{ TITLE|raw }}</TITLE>
+{{ OUTPUT_ENCODING|raw }}
 </HEAD>
 {% if REPORT_PAGE_STYLE %}
 {% if REPORTICO_STANDALONE_WINDOW %}
@@ -31,7 +32,7 @@
 {% endif %}
 {% if AJAX_ENABLED %}
 {% if not REPORTICO_AJAX_PRELOADED %}
-{% if not REPORTICO_JQUERY_PRELOADED || REPORTICO_STANDALONE_WINDOW %}
+{% if not REPORTICO_JQUERY_PRELOADED or REPORTICO_STANDALONE_WINDOW %}
 
 <script type="text/javascript" src="{{ ASSETS_PATH }}/js/jquery.js"></script>
 
@@ -108,38 +109,6 @@
 {% if PRINTABLE_HTML %}
 
 <script type="text/javascript" src="{{ ASSETS_PATH }}/js/reportico.js"></script>
-<script type="text/javascript">
-/*
-* Where multiple data tables exist due to graphs
-* resize the columns of all tables to match the first
-*/
-function resizeOutputTables(window)
-{
-  var tableArr = reportico_jquery(".swRepPage");
-  var tableDataRow = reportico_jquery('.swRepResultLine:first');
-
-  var cellWidths = new Array();
-  reportico_jquery(tableDataRow).each(function() {
-    for(j = 0; j < reportico_jquery(this){{ 0.cells.length; j++){ }
-       var cell = reportico_jquery(this){{ 0.cells[j]; }
-       if(not cellWidths[j] || cellWidths[j] < cell.clientWidth) cellWidths[j] = cell.clientWidth;
-    }
-  });
-
-  var tablect = 0;
-  reportico_jquery(tableArr).each(function() {
-    tablect++;
-    if ( tablect == 1 )
-        return;
-
-    reportico_jquery(this).find(".swRepResultLine:first").each(function() {
-      for(j = 0; j < reportico_jquery(this){{ 0.cells.length; j++){ }
-        reportico_jquery(this){{ 0.cells{{ j.style.width = cellWidths[j]+'px';  }}
-      }
-   });
- });
-}
-</script>
 
 {% endif %}
 <div id="reportico_container">
@@ -147,14 +116,14 @@ function resizeOutputTables(window)
         reportico_criteria_items = [];
 {% if CRITERIA_ITEMS is defined %}
 {% for critno in CRITERIA_ITEMS %}
-        reportico_criteria_items.push("{CRITERIA_ITEMS[critno].name}");
+        reportico_criteria_items.push("{{CRITERIA_ITEMS[critno].name}}");
 {% endfor %}
 {% endif %}
     </script>
 <div class="swRepForm">
 {% if ERRORMSG|length>0 %}
             <div id="reporticoEmbeddedError">
-                {{ ERRORMSG }}
+                {{ ERRORMSG|raw }}
             </div>
 
             <script>
@@ -166,14 +135,14 @@ function resizeOutputTables(window)
 
             <TABLE class="swError">
                 <TR>
-                    <TD>{{ ERRORMSG }}</TD>
+                    <TD>{{ ERRORMSG|raw }}</TD>
                 </TR>
             </TABLE>
 {% endif %}
 {% if STATUSMSG|length>0 %} 
 			<TABLE class="swStatus">
 				<TR>
-					<TD>{{ STATUSMSG }}</TD>
+					<TD>{{ STATUSMSG|raw }}</TD>
 				</TR>
 			</TABLE>
 {% endif %}
@@ -235,7 +204,7 @@ function resizeOutputTables(window)
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                <not --button type="button" class="btn btn-primary" >Close</button-->
+                <!--button type="button" class="btn btn-primary" >Close</button-->
         </div>
     </div>
   </div>
@@ -252,10 +221,11 @@ function resizeOutputTables(window)
                 <h3>Modal Body</h3>
             </div>
             <div class="reportico-modal-footer">
-                <not --button type="button" class="btn btn-default" data-dismiss="modal">Close</button-->
+                <!--button type="button" class="btn btn-default" data-dismiss="modal">Close</button-->
                 <button type="button" class="swMiniMaintainSubmit" >Close</button>
         </div>
     </div>
   </div>
 </div>
 {% endif %}
+{% endautoescape %}

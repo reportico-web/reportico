@@ -5,16 +5,16 @@
 <FORM class="swPrpForm" id="criteriaform" name="topmenu" method="POST" action="{{ SCRIPT_SELF }}">
 <input type="hidden" name="reportico_session_name" value="{{ SESSION_ID }}" />
 
-<not  -- Menu Bar -->
+<!-- Menu Bar -->
 {% include 'bootstrap3/prepare-menu-bar.inc.tpl' %}
 
-<not  -- Output options -->
+<!-- Output options -->
 {% include 'bootstrap3/prepare-design-options.inc.tpl' %}
 
-<not  -- Report Title -->
+<!-- Report Title -->
 {% include 'bootstrap3/prepare-title.inc.tpl' %}
 
-<not  -- Report Output options -->
+<!-- Report Output options -->
 <div class="swPrpCritBox" style="background-color: #ffffff" id="critbody">
 {% if SHOW_OUTPUT and not IS_ADMIN_SCREEN %}
 {% include 'bootstrap3/prepare-output-table-form.inc.tpl' %}
@@ -23,7 +23,7 @@
 {% endif %}
 </div>
 
-<not  -- Criteria Items and Expand Box -->
+<!-- Criteria Items and Expand Box -->
 {% if SHOW_CRITERIA %}
 <div id="criteriabody">
   <div class="swPrpCritBox" style="display: table">

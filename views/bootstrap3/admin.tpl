@@ -1,3 +1,4 @@
+{% autoescape false %}
 {% include 'bootstrap3/header.inc.tpl' %}
 <div id="reportico_container">
     <script>
@@ -76,15 +77,15 @@
 {% endif %}
 				<br>
 				<br>
-{{ T_SET_ADMIN_PASSWORD_INFO }}
+{{ T_SET_ADMIN_PASSWORD_INFO|raw }}
 				<br>
-{{ T_SET_ADMIN_PASSWORD_NOT_SET }}
+{{ T_SET_ADMIN_PASSWORD_NOT_SET|raw }}
 				<br>
-{{ T_SET_ADMIN_PASSWORD_PROMPT }}
+{{ T_SET_ADMIN_PASSWORD_PROMPT|raw }}
 				<br>
 				<input type="password" name="new_admin_password" value=""><br>
 				<br>
-{{ T_SET_ADMIN_PASSWORD_REENTER }} <br><input type="password" name="new_admin_password2" value=""><br>
+{{ T_SET_ADMIN_PASSWORD_REENTER|raw }} <br><input type="password" name="new_admin_password2" value=""><br>
 <br>
 <br>
 {% if LANGUAGES|length > 0  %}
@@ -244,3 +245,4 @@
 
 </div>
 {% include 'bootstrap3/footer.inc.tpl' %}
+{% endautoescape %}

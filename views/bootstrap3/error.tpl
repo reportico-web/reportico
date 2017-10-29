@@ -1,7 +1,7 @@
 <div>
     {% if ERRORMSG|length>0 %}
         <div style="display:none" id="reporticoEmbeddedError">
-            {{ ERRORMSG }}
+            {{ ERRORMSG|raw }}
         </div>
         
             <script>
@@ -19,12 +19,12 @@
             </script>
         
         <div class="alert alert-danger" role="alert">
-            {{ ERRORMSG }}
+            {{ ERRORMSG|raw }}
         </div>
     {% endif %}
     {% if STATUSMSG|length>0 %} 
         <div class="alert alert-info" role="alert">
-            {{ STATUSMSG }}
+            {{ STATUSMSG|raw }}
         </div>
     {% endif %}
 </div>

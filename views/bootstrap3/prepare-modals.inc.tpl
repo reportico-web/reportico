@@ -55,7 +55,7 @@
                 <h3>Modal Body</h3>
             </div>
             <div class="reportico-modal-footer">
-                <not --button type="button" class="btn btn-default" data-dismiss="modal">Close</button-->
+                <!--button type="button" class="btn btn-default" data-dismiss="modal">Close</button-->
                 <button type="button" class="swMiniMaintainSubmit" >Close</button>
         </div>
     </div>
@@ -72,7 +72,7 @@
                 <h3>Modal Body</h3>
             </div>
             <div class="reportico-notice-modal-footer">
-                <not --button type="button" class="btn btn-default" data-dismiss="modal">Close</button-->
+                <!--button type="button" class="btn btn-default" data-dismiss="modal">Close</button-->
                 <button type="button" class="reportico-notice-modal-button" >Close</button>
         </div>
     </div>

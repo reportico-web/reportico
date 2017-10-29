@@ -1,3 +1,4 @@
+{% autoescape false %}
 {% if not REPORTICO_AJAX_CALLED %}
 {% if not EMBEDDED_REPORT %}
 <not DOCTYPE html>
@@ -131,14 +132,14 @@
 {% if STATUSMSG|length>0 %} 
 			<TABLE class="swStatus">
 				<TR>
-					<TD>{{ STATUSMSG }}</TD>
+					<TD>{{ STATUSMSG|raw }}</TD>
 				</TR>
 			</TABLE>
 {% endif %}
 {% if ERRORMSG|length>0 %} 
 			<TABLE class="swError">
 				<TR>
-					<TD>{{ ERRORMSG }}</TD>
+					<TD>{{ ERRORMSG|raw }}</TD>
 				</TR>
 			</TABLE>
 {% endif %}
@@ -209,3 +210,4 @@ Logged On As {{ DBUSER }}
 </HTML>
 {% endif %}
 {% endif %}
+{% endautoescape %}

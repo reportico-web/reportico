@@ -1,15 +1,16 @@
+{% autoescape false %}
 {% include 'bootstrap3/header.inc.tpl' %}
 <div id="reportico_container">
 <FORM class="swMenuForm" name="topmenu" method="POST" action="{{ SCRIPT_SELF }}">
 <input type="hidden" name="reportico_session_name" value="{{ SESSION_ID }}" /> 
 
-<not  -- BOOTSTRAP VERSION -->
+<!--  BOOTSTRAP VERSION -->
 {% if SHOW_HIDE_NAVIGATION_MENU == "show" or SHOW_HIDE_DROPDOWN_MENU == "show" %}
     <div class="navbar navbar-default" role="navigation">
 {% else %}
     <div style="display:none" class="navbar navbar-default" role="navigation">
 {% endif %}
-    <not  --div class="navbar navbar-default navbar-static-top" role="navigation"-->
+    <!--div class="navbar navbar-default navbar-static-top" role="navigation"-->
         <div class="container" style="width: 100%">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#reportico-bootstrap-collapse">
                 <span class="icon-bar"></span>
@@ -34,7 +35,7 @@
 </ul>
         </div>
 </div>
-<not  -- BOOTSTRAP VERSION -->
+<!-- BOOTSTRAP VERSION -->
 <H1 class="swTitle">{{ TITLE }}</H1>
 	<TABLE class="swMenu">
 		<TR> <TD>&nbsp;</TD> </TR>
@@ -72,3 +73,4 @@
 {% include 'bootstrap3/reportico-banner.inc.tpl' %}
 </div>
 {% include 'bootstrap3/footer.inc.tpl' %}
+{% endautoescape %}

@@ -19,7 +19,7 @@
 
 
 <div class="navbar navbar-default" role="navigation">
-    <not --div class="navbar navbar-default navbar-static-top" role="navigation"-->
+    <!--div class="navbar navbar-default navbar-static-top" role="navigation"-->
         <div class="container" style="width: 100%">
             <div class="nav-collapse collapse in" id="reportico-bootstrap-collapse">
                 <ul class="nav navbar-nav pull-right navbar-right">

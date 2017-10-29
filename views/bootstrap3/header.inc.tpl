@@ -1,3 +1,4 @@
+{% autoescape false %}
 {% if not REPORTICO_AJAX_CALLED %}
 {% if not EMBEDDED_REPORT %}
 <not DOCTYPE html>
@@ -97,10 +98,11 @@
         reportico_criteria_items = [];
 {% if CRITERIA_ITEMS is defined %}
 {% for critno in CRITERIA_ITEMS %}
-        reportico_criteria_items.push("{CRITERIA_ITEMS[critno].name}");
+        reportico_criteria_items.push("{{critno.name}}");
 {% endfor %}
 {% endif %}
     </script>
 {% if PDF_DELIVERY_MODE is defined %}
 <script type="text/javascript">var reportico_pdf_delivery_mode = "{{ PDF_DELIVERY_MODE }}";</script>
 {% endif %}
+{% endautoescape %}
