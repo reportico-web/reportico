@@ -3992,7 +3992,6 @@ class XmlReader
                     $testpath = ReporticoUtility::findBestLocationInIncludePath($this->query->reports_path);
                 }
 
-                echo $testpath . "!!";
                 if (is_dir($testpath)) {
                     if ($dh = opendir($testpath)) {
                         while (($file = readdir($dh)) !== false) {
