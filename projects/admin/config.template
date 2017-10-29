@@ -92,7 +92,7 @@ ReporticoApp::setConfig('SOAP_SERVICEBASEURL','http://www.reportico.co.uk/swsite
 // Parameter Defaults
 ReporticoApp::setConfig('pdf_PageSize','A4');
 ReporticoApp::setConfig('pdf_PageOrientation','Portrait');
-ReporticoApp::setConfig('pdf_TopMargin','1cm');
+ReporticoApp::setConfig('pdf_TopMargin','2cm');
 ReporticoApp::setConfig('pdf_BottomMargin','2cm');
 ReporticoApp::setConfig('pdf_LeftMargin','1cm');
 ReporticoApp::setConfig('pdf_RightMargin','1cm');
