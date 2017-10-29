@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
- * File:        ReportHtml.php
+ * File:        ReportHtml2pdf.php
  *
  * Base class for all report output formats.
  * Defines base functionality for handling report
@@ -32,9 +32,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * @version $Id: swoutput.php,v 1.33 2014/05/17 15:12:31 peter Exp $
  */
 
-namespace Reportico\Engine;
+namespace Reportico;
 
-class ReportHtml extends Report
+class ReportHtml2pdf extends Report
 {
     public $abs_top_margin;
     public $abs_bottom_margin;
@@ -74,7 +74,9 @@ class ReportHtml extends Report
 
         if ($this->line_count < 1) {
             $title = $this->query->deriveAttribute("ReportTitle", "Unknown");
-            $this->text .= '<H1 class="swRepTitle">' . ReporticoLang::translate($title) . '</H1>';
+            //Dont show title in HTML to PDF mode
+            //$this->text .= '<H1 class="swRepTitle">' . ReporticoLang::translate($title) . '</H1>';
+
             $forward = ReporticoSession::sessionRequestItem('forward_url_get_parameters', '');
             if ($forward) {
                 $forward .= "&";
@@ -280,6 +282,10 @@ class ReportHtml extends Report
                     $widthset = true;
                 }
 
+                if ($k == "background-color") {
+                    $styles .= "$k:$v !important;";
+                }
+                else
                 if ($k == "background-image") {
                     $styles .= "background: url('$v') no-repeat;";
                 } else {
@@ -357,6 +363,10 @@ class ReportHtml extends Report
                     $widthset = true;
                 }
 
+                if ($k == "background-color") {
+                    $styles .= "$k:$v !important;";
+                }
+                else
                 if ($k == "background-image") {
                     $styles .= "background: url('$v') no-repeat;";
                 } else {
@@ -556,7 +566,8 @@ class ReportHtml extends Report
             $title = $this->query->deriveAttribute("ReportTitle", "Unknown");
             $this->pageHeaders();
             if ($this->query->output_template_parameters["show_hide_report_output_title"] != "hide") {
-                $this->text .= '<H1 class="swRepTitle">' . ReporticoLang::translate($title) . '</H1>';
+                //Dont show title in HTML to PDF mode
+                //$this->text .= '<H1 class="swRepTitle">' . ReporticoLang::translate($title) . '</H1>';
             }
 
             $this->text .= '<TABLE class="swRepGrpHdrBox swNewPage" >';
@@ -630,12 +641,12 @@ class ReportHtml extends Report
             $this->page_started = false;
         }
         $this->graph_sessionPlaceholder++;
-        $graph->width_actual = ReporticoApp::getDefaultConfig("GraphWidth", $graph->width);
-        $graph->height_actual = ReporticoApp::getDefaultConfig("GraphHeight", $graph->height);
+        $graph->width_actual = ReporticoApp::getDefaultConfig("GraphWidthPDF", $graph->width_pdf);
+        $graph->height_actual = ReporticoApp::getDefaultConfig("GraphHeightPDF", $graph->height_pdf);
         $graph->title_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->title, true);
         $graph->xtitle_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->xtitle, true);
         $graph->ytitle_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->ytitle, true);
-        $url_string = $graph->generateUrlParams("HTML", $this->graph_sessionPlaceholder);
+        $url_string = $graph->generateUrlParams("HTML2PDF", $this->graph_sessionPlaceholder);
         $this->text .= '<div class="swRepResultGraph">';
         if ($url_string) {
             $this->text .= $url_string;
@@ -898,6 +909,73 @@ class ReportHtml extends Report
         //$this->page_started = true;
         $this->debug("HTML Begin Page\n");
 
+        foreach ($this->query->pageHeaders as $header) {
+
+            $styles = "";
+            $text = $header->text;
+            $attr = [];
+
+            if ( $header->getAttribute("ShowInPDF") != "yes" ) {
+                continue;
+            }
+
+            $img = "";
+            if ($styles) {
+                $matches = array();
+                if (preg_match("/background: url\('(.*)'\).*;/", $styles, $matches)) {
+                    $styles = preg_replace("/background: url\('(.*)'\).*;/", "", $styles);
+                    if (count($matches) > 1) {
+                        $img .= $matches[1];
+                    }
+                }
+            }
+
+            if ($text) {
+                $matches = array();
+                if (preg_match("/<img [^<]*src=['\"]([^'\"]*)['\"].*>/", $text, $matches)) {
+                    $this->text .= "<img src=\"{$matches[1]}\" style=\"display:none\">";
+                    $styles = preg_replace("/background: url\('(.*)'\).*;/", "", $styles);
+                    if (count($matches) > 1) {
+                        $img .= $matches[1];
+                    }
+                }
+            }
+        }
+
+        foreach ($this->query->pageFooters as $footer) {
+
+            $styles = "";
+            $text = $footer->text;
+            $attr = [];
+
+            if ( $footer->getAttribute("ShowInPDF") != "yes" ) {
+                continue;
+            }
+
+            $img = "";
+            if ($styles) {
+                $matches = array();
+                if (preg_match("/background: url\('(.*)'\).*;/", $styles, $matches)) {
+                    $styles = preg_replace("/background: url\('(.*)'\).*;/", "", $styles);
+                    if (count($matches) > 1) {
+                        $img .= $matches[1];
+                    }
+                }
+            }
+
+            if ($text) {
+                $matches = array();
+                if (preg_match("/<img [^<]*src=['\"]\(.*\)['\"].*>/", $text, $matches)) {
+                    $styles = preg_replace("/background: url\('(.*)'\).*;/", "", $styles);
+                    if (count($matches) > 1) {
+                        $img .= $matches[1];
+                    }
+                }
+            }
+        }
+
+        //$this->text .= "<div style='display: none'><img src='/newarc/images/reportico100.png'></div>";
+
         $forward = ReporticoSession::sessionRequestItem('forward_url_get_parameters', '');
         if ($forward) {
             $forward .= "&";
@@ -932,7 +1010,8 @@ class ReportHtml extends Report
 
         $title = $this->query->deriveAttribute("ReportTitle", "Unknown");
         if ($this->query->output_template_parameters["show_hide_report_output_title"] != "hide") {
-            $this->text .= '<H1 class="swRepTitle">' . ReporticoLang::translate($title) . '</H1>';
+            //Dont show title in HTML to PDF mode
+            //$this->text .= '<H1 class="swRepTitle">' . ReporticoLang::translate($title) . '</H1>';
         }
 
     }

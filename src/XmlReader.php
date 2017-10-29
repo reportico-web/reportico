@@ -1324,13 +1324,13 @@ class XmlReader
                 break;
 
             case "ghdr":
-                $anal["quer"]->delete_group_header_by_number
+                $anal["quer"]->deleteGroupHeaderByNumber
                 ($anal["groupname"], $anal["number"]);
                 break;
 
             case "gtrl":
                 $updateitem = &$anal["item"];
-                $anal["quer"]->delete_group_trailer_by_number
+                $anal["quer"]->deleteGroupTrailerByNumber
                 ($anal["groupname"], $anal["number"]);
                 break;
 
@@ -1457,7 +1457,7 @@ class XmlReader
 
         if ($invalid) {
             $updates[$k] = false;
-            trigger_error(ReporticoLang::templateXlate("INVALIDENTRY") . "'" . $current_value . "' " . templateXlate("FORFIELD") . " " . templateXlate($this->field_display[$current_key]["Title"]) . " - " . templateXlate($this->field_display[$current_key]["Validate"]), E_USER_NOTICE);
+            trigger_error(ReporticoLang::templateXlate("INVALIDENTRY") . "'" . $current_value . "' " . ReporticoLang::templateXlate("FORFIELD") . " " . ReporticoLang::templateXlate($this->field_display[$current_key]["Title"]) . " - " . ReporticoLang::templateXlate($this->field_display[$current_key]["Validate"]), E_USER_NOTICE);
 
         }
     }
@@ -2110,7 +2110,7 @@ class XmlReader
                 case "SAVE":
                     $xmlsavefile = $this->query->xmloutfile;
                     if (!$xmlsavefile) {
-                        trigger_error(ReporticoLang::templateXlate("UNABLE_TO_SAVE") . templateXlate("SPECIFYXML"), E_USER_ERROR);
+                        trigger_error(ReporticoLang::templateXlate("UNABLE_TO_SAVE") . ReporticoLang::templateXlate("SPECIFYXML"), E_USER_ERROR);
                     }
 
                     break;
@@ -2121,7 +2121,7 @@ class XmlReader
 
                     if (!$xmlsavefile) {
                         header("HTTP/1.0 404 Not Found", true);
-                        echo '<div class="swError">' . ReporticoLang::templateXlate("UNABLE_TO_SAVE") . templateXlate("SPECIFYXML") . "</div>";
+                        echo '<div class="swError">' . ReporticoLang::templateXlate("UNABLE_TO_SAVE") . ReporticoLang::templateXlate("SPECIFYXML") . "</div>";
                         die;
                     }
 
@@ -2787,7 +2787,7 @@ class XmlReader
                         $text .= $this->draw_show_hide_tab_button($this->id . "crit", "CRITERIA");
                         $text .= $this->draw_show_hide_tab_button($this->id . "outp", "OUTPUT");
                         $text .= '</UL>';
-                        $text .= '<TABLE cellspacing="0" cellpadding="0" class="swMntInnerBox">';
+                        $text .= '<TABLE class="swMntInnerBox">';
                         break;
 
                     case "SQL":
@@ -2812,7 +2812,7 @@ class XmlReader
                             $text .= $this->draw_add_button($this->id, "Groups");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
-                            $text .= '<TABLE cellspacing="0" cellpadding="0" class="swMntInnerBox">';
+                            $text .= '<TABLE class="swMntInnerBox">';
                             $text .= '<TR>';
                             $text .= $this->panel_key_to_html($this->id, $val, "GROUP", "_key", true);
                             $text .= '<TD valign="top">';
@@ -2849,7 +2849,7 @@ class XmlReader
                             $text .= $this->draw_add_button($this->id, "Group Headers");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
-                            $text .= '<TABLE cellspacing="0" cellpadding="0" class="swMntInnerBox">';
+                            $text .= '<TABLE class="swMntInnerBox">';
                             $text .= '<TR>';
                             $text .= $this->panel_key_to_html($this->id, $val, "HEADER", "_key", true);
                             $text .= '<TD valign="top">';
@@ -2868,7 +2868,7 @@ class XmlReader
                             $text .= $this->draw_add_button($this->id, "PreSQLS");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
-                            $text .= '<TABLE cellspacing="0" cellpadding="0" class="swMntInnerBox">';
+                            $text .= '<TABLE class="swMntInnerBox">';
                             $text .= '<TR>';
                             $text .= $this->panel_key_to_html($this->id, $val, "PRESQL", "_key", true);
                             $text .= '<TD valign="top">';
@@ -2905,7 +2905,7 @@ class XmlReader
                             $text .= $this->draw_add_button($this->id, "Plots");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
-                            $text .= '<TABLE cellspacing="0" cellpadding="0" class="swMntInnerBox">';
+                            $text .= '<TABLE class="swMntInnerBox">';
                             $text .= '<TR>';
                             $text .= $this->panel_key_to_html($this->id, $val, "PLOT", "_key");
                             $text .= '<TD valign="top">';
@@ -2924,7 +2924,7 @@ class XmlReader
                             $text .= $this->draw_add_button($this->id, "Graphs");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
-                            $text .= '<TABLE cellspacing="0" cellpadding="0" class="swMntInnerBox">';
+                            $text .= '<TABLE class="swMntInnerBox">';
                             $text .= '<TR>';
                             $text .= $this->panel_key_to_html($this->id, $val, "GRAPH", "_key");
                             $text .= '<TD valign="top">';
@@ -2943,7 +2943,7 @@ class XmlReader
                             $text .= $this->draw_add_button($this->id, "Page Headers");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
-                            $text .= '<TABLE cellspacing="0" cellpadding="0" class="swMntInnerBox">';
+                            $text .= '<TABLE class="swMntInnerBox">';
                             $text .= '<TR>';
                             $text .= $this->panel_key_to_html($this->id, $val, "PAGE_HEADER", "_key");
                             $text .= '<TD valign="top">';
@@ -2962,7 +2962,7 @@ class XmlReader
                             $text .= $this->draw_add_button($this->id, "Page Footers");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
-                            $text .= '<TABLE cellspacing="0" cellpadding="0" class="swMntInnerBox">';
+                            $text .= '<TABLE class="swMntInnerBox">';
                             $text .= '<TR>';
                             $text .= $this->panel_key_to_html($this->id, $val, "PAGE_FOOTER", "_key");
                             $text .= '<TD valign="top">';
@@ -2982,7 +2982,7 @@ class XmlReader
                             $text .= $this->draw_add_button($this->id, "Query Columns");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
-                            $text .= '<TABLE cellspacing="0" cellpadding="0" class="swMntInnerBox">';
+                            $text .= '<TABLE class="swMntInnerBox">';
                             $text .= '<TR>';
                             $text .= $this->panel_key_to_html($this->id, $val, "", "Name");
                             $text .= '<TD valign="top">';
@@ -3026,7 +3026,7 @@ class XmlReader
                             $text .= '</TR>';
                             $text .= '<TR class="swMntRowBlock">';
                             $text .= '<TD style="width: 100%;">';
-                            $text .= '<TABLE cellspacing="0" cellpadding="0" class="swMntInnerBox">';
+                            $text .= '<TABLE class="swMntInnerBox">';
                         }
                         break;
 
@@ -3073,7 +3073,7 @@ class XmlReader
                             //$text .= $this->draw_show_hide_tab_button ($this->id."ords", "ORDER_BY") ;
                             $text .= $this->draw_show_hide_tab_button($this->id . "psql", "PRESQLS");
                             $text .= '</UL>';
-                            $text .= '<TABLE cellspacing="0" cellpadding="0" class="swMntInnerBox">';
+                            $text .= '<TABLE class="swMntInnerBox">';
                         }
                         $text .= '<!--End Query-->';
                         break;
@@ -3092,7 +3092,7 @@ class XmlReader
                             $text .= $this->draw_add_button($this->id, "Criteria");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
-                            $text .= '<TABLE cellspacing="0" cellpadding="0" class="swMntInnerBox">';
+                            $text .= '<TABLE class="swMntInnerBox">';
                             $text .= '<TR>';
                             $text .= $this->panel_key_to_html($this->id, $val, "CRITERIAITEM", "Name", true);
                             $text .= '<TD valign="top">';
@@ -3111,7 +3111,7 @@ class XmlReader
                             $text .= $this->draw_add_button($this->id, "Link");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
-                            $text .= '<TABLE cellspacing="0" cellpadding="0" class="swMntInnerBox">';
+                            $text .= '<TABLE class="swMntInnerBox">';
                             $text .= '<TR>';
                             $text .= $this->panel_key_to_html($this->id, $val, "LINKS", "_key");
                             $text .= '<TD valign="top">';
@@ -3131,7 +3131,7 @@ class XmlReader
                             $text .= $this->draw_add_button($this->id, "ASSIGNMENT");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
-                            $text .= '<TABLE cellspacing="0" cellpadding="0" class="swMntInnerBox">';
+                            $text .= '<TABLE class="swMntInnerBox">';
                             $text .= '<TR>';
                             $text .= $this->panel_key_to_html($this->id, $val, "ASSIGNMENT", "AssignName", true);
                             $text .= '<TD valign="top">';
@@ -3213,7 +3213,6 @@ class XmlReader
 
                         break;
                 }
-
                 if (!$hold_last) {
                     $this->last_element = $k;
                 }
@@ -3241,13 +3240,12 @@ class XmlReader
                             $text .= '</TABLE>';
                             $text .= '</TD>';
                             $text .= '</TR>';
-                            break;
                         }
 
                     case "Report":
                     case "CogModule":
                         if ($this->id) {
-                            $text .= '<!--Cog Mod-->';
+                            $text .= '<!--Report -->';
                             $text .= '</TABLE>';
                         }
                         break;
@@ -3427,7 +3425,7 @@ class XmlReader
                     $text .= $this->draw_show_hide_tab_button($this->id . "detl", "DETAILS");
                     $text .= $this->draw_show_hide_tab_button($this->id . "plot", "PLOTS");
                     $text .= '		</UL>' . "\n";
-                    $text .= '		<TABLE cellspacing="0" cellpadding="0" class="swMntInnerBox">' . "\n";
+                    $text .= '		<TABLE class="swMntInnerBox">' . "\n";
                 }
 
                 // Force Group Header Trailer menu after group entry fields
@@ -3446,7 +3444,7 @@ class XmlReader
                     $text .= $this->draw_show_hide_tab_button($this->id . "ghdr", "HEADERS");
                     $text .= $this->draw_show_hide_tab_button($this->id . "gtrl", "TRAILERS");
                     $text .= '		</UL>' . "\n";
-                    $text .= '		<TABLE cellspacing="0" cellpadding="0" class="swMntInnerBox">' . "\n";
+                    $text .= '		<TABLE class="swMntInnerBox">' . "\n";
                 }
 
                 // Force Criteria menu after group entry fields
@@ -3471,7 +3469,7 @@ class XmlReader
                     }
 
                     $text .= '		</UL>' . "\n";
-                    $text .= '		<TABLE cellspacing="0" cellpadding="0" class="swMntInnerBox">' . "\n";
+                    $text .= '		<TABLE class="swMntInnerBox">' . "\n";
                 }
 
                 if ($this->isShowingFull($this->id)) {
@@ -3992,7 +3990,6 @@ class XmlReader
                     $testpath = ReporticoUtility::findBestLocationInIncludePath($this->query->reports_path);
                 }
 
-                echo $testpath . "!!";
                 if (is_dir($testpath)) {
                     if ($dh = opendir($testpath)) {
                         while (($file = readdir($dh)) !== false) {

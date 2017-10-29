@@ -37,7 +37,7 @@ class ReporticoObject
         $val = false;
         if (isset($this->attributes[$attrib_name])) {
             if ($this->attributes[$attrib_name]) {
-                $val = ReporticoApp::getDefaultConfig($attrib_name, $this->attributes[$attrib_name]);
+                $val = $this->attributes[$attrib_name];
                 return $val;
             } else {
                 $val = ReporticoApp::getDefaultConfig($attrib_name, $this->attributes[$attrib_name]);

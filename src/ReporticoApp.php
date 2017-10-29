@@ -264,6 +264,11 @@ class ReporticoApp
             $out_val = ReporticoApp::getConfig("DEFAULT_" . $in_code);
         }
 
+        if ( $in_default && substr($in_default, 0 , 1)  != ReporticoApp::DEFAULT_INDICATOR)
+        {
+            $out_val = $in_default;
+        }
+
         if ( $out_val == ReporticoApp::DEFAULT_INDICATOR )
             $out_val = "";
 

@@ -86,6 +86,62 @@ class Report extends ReporticoObject
         );
     }
 
+    public static function reporticoStringToPhpStandalone($in_string,$parent)
+    {
+        // first change '(colval)' parameters
+        $out_string = $in_string;
+
+        if (preg_match_all("/{([^}]*)/", $out_string, $matches)) {
+            foreach ($matches[1] as $match) {
+                $first = substr($match, 0, 1);
+                if ($first == "=") {
+                    $crit = substr($match, 1);
+                    $label = "";
+                    $value = "";
+                    $parent->query->lookup_queries[$crit]->criteriaSummaryText($label, $value);
+                    $out_string = preg_replace("/\{$match\}/",
+                        $value,
+                        $out_string);
+                }
+                if (preg_match("/^session_/", $match)) {
+                    $crit = substr($match, 8);
+                    $out_string = preg_replace("/\{$match\}/",
+                        ReporticoSession::getReporticoSessionParam($crit), $out_string);
+                }
+            }
+        }
+
+        if (preg_match("/date\((.*)\)/", $out_string, $match)) {
+            $dt = preg_replace("/[\"']/", "", date($match[1]));
+            $out_string = preg_replace("/date\(.*\)/i", "$dt", $out_string);
+        }
+
+        $out_string = preg_replace('/date("\(.*\)")/', "$parent->page_count",
+            $out_string);
+
+        $out_string = preg_replace('/pageno\(\)/', "$parent->page_count",
+            $out_string);
+
+        $out_string = preg_replace('/page\(\)/', "$parent->page_count",
+            $out_string);
+
+        $out_string = preg_replace('/{page}/i', "$parent->page_count",
+            $out_string);
+
+        $out_string = preg_replace('/{#page}/i', "$parent->page_count",
+            $out_string);
+
+        $out_string = preg_replace('/report_*title\(\)/i', $parent->deriveAttribute("ReportTitle"),
+            $out_string);
+
+        $out_string = preg_replace('/{report_*title}/i', $parent->deriveAttribute("ReportTitle"),
+            $out_string);
+
+        $out_string = preg_replace('/{title}/', $parent->reporttitle,
+            $out_string);
+
+        return ($out_string);
+    }
     public function reporticoStringToPhp($in_string)
     {
         // first change '(colval)' parameters
@@ -387,7 +443,7 @@ class Report extends ReporticoObject
 
             if (
                 ($ph->getAttribute("ShowInHTML") == "yes" && preg_match("/ReportHtml/", get_class($this)))
-                || ($ph->getAttribute("ShowInPDF") == "yes" && $this->query->target_format == "PDF")
+                || ($ph->getAttribute("ShowInPDF") == "yes" && ( $this->query->target_format == "PDF" || $this->query->target_format == "xxxxxPDF" ) )
             ) {
                 $this->formatPageHeader($ph);
             }
@@ -757,7 +813,7 @@ class Report extends ReporticoObject
                         }
 
                         // Column Trailers
-                        if ($this->query->target_format == "PDF") {
+                        if ($this->query->target_format == "PDF" || $this->query->target_format == "HTML2PDF") {
                             foreach ($group->trailers_by_column as $kk => $trailer) {
                                 foreach ($trailer as $kk2 => $colgrp) {
                                     if ($colgrp["ShowInPDF"] == "yes") {
@@ -925,6 +981,21 @@ class Report extends ReporticoObject
                 $this->formatGroupHeaderEnd();
 
                 // For HTML custom headers draw them after the regular ones
+                if ($this->query->target_format == "HTML2PDF") {
+                    $this->formatGroupCustomHeaderStart();
+
+                    for ($i = 0; $i < count($group->headers); $i++) {
+                        $col = &$group->headers[$i]["GroupHeaderColumn"];
+                        $custom = $group->headers[$i]["GroupHeaderCustom"];
+                        if ( $custom )
+                            if ($group->headers[$i]["ShowInPDF"] == "yes" && preg_match("/ReportHtml/", get_class($this))) {
+                                $this->formatCustomHeader($col, $custom);
+                            }
+                    }
+
+                    $this->formatGroupCustomHeaderEnd();
+                }
+
                 if ($this->query->target_format == "HTML") {
                     $this->formatGroupCustomHeaderStart();
 
