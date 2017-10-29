@@ -807,7 +807,7 @@ input.swAdminButton2
 /* ----------------------------- i.e for the HTML Report Output -----------------------*/
 .swMntBody 
 { 
-    background-color: #efefef;
+    /*background-color: #efefef;*/
     /*width: 100%;*/
     margin-top: 0px;
     margin-left: 5%;
@@ -1070,8 +1070,8 @@ input.swAdminButton2
 .swMntSetField textarea
 {
     font-size: 10pt;
-    width: auto !important;
-    max-width:280px;
+    /*width: auto !important;
+    max-width:380px;*/
 }
 
 .swMntHelpLink
