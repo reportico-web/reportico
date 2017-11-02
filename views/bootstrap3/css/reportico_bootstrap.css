@@ -741,6 +741,14 @@ input.swAdminButton2
 .swXMLBox { background-image: url(../images/printxml.png) !important; }
 .swPrintBox { background-image: url(../images/printablehtml.png) !important; }
 
+.swMiniMntForm
+{
+    background-color : #f4f4f4;
+    border-color : #BBCCFF;
+    padding: 1px 1px 1px 1px;
+    font-size: 10pt;
+}
+
 .swMiniMaintain
 {
     height: 30px !important;
@@ -799,7 +807,7 @@ input.swAdminButton2
 /* ----------------------------- i.e for the HTML Report Output -----------------------*/
 .swMntBody 
 { 
-    background-color: #efefef;
+    /*background-color: #efefef;*/
     /*width: 100%;*/
     margin-top: 0px;
     margin-left: 5%;
@@ -846,7 +854,7 @@ input.swAdminButton2
 {
     width: 100%;
     border: solid;
-    background-color : #BBCCFF;
+    background-color : #FF0000;
     border-color : #BBCCFF;
     border-width : 0px;
     color: #000000;
@@ -872,9 +880,8 @@ input.swAdminButton2
 
 .swMntMidSection
 {
-   /* width: 216px;
-    background-color: #eeeeff;*/
-    border-right: solid black 1px;
+   width: 216px;
+   padding-right: 10px;
 }
 
 .swMntUpDownButtonCell
@@ -935,7 +942,7 @@ input.swAdminButton2
 .swMntInnerBox
 {
     width: 100%;
-    border: 2px solid #CCCCFF;
+    /*border: 2px solid #CCCCFF;*/
     /*background-color : #000000;*/
     padding: 5px 5px 5px 5px;
     margin: 0px 0px 0px 0px;
@@ -966,6 +973,7 @@ input.swAdminButton2
 
 .swMntTabMenuCellUnsel
 { 
+    background-color: #e0e0ff;
     border: 1px solid #bbb;
 }
 /* -------------- End Horizontal Menu Buttons ---------------------- */
@@ -1044,10 +1052,8 @@ input.swAdminButton2
 
 .swMntRowBlock
 {
-    border: groove thin;
-    border-width: 2px;
-    vertical-align=text-top;
-    border-color : #DDFFDD;
+    border-bottom: solid 1px #ccc;
+    vertical-align: text-top;
     font-style: bold;
     font-size: 10pt;
     margin-left: 2%
@@ -1055,7 +1061,7 @@ input.swAdminButton2
 
 .swMntSetField
 {
-    background-color : #f4f4f4;
+    /*background-color : #f4f4f4;*/
     border-color : #BBCCFF;
     padding: 1px 1px 1px 1px;
     font-size: 10pt;
@@ -1064,8 +1070,8 @@ input.swAdminButton2
 .swMntSetField textarea
 {
     font-size: 10pt;
-    width: auto !important;
-    max-width:380px;
+    /*width: auto !important;
+    max-width:380px;*/
 }
 
 .swMntHelpLink
@@ -1165,7 +1171,7 @@ input.swAdminButton2
     .swRepButtons { display: none; }
     .prepareAjaxExecuteIgnore { display: none; }
     .swRepForm { border: none; }
-    .swRepBody { width: 100%; margin: 0; border: none; }
+    .swRepBody { width: 100%; margin: 0px; border: none; }
 
     .swLastPageFooterBlock { display: block; }
     .swNewPageHeaderBlock { display: block; } 
@@ -1346,3 +1352,13 @@ border-top: 1px solid #e5e5e5;
     padding: 15px !important;
 }
 
+
+.unbreakable {
+    display:inline-block;
+}
+.unbreakable:after {
+    content: '';
+    display:block;
+    height:0px;
+    visibility: hidden;
+}

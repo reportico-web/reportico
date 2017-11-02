@@ -1,3 +1,4 @@
+{% autoescape false %}
 {% if ERRORMSG|length>0 %}
             <TABLE class="swError">
                 <TR>
@@ -5,3 +6,4 @@
                 </TR>
             </TABLE>
 {% endif %}
+{% endautoescape %}

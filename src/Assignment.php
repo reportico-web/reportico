@@ -50,10 +50,10 @@ class Assignment extends ReporticoObject
     public static function reporticoMetaSqlCriteria(&$in_query, $in_string, $prev_col_value = false, $no_warnings = false, $execute_mode = "EXECUTE")
     {
         // Replace user parameters with values
-        $external_param1 = ReporticoSession::getReporticoSessionParam("external_param1");
-        $external_param2 = ReporticoSession::getReporticoSessionParam("external_param2");
-        $external_param3 = ReporticoSession::getReporticoSessionParam("external_param3");
-        $external_user = ReporticoSession::getReporticoSessionParam("external_user");
+        $external_param1 = (ReporticoSession())::getReporticoSessionParam("external_param1");
+        $external_param2 = (ReporticoSession())::getReporticoSessionParam("external_param2");
+        $external_param3 = (ReporticoSession())::getReporticoSessionParam("external_param3");
+        $external_user = (ReporticoSession())::getReporticoSessionParam("external_user");
 
         if ($external_param1) {
             $in_string = preg_replace("/{EXTERNAL_PARAM1}/", "'" . $external_param1 . "'", $in_string);
@@ -323,6 +323,13 @@ class Assignment extends ReporticoObject
                 $out_string);
         }
 
+        // Backward compatibility for previous apply_style
+        if (preg_match('/apply_style\(.*\)/', $out_string)) {
+            $this->non_assignment_operation = true;
+            $out_string = preg_replace('/apply_style\(/',
+                '$this->applyStyle("' . $this->query_name . "\",", $out_string);
+        }
+        else
         if (preg_match('/applyStyle\(.*\)/', $out_string)) {
             $this->non_assignment_operation = true;
             $out_string = preg_replace('/applyStyle\(/',

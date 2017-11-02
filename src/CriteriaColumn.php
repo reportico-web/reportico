@@ -791,7 +791,7 @@ class CriteriaColumn extends QueryColumn
 
             // If this is first time into screen and we have defaults then
             // use these instead
-            if (!$params && !$hidden_params && ReporticoSession::getReporticoSessionParam("firstTimeIn")) {
+            if (!$params && !$hidden_params && (ReporticoSession())::getReporticoSessionParam("firstTimeIn")) {
                 $hidden_params = $this->defaults;
                 $manual_params = $this->defaults;
             }
@@ -1070,7 +1070,7 @@ class CriteriaColumn extends QueryColumn
 
             // If this is first time into screen and we have defaults then
             // use these instead
-            if (!$hidden_params && ReporticoSession::getReporticoSessionParam("firstTimeIn")) {
+            if (!$hidden_params && (ReporticoSession())::getReporticoSessionParam("firstTimeIn")) {
                 $hidden_params = $this->defaults;
                 $manual_params = $this->defaults;
             }
@@ -1355,7 +1355,7 @@ class CriteriaColumn extends QueryColumn
 
             // If this is first time into screen and we have defaults then
             // use these instead
-            if (!$hidden_params && ReporticoSession::getReporticoSessionParam("firstTimeIn")) {
+            if (!$hidden_params && (ReporticoSession())::getReporticoSessionParam("firstTimeIn")) {
                 $hidden_params = $this->defaults;
                 $manual_params = $this->defaults;
             }

@@ -366,7 +366,47 @@ class ReporticoDataSource extends ReporticoObject
 
         if ($this->external_connection) {
             $this->ado_connection = NewADOConnection("pdo");
-            $this->ado_connection->ConnectExisting($this->external_connection);
+            $this->ado_connection->_connectionID = $this->external_connection;
+            if ($this->ado_connection->_connectionID) {
+                switch(ADODB_ASSOC_CASE){
+                case 0: $m = PDO::CASE_LOWER; break;
+                case 1: $m = PDO::CASE_UPPER; break;
+                default:
+                case 2: $m = PDO::CASE_NATURAL; break;
+                }
+
+                //$this->ado_connection->_connectionID->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_SILENT );
+                //$this->ado_connection->_connectionID->setAttribute(PDO::ATTR_CASE,$m);
+
+                $class = 'ADODB_pdo_'.$this->ado_connection->dsnType;
+
+                //$this->ado_connection->_connectionID->setAttribute(PDO::ATTR_AUTOCOMMIT,true);
+                switch($this->ado_connection->dsnType) {
+                case 'oci':
+                case 'mysql':
+                case 'pgsql':
+                case 'mssql':
+                    include_once(ADODB_DIR.'/drivers/adodb-pdo_'.$this->ado_connection->dsnType.'.inc.php');
+                    break;
+                }
+                //include_once("/var/www/laravel55/vendor/reportico/laravel-experiment/src/Reportico/Laravel/reportico_adodb/drivers/adodb-pdo.inc.php");
+                //if (class_exists($class,false))
+                    //$this->ado_connection->_driver = new $class();
+                //else
+                    $this->ado_connection->_driver = new \ADODB_pdo_base();
+    
+                $this->ado_connection->_driver->_connectionID = $this->ado_connection->_connectionID;
+                $this->ado_connection->_UpdatePDO();
+                return true;
+            }
+
+            $this->ado_connection->_driver->_connectionID = $this->_connectionID;
+            $this->ado_connection->_UpdatePDO();
+
+
+
+
+            //$this->ado_connection->ConnectExisting($this->external_connection);
             $this->connected = true;
             return $this->connected;
         }

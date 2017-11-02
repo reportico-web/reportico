@@ -2117,7 +2117,7 @@ class XmlReader
 
                 case "PREPARESAVE":
                     $xmlsavefile = $this->query->xmloutfile;
-                    ReporticoSession::setReporticoSessionParam("execute_mode", "PREPARE");
+                    (ReporticoSession())::setReporticoSessionParam("execute_mode", "PREPARE");
 
                     if (!$xmlsavefile) {
                         header("HTTP/1.0 404 Not Found", true);
@@ -2224,8 +2224,8 @@ class XmlReader
         if ($xmlsavefile) {
             if ($this->query->allow_maintain != "SAFE" && $this->query->allow_maintain != "DEMO" && ReporticoApp::getConfig('allow_maintain')) {
                 $xmlout->writeFile($xmlsavefile);
-                ReporticoSession::setReporticoSessionParam("xmlin", $xmlsavefile);
-                ReporticoSession::unsetReporticoSessionParam("xmlintext");
+                (ReporticoSession())::setReporticoSessionParam("xmlin", $xmlsavefile);
+                (ReporticoSession())::unsetReporticoSessionParam("xmlintext");
             } else {
                 trigger_error(ReporticoLang::templateXlate("SAFENOSAVE"), E_USER_ERROR);
             }
@@ -2237,8 +2237,8 @@ class XmlReader
         if ($xmldeletefile) {
             if ($this->query->allow_maintain != "SAFE" && $this->query->allow_maintain != "DEMO" && ReporticoApp::getConfig('allow_maintain')) {
                 $xmlout->removeFile($xmldeletefile);
-                ReporticoSession::setReporticoSessionParam("xmlin", false);
-                ReporticoSession::unsetReporticoSessionParam("xmlintext");
+                (ReporticoSession())::setReporticoSessionParam("xmlin", false);
+                (ReporticoSession())::unsetReporticoSessionParam("xmlintext");
             } else {
                 trigger_error(ReporticoLang::templateXlate("SAFENODEL"), E_USER_ERROR);
             }
@@ -4015,11 +4015,15 @@ class XmlReader
                 if ($this->query->pdf_engine == "fpdf") {
                     //$fontdir = "src/fpdf/font";
                     $fontdir = "vendor/setasign/fpdf/font";
-                } else {
+                } else if ($this->query->pdf_engine == "phantomjs"){
                     //$fontdir = "src/tcpdf/fonts";
-                    $fontdir = "vendor/tecnickcom/tcpdf/fonts";
+                    $fontdir = false;
+                } else {
+                    $fontdir = "src/tcpdf/fonts";
                 }
 
+                if ( $fontdir )
+                {
                 if (is_dir($fontdir)) {
                     $testpath = $fontdir;
                 } else {
@@ -4045,6 +4049,7 @@ class XmlReader
                 }
 
                 $text .= $this->drawArrayDropdown("set_" . $this->id . "_" . $showtag . $shadow, $keys, $val, false, $translateoptions);
+                }
 
                 break;
 

@@ -106,7 +106,7 @@ class Report extends ReporticoObject
                 if (preg_match("/^session_/", $match)) {
                     $crit = substr($match, 8);
                     $out_string = preg_replace("/\{$match\}/",
-                        ReporticoSession::getReporticoSessionParam($crit), $out_string);
+                        (ReporticoSession())::getReporticoSessionParam($crit), $out_string);
                 }
             }
         }
@@ -162,7 +162,7 @@ class Report extends ReporticoObject
                 if (preg_match("/^session_/", $match)) {
                     $crit = substr($match, 8);
                     $out_string = preg_replace("/\{$match\}/",
-                        ReporticoSession::getReporticoSessionParam($crit), $out_string);
+                        (ReporticoSession())::getReporticoSessionParam($crit), $out_string);
                 }
             }
         }
@@ -245,7 +245,7 @@ class Report extends ReporticoObject
     {
         $this->last_line = true;
         $this->debug("Base finish");
-        if (ReporticoSession::getReporticoSessionParam("target_show_group_trailers")) {
+        if ((ReporticoSession())::getReporticoSessionParam("target_show_group_trailers")) {
             $this->afterGroupTrailers();
         }
 
@@ -364,7 +364,7 @@ class Report extends ReporticoObject
             }
         }
 
-        if (ReporticoSession::getReporticoSessionParam("target_show_criteria") && $is_criteria) {
+        if ((ReporticoSession())::getReporticoSessionParam("target_show_criteria") && $is_criteria) {
             $this->beforeFormatCriteriaSelection();
             foreach ($this->query->lookup_queries as $name => $crit) {
                 $label = "";
@@ -601,7 +601,7 @@ class Report extends ReporticoObject
         }
         $this->debug("Base Each Line");
 
-        if (ReporticoSession::getReporticoSessionParam("target_show_group_trailers")) {
+        if ((ReporticoSession())::getReporticoSessionParam("target_show_group_trailers")) {
             $this->afterGroupTrailers();
         }
 
@@ -638,7 +638,7 @@ class Report extends ReporticoObject
         $this->any_custom_trailers = false;
 
         // Dont apply trailers in FORM style
-        if (ReporticoSession::sessionRequestItem("target_style", "TABLE") == "FORM") {
+        if ((ReporticoSession())::sessionRequestItem("target_style", "TABLE") == "FORM") {
             return;
         }
 
@@ -852,7 +852,7 @@ class Report extends ReporticoObject
                     if (function_exists("imagecreatefromstring") &&
                         $this->graph_display &&
                         //ReporticoUtility::getCheckboxValue("target_show_graph"))
-                        ReporticoSession::getReporticoSessionParam("target_show_graph")) {
+                        (ReporticoSession())::getReporticoSessionParam("target_show_graph")) {
                         if ($graphs = &$this->query->getGraphByName($group->group_name)) {
                             foreach ($graphs as $graph) {
                                 $graph->width_pdf_actual = ReporticoApp::getDefaultConfig("GraphWidthPDF", $graph->width_pdf);
@@ -919,7 +919,7 @@ class Report extends ReporticoObject
         //if ( $this->inOverflow )
         //return;
 
-        if (ReporticoSession::sessionRequestItem("target_style", "TABLE") == "FORM") {
+        if ((ReporticoSession())::sessionRequestItem("target_style", "TABLE") == "FORM") {
             return;
         }
 
@@ -951,7 +951,7 @@ class Report extends ReporticoObject
                     $this->formatGroupHeaderStart($this->page_line_count > 0 && $group->getFormat("before_header") == "newpage");
                 }
 
-                if (ReporticoSession::getReporticoSessionParam("target_show_group_headers")) {
+                if ((ReporticoSession())::getReporticoSessionParam("target_show_group_headers")) {
                     for ($i = 0; $i < count($group->headers); $i++) {
                         $col = &$group->headers[$i]["GroupHeaderColumn"];
                         $custom = $group->headers[$i]["GroupHeaderCustom"];

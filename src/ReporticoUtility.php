@@ -297,7 +297,7 @@ class ReporticoUtility
             $above = "";
         }
 
-        $url_path = $above . "/" . ReporticoSession::sessionRequestItem('reporticourl', dirname($newpath));
+        $url_path = $above . "/" . (ReporticoSession())::sessionRequestItem('reporticourl', dirname($newpath));
 
         // If reportico source files are installed in root directory or in some other
         // scenarios such as an invalid linkbaseurl parameter the dirname of the

@@ -1,6 +1,19 @@
+{% autoescape false %}
 {% include 'bootstrap3/header.inc.tpl' %}
 
 <div id="reportico_container">
+
+    <script>
+        reportico_criteria_items = [];
+{% if CRITERIA_ITEMS is defined %}
+{% for critno in CRITERIA_ITEMS %}
+        reportico_criteria_items.push("{{critno.name}}");
+{% endfor %}
+{% endif %}
+    </script>
+{% if PDF_DELIVERY_MODE is defined %}
+<script type="text/javascript">var reportico_pdf_delivery_mode = "{{ PDF_DELIVERY_MODE }}";</script>
+{% endif %}
 
 <FORM class="swPrpForm" id="criteriaform" name="topmenu" method="POST" action="{{ SCRIPT_SELF }}">
 <input type="hidden" name="reportico_session_name" value="{{ SESSION_ID }}" />
@@ -53,3 +66,4 @@
 </div>
 {% include 'bootstrap3/footer.inc.tpl' %}
 
+{% endautoescape %}

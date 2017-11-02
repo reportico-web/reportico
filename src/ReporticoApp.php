@@ -262,6 +262,8 @@ class ReporticoApp
             $out_val = ReporticoApp::getConfig("chart_" . $in_code);
         } else if (ReporticoApp::isSetConfig("DEFAULT_" . $in_code)) {
             $out_val = ReporticoApp::getConfig("DEFAULT_" . $in_code);
+        } else if (defined("SW_DEFAULT_" . $in_code)) {
+            $out_val = constant("SW_DEFAULT_" . $in_code);
         }
 
         if ( $in_default && substr($in_default, 0 , 1)  != ReporticoApp::DEFAULT_INDICATOR)

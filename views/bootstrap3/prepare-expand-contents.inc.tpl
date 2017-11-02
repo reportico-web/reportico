@@ -1,3 +1,4 @@
+{% autoescape false %}
 <!  -- Error and status message -->
 {% include 'bootstrap3/message-error.inc.tpl' %}
 {% include 'bootstrap3/message-status.inc.tpl' %}
@@ -10,3 +11,4 @@
 {% include 'bootstrap3/prepare-report-description.inc.tpl' %}
 {% endif %}
 {% endif %}
+{% endautoescape%}

@@ -47,14 +47,14 @@ class ReportPhantomJSPDF extends Report
     {
         // Since we are going to spawn web call to fetch HTML version of report for conversion to PDF, 
         // we must close current sessions so they can be subsequently opened within the web call
-        ReporticoSession::closeReporticoSession();
+        (ReporticoSession())::closeReporticoSession();
         session_write_close();
 
         // Instantiate PhantomJS
         $this->client = Client::getInstance();
 
         // Build URL
-        $url = "${_SERVER["REQUEST_SCHEME"]}://${_SERVER["HTTP_HOST"]}:${_SERVER["SERVER_PORT"]}{$engine->reportico_ajax_script_url}?execute_mode=EXECUTE&target_format=HTML2PDF&&reportico_session_name=" . ReporticoSession::reporticoSessionName();
+        $url = "${_SERVER["REQUEST_SCHEME"]}://${_SERVER["HTTP_HOST"]}:${_SERVER["SERVER_PORT"]}{$engine->reportico_ajax_script_url}?execute_mode=EXECUTE&target_format=HTML2PDF&&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
 
         // Generate Request Call
         $request = $this->client->getMessageFactory()->createPdfRequest($url, 'GET', 4000);

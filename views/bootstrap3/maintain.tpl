@@ -1,7 +1,7 @@
 {% autoescape false %}
 {% if not REPORTICO_AJAX_CALLED %}
 {% if not EMBEDDED_REPORT %}
-<not DOCTYPE html>
+<!DOCTYPE html>
 <HTML>
 <HEAD>
 <TITLE>{{ TITLE }}</TITLE>
