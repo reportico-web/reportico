@@ -184,6 +184,6 @@ function reporticoDefaults($reportico)
         $reportico->setPageHeaderAttribute("H4", "ShowInHTML", "no" );
 
         // Create Page No on bottom of PDF page
-        $reportico->createPageFooter("F1", 2, "Page: {PAGE}{STYLE border-width: 1 0 0 0; margin: 0 0 0 0; font-style: italic; }");
+        $reportico->createPageFooter("F1", 2, "Page: {PAGE} of {PAGETOTAL} {STYLE border-width: 1 0 0 0; margin: 0 0 0 0; font-style: italic; }");
     }
 }

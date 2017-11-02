@@ -87,6 +87,9 @@ class ReportPhantomJSPDF extends Report
             if ( $text == "{NOMORE}" )
                 break;
 
+            $text = preg_replace("/{PAGE}/i", "%pageNum%", $text); 
+            $text = preg_replace("/{PAGETOTAL}/i", "%pageTotal%", $text); 
+
             ReportHtml::extractStylesAndTextFromStringStandalone($text, $styles, $attr);
             $text = Report::reporticoStringToPhpStandalone($text, $engine);
             $text = Assignment::reporticoMetaSqlCriteria($engine, $text);
