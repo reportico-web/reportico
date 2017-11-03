@@ -56,16 +56,19 @@ class ReportPhantomJSPDF extends Report
             $this->client->getEngine()->setPath($engine->pdf_phantomjs_path);
 
         // Build URL
-        $url = "${_SERVER["REQUEST_SCHEME"]}://${_SERVER["HTTP_HOST"]}:${_SERVER["SERVER_PORT"]}{$engine->reportico_ajax_script_url}?proje1ct=tutorials&xmli1n=stock&execute_mode=EXECUTE&target_format=HTML2PDF&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
+        $url = "${_SERVER["REQUEST_SCHEME"]}://${_SERVER["HTTP_HOST"]}:${_SERVER["SERVER_PORT"]}{$engine->reportico_ajax_script_url}?execute_mode=EXECUTE&target_format=HTML2PDF&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
 
         // Generate Request Call
         $request = $this->client->getMessageFactory()->createPdfRequest($url, 'GET', 4000);
 
-        // Add any CSRF token
+        // Add any CSRF tokens for when Reportico is called inside a framework
+        // And retain any cookies too
         if ( $engine->csrfToken ) {
             $oldHeaders = getallheaders();
-            $newHeaders = getallheaders();
-            unset($newHeaders["Accept-Encoding"]);
+
+            $newHeaders = array();
+            if ( isset($oldHeaders["Cookie"]) )
+                $newHeaders["Cookie"]= $oldHeaders["Cookie"];
             $newHeaders["X-CSRF-TOKEN"]= $engine->csrfToken;
 
             $request->setHeaders($newHeaders);
