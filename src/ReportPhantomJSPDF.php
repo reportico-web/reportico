@@ -52,12 +52,25 @@ class ReportPhantomJSPDF extends Report
 
         // Instantiate PhantomJS
         $this->client = Client::getInstance();
+        if ( $engine->pdf_phantomjs_path )
+            $this->client->getEngine()->setPath($engine->pdf_phantomjs_path);
 
         // Build URL
-        $url = "${_SERVER["REQUEST_SCHEME"]}://${_SERVER["HTTP_HOST"]}:${_SERVER["SERVER_PORT"]}{$engine->reportico_ajax_script_url}?execute_mode=EXECUTE&target_format=HTML2PDF&&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
+        $url = "${_SERVER["REQUEST_SCHEME"]}://${_SERVER["HTTP_HOST"]}:${_SERVER["SERVER_PORT"]}{$engine->reportico_ajax_script_url}?proje1ct=tutorials&xmli1n=stock&execute_mode=EXECUTE&target_format=HTML2PDF&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
 
         // Generate Request Call
         $request = $this->client->getMessageFactory()->createPdfRequest($url, 'GET', 4000);
+
+        // Add any CSRF token
+        if ( $engine->csrfToken ) {
+            $oldHeaders = getallheaders();
+            $newHeaders = getallheaders();
+            unset($newHeaders["Accept-Encoding"]);
+            $newHeaders["X-CSRF-TOKEN"]= $engine->csrfToken;
+
+            $request->setHeaders($newHeaders);
+        }
+
 
         // Generate temporary name for pdf file to generate on disk. Since phantomjs must write to a file with pdf extension use tempn, to create a file
         // without PDF extensiona and then delete this and use the name with etension for phantom generation
@@ -173,8 +186,7 @@ class ReportPhantomJSPDF extends Report
 
         // Send the request
         $this->client->send($request, $response);
-
-        if($response->getStatus() !== 200) {
+        if( $response->getStatus() !== 200) {
             header("HTTP/1.0 {$response->getStatus()}", true);
             echo "Failed to produce PDF file error {$response->getStatus()} {$response->getContent()} - <BR>";
             die;

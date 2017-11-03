@@ -42,9 +42,9 @@ if (function_exists("imagecreatefromstring")) {
     //include("pChart/class/pDraw.class.php");
     //include("pChart/class/pImage.class.php");
     //include("pChart/class/pPie.class.php");
-    include "pChart/pChart.class";
-    include "pChart/pData.class";
-    include "pChart/pCache.class";
+    //include "pChart/pChart.class";
+    //include "pChart/pData.class";
+    //include "pChart/pCache.class";
 
     $fontpath = ReporticoUtility::findBestLocationInIncludePath("pChart/fonts");
     define("PCHARTFONTS_DIR", $fontpath . "/");

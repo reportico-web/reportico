@@ -15,8 +15,7 @@
             <div class= "nav-collapse collapse in" id="reportico-bootstrap-collapse">
 {% include 'bootstrap3/dropdown-menu.inc.tpl' %}
 
-
-<!  -- right hand side option buttons in  nav bar -->
+<!-- right hand side option buttons in  nav bar -->
 {% if SHOW_HIDE_NAVIGATION_MENU == "show"  %}
             <ul class= "nav navbar-nav pull-right navbar-right">
 {% else %}
