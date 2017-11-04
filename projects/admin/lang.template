@@ -1,5 +1,5 @@
 <?php
-namespace Reportico;
+namespace Reportico\Engine;
 $translations = array (
 		"fr_fr" => array (
 			"Source String" => "Translation"
