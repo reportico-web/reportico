@@ -71,16 +71,18 @@ function reporticoDefaults($reportico)
     // Darker grey on every other line
     $styles = array(
         "padding" => "0px 5px 0px 5px",
+        //"font-size" => "10pt",
+        //"border" => "none",
     );
     $reportico->applyStyleset("ALLCELLS", $styles, false, "PDF");
     $reportico->applyStyleset("ALLCELLS", $styles, false, "HTML2PDF");
 
     // Darker grey on every other line
     $styles = array(
-        "background-color" => "#eeeeee",
+        "background-color" => "#00eeee",
     );
+    $reportico->applyStyleset("ALLCELLS", $styles, false, "HTML", "lineno() % 2 == 0");
     $reportico->applyStyleset("ALLCELLS", $styles, false, "PDF", "lineno() % 2 == 0");
-    $reportico->applyStyleset("ALLCELLS", $styles, false, "HTML2PDF", "lineno() % 2 == 0");
 
     //GROUP HEADER LABEL STYLES
     $styles = array(
