@@ -32,7 +32,7 @@
                                     <span class="glyphicon glyphicon-question-sign"></span>
                             </a>
 {% endif %}
-                            {{ critno.title }}
+                            {{ critno.title|raw }}
                         </td>
                         <td class="swPrpCritSel">
                             {{ critno.entry|raw }}

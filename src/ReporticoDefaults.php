@@ -40,8 +40,8 @@ function reporticoDefaults($reportico)
             "border-style" => "solid",
             "border-width" => "1px 1px 1px 1px",
             "border-color" => "#888888",
-            //"margin" => "0px 5px 10px 5px",
-            //"padding" => "0px 5px 0px 5px",
+            "margin" => "0px 5px 10px 5px",
+            "padding" => "0px 5px 0px 5px",
         );
         $reportico->applyStyleset("CRITERIA", $styles, false, "HTML");
 
@@ -71,18 +71,16 @@ function reporticoDefaults($reportico)
     // Darker grey on every other line
     $styles = array(
         "padding" => "0px 5px 0px 5px",
-        //"font-size" => "10pt",
-        //"border" => "none",
     );
     $reportico->applyStyleset("ALLCELLS", $styles, false, "PDF");
     $reportico->applyStyleset("ALLCELLS", $styles, false, "HTML2PDF");
 
     // Darker grey on every other line
     $styles = array(
-        "background-color" => "#00eeee",
+        "background-color" => "#f0f0f0",
     );
-    $reportico->applyStyleset("ALLCELLS", $styles, false, "HTML", "lineno() % 2 == 0");
     $reportico->applyStyleset("ALLCELLS", $styles, false, "PDF", "lineno() % 2 == 0");
+    $reportico->applyStyleset("ALLCELLS", $styles, false, "HTML2PDF", "lineno() % 2 == 0");
 
     //GROUP HEADER LABEL STYLES
     $styles = array(

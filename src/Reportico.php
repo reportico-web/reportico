@@ -156,7 +156,7 @@ class Reportico extends ReporticoObject
     public $pdf_engine_file = "ReportFPDF";
 
     public $projects_folder = "projects";
-    public $admin_projects_folder = "projects";
+    public $admin_projects_folder = __DIR__."/../projects";
     public $compiled_templates_folder = "templates_c";
     public $tmp_folder = __DIR__."/../tmp";
 
@@ -3099,8 +3099,8 @@ class Reportico extends ReporticoObject
         // ***MENUURL ***}
 
         // Generate dropdown menu strip in menu or prepare mode
-        if (ReporticoApp::getConfig("dropdown_menu") && !$this->dropdown_menu) {
-            $this->dropdown_menu = ReporticoApp::getConfig("dropdown_menu");
+        if (ReporticoApp::get("dropdown_menu") && !$this->dropdown_menu) {
+            $this->dropdown_menu = ReporticoApp::get("dropdown_menu");
         }
 
         if ($this->dropdown_menu && ($mode == "MENU" || $mode == "PREPARE")) {
@@ -4475,6 +4475,7 @@ class Reportico extends ReporticoObject
                     $code = "\$_pdo =& \$_connection->_connectionID;" . $code;
                     $code = "if ( \$_connection )" . $code;
                     $code = "\$_pdo = false;" . $code;
+                    $code = "set_include_path(get_include_path().':".__DIR__."/..:".$this->admin_projects_folder."/admin/');" . $code;
                     $code = "\$_connection =& \$this->datasource->ado_connection;" . $code;
                     $code = "namespace Reportico\Engine;" . $code;
 
@@ -5560,11 +5561,11 @@ class Reportico extends ReporticoObject
                 include_once $configfile;
             }
             ReporticoApp::set("projpath", false);
-            ReporticoApp::setConfig("project", false);
-            ReporticoApp::setConfig("static_menu", false);
-            ReporticoApp::setConfig("admin_menu", false);
+            ReporticoApp::set("project", false);
+            ReporticoApp::set("static_menu", false);
+            ReporticoApp::set("admin_menu", false);
             ReporticoApp::set('menu_title', '');
-            ReporticoApp::setConfig("dropdown_menu", false);
+            ReporticoApp::set("dropdown_menu", false);
             $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
             ReporticoApp::handleError("Project Directory $project not found. Check INCLUDE_PATH or project name");
             return;
@@ -5613,11 +5614,11 @@ class Reportico extends ReporticoObject
                 }
             }
             ReporticoApp::set('project', false);
-            ReporticoApp::setConfig("static_menu", false);
-            ReporticoApp::setConfig("admin_menu", false);
+            ReporticoApp::set("static_menu", false);
+            ReporticoApp::set("admin_menu", false);
             ReporticoApp::set("projpath", false);
             ReporticoApp::set('menu_title', '');
-            ReporticoApp::setConfig("dropdown_menu", false);
+            ReporticoApp::set("dropdown_menu", false);
             $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
             ReporticoApp::handleError("Configuration Definition file config.php not found in project $project", E_USER_ERROR);
         }
@@ -5675,16 +5676,17 @@ class Reportico extends ReporticoObject
         ReporticoApp::setConfig("language", $language);
 
         if (isset($menu)) {
-            ReporticoApp::setConfig("static_menu", $menu);
+            ReporticoApp::set("static_menu", $menu);
         }
 
         if (isset($admin_menu)) {
-            ReporticoApp::setConfig("admin_menu", $menu);
+            ReporticoApp::set("admin_menu", $menu);
+
         }
 
         ReporticoApp::set('menu_title', $menu_title);
         if (isset($dropdown_menu)) {
-            ReporticoApp::setConfig("dropdown_menu", $dropdown_menu);
+            ReporticoApp::set("dropdown_menu", $dropdown_menu);
         }
 
         // Include project specific language translations
