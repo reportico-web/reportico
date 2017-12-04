@@ -2760,9 +2760,9 @@ class XmlReader
                             $text .= ReporticoLang::templateXlate('REPORT_FILE') . ' <input type="text" style="display: inline" name="xmlout" value="' . $this->query->xmloutfile . '">';
                         }
 
-                        $text .= '&nbsp;&nbsp;<input class="' . $this->query->getBootstrapStyle('button_admin') . 'swLinkMenu reporticoSubmit" type="submit" name="submit_xxx_SAVE" value="' . ReporticoLang::templateXlate("SAVE") . '">';
-                        $text .= '&nbsp;&nbsp;<input class="' . $this->query->getBootstrapStyle('button_admin') . 'swLinkMenu reporticoSubmit" type="submit" name="submit_maintain_NEW" value="' . ReporticoLang::templateXlate("NEW_REPORT") . '">';
-                        $text .= '<input class="' . $this->query->getBootstrapStyle('button_delete') . 'swLinkMenu reporticoSubmit" style="margin-left: 80px" type="submit" name="submit_xxx_DELETEREPORT" value="' . ReporticoLang::templateXlate("DELETE_REPORT") . '">';
+                        $text .= '&nbsp;&nbsp;<input class="' . $this->query->getBootstrapStyle('button_admin') . 'reportico-ajax-link reporticoSubmit" type="submit" name="submit_xxx_SAVE" value="' . ReporticoLang::templateXlate("SAVE") . '">';
+                        $text .= '&nbsp;&nbsp;<input class="' . $this->query->getBootstrapStyle('button_admin') . 'reportico-ajax-link reporticoSubmit" type="submit" name="submit_maintain_NEW" value="' . ReporticoLang::templateXlate("NEW_REPORT") . '">';
+                        $text .= '<input class="' . $this->query->getBootstrapStyle('button_delete') . 'reportico-ajax-link reporticoSubmit" style="margin-left: 80px" type="submit" name="submit_xxx_DELETEREPORT" value="' . ReporticoLang::templateXlate("DELETE_REPORT") . '">';
                         $text .= '</TD>';
                         $text .= '</TR>';
                         //$text .= '<TR>';

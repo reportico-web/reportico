@@ -1067,4 +1067,8 @@ class Report extends ReporticoObject
 
     }
 
+    public function &getContent() {
+        return $this->text;
+    }
+
 }

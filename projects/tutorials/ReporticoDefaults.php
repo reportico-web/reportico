@@ -44,7 +44,6 @@ function reporticoDefaults($reportico)
             "padding" => "0px 5px 0px 5px",
         );
         $reportico->applyStyleset("CRITERIA", $styles, false, "HTML");
-
         $styles = array(
             "display" => "none",
         );

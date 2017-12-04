@@ -267,7 +267,7 @@ class ReportRjson extends Report
                 break;
 
             case "newpage":
-                //$this->jar[""] .= '<TABLE class="'.$this->query->getBootstrapStyle("page").'swRepPage" '.$this->getStyleTags($this->query->output_page_styles).'>';
+                //$this->jar[""] .= '<TABLE class="'.$this->query->getBootstrapStyle("page").'reportico-page" '.$this->getStyleTags($this->query->output_page_styles).'>';
                 $this->page_started = true;
                 break;
 
@@ -442,21 +442,21 @@ class ReportRjson extends Report
                 switch ($formpagethrow) {
                     case "newpage":
                         if ($this->page_line_count > 0) {
-                            $formpagethrow = "swRepPageFormLine swNewPage";
+                            $formpagethrow = "reportico-pageFormLine swNewPage";
                         } else {
-                            $formpagethrow = "swRepPageFormLine";
+                            $formpagethrow = "reportico-pageFormLine";
                         }
 
                         break;
                     case "blankline":
-                        $formpagethrow = "swRepPageFormBlank";
+                        $formpagethrow = "reportico-pageFormBlank";
                         break;
                     case "solidline":
-                        $formpagethrow = "swRepPageFormLine";
+                        $formpagethrow = "reportico-pageFormLine";
                         break;
                 }
 
-                // PPP $this->jar[""] .= '<TABLE class="'.$this->query->getBootstrapStyle("page").'swRepPage '.$formpagethrow.'" '.$this->getStyleTags($this->query->output_page_styles).'>';
+                // PPP $this->jar[""] .= '<TABLE class="'.$this->query->getBootstrapStyle("page").'reportico-page '.$formpagethrow.'" '.$this->getStyleTags($this->query->output_page_styles).'>';
                 $this->page_started = true;
             }
             foreach ($this->query->groups as $val) {
@@ -490,7 +490,7 @@ class ReportRjson extends Report
         if ($this->body_display == "show" && (ReporticoSession())::getReporticoSessionParam("target_show_detail")) {
             $this->beginLine();
             if (!$this->page_started) {
-                //$this->jar[""] .= '<TABLE class="'.$this->query->getBootstrapStyle("page").'swRepPage" '.$this->getStyleTags($this->query->output_page_styles).'>';
+                //$this->jar[""] .= '<TABLE class="'.$this->query->getBootstrapStyle("page").'reportico-page" '.$this->getStyleTags($this->query->output_page_styles).'>';
                 $this->page_started = true;
             }
             foreach ($this->query->display_order_set["column"] as $col) {

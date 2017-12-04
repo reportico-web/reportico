@@ -293,15 +293,15 @@
 {/if}
 {if ($SHOW_ADMIN_BUTTON)}
 {if strlen($ADMIN_MENU_URL)>0} 
-                <a class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swLinkMenu" href="{$ADMIN_MENU_URL}">{$T_ADMIN_MENU}</a>
+                <a class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}reportico-ajax-link" href="{$ADMIN_MENU_URL}">{$T_ADMIN_MENU}</a>
 {/if}
 {/if}
 {if strlen($MAIN_MENU_URL)>0} 
 {if $SHOW_PROJECT_MENU_BUTTON}
-				<a class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swLinkMenu" href="{$MAIN_MENU_URL}">{$T_PROJECT_MENU}</a>
+				<a class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}reportico-ajax-link" href="{$MAIN_MENU_URL}">{$T_PROJECT_MENU}</a>
 {/if}
 {if $SHOW_DESIGN_BUTTON}
-                                &nbsp;<input class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swLinkMenu" type="submit" name="submit_design_mode" value="{$T_DESIGN_REPORT}">
+                                &nbsp;<input class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}reportico-ajax-link" type="submit" name="submit_design_mode" value="{$T_DESIGN_REPORT}">
 {/if}
 {if $OUTPUT_SHOW_DEBUG}
 {if $SHOW_DESIGN_BUTTON}
@@ -321,7 +321,7 @@
 			</TD>
 {if $SHOW_LOGOUT}
 			<TD style="width:15%; text-align: right; padding-right: 10px;" class="swPrpTopMenuCell">
-				<input class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swLinkMenu" type="submit" name="logout" value="{$T_LOGOFF}">
+				<input class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}reportico-ajax-link" type="submit" name="logout" value="{$T_LOGOFF}">
 			</TD>
 {/if}
 {if $SHOW_LOGIN}
@@ -331,7 +331,7 @@
                                 <div style="color: #ff0000;">{$T_PASSWORD_ERROR}</div>
 {/if}
 				{$T_ENTER_PROJECT_PASSWORD}<br><input type="password" name="project_password" value=""></div>
-				<input class="swLinkMenu" type="submit" name="login" value="{$T_LOGIN}">
+				<input class="reportico-ajax-link" type="submit" name="login" value="{$T_LOGIN}">
 			</TD>
 {/if}
 		</TR>
@@ -694,7 +694,7 @@ $loopct++;
 {if strlen($STATUSMSG)==0 && strlen($ERRORMSG)==0}
 <div style="float:right; ">
 {if strlen($MAIN_MENU_URL)>0}
-<!--a class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swLinkMenu" style="float:left;" href="{$MAIN_MENU_URL}">&lt;&lt; Menu</a-->
+<!--a class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}reportico-ajax-link" style="float:left;" href="{$MAIN_MENU_URL}">&lt;&lt; Menu</a-->
 {/if}
 </div>
 <p>

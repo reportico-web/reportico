@@ -115,7 +115,7 @@
 */
 function resizeOutputTables(window)
 {
-  var tableArr = reportico_jquery(".swRepPage");
+  var tableArr = reportico_jquery(".reportico-page");
   var tableDataRow = reportico_jquery('.swRepResultLine:first');
 
   var cellWidths = new Array();
@@ -184,7 +184,7 @@ function resizeOutputTables(window)
                                 <div style="color: #ff0000;">{$PASSWORD_ERROR}</div>
 {/if}
 				Enter the report project password. <br><input type="password" name="project_password" value=""></div>
-				<input class="swLinkMenu" type="submit" name="login" value="Login">
+				<input class="reportico-ajax-link" type="submit" name="login" value="Login">
 			</TD>
 {/if}
 {if $REPORTICO_DYNAMIC_GRIDS}

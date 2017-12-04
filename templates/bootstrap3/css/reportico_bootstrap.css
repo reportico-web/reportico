@@ -328,7 +328,7 @@ input.swAdminButton2
 }
 
 /*
-.swLinkMenu 
+.reportico-ajax-link 
 { 
     padding-right: 10px;
     padding-left: 10px;
@@ -343,7 +343,7 @@ input.swAdminButton2
 }
 */
 
-/*.swLinkMenu:hover
+/*.reportico-ajax-link:hover
 {
     border: solid thin #000000;	
     color: #000000 !important;
@@ -573,7 +573,7 @@ input.swAdminButton2
 }
 
 /* Table container for each Page of Output */
-.swRepPage
+.reportico-page
 {
     width:          99%;
     background-color: #FFFFFF;
@@ -584,9 +584,9 @@ input.swAdminButton2
     border-collapse: collapse;
 }
 
-.swRepPageFormPage { border-bottom: solid thin #AAAAAA; }
-.swRepPageFormLine { border-bottom: solid thin #AAAAAA; }
-.swRepPageFormBlank { margin-bottom: 20px; }
+.reportico-pageFormPage { border-bottom: solid thin #AAAAAA; }
+.reportico-pageFormLine { border-bottom: solid thin #AAAAAA; }
+.reportico-pageFormBlank { margin-bottom: 20px; }
 
 /* No Rows Information Message */
 .swRepNoRows
@@ -629,7 +629,7 @@ input.swAdminButton2
 }
 
 /* Container for Group Headers  */
-.swRepGrpHdrBox
+.reportico-group-header-box
 {
     font-weight: bold;
     font-size: 10pt;
@@ -640,7 +640,7 @@ input.swAdminButton2
     margin-right: 0.5%;
     padding-bottom: 5px;
 }
-.swRepCriteria
+.reportico-criteria
 {
     border-top: solid 1px #ddddff;
     font-weight: bold;
@@ -669,12 +669,12 @@ input.swAdminButton2
 }
 
 /* Line for Group Header Data  */
-.swRepGrpHdrRow
+.reportico-group-header-row
 {
 }
 
 /* Group Header Label  */
-.swRepGrpHdrLbl
+.reportico-group-header-label
 {
     text-align: left;
     width: 150px;
@@ -682,7 +682,7 @@ input.swAdminButton2
 }
 
 /* Group Header Value  */
-.swRepGrpHdrDat
+.reportico-group-header-value
 {
     text-align: left;
     border: none;
@@ -772,9 +772,9 @@ input.swAdminButton2
     margin: 0px 0px 0px 0px;
 }
 
-.swRepPrintBox .swLinkMenu,
-.swRepRefreshBox .swLinkMenu,
-.swRepBackBox .swLinkMenu
+.swRepPrintBox .reportico-ajax-link,
+.swRepRefreshBox .reportico-ajax-link,
+.reportico-back-button .reportico-ajax-link
 {
     width: 32px;
     text-align: left;
@@ -784,11 +784,11 @@ input.swAdminButton2
     float: left;
 }
 
-.swRepPrintBox .swLinkMenu { height: 32px !important; border: none; background-image: url(../images/printer.png); background-color: #ffffff;}
-.swRepRefreshBox .swLinkMenu { height: 32px !important; border: none; background-image: url(../images/refreshbutton.png); }
-.swRepBackBox .swLinkMenu { height: 32px !important; border: none; background-image: url(../images/backbutton.png); }
+.swRepPrintBox .reportico-ajax-link { height: 32px !important; border: none; background-image: url(../images/printer.png); background-color: #ffffff;}
+.swRepRefreshBox .reportico-ajax-link { height: 32px !important; border: none; background-image: url(../images/refreshbutton.png); }
+.reportico-back-button .reportico-ajax-link { height: 32px !important; border: none; background-image: url(../images/backbutton.png); }
 
-.swRepBackButton:hover 
+.reportico-back-button:hover 
 {
     background: #e5ecf9;
 }
@@ -1166,8 +1166,8 @@ input.swAdminButton2
 
     /*.swPageHeader { display: block; position: fixed; top: 0; }*/
     .swPageHeader { display: block; }
-    .swLinkMenu { display: none; }
-    .swRepBackBox { display: none; }
+    .reportico-ajax-link { display: none; }
+    .reportico-back-button { display: none; }
     .swRepButtons { display: none; }
     .prepareAjaxExecuteIgnore { display: none; }
     .swRepForm { border: none; }

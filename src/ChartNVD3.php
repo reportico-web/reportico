@@ -292,13 +292,14 @@ class ChartNVD3
         $sessionPlaceholder = $sessionPlaceholder . "_" . ReporticoApp::get("session_namespace");
 
         $container_width = "100%";
+        //$container_width = $this->width_actual . "px";
         //$container_height = "100%";
         if ( $target_format == "HTML2PDF" ) {
             $container_width = $this->width_actual . "px";
             //$container_height = $this->height_actual . "px";
         }
         $container_height = $this->height_actual . "px";
-        
+
         $js = "";
         $js .= "<div class=\"reportico-chart-container\" style=\"width:$container_width;height:$container_height;\"> " . $this->convertSpecialChars($this->title_actual);
         //$js .= "<div class=\"reportico-chart-container\" style=\"width: " . $this->width_actual . "px;height: " . $this->height_actual . "px\"> " . $this->convertSpecialChars($this->title_actual);

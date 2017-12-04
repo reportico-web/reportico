@@ -14,7 +14,7 @@ function setupDynamicGrids()
     if (  reportico_jquery.type(reportico_dynamic_grids) != 'undefined' )
     if ( reportico_dynamic_grids )
     {
-        reportico_jquery(".swRepPage").each(function(){
+        reportico_jquery(".reportico-page").each(function(){
             reportico_jquery(this).dataTable(
                 {
                 "retrieve" : true,
@@ -292,7 +292,7 @@ function resizeHeaders()
 function resizeTables()
 {
 
-  var tableArr = reportico_jquery('.swRepPage');
+  var tableArr = reportico_jquery('.reportico-page');
   if ( tableArr.length == 0 )
     return;
   var tableDataRow = reportico_jquery('.swRepResultLine:first');
@@ -524,7 +524,7 @@ reportico_jquery(document).on('click', '.swPrpSaveButton', function(event)
 ** AJAX mode is in place when reportico session ("reportico_ajax_script") is set
 ** will generate full reportico output to replace the reportico_container tag
 */
-reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenuItemLink, .swPrpSubmit, .swLinkMenu, .swLinkMenu2, .reporticoSubmit', function(event) 
+reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenuItemLink, .swPrpSubmit, .reportico-ajax-link, .swLinkMenu2, .reporticoSubmit', function(event) 
 {
     if ( reportico_jquery(this).hasClass("swNoSubmit" )  )
     {

@@ -219,10 +219,10 @@
 {if ($SHOW_DESIGN_BUTTON)}
 {if !$DEMO_MODE}
             <li style="float:right">
-			    <a class="swLinkMenu2" href="{$CONFIGURE_PROJECT_URL}">{$T_CONFIG_PROJECT}</a>
+			    <a class="reportico-ajax-link2" href="{$CONFIGURE_PROJECT_URL}">{$T_CONFIG_PROJECT}</a>
             </li>
             <li style="float:right">
-			    <a class="swLinkMenu2" href="{$CREATE_REPORT_URL}">{$T_CREATE_REPORT}</a>
+			    <a class="reportico-ajax-link2" href="{$CREATE_REPORT_URL}">{$T_CREATE_REPORT}</a>
             </li>
 {/if}
 {/if}
@@ -265,12 +265,12 @@
 		<TR>
                         <TD class="swPrpTopMenuCell" style="width: 50%">
 {if ($SHOW_ADMIN_BUTTON)}
-			<a class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swLinkMenu" href="{$ADMIN_MENU_URL}">{$T_ADMIN_HOME}</a>
+			<a class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}reportico-ajax-link" href="{$ADMIN_MENU_URL}">{$T_ADMIN_HOME}</a>
 {/if}
 {if ($SHOW_DESIGN_BUTTON)}
 {if !$DEMO_MODE}
-			<a class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swLinkMenu" href="{$CONFIGURE_PROJECT_URL}">{$T_CONFIG_PROJECT}</a>
-			<a class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swLinkMenu" href="{$CREATE_REPORT_URL}">{$T_CREATE_REPORT}</a>
+			<a class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}reportico-ajax-link" href="{$CONFIGURE_PROJECT_URL}">{$T_CONFIG_PROJECT}</a>
+			<a class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}reportico-ajax-link" href="{$CREATE_REPORT_URL}">{$T_CREATE_REPORT}</a>
 {/if}
 {/if}
 			</TD>
@@ -293,7 +293,7 @@
 {$T_ENTER_PROJECT_PASSWORD}
 {/if}
 <BR><input type="password" name="project_password" value=""></div>
-				<input class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swLinkMenu reporticoSubmit" type="submit" name="login" value="{$T_LOGIN}"><br><br><br><br><br>
+				<input class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}reportico-ajax-link reporticoSubmit" type="submit" name="login" value="{$T_LOGIN}"><br><br><br><br><br>
 			</TD>
 {/if}
 			<TD style="text-align: center">
@@ -316,7 +316,7 @@
 			</TD>
 {if $SHOW_LOGOUT}
 			<TD width="15%" style="padding-left: 10px; text-align: right;" class="swPrpTopMenuCell">
-				<input class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}swLinkMenu reporticoSubmit" type="submit" name="logout" value="{$T_LOGOFF}">
+				<input class="{$BOOTSTRAP_STYLE_ADMIN_BUTTON}reportico-ajax-link reporticoSubmit" type="submit" name="logout" value="{$T_LOGOFF}">
 			</TD>
 {/if}
 		</TR>

@@ -43,8 +43,34 @@ class ReportHtml extends Report
     public $header_count = 0;
     public $footer_count = 0;
     public $graph_sessionPlaceholder = 0;
-    public $tbody_started = false;
-    public $tfoot_started = false;
+    public $group_count = 0;
+    public $currentTrailerRow = 0;
+    public $currentGroup = false;
+
+    public $jar = array(
+        "attributes" => array(
+            "hide_title" => false,
+            "show_refresh_button" => false,
+            "show_prepare_button" => false,
+            "show_print_button" => false,
+
+            "show_detail" => true,
+            "show_graph" => true,
+            "show_group_headers" => true,
+            "show_group_trailers" => true,
+            "showColumnHeaders" => true,
+            "show_criteria" => true,
+
+            "column_header_styles" => false,
+        ),
+        "title" => "Set Report Title",
+        "criteria" => array(),
+        "groups" => array(),
+        "columns" => array(),
+        "buttons" => array(),
+        "pages" => array(),
+        "styles" => array(),
+    );
 
     public function __construct()
     {
@@ -60,45 +86,16 @@ class ReportHtml extends Report
         $this->abs_bottom_margin = $this->absPagingHeight($this->getAttribute("BottomMargin"));
         $this->abs_right_margin = $this->absPagingHeight($this->getAttribute("RightMargin"));
         $this->abs_left_margin = $this->absPagingHeight($this->getAttribute("LeftMargin"));
+
+
+
     }
 
     public function finish()
     {
         Report::finish();
 
-        if (preg_match("/\?/", $this->query->getActionUrl())) {
-            $url_join_char = "&";
-        } else {
-            $url_join_char = "?";
-        }
-
-        if ($this->line_count < 1) {
-            $title = $this->query->deriveAttribute("ReportTitle", "Unknown");
-            $this->text .= '<H1 class="swRepTitle">' . ReporticoLang::translate($title) . '</H1>';
-            $forward = (ReporticoSession())::sessionRequestItem('forward_url_get_parameters', '');
-            if ($forward) {
-                $forward .= "&";
-            }
-
-            $this->text .= '<div class="swRepButtons">';
-            // In printable html mode dont show back box
-            if (!ReporticoUtility::getRequestItem("printable_html")) {
-                // Show Go Back Button ( if user is not in "SINGLE REPORT RUN " )
-                if (!$this->query->access_mode || ($this->query->access_mode != "REPORTOUTPUT")) {
-                    $this->text .= '<div class="swRepBackBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'execute_mode=PREPARE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_BACK") . '">&nbsp;</a></div>';
-                }
-                if ((ReporticoSession())::getReporticoSessionParam("show_refresh_button")) {
-                    $this->text .= '<div class="swRepRefreshBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'refreshReport=1&execute_mode=EXECUTE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_REFRESH") . '">&nbsp;</a></div>';
-                }
-
-                $this->text .= '<div class="reporticoJSONExecute"><a class="swJSONExecute1 testy" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'refreshReport=1&target_format=JSON&execute_mode=EXECUTE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_REFRESH") . '">&nbsp;</a></div>';
-            } else {
-                $this->text .= '<div class="swRepPrintBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'printReport=1&execute_mode=EXECUTE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_PRINT") . '">' . ReporticoLang::templateXlate("GO_PRINT") . '</a></div>';
-            }
-            $this->text .= '</div>';
-
-            $this->text .= '<div class="swRepNoRows">' . ReporticoLang::templateXlate("NO_DATA_FOUND") . '</div>';
-        }
+        $this->setPageWidgets();
 
         if ($this->report_file) {
             $this->debug("Saved to $this->report_file");
@@ -112,19 +109,16 @@ class ReportHtml extends Report
 
         if ($this->page_started) {
             if ($this->tbody_started) {
-                $this->text .= '</TBODY>';
                 $this->tbody_started = false;
             }
-            $this->text .= "</TABLE>";
         }
 
-        //$this->text .= "</footer>";
-        $this->text .= "</div>";
         $this->footer_count++;
-        $this->text .= "<footer class=\"swPageFooterBlock swPageFooterBlock{$this->footer_count}\">";
-        $this->text .= "Page Footer";
-        $this->text .= "</footer>";
+        $this->jar["footers"][] = $this->footer_count;
         $this->page_started = false;
+
+        //echo "<PRE>"; var_dump($this->jar); echo "</PRE>";
+        //die;
     }
 
     public function absPagingHeight($height_string)
@@ -149,8 +143,12 @@ class ReportHtml extends Report
         return $width;
     }
 
+    /**
+     * @brief Sets column header
+     *
+     * @param $column_item
+     */
     public function formatColumnHeader(&$column_item) //HTML
-
     {
 
         if ($this->body_display != "show") {
@@ -181,9 +179,10 @@ class ReportHtml extends Report
             $colstyles["text-align"] = $just;
         }
 
-        $this->text .= '<TH ' . $this->getStyleTags($colstyles, $this->query->output_header_styles) . '>';
-        $this->text .= $padstring;
-        $this->text .= "</TH>";
+        $this->jar["pages"][$this->page_count]["headers"][] = [
+            "style" => $this->getStyleTags($colstyles, $this->query->output_header_styles),
+            "content" => $padstring
+            ];
     }
 
     public function formatColumn(&$column_item)
@@ -209,18 +208,597 @@ class ReportHtml extends Report
             $colstyles["text-align"] = $just;
         }
 
-        $this->text .= '<TD ' . $this->getStyleTags($colstyles, $column_item->output_cell_styles, $this->query->output_allcell_styles) . '>';
         if ($column_item->output_images) {
             $padstring = $this->formatImages($column_item->output_images);
         }
 
         if ($column_item->output_hyperlinks) {
-            $this->text .= $this->formatHyperlinks($column_item->output_hyperlinks, $padstring);
-        } else {
-            $this->text .= $padstring;
+            $padstring = $this->formatHyperlinks($column_item->output_hyperlinks, $padstring);
         }
 
-        $this->text .= "</TD>";
+        $this->jar["pages"][$this->page_count]["rows"][$this->line_count]["data"][] = [
+            "style" => $this->getStyleTags($colstyles, $this->query->output_allcell_styles, $this->query->output_allcell_styles),
+            "content" => $padstring
+            ];
+        $rowcount = count( $this->jar["pages"][$this->page_count]["rows"]);
+        //$this->currentGroup["rows"][]  = & $this->jar["pages"][$this->page_count]["rows"][$rowcount - 1]);
+
+    }
+
+    public function getStyleTags($styleset, $parent_styleset = false, $grandparent_styleset = false)
+    {
+        $outtext = "";
+
+        if ($grandparent_styleset && is_array($grandparent_styleset)) {
+            foreach ($grandparent_styleset as $k => $v) {
+                if (!$outtext) {
+                    $outtext = "style=\"";
+                }
+
+                $outtext .= "$k:$v !important;";
+            }
+        }
+
+        if ($parent_styleset && is_array($parent_styleset)) {
+            foreach ($parent_styleset as $k => $v) {
+                if (!$outtext) {
+                    $outtext = "style=\"";
+                }
+
+                $outtext .= "$k:$v !important;";
+            }
+        }
+
+        if ($styleset && is_array($styleset)) {
+            foreach ($styleset as $k => $v) {
+                if (!$outtext) {
+                    $outtext = "style=\"";
+                }
+
+                $outtext .= "$k:$v !important;";
+            }
+        }
+
+        if ($outtext) {
+            $outtext .= "\"";
+        }
+
+        return $outtext;
+    }
+
+    public function formatFormat($in_value, $format)
+    {
+        $applyToLine = $this->line_count;
+
+        if ( preg_match("/header/", $format) )
+            $applyToLine++;
+
+        $this->currentGroup[$format] = $in_value;
+        switch ($in_value) {
+            case "blankline":
+                break;
+
+            case "solidline":
+                break;
+
+            case "newpage":
+                $this->page_started = true;
+                break;
+
+            default:
+                break;
+
+        }
+    }
+
+    public function formatHeaders()
+    {
+        if (!$this->page_started) {
+            $this->page_started = true;
+        }
+
+        if ((ReporticoSession())::sessionRequestItem("target_style", "TABLE") == "FORM") {
+            return;
+        }
+
+        if ($this->body_display != "show") {
+            return;
+        }
+
+        // Only set headers on first line
+        if ( $this->line_count > 0)
+            return;
+
+        // Load the result array with column headers
+        foreach ($this->query->display_order_set["column"] as $w) {
+            $this->formatColumnHeader($w);
+        }
+
+    }
+
+    public function formatGroupHeaderStart($throw_page = false)
+    {
+        // Ensure group box spans to end of table
+        $spanct = 0;
+        foreach ($this->columns as $col) {
+            if ($this->showColumnHeader($col)) {
+                $spanct++;
+            }
+        }
+
+        $this->openGroup();
+
+        if ($throw_page || $this->page_started) {
+            $this->pageHeaders();
+        } else {
+        }
+
+    }
+
+    /**
+     *  @brief Creates a group entry in the json array
+     */
+    public function openGroup() {
+
+        $this->jar["groups"][] = array ( "parentGroup" => &$this->currentGroup,
+            "customheaders" => [],
+            "headers" => [],
+            "customtrailers" => [],
+            "startrow" => $this->line_count,
+            "endrow" => $this->line_count,
+            "trailers" => [], "graphs" => [], "rows" => [] );
+        $groupct = count($this->jar["groups"]);
+
+        if ( $this->currentGroup )
+            if ( !isset($this->jar["pages"][$this->page_count]["rows"][$this->line_count+1]))
+                $this->jar["pages"][$this->page_count]["rows"][$this->line_count+1] =
+                    [ "data" => [],
+                        "groupstarts" => [ &$this->jar["groups"][$groupct - 1] ],
+                        "groupends" => false
+                        ];
+            else
+                $this->jar["pages"][$this->page_count]["rows"][$this->line_count+1]["groupstarts"][]  = &$this->jar["groups"][$groupct - 1];
+        $this->jar["pages"][$this->page_count]["rows"][$this->line_count+1]["openrowsection"] = true;
+
+        $this->currentGroup = &$this->jar["groups"][$groupct - 1];
+
+    }
+
+    /**
+     *  @brief Creates a group entry in the json array
+     */
+    public function closeGroup() {
+
+        $x= $this->line_count;
+        $this->currentGroup["endrow"] = $this->line_count - 1;
+        $this->jar["pages"][$this->page_count]["rows"][$this->line_count]["closerowsection"] = true;
+        if ( $this->currentGroup["parentGroup"] ) {
+            $this->jar["pages"][$this->page_count]["rows"][$this->line_count]["groupends"][]  = $this->currentGroup;
+            $this->currentGroup = &$this->currentGroup["parentGroup"];
+        } else
+            $this->currentGroup = false;
+        //var_dump($this->jar["pages"]);
+        //die;
+    }
+
+
+    public function formatGroupHeader(&$col, $custom) // HTML
+    {
+        if (!$col) {
+            return;
+        }
+
+        if ( $custom)
+        {
+            $style = "";
+            $attr = array();
+            $this->extractStylesAndTextFromString ( $custom, $styles, $attr );
+
+            $this->currentGroup["headers"][] = [ "styles" => $styles, "content" => $custom ];
+            return;
+        }
+
+
+        $styles = $this->getStyleTags($this->query->output_group_header_label_styles);
+        $qn = ReporticoUtility::getQueryColumn($col->query_name, $this->query->columns);
+
+
+        $padstring = $qn->column_value;
+
+        // Create sensible group header label from column name
+        $tempstring = ReporticoUtility::columnNameToLabel($col->query_name);
+        $tempstring = $col->deriveAttribute("column_title", $tempstring);
+        $tempstring = ReporticoLang::translate($col->deriveAttribute("column_title", $tempstring));
+
+        $this->currentGroup["headers"][] = [ "styles" => $styles,
+            "label" => ReporticoLang::translate($col->deriveAttribute("group_header_label", $tempstring) ),
+            "value" => $padstring
+            ];
+    }
+
+    public function formatGroupHeaderEnd()
+    {
+        $this->page_started = false;
+    }
+
+    public function beginLine()
+    {
+        if ($this->body_display != "show") {
+            return;
+        }
+    }
+
+    public function plotGraph(&$graph, $graph_ct = false)
+    {
+        if ($graph_ct == 0) {
+            $this->page_started = false;
+        }
+        $this->graph_sessionPlaceholder++;
+        $graph->width_actual = ReporticoApp::getDefaultConfig("GraphWidth", $graph->width);
+        $graph->height_actual = ReporticoApp::getDefaultConfig("GraphHeight", $graph->height);
+        $graph->title_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->title, true);
+        $graph->xtitle_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->xtitle, true);
+        $graph->ytitle_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->ytitle, true);
+        $url_string = $graph->generateUrlParams("HTML", $this->graph_sessionPlaceholder);
+        if ($url_string) {
+            $this->jar["pages"][$this->page_count]["rows"][$this->line_count]["graphs"][] = [ "url" => $url_string ];
+        }
+    }
+
+    public function formatColumnTrailer(&$trailer_col, &$value_col, $trailer_first = false) // HTML
+    {
+        if (!(ReporticoSession())::getReporticoSessionParam("target_show_group_trailers")) {
+            return;
+        }
+
+        $just = $trailer_col->deriveAttribute("justify", false);
+        if ($just && $just != "left") {
+            $this->query->output_group_trailer_styles["text-align"] = $just;
+        } else {
+            $this->query->output_group_trailer_styles["text-align"] = "left";
+        }
+
+
+        if ($value_col) {
+            $group_label = $value_col["GroupTrailerValueColumn"]->getAttribute("group_trailer_label");
+            if (!$group_label) {
+                $group_label = $value_col["GroupTrailerValueColumn"]->getAttribute("column_title");
+            }
+
+            if (!$group_label) {
+                $group_label = $value_col["GroupTrailerValueColumn"]->query_name;
+                $group_label = str_replace("_", " ", $group_label);
+                $group_label = ucwords(strtolower($group_label));
+            }
+            $group_label = ReporticoLang::translate($group_label);
+            $padstring = $value_col["GroupTrailerValueColumn"]->old_column_value;
+            if ($value_col["GroupTrailerValueColumn"]->output_images) {
+                $padstring = $this->formatImages($value_col["GroupTrailerValueColumn"]->output_images);
+            }
+
+            if ($group_label == "BLANK") {
+                $content= $padstring;
+            } else {
+                $content = $group_label . " " . $padstring;
+            }
+
+        } else {
+            $content = "";
+        }
+
+        $this->currentGroup["trailers"][$this->currentTrailerRow][] =
+                    ["style" => $this->getStyleTags($this->query->output_group_trailer_styles),
+                      "content" => $content];
+    }
+
+    /**
+     * @brief
+     * @param bool $first
+     */
+    public function formatGroupTrailerStart($first = false)
+    {
+        if ($first)
+            $this->currentTrailerRow = -1;
+        $this->currentTrailerRow++;
+
+        $this->currentGroup["trailers"][$this->currentTrailerRow] = [];
+
+    }
+
+    public function formatGroupTrailerEnd($last_trailer = false)
+    {
+        $this->closeGroup();
+        $this->page_started = false;
+    }
+
+    public function formatGroupCustomHeaderStart() 
+    {
+    }
+
+    public function formatGroupCustomHeaderEnd() 
+    {
+    }
+
+
+    public function formatCustomHeader(&$col, $custom) // HTML
+    {
+        // If this is the first custom header break a little
+        if (!(ReporticoSession())::getReporticoSessionParam("target_show_group_headers")) {
+            return;
+        }
+
+        if (!$custom) {
+            return;
+        }
+
+        $style = "";
+        $attr = array();
+        $this->extractStylesAndTextFromString ( $custom, $styles, $attr );
+        $this->currentGroup["customheaders"][] = [ "text" => $custom, "style" => $styles, "attr" => $attr];
+        $styles .= "position: absolute;";
+        return;
+
+    }
+
+
+    public function formatGroupCustomTrailerStart() 
+    {
+    }
+
+    public function formatGroupCustomTrailerEnd() 
+    {
+    }
+
+
+    public function formatCustomTrailer(&$trailer_col, &$value_col) // PDF
+    {
+        // If this is the first custom trailer break a little
+        if (!(ReporticoSession())::getReporticoSessionParam("target_show_group_trailers")) {
+            return;
+        }
+
+        if (!$value_col["GroupTrailerCustom"]) {
+            return;
+        }
+
+        $style = "";
+        $attr = array();
+        $custom = $value_col["GroupTrailerCustom"];
+        $this->extractStylesAndTextFromString ( $custom, $styles, $attr );
+        $styles .= "position: absolute";
+
+        $this->currentGroup["customtrailers"][] = [
+            "style" => $styles,
+            "custom"=> $custom
+        ];
+        return;
+
+    }
+
+    public function endLine()
+    {
+        if ($this->body_display != "show") {
+            return;
+        }
+
+    }
+
+    public function eachLine($val) // HTML
+    {
+        //if ($this->line_count > 3) return;
+//echo $this->line_count;
+        //echo "<PRE>"; var_dump($this->jar); echo "</PRE>";
+        Report::eachLine($val);
+
+
+        // Create an estry fro row
+        if ( !isset($this->jar["pages"][$this->page_count]["rows"][$this->line_count]))
+            $this->jar["pages"][$this->page_count]["rows"][$this->line_count] =
+            [ "data" => [],
+                "groupstarts" => [],
+                "groupends" => []
+            ];
+
+        if ((ReporticoSession())::sessionRequestItem("target_style", "TABLE") == "FORM") {
+            if (!$this->page_started) {
+                $formpagethrow = $this->query->getAttribute("formBetweenRows");
+                switch ($formpagethrow) {
+                    case "newpage":
+                        if ($this->page_line_count > 0) {
+                            $formpagethrow = "reportico-pageFormLine swNewPage";
+                        } else {
+                            $formpagethrow = "reportico-pageFormLine";
+                        }
+
+                        break;
+                    case "blankline":
+                        $formpagethrow = "reportico-pageFormBlank";
+                        break;
+                    case "solidline":
+                        $formpagethrow = "reportico-pageFormLine";
+                        break;
+                }
+
+                $this->page_started = true;
+            }
+            foreach ($this->query->groups as $val) {
+                for ($i = 0; $i < count($val->headers); $i++) {
+                    $col = &$val->headers[$i];
+                    $col = &$val->headers[$i]["GroupHeaderColumn"];
+                    $custom = $val->headers[$i]["GroupHeaderCustom"];
+                    if ($val->headers[$i]["ShowInHTML"] == "yes") {
+                        $this->formatGroupHeader($col, $custom, true);
+                    }
+                }
+            }
+
+            foreach ($this->query->display_order_set["column"] as $k => $w) {
+                if ($w->attributes["column_display"] != "show") {
+                    continue;
+                }
+
+                $this->formatGroupHeader($w, false, false);
+            }
+            $this->page_line_count++;
+            $this->line_count++;
+            $this->page_started = false;
+            return;
+        }
+
+        if ($this->page_line_count == 1) {
+            //foreach ( $this->columns as $col )
+            //$this->formatColumnHeader($col);
+        }
+
+        //foreach ( $this->columns as $col )
+        if ($this->body_display == "show" && (ReporticoSession())::getReporticoSessionParam("target_show_detail")) {
+            $this->beginLine();
+            if (!$this->page_started) {
+                $this->page_started = true;
+            }
+            foreach ($this->query->display_order_set["column"] as $col) {
+                $this->formatColumn($col);
+            }
+
+            $this->endLine();
+        }
+
+        //if ( $y < $this->abs_bottom_margin )
+        //{
+        //$this->finishPage();
+        //$this->beginPage();
+        //}
+
+    }
+
+    public function pageTemplate()
+    {
+        $this->debug("Page Template");
+    }
+
+    public function beginPage()
+    {
+        Report::beginPage();
+
+        $this->throw_page = true;
+        //$this->page_started = true;
+
+        // Setup Buttons, Title etc
+        $this->setPageWidgets();
+
+        // Page Headers
+        Report::pageHeaders();
+
+        $colstyles = false;
+        $this->jar["styles"]["header"] = $this->getStyleTags($colstyles, $this->query->output_header_styles);
+        $this->jar["styles"]["page"] = $this->getStyleTags($colstyles, $this->query->output_page_styles);
+        $this->jar["styles"]["row"] = $this->getStyleTags($colstyles, $this->query->output_row_styles);
+        $this->jar["styles"]["criteria"] = $this->getStyleTags($colstyles, $this->query->output_criteria_styles);
+
+        $this->jar["classes"]["page"] = $this->query->getBootstrapStyle("page");
+
+        //var_dump($this->getStyleTags($colstyles, $this->query->output_criteria_styles)); die;
+        // Create a dummy group for the wholte report
+        $this->openGroup();
+
+    }
+
+    public function beforeFormatCriteriaSelection()
+    {
+    }
+
+    public function formatCriteriaSelection($label, $value)
+    {
+        $this->jar["criteria"][] = 
+            [ "label" => $label,
+              "value" => $value ];
+
+    }
+
+    public function afterFormatCriteriaSelection()
+    {
+    }
+
+    public function finishPage()
+    {
+        $this->closeGroup();
+    }
+
+    public function publish()
+    {
+        Report::publish();
+        $this->debug("Publish HTML");
+    }
+
+    public function formatPageHeaderStart()
+    {
+        return;
+        if ($this->line_count > 0) {
+            $this->jar[""][] = "</div>";
+            $this->footer_count++;
+            $this->jar[""][] = "<footer class=\"swPageFooterBlock swLastPageFooterBlock swPageFooterBlock{$this->footer_count}\">";
+            $this->jar[""][] = "Page Footer";
+            $this->jar[""][] = "</footer>";
+            $this->jar[""][] = "<div class=\"swPageBlock\" >";
+            $this->header_count++;
+            $this->jar[""][] = "<div class=\"swPageHeaderBlock swNewPageHeaderBlock swPageHeaderBlock{$this->header_count}\" >";
+        } else {
+            $this->jar[""][] = "<div class=\"swPageBlock\" >";
+            $this->header_count++;
+            $this->jar[""][] = "<div class=\"swPageHeaderBlock swPageHeaderBlock{$this->header_count}\" >";
+        }
+    }
+
+    public function formatPageHeaderEnd()
+    {
+        $this->jar[""][] = "</div>";
+    }
+
+    public function formatPageHeader(&$header)
+    {
+        //echo "format Page Header";
+        return;
+        $styles = "";
+        $text = $header->text;
+
+        $this->extractStylesAndTextFromString($text, $styles, $header->attributes, $parent_styleset = false, $grandparent_styleset = false);
+        $just = strtolower($header->getAttribute("justify"));
+
+//echo "Value $text<BR>";
+        //var_dump($header->attributes);
+        //echo "Styles = $styles <BR>";
+        $img = "";
+        if ($styles) {
+            $matches = array();
+            if (preg_match("/background: url\('(.*)'\).*;/", $styles, $matches)) {
+                $styles = preg_replace("/background: url\('(.*)'\).*;/", "", $styles);
+                if (count($matches) > 1) {
+                    $img = "<img src='" . $matches[1] . "'/>";
+                }
+            }
+            $this->jar[""][] = "<DIV class=\"swPageHeader\" style=\"$styles\">";
+        } else {
+            $this->jar[""][] = "<DIV class=\"swPageHeader\" >";
+        }
+
+        $this->jar[""][] = "$img$text";
+        $this->jar[""][] = "</DIV>";
+        //$this->jar[""][] = "<TR>";
+        //$this->jar[""][] = '<TD colspan="10" justify="'.$just.'">';
+        //$this->jar[""][] =($header->text);
+        //$this->jar[""][] = "</TD>";
+        //$this->jar[""][] = "</TR>";
+
+        return;
+    }
+
+    public function formatPageFooter(&$header)
+    {
+        $just = strtolower($header->getAttribute("justify"));
+
+        $this->jar["pageFooter"][] = ($header->text);
+
+        return;
     }
 
     public function formatImages($image)
@@ -448,456 +1026,11 @@ class ReportHtml extends Report
         return $styles;
     }
 
-    public function getStyleTags($styleset, $parent_styleset = false, $grandparent_styleset = false)
+    /*
+    *  Draw refresh, back buttons at top of page and also deal with no rows found scenario
+    */
+    function setPageWidgets()
     {
-        $outtext = "";
-
-        if ($grandparent_styleset && is_array($grandparent_styleset)) {
-            foreach ($grandparent_styleset as $k => $v) {
-                if (!$outtext) {
-                    $outtext = "style=\"";
-                }
-
-                $outtext .= "$k:$v !important;";
-            }
-        }
-
-        if ($parent_styleset && is_array($parent_styleset)) {
-            foreach ($parent_styleset as $k => $v) {
-                if (!$outtext) {
-                    $outtext = "style=\"";
-                }
-
-                $outtext .= "$k:$v !important;";
-            }
-        }
-
-        if ($styleset && is_array($styleset)) {
-            foreach ($styleset as $k => $v) {
-                if (!$outtext) {
-                    $outtext = "style=\"";
-                }
-
-                $outtext .= "$k:$v !important;";
-            }
-        }
-
-        if ($outtext) {
-            $outtext .= "\"";
-        }
-
-        return $outtext;
-    }
-
-    public function formatFormat($in_value, $format)
-    {
-        switch ($in_value) {
-            case "blankline":
-                //$this->text .= "<TR><TD><br></TD></TR>";
-                break;
-
-            case "solidline":
-                $this->text .= '<TR><TD colspan="10"><hr style="width:100%;" size="2"/></TD>';
-                break;
-
-            case "newpage":
-                //$this->text .= '<TABLE class="'.$this->query->getBootstrapStyle("page").'swRepPage" '.$this->getStyleTags($this->query->output_page_styles).'>';
-                $this->page_started = true;
-                break;
-
-            default:
-                $this->text .= "<TR><TD>Unknown Format $in_value</TD></TR>";
-                break;
-
-        }
-    }
-
-    public function formatHeaders()
-    {
-        if (!$this->page_started) {
-            $this->text .= '<TABLE class="' . $this->query->getBootstrapStyle("page") . 'swRepPage" ' . $this->getStyleTags($this->query->output_page_styles) . '>';
-            $this->page_started = true;
-        }
-
-        if ((ReporticoSession())::sessionRequestItem("target_style", "TABLE") == "FORM") {
-            return;
-        }
-
-        if ($this->body_display != "show") {
-            return;
-        }
-
-        $this->text .= "<thead><tr class='swRepColHdrRow'>";
-        foreach ($this->query->display_order_set["column"] as $w) {
-            $this->formatColumnHeader($w);
-        }
-
-        $this->text .= "</tr></thead>";
-
-        if ($this->body_display == "show" && (ReporticoSession())::getReporticoSessionParam("target_show_detail")) {
-            $this->text .= "<tbody>";
-            $this->tbody_started = true;
-        }
-    }
-
-    public function formatGroupHeaderStart($throw_page = false)
-    {
-        // Ensure group box spans to end of table
-        $spanct = 0;
-        foreach ($this->columns as $col) {
-            if ($this->showColumnHeader($col)) {
-                $spanct++;
-            }
-        }
-
-        //$this->text .= "<TR class=swRepDatRow>";
-        //$this->text .= "<TD class=swRepDatVal colspan=\"".$spanct."\">";
-        if ($throw_page || $this->page_started) {
-            $title = $this->query->deriveAttribute("ReportTitle", "Unknown");
-            $this->pageHeaders();
-            if ($this->query->output_template_parameters["show_hide_report_output_title"] != "hide") {
-                $this->text .= '<H1 class="swRepTitle">' . ReporticoLang::translate($title) . '</H1>';
-            }
-
-            $this->text .= '<TABLE class="swRepGrpHdrBox swNewPage" >';
-        } else {
-            $this->text .= '<TABLE class="swRepGrpHdrBox" >';
-        }
-
-    }
-
-    public function formatGroupHeader(&$col, $custom) // HTML
-
-    {
-        if (!$col) {
-            return;
-        }
-
-        if ( $custom)
-        {
-            $style = "";
-            $attr = array();
-            $this->extractStylesAndTextFromString ( $custom, $styles, $attr );
-            $this->text .= "<div style=\"$styles\">$custom </div>";
-            return;
-        }
-
-
-        $this->text .= '<TR class="swRepGrpHdrRow">';
-        $this->text .= '<TD class="swRepGrpHdrLbl" ' . $this->getStyleTags($this->query->output_group_header_label_styles) . '>';
-        $qn = ReporticoUtility::getQueryColumn($col->query_name, $this->query->columns);
-
-        $padstring = $qn->column_value;
-
-        // Create sensible group header label from column name
-        $tempstring = ReporticoUtility::columnNameToLabel($col->query_name);
-        $tempstring = $col->deriveAttribute("column_title", $tempstring);
-        $tempstring = ReporticoLang::translate($col->deriveAttribute("column_title", $tempstring));
-
-        $this->text .= ReporticoLang::translate($col->deriveAttribute("group_header_label", $tempstring));
-        $this->text .= "</TD>";
-        $this->text .= '<TD class="swRepGrpHdrDat" ' . $this->getStyleTags($this->query->output_group_header_value_styles) . '>';
-        $this->text .= "$padstring";
-        $this->text .= "</TD>";
-        $this->text .= "</TR>";
-    }
-
-    public function formatGroupHeaderEnd()
-    {
-        $this->text .= "</TABLE>";
-        $this->page_started = false;
-    }
-
-    public function beginLine()
-    {
-        if ($this->body_display != "show") {
-            return;
-        }
-
-        $this->text .= '<TR class="swRepResultLine" ' . $this->getStyleTags($this->query->output_row_styles) . '>';
-    }
-
-    public function plotGraph(&$graph, $graph_ct = false)
-    {
-        if ($graph_ct == 0) {
-            if ($this->page_started) {
-                if ($this->tbody_started) {
-                    $this->text .= '</TBODY>';
-                    $this->tbody_started = false;
-                }
-                $this->text .= '</TABLE>';
-            }
-            $this->page_started = false;
-        }
-        $this->graph_sessionPlaceholder++;
-        $graph->width_actual = ReporticoApp::getDefaultConfig("GraphWidth", $graph->width);
-        $graph->height_actual = ReporticoApp::getDefaultConfig("GraphHeight", $graph->height);
-        $graph->title_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->title, true);
-        $graph->xtitle_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->xtitle, true);
-        $graph->ytitle_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->ytitle, true);
-        $url_string = $graph->generateUrlParams("HTML", $this->graph_sessionPlaceholder);
-        $this->text .= '<div class="swRepResultGraph">';
-        if ($url_string) {
-            $this->text .= $url_string;
-        }
-
-        $this->text .= '</div>';
-    }
-    public function formatColumnTrailer(&$trailer_col, &$value_col, $trailer_first = false) // HTML
-
-    {
-        if (!(ReporticoSession())::getReporticoSessionParam("target_show_group_trailers")) {
-            return;
-        }
-
-        $just = $trailer_col->deriveAttribute("justify", false);
-        if ($just && $just != "left") {
-            $this->query->output_group_trailer_styles["text-align"] = $just;
-        } else {
-            $this->query->output_group_trailer_styles["text-align"] = "left";
-        }
-
-        if ($value_col) {
-            if ($trailer_first) {
-                $this->text .= '<TD class="swRepGrpTlrDat1st" ' . $this->getStyleTags($this->query->output_group_trailer_styles) . '>';
-            } else {
-                $this->text .= '<TD class="swRepGrpTlrDat" ' . $this->getStyleTags($this->query->output_group_trailer_styles) . '>';
-            }
-        } else
-        if ($trailer_first) {
-            $this->text .= '<TD class="swRepGrpTlrDat1st">';
-        } else {
-            $this->text .= '<TD class="swRepGrpTlrDat">';
-        }
-
-        if ($value_col) {
-            $group_label = $value_col["GroupTrailerValueColumn"]->getAttribute("group_trailer_label");
-            if (!$group_label) {
-                $group_label = $value_col["GroupTrailerValueColumn"]->getAttribute("column_title");
-            }
-
-            if (!$group_label) {
-                $group_label = $value_col["GroupTrailerValueColumn"]->query_name;
-                $group_label = str_replace("_", " ", $group_label);
-                $group_label = ucwords(strtolower($group_label));
-            }
-            $group_label = ReporticoLang::translate($group_label);
-            $padstring = $value_col["GroupTrailerValueColumn"]->old_column_value;
-            if ($value_col["GroupTrailerValueColumn"]->output_images) {
-                $padstring = $this->formatImages($value_col["GroupTrailerValueColumn"]->output_images);
-            }
-
-            if ($group_label == "BLANK") {
-                $this->text .= $padstring;
-            } else {
-                $this->text .= $group_label . " " . $padstring;
-            }
-
-        } else {
-            $this->text .= "&nbsp;";
-        }
-        $this->text .= "</TD>";
-    }
-
-    public function formatGroupTrailerStart($first = false)
-    {
-        if ($first) {
-            if ($this->tbody_started) {
-                $this->text .= '</TBODY>';
-                $this->tbody_started = false;
-            }
-            $this->text .= "<TFOOT>";
-            $this->tfoot_started = true;
-            $this->text .= '<TR class="swRepGrpTlrRow1st">';
-        } else {
-            $this->text .= '<TR class="swRepGrpTlrRow">';
-        }
-
-    }
-
-    public function formatGroupTrailerEnd($last_trailer = false)
-    {
-
-        //$this->text .= "</TR>";
-        if ($this->page_started) {
-            if ($this->tfoot_started) {
-                $this->text .= "</TFOOT>";
-                $this->tfoot_started = false;
-            }
-            $this->text .= "</TABLE>";
-        }
-        $this->page_started = false;
-    }
-
-    public function formatGroupCustomHeaderStart() 
-    {
-        $this->text .= '<div class="reporticoGroupCustomHeader" style="position: relative">'; 
-    }
-
-    public function formatGroupCustomHeaderEnd() 
-    {
-        $this->text .= "</div>"; 
-    }
-
-
-    public function formatCustomHeader(&$col, $custom) // HTML
-    {
-        // If this is the first custom header break a little
-        if (!(ReporticoSession())::getReporticoSessionParam("target_show_group_headers")) {
-            return;
-        }
-
-        if (!$custom) {
-            return;
-        }
-
-        $style = "";
-        $attr = array();
-        $this->extractStylesAndTextFromString ( $custom, $styles, $attr );
-        $styles .= "position: absolute;";
-        $this->text .= "<div style=\"$styles\">$custom </div>";
-        return;
-
-    }
-
-
-    public function formatGroupCustomTrailerStart() 
-    {
-        $this->text .= '<div class="reporticoGroupCustomTrailer" style="position: relative">'; 
-    }
-
-    public function formatGroupCustomTrailerEnd() 
-    {
-        $this->text .= "</div>"; 
-    }
-
-
-    public function formatCustomTrailer(&$trailer_col, &$value_col) // PDF
-    {
-        // If this is the first custom trailer break a little
-        if (!(ReporticoSession())::getReporticoSessionParam("target_show_group_trailers")) {
-            return;
-        }
-
-        if (!$value_col["GroupTrailerCustom"]) {
-            return;
-        }
-
-        $style = "";
-        $attr = array();
-        $custom = $value_col["GroupTrailerCustom"];
-        $this->extractStylesAndTextFromString ( $custom, $styles, $attr );
-        $styles .= "position: absolute";
-        $this->text .= "<div style=\"$styles\">$custom </div>";
-        return;
-
-    }
-
-    public function endLine()
-    {
-        if ($this->body_display != "show") {
-            return;
-        }
-
-        $this->text .= "</TR>";
-    }
-
-    public function eachLine($val) // HTML
-
-    {
-
-        Report::eachLine($val);
-
-        if ((ReporticoSession())::sessionRequestItem("target_style", "TABLE") == "FORM") {
-            if (!$this->page_started) {
-                $formpagethrow = $this->query->getAttribute("formBetweenRows");
-                switch ($formpagethrow) {
-                    case "newpage":
-                        if ($this->page_line_count > 0) {
-                            $formpagethrow = "swRepPageFormLine swNewPage";
-                        } else {
-                            $formpagethrow = "swRepPageFormLine";
-                        }
-
-                        break;
-                    case "blankline":
-                        $formpagethrow = "swRepPageFormBlank";
-                        break;
-                    case "solidline":
-                        $formpagethrow = "swRepPageFormLine";
-                        break;
-                }
-
-                $this->text .= '<TABLE class="' . $this->query->getBootstrapStyle("page") . 'swRepPage ' . $formpagethrow . '" ' . $this->getStyleTags($this->query->output_page_styles) . '>';
-                $this->page_started = true;
-            }
-            foreach ($this->query->groups as $val) {
-                for ($i = 0; $i < count($val->headers); $i++) {
-                    $col = &$val->headers[$i];
-                    $col = &$val->headers[$i]["GroupHeaderColumn"];
-                    $custom = $val->headers[$i]["GroupHeaderCustom"];
-                    if ($val->headers[$i]["ShowInHTML"] == "yes") {
-                        $this->formatGroupHeader($col, $custom, true);
-                    }
-                }
-            }
-
-            foreach ($this->query->display_order_set["column"] as $k => $w) {
-                if ($w->attributes["column_display"] != "show") {
-                    continue;
-                }
-
-                $this->formatGroupHeader($w, false, false);
-            }
-            $this->page_line_count++;
-            $this->line_count++;
-            $this->text .= '</TABLE>';
-            $this->page_started = false;
-            return;
-        }
-
-        if ($this->page_line_count == 1) {
-            //$this->text .="<tr class='swPrpCritLine'>";
-            //foreach ( $this->columns as $col )
-            //$this->formatColumnHeader($col);
-            //$this->text .="</tr>";
-        }
-
-        //foreach ( $this->columns as $col )
-        if ($this->body_display == "show" && (ReporticoSession())::getReporticoSessionParam("target_show_detail")) {
-            $this->beginLine();
-            if (!$this->page_started) {
-                $this->text .= '<TABLE class="' . $this->query->getBootstrapStyle("page") . 'swRepPage" ' . $this->getStyleTags($this->query->output_page_styles) . '>';
-                $this->page_started = true;
-            }
-            foreach ($this->query->display_order_set["column"] as $col) {
-                $this->formatColumn($col);
-            }
-
-            $this->endLine();
-        }
-
-        //if ( $y < $this->abs_bottom_margin )
-        //{
-        //$this->finishPage();
-        //$this->beginPage();
-        //}
-
-    }
-
-    public function pageTemplate()
-    {
-        $this->debug("Page Template");
-    }
-
-    public function beginPage()
-    {
-        Report::beginPage();
-
-        $this->throw_page = true;
-        //$this->page_started = true;
-        $this->debug("HTML Begin Page\n");
-
         $forward = (ReporticoSession())::sessionRequestItem('forward_url_get_parameters', '');
         if ($forward) {
             $forward .= "&";
@@ -909,138 +1042,48 @@ class ReportHtml extends Report
             $url_join_char = "?";
         }
 
-        if (!ReporticoUtility::getRequestItem("printable_html")) {
-            if (!$this->query->access_mode || ($this->query->access_mode != "REPORTOUTPUT")) {
-                $this->text .= '<div class="swRepButtons">';
-                $this->text .= '<div class="swRepBackBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'execute_mode=PREPARE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_BACK") . '">&nbsp;</a></div>';
-            }
-            if ((ReporticoSession())::getReporticoSessionParam("show_refresh_button")) {
-                $this->text .= '<div class="swRepRefreshBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'refreshReport=1&execute_mode=EXECUTE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_REFRESH") . '">&nbsp;</a></div>';
-            }
-
-            $this->text .= '</div>';
-
-        } else {
-            //$this->text .= '<div class="prepareAjaxExecuteIgnore swPDFBox1"><a class="swLinkMenu5 swPDFBox" target="_blank" href="'.$this->query->getActionUrl().'?'.$forward.'refreshReport=1&target_format=PDF&execute_mode=EXECUTE&reportico_session_name='.(ReporticoSession())::reporticoSessionName().'" title="Print PDF">&nbsp;</a></div>';
-            $this->text .= '<div class="swRepButtons">';
-            $this->text .= '<div class="swRepPrintBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'printReport=1&execute_mode=EXECUTE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_PRINT") . '">' . '&nbsp;' . '</a></div>';
-            $this->text .= '</div>';
-        }
-
-        // Page Headers
-        Report::pageHeaders();
-
         $title = $this->query->deriveAttribute("ReportTitle", "Unknown");
-        if ($this->query->output_template_parameters["show_hide_report_output_title"] != "hide") {
-            $this->text .= '<H1 class="swRepTitle">' . ReporticoLang::translate($title) . '</H1>';
-        }
+        $this->jar["title"] = ReporticoLang::translate($title);
 
-    }
+        // In printable html mode dont show back box
+        if (!ReporticoUtility::getRequestItem("printable_html")) {
 
-    public function beforeFormatCriteriaSelection()
-    {
-        $this->text .= '<TH>';
-        $this->text .= '<TABLE class="swRepCriteria"' . $this->getStyleTags($this->query->output_criteria_styles) . '>';
-    }
-
-    public function formatCriteriaSelection($label, $value)
-    {
-        $this->text .= '<TR class="swRepGrpHdrRow">';
-        $this->text .= '<TD class="swRepGrpHdrLbl">';
-        $this->text .= $label;
-        $this->text .= "</TD>";
-        $this->text .= '<TD class="swRepGrpHdrDat">';
-        $this->text .= $value;
-        $this->text .= "</TD>";
-        $this->text .= "</TR>";
-
-    }
-
-    public function afterFormatCriteriaSelection()
-    {
-        $this->text .= "</TABLE>";
-    }
-
-    public function finishPage()
-    {
-    }
-
-    public function publish()
-    {
-        Report::publish();
-        $this->debug("Publish HTML");
-    }
-
-    public function formatPageHeaderStart()
-    {
-        if ($this->line_count > 0) {
-            $this->text .= "</div>";
-            $this->footer_count++;
-            $this->text .= "<footer class=\"swPageFooterBlock swLastPageFooterBlock swPageFooterBlock{$this->footer_count}\">";
-            $this->text .= "Page Footer";
-            $this->text .= "</footer>";
-            $this->text .= "<div class=\"swPageBlock\" >";
-            $this->header_count++;
-            $this->text .= "<div class=\"swPageHeaderBlock swNewPageHeaderBlock swPageHeaderBlock{$this->header_count}\" >";
-        } else {
-            $this->text .= "<div class=\"swPageBlock\" >";
-            $this->header_count++;
-            $this->text .= "<div class=\"swPageHeaderBlock swPageHeaderBlock{$this->header_count}\" >";
-        }
-    }
-
-    public function formatPageHeaderEnd()
-    {
-        $this->text .= "</div>";
-    }
-
-    public function formatPageHeader(&$header)
-    {
-        $styles = "";
-        $text = $header->text;
-
-        $this->extractStylesAndTextFromString($text, $styles, $header->attributes, $parent_styleset = false, $grandparent_styleset = false);
-        $just = strtolower($header->getAttribute("justify"));
-
-//echo "Value $text<BR>";
-        //var_dump($header->attributes);
-        //echo "Styles = $styles <BR>";
-        $img = "";
-        if ($styles) {
-            $matches = array();
-            if (preg_match("/background: url\('(.*)'\).*;/", $styles, $matches)) {
-                $styles = preg_replace("/background: url\('(.*)'\).*;/", "", $styles);
-                if (count($matches) > 1) {
-                    $img = "<img src='" . $matches[1] . "'/>";
-                }
+            // Show Go Back Button ( if user is not in "SINGLE REPORT RUN " )
+            if (!$this->query->access_mode || ($this->query->access_mode != "REPORTOUTPUT")) {
+                $this->jar["buttons"]["back"] = [ 
+                    "href" => $this->query->getActionUrl() . $url_join_char . 
+                        $forward . 'execute_mode=PREPARE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName(),
+                    "class" => "reportico-back-button",
+                    "title" => ReporticoLang::templateXlate("GO_BACK")
+                ];
             }
-            $this->text .= "<DIV class=\"swPageHeader\" style=\"$styles\">";
+
+            if ((ReporticoSession())::getReporticoSessionParam("show_refresh_button")) {
+                $this->jar["buttons"]["refresh"] = [ 
+                "href" => $this->query->getActionUrl() . $url_join_char . 
+                    $forward . 'refreshReport=1&execute_mode=EXECUTE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName(),
+                    "class" => "reportico-refresh-button",
+                    "title" => ReporticoLang::templateXlate("GO_REFRESH")
+                ];
+            }
+
         } else {
-            $this->text .= "<DIV class=\"swPageHeader\" >";
+                $this->jar["buttons"]["print"] = [ 
+                        "href" => $this->query->getActionUrl() . $url_join_char . 
+                                $forward . 'printReport=1&execute_mode=EXECUTE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName(),
+                        "class" => "reportico-print-button",
+                        "title" => ReporticoLang::templateXlate("GO_PRINT")
+                    ];
+
         }
 
-        $this->text .= "$img$text";
-        $this->text .= "</DIV>";
-        //$this->text .= "<TR>";
-        //$this->text .= '<TD colspan="10" justify="'.$just.'">';
-        //$this->text .=($header->text);
-        //$this->text .= "</TD>";
-        //$this->text .= "</TR>";
-
-        return;
+        if ($this->line_count < 1) {
+            $this->jar["noDataFound"] = ReporticoLang::templateXlate("NO_DATA_FOUND");
+        }
     }
 
-    public function formatPageFooter(&$header)
-    {
-        $just = strtolower($header->getAttribute("justify"));
-
-        $this->text .= "<TR>";
-        $this->text .= '<TD colspan="10" justify="' . $just . '">';
-        $this->text .= ($header->text);
-        $this->text .= "</TD>";
-        $this->text .= "</TR>";
-
-        return;
+    public function &getContent() {
+        return $this->jar;
     }
 
 }

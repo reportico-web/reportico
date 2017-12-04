@@ -1629,7 +1629,7 @@ class Reportico extends ReporticoObject
             $_REQUEST["target_format"] = "HTML";
         }
 
-         
+
         if (array_key_exists("target_format", $_REQUEST) && $execute_mode == "EXECUTE" && count($this->targets) == 0) {
             $tf = $_REQUEST["target_format"];
             if (isset($_GET["target_format"])) {
@@ -4080,7 +4080,6 @@ class Reportico extends ReporticoObject
                         $this->panels["MAIN"]->smarty->assign('REPORT_PAGE_STYLE', $pagestyle);
                         $this->panels["MAIN"]->smarty->assign('TITLE', $title);
                         $this->panels["MAIN"]->smarty->assign('CONTENT', $text);
-
                         $this->panels["MAIN"]->smarty->assign('EMBEDDED_REPORT', $this->embedded_report);
 
                         // When printing in separate html window make sure we dont treat report as embedded
@@ -4630,8 +4629,7 @@ class Reportico extends ReporticoObject
             //{
             //$target =& $this->targets[$_counter];
             $target->finish();
-            $text = &$target->text;
-
+            $text = $target->getContent();
             /* Free resultset */
             $recordSet->Close();
 

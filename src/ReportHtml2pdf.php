@@ -87,15 +87,15 @@ class ReportHtml2pdf extends Report
             if (!ReporticoUtility::getRequestItem("printable_html")) {
                 // Show Go Back Button ( if user is not in "SINGLE REPORT RUN " )
                 if (!$this->query->access_mode || ($this->query->access_mode != "REPORTOUTPUT")) {
-                    $this->text .= '<div class="swRepBackBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'execute_mode=PREPARE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_BACK") . '">&nbsp;</a></div>';
+                    $this->text .= '<div class="reportico-back-button"><a class="reportico-ajax-link" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'execute_mode=PREPARE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_BACK") . '">&nbsp;</a></div>';
                 }
                 if ((ReporticoSession())::getReporticoSessionParam("show_refresh_button")) {
-                    $this->text .= '<div class="swRepRefreshBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'refreshReport=1&execute_mode=EXECUTE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_REFRESH") . '">&nbsp;</a></div>';
+                    $this->text .= '<div class="swRepRefreshBox"><a class="reportico-ajax-link" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'refreshReport=1&execute_mode=EXECUTE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_REFRESH") . '">&nbsp;</a></div>';
                 }
 
                 $this->text .= '<div class="reporticoJSONExecute"><a class="swJSONExecute1 testy" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'refreshReport=1&target_format=JSON&execute_mode=EXECUTE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_REFRESH") . '">&nbsp;</a></div>';
             } else {
-                $this->text .= '<div class="swRepPrintBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'printReport=1&execute_mode=EXECUTE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_PRINT") . '">' . ReporticoLang::templateXlate("GO_PRINT") . '</a></div>';
+                $this->text .= '<div class="swRepPrintBox"><a class="reportico-ajax-link" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'printReport=1&execute_mode=EXECUTE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_PRINT") . '">' . ReporticoLang::templateXlate("GO_PRINT") . '</a></div>';
             }
             $this->text .= '</div>';
 
@@ -511,7 +511,7 @@ class ReportHtml2pdf extends Report
                 break;
 
             case "newpage":
-                //$this->text .= '<TABLE class="'.$this->query->getBootstrapStyle("page").'swRepPage" '.$this->getStyleTags($this->query->output_page_styles).'>';
+                //$this->text .= '<TABLE class="'.$this->query->getBootstrapStyle("page").'reportico-page" '.$this->getStyleTags($this->query->output_page_styles).'>';
                 $this->page_started = true;
                 break;
 
@@ -525,7 +525,7 @@ class ReportHtml2pdf extends Report
     public function formatHeaders()
     {
         if (!$this->page_started) {
-            $this->text .= '<TABLE class="' . $this->query->getBootstrapStyle("page") . 'swRepPage" ' . $this->getStyleTags($this->query->output_page_styles) . '>';
+            $this->text .= '<TABLE class="' . $this->query->getBootstrapStyle("page") . 'reportico-page" ' . $this->getStyleTags($this->query->output_page_styles) . '>';
             $this->page_started = true;
         }
 
@@ -570,9 +570,9 @@ class ReportHtml2pdf extends Report
                 //$this->text .= '<H1 class="swRepTitle">' . ReporticoLang::translate($title) . '</H1>';
             }
 
-            $this->text .= '<TABLE class="swRepGrpHdrBox swNewPage" >';
+            $this->text .= '<TABLE class="reportico-group-header-box swNewPage" >';
         } else {
-            $this->text .= '<TABLE class="swRepGrpHdrBox" >';
+            $this->text .= '<TABLE class="reportico-group-header-box" >';
         }
 
     }
@@ -594,8 +594,8 @@ class ReportHtml2pdf extends Report
         }
 
 
-        $this->text .= '<TR class="swRepGrpHdrRow">';
-        $this->text .= '<TD class="swRepGrpHdrLbl" ' . $this->getStyleTags($this->query->output_group_header_label_styles) . '>';
+        $this->text .= '<TR class="reportico-group-header-row">';
+        $this->text .= '<TD class="reportico-group-header-label" ' . $this->getStyleTags($this->query->output_group_header_label_styles) . '>';
         $qn = ReporticoUtility::getQueryColumn($col->query_name, $this->query->columns);
 
         $padstring = $qn->column_value;
@@ -607,7 +607,7 @@ class ReportHtml2pdf extends Report
 
         $this->text .= ReporticoLang::translate($col->deriveAttribute("group_header_label", $tempstring));
         $this->text .= "</TD>";
-        $this->text .= '<TD class="swRepGrpHdrDat" ' . $this->getStyleTags($this->query->output_group_header_value_styles) . '>';
+        $this->text .= '<TD class="reportico-group-header-value" ' . $this->getStyleTags($this->query->output_group_header_value_styles) . '>';
         $this->text .= "$padstring";
         $this->text .= "</TD>";
         $this->text .= "</TR>";
@@ -825,21 +825,21 @@ class ReportHtml2pdf extends Report
                 switch ($formpagethrow) {
                     case "newpage":
                         if ($this->page_line_count > 0) {
-                            $formpagethrow = "swRepPageFormLine swNewPage";
+                            $formpagethrow = "reportico-pageFormLine swNewPage";
                         } else {
-                            $formpagethrow = "swRepPageFormLine";
+                            $formpagethrow = "reportico-pageFormLine";
                         }
 
                         break;
                     case "blankline":
-                        $formpagethrow = "swRepPageFormBlank";
+                        $formpagethrow = "reportico-pageFormBlank";
                         break;
                     case "solidline":
-                        $formpagethrow = "swRepPageFormLine";
+                        $formpagethrow = "reportico-pageFormLine";
                         break;
                 }
 
-                $this->text .= '<TABLE class="' . $this->query->getBootstrapStyle("page") . 'swRepPage ' . $formpagethrow . '" ' . $this->getStyleTags($this->query->output_page_styles) . '>';
+                $this->text .= '<TABLE class="' . $this->query->getBootstrapStyle("page") . 'reportico-page ' . $formpagethrow . '" ' . $this->getStyleTags($this->query->output_page_styles) . '>';
                 $this->page_started = true;
             }
             foreach ($this->query->groups as $val) {
@@ -878,7 +878,7 @@ class ReportHtml2pdf extends Report
         if ($this->body_display == "show" && (ReporticoSession())::getReporticoSessionParam("target_show_detail")) {
             $this->beginLine();
             if (!$this->page_started) {
-                $this->text .= '<TABLE class="' . $this->query->getBootstrapStyle("page") . 'swRepPage" ' . $this->getStyleTags($this->query->output_page_styles) . '>';
+                $this->text .= '<TABLE class="' . $this->query->getBootstrapStyle("page") . 'reportico-page" ' . $this->getStyleTags($this->query->output_page_styles) . '>';
                 $this->page_started = true;
             }
             foreach ($this->query->display_order_set["column"] as $col) {
@@ -990,18 +990,18 @@ class ReportHtml2pdf extends Report
         if (!ReporticoUtility::getRequestItem("printable_html")) {
             if (!$this->query->access_mode || ($this->query->access_mode != "REPORTOUTPUT")) {
                 $this->text .= '<div class="swRepButtons">';
-                $this->text .= '<div class="swRepBackBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'execute_mode=PREPARE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_BACK") . '">&nbsp;</a></div>';
+                $this->text .= '<div class="reportico-back-button"><a class="reportico-ajax-link" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'execute_mode=PREPARE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_BACK") . '">&nbsp;</a></div>';
             }
             if ((ReporticoSession())::getReporticoSessionParam("show_refresh_button")) {
-                $this->text .= '<div class="swRepRefreshBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'refreshReport=1&execute_mode=EXECUTE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_REFRESH") . '">&nbsp;</a></div>';
+                $this->text .= '<div class="swRepRefreshBox"><a class="reportico-ajax-link" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'refreshReport=1&execute_mode=EXECUTE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_REFRESH") . '">&nbsp;</a></div>';
             }
 
             $this->text .= '</div>';
 
         } else {
-            //$this->text .= '<div class="prepareAjaxExecuteIgnore swPDFBox1"><a class="swLinkMenu5 swPDFBox" target="_blank" href="'.$this->query->getActionUrl().'?'.$forward.'refreshReport=1&target_format=PDF&execute_mode=EXECUTE&reportico_session_name='.(ReporticoSession())::reporticoSessionName().'" title="Print PDF">&nbsp;</a></div>';
+            //$this->text .= '<div class="prepareAjaxExecuteIgnore swPDFBox1"><a class="reportico-ajax-link5 swPDFBox" target="_blank" href="'.$this->query->getActionUrl().'?'.$forward.'refreshReport=1&target_format=PDF&execute_mode=EXECUTE&reportico_session_name='.(ReporticoSession())::reporticoSessionName().'" title="Print PDF">&nbsp;</a></div>';
             $this->text .= '<div class="swRepButtons">';
-            $this->text .= '<div class="swRepPrintBox"><a class="swLinkMenu" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'printReport=1&execute_mode=EXECUTE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_PRINT") . '">' . '&nbsp;' . '</a></div>';
+            $this->text .= '<div class="swRepPrintBox"><a class="reportico-ajax-link" href="' . $this->query->getActionUrl() . $url_join_char . $forward . 'printReport=1&execute_mode=EXECUTE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName() . '" title="' . ReporticoLang::templateXlate("GO_PRINT") . '">' . '&nbsp;' . '</a></div>';
             $this->text .= '</div>';
         }
 
@@ -1019,16 +1019,16 @@ class ReportHtml2pdf extends Report
     public function beforeFormatCriteriaSelection()
     {
         $this->text .= '<TH>';
-        $this->text .= '<TABLE class="swRepCriteria"' . $this->getStyleTags($this->query->output_criteria_styles) . '>';
+        $this->text .= '<TABLE class="reportico-criteria"' . $this->getStyleTags($this->query->output_criteria_styles) . '>';
     }
 
     public function formatCriteriaSelection($label, $value)
     {
-        $this->text .= '<TR class="swRepGrpHdrRow">';
-        $this->text .= '<TD class="swRepGrpHdrLbl">';
+        $this->text .= '<TR class="reportico-group-header-row">';
+        $this->text .= '<TD class="reportico-group-header-label">';
         $this->text .= $label;
         $this->text .= "</TD>";
-        $this->text .= '<TD class="swRepGrpHdrDat">';
+        $this->text .= '<TD class="reportico-group-header-value">';
         $this->text .= $value;
         $this->text .= "</TD>";
         $this->text .= "</TR>";

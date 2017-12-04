@@ -158,12 +158,12 @@ Logged On As {{ DBUSER }}
 {% endif %}
 {% if MAIN_MENU_URL|length>0 %} 
 			<TD style="text-align: left;">
-				<a class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}swLinkMenu" href="{{ MAIN_MENU_URL }}">{{ T_PROJECT_MENU }}</a>
+				<a class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}reportico-ajax-link" href="{{ MAIN_MENU_URL }}">{{ T_PROJECT_MENU }}</a>
 {% if (SHOW_ADMIN_BUTTON) %}
-				&nbsp;<a class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}swLinkMenu" href="{{ ADMIN_MENU_URL }}">{{ T_ADMIN_MENU }}</a>
+				&nbsp;<a class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}reportico-ajax-link" href="{{ ADMIN_MENU_URL }}">{{ T_ADMIN_MENU }}</a>
 {% endif %}
-				&nbsp;<a class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}swLinkMenu" href="{{ RUN_REPORT_URL }}">{{ T_RUN_REPORT }}</a>
-				&nbsp;<input class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}swLinkMenu" type="submit" name="submit_prepare_mode" style="display:none" onclick="return(false);" value="Do nothing on enter">
+				&nbsp;<a class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}reportico-ajax-link" href="{{ RUN_REPORT_URL }}">{{ T_RUN_REPORT }}</a>
+				&nbsp;<input class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}reportico-ajax-link" type="submit" name="submit_prepare_mode" style="display:none" onclick="return(false);" value="Do nothing on enter">
                 <input class="swMntButton reporticoSubmit swNoSubmit" style="width: 0px; color: transparent; background-color: transparent; border-color: transparent; cursor: default;" type="submit" name="submit_dummy_SET" value="Ok">
 			</TD>
 {% endif %}
@@ -176,7 +176,7 @@ Logged On As {{ DBUSER }}
 {% endif %}
 {% if SHOW_LOGOUT %}
 			<TD style="width:15%; text-align: right; padding-right: 10px;" align="right" class="swPrpTopMenuCell">
-				<input class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}swLinkMenu" type="submit" name="logout" value="{{ T_LOGOFF }}">
+				<input class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}reportico-ajax-link" type="submit" name="logout" value="{{ T_LOGOFF }}">
 			</TD>
 {% endif %}
 {% if SHOW_LOGIN %}

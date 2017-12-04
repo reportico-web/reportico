@@ -15,7 +15,7 @@
 {if strlen($STATUSMSG)==0 && strlen($ERRORMSG)==0}
 <div style="float:right; ">
 {if strlen($MAIN_MENU_URL)>0}
-<!--a class="swLinkMenu" style="float:left;" href="{$MAIN_MENU_URL}">&lt;&lt; Menu</a-->
+<!--a class="reportico-ajax-link" style="float:left;" href="{$MAIN_MENU_URL}">&lt;&lt; Menu</a-->
 {/if}
 </div>
 {if $SHOW_EXPANDED}
