@@ -1225,3 +1225,21 @@ padding: 19px 20px 20px;
 text-align: right;
 border-top: 1px solid #e5e5e5;
 }
+
+
+.reportico-chart-title {
+  font: normal 16px sans-serif !important;
+}
+
+.nvd3 axis text {
+  font: normal 16px sans-serif !important;
+}
+.nvd3 text {
+  font: normal 8px sans-serif !important;
+}
+.nvd3 .title {
+   font: normal 8px sans-serif !important;
+}
+.nvtooltip {
+   font-family: sans-serif !important;
+}

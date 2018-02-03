@@ -300,7 +300,7 @@ class ChartNVD3
         $container_height = $this->height_actual . "px";
 
         $js = "";
-        $js .= "<div class=\"reportico-chart-container\" style=\"width:$container_width;height:$container_height;\"> " . $this->convertSpecialChars($this->title_actual);
+        $js .= "<div class=\"reportico-chart-container\" style=\"width:$container_width;height:$container_height;\"> <span class=\"reportico-chart-title\">" . $this->convertSpecialChars($this->title_actual)."</span>";
         //$js .= "<div class=\"reportico-chart-container\" style=\"width: " . $this->width_actual . "px;height: " . $this->height_actual . "px\"> " . $this->convertSpecialChars($this->title_actual);
         //$js .= "<div id=\"reportico_chart$sessionPlaceholder\" class=\"reportico-chart-placeholder\"></div> </div>\n";
 
