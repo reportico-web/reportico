@@ -152,11 +152,12 @@ class Reportico extends ReporticoObject
     public $charting_engine = "PCHART";
     public $charting_engine_html = "NVD3";
     public $pdf_engine = "phantomjs";
+    public $pdf_phantomjs_temp_path = false;
     public $pdf_delivery_mode = "DOWNLOAD_SAME_WINDOW";
     public $pdf_engine_file = "ReportFPDF";
 
     public $projects_folder = "projects";
-    public $admin_projects_folder = __DIR__."/../projects";
+    public $admin_projects_folder = "projects";
     public $compiled_templates_folder = "templates_c";
     public $tmp_folder = __DIR__."/../tmp";
 
@@ -347,11 +348,14 @@ class Reportico extends ReporticoObject
     public $force_reportico_mini_maintains = false;
 
     // Array to hold plugins
-    public $csrfToken;
     public $plugins = array();
+    public $csrfToken;
+    public $ajaxHandler;
 
     // Template Engine
     public $templateEngine = false;
+    public $templateViewPath = false;
+    public $templateCachePath = false;
 
     // Response code to return back
     public $http_response_code = 200;
@@ -2817,7 +2821,7 @@ class Reportico extends ReporticoObject
     public function initializePanels($mode)
     {
         //$smarty = new ReporticoTemplateSmarty();
-        $smarty = new ReporticoTemplateTwig();
+        $smarty = new ReporticoTemplateTwig($this->templateViewPath, $this->templateCachePath);
 
         $dummy = "";
         $version = $this->version;
@@ -2829,6 +2833,8 @@ class Reportico extends ReporticoObject
         $smarty->assign('REPORTICO_VERSION', $version);
         $smarty->assign('REPORTICO_SITE', $this->url_site);
         $smarty->assign('REPORTICO_CSRF_TOKEN', $this->csrfToken);
+        $smarty->assign('REPORTICO_AJAX_HANDLER', $this->ajaxHandler);
+
 
         // Assign user parameters to template
         if ($this->user_parameters && is_array($this->user_parameters)) {

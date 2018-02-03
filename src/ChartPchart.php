@@ -37,9 +37,9 @@ namespace Reportico\Engine;
 error_reporting(E_ALL);
 
 if (function_exists("imagecreatefromstring")) {
-    include_once "pChart/pChart.class";
-    include_once "pChart/pData.class";
-    include_once "pChart/pCache.class";
+    //include_once "pChart/pChart.class";
+    //include_once "pChart/pData.class";
+    //include_once "pChart/pCache.class";
 
     $fontpath = ReporticoUtility::findBestLocationInIncludePath("pChart/fonts");
     define("PCHARTFONTS_DIR", $fontpath . "/");

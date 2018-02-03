@@ -292,7 +292,6 @@ class ChartNVD3
         $sessionPlaceholder = $sessionPlaceholder . "_" . ReporticoApp::get("session_namespace");
 
         $container_width = "100%";
-        //$container_width = $this->width_actual . "px";
         //$container_height = "100%";
         if ( $target_format == "HTML2PDF" ) {
             $container_width = $this->width_actual . "px";

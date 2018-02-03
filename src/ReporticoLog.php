@@ -41,8 +41,8 @@ class ReporticoLog
         $this->debug_mode = $value;
 
         if ($this->debug_mode) {
-            $browserHanlder = new \Monolog\Handler\BrowserConsoleHandler(\Monolog\Logger::DEBUG);
-            $this->logger->pushHandler($browserHanlder);
+            $browserHandler = new \Monolog\Handler\BrowserConsoleHandler(\Monolog\Logger::DEBUG);
+            $this->logger->pushHandler($browserHandler);
         }
 
         error_reporting(E_ALL);

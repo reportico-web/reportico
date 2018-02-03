@@ -45,6 +45,9 @@ class ReportPhantomJSPDF extends Report
 
     public function start($engine)
     {
+        if ( !$engine->pdf_phantomjs_temp_path )
+            $engine->pdf_phantomjs_temp_path = __DIR__."/../tmp/";
+
         // Since we are going to spawn web call to fetch HTML version of report for conversion to PDF, 
         // we must close current sessions so they can be subsequently opened within the web call
         (ReporticoSession())::closeReporticoSession();
@@ -55,7 +58,9 @@ class ReportPhantomJSPDF extends Report
         if ( $engine->pdf_phantomjs_path )
             $this->client->getEngine()->setPath($engine->pdf_phantomjs_path);
 
-        // Build URL
+        // Build URL - dont include scheme and port if already provided
+        $url = "{$engine->reportico_ajax_script_url}?execute_mode=EXECUTE&target_format=HTML2PDF&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
+        if ( !preg_match("/:\/\//", $url) ) 
         $url = "${_SERVER["REQUEST_SCHEME"]}://${_SERVER["HTTP_HOST"]}:${_SERVER["SERVER_PORT"]}{$engine->reportico_ajax_script_url}?execute_mode=EXECUTE&target_format=HTML2PDF&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
 
         // Generate Request Call
@@ -77,7 +82,8 @@ class ReportPhantomJSPDF extends Report
 
         // Generate temporary name for pdf file to generate on disk. Since phantomjs must write to a file with pdf extension use tempn, to create a file
         // without PDF extensiona and then delete this and use the name with etension for phantom generation
-        $outputfile = tempnam(__DIR__."/../tmp/", "pdf");
+        $outputfile = tempnam($engine->pdf_phantomjs_temp_path, "pdf");
+        
         unlink($outputfile);
         $outputfile .= ".pdf";
         $request->setOutputFile($outputfile);

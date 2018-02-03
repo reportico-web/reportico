@@ -31,7 +31,9 @@
     require_once(__DIR__ .'/vendor/autoload.php');
     // set error reporting level
 	error_reporting(E_ALL);
-    Reportico\Engine\ReporticoLog::activeDebugMode();
+
+    // Turn on logging ot browser console
+    //Reportico\Engine\ReporticoLog::activeDebugMode();
     
     // Set the timezone according to system defaults
     date_default_timezone_set(@date_default_timezone_get());
@@ -274,7 +276,6 @@
     // "INLINE" - shown inside a new  browser window making use of any existing browser PDF plugin (if not will download)
     // "DOWNLOAD_NEW_WINDOW" - downloaded as attachment from winthin the current browser window
     $q->pdf_delivery_mode = "DOWNLOAD_SAME_WINDOW";
-    //$q->pdf_delivery_mode = "INLINE";
 
     // Dropdown Menu definition
     // ========================

@@ -24,10 +24,17 @@ class ReporticoTemplateTwig
     private $twig = false;
     private $twig_vars = array();
 
-    public function __construct() {
+    private $cacheDir = false;
+    private $viewDir = false;
+
+    public function __construct($viewDir = false, $cacheDir = false) {
+        
+        $this->viewDir = $viewDir ? $viewDir : ReporticoUtility::findBestLocationInIncludePath("views");
+        $this->cacheDir = $cacheDir ? $cacheDir : __DIR__ . "/../views/cache";
+
         $loader = new \Twig_Loader_Filesystem(ReporticoUtility::findBestLocationInIncludePath("views"));
         $this->twig = new \Twig_Environment($loader, array(
-            'cache' => __DIR__ . "/../views/cache"
+            'cache' => $this->cacheDir
             ));
     }
 
@@ -66,7 +73,6 @@ class ReporticoTemplateTwig
      * @return void
      */
     function display($template_file) {
-
         $template = $this->twig->load($template_file);
         echo $template->render($this->twig_vars);
     }
