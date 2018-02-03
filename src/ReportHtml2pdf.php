@@ -675,6 +675,9 @@ class ReportHtml2pdf extends Report
         $this->jar["styles"]["page"] = $this->getStyleTags($colstyles, $this->query->output_page_styles);
         $this->jar["styles"]["row"] = $this->getStyleTags($colstyles, $this->query->output_row_styles);
         $this->jar["styles"]["criteria"] = $this->getStyleTags($colstyles, $this->query->output_criteria_styles);
+        $this->jar["styles"]["body"] = $this->getStyleTags($colstyles, $this->query->output_reportbody_styles);
+        $this->jar["styles"]["group_header_label"] = $this->getStyleTags($colstyles, $this->query->output_group_header_label_styles);
+        $this->jar["styles"]["group_header_value"] = $this->getStyleTags($colstyles, $this->query->output_group_header_value_styles);
 
         $this->jar["classes"]["page"] = $this->query->getBootstrapStyle("page");
 

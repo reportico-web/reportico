@@ -115,6 +115,9 @@
 
 {% endif %}
 <div id="reportico_container">
+
+<div style="{{ CONTENT.styles.body }}">
+
     <script>
         reportico_criteria_items = [];
 {% if CRITERIA_ITEMS is defined %}
@@ -208,8 +211,8 @@
             <tbody>
                 {% for header in group.headers %}
                 <tr class="reportico-group-header-row">
-                    <td class="reportico-group-header-label">{{ header.label }}</td>
-                    <td class="reportico-group-header-value">{{ header.value }}</td>
+                    <td class="reportico-group-header-label" style="{{ CONTENT.styles.group_header_label }}">{{ header.label }}</td>
+                    <td class="reportico-group-header-value" style="{{ CONTENT.styles.group_header_value }}">{{ header.value }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -283,6 +286,7 @@
 
 
 
+</div>
 </div>
 {% if not REPORTICO_AJAX_CALLED %}
 {% if not EMBEDDED_REPORT %}
