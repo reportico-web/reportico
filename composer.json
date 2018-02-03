@@ -13,7 +13,7 @@
         }
     ],
     "homepage": "http://www.reportico.org/",
-    "license": "GPL-3.0",
+    "license": "GPL-3.0-or-later",
     "require": {
         "php": ">=5.4.0",
         "setasign/fpdf": "1.7",
