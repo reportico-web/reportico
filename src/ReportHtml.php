@@ -86,14 +86,14 @@ class ReportHtml extends Report
         $this->abs_bottom_margin = $this->absPagingHeight($this->getAttribute("BottomMargin"));
         $this->abs_right_margin = $this->absPagingHeight($this->getAttribute("RightMargin"));
         $this->abs_left_margin = $this->absPagingHeight($this->getAttribute("LeftMargin"));
-
-
-
     }
 
     public function finish()
     {
         Report::finish();
+
+
+
 
         $this->setPageWidgets();
 
@@ -105,12 +105,6 @@ class ReportHtml extends Report
             $len = strlen($buf) + 1;
 
             print($buf);
-        }
-
-        if ($this->page_started) {
-            if ($this->tbody_started) {
-                $this->tbody_started = false;
-            }
         }
 
         $this->footer_count++;
@@ -217,7 +211,7 @@ class ReportHtml extends Report
         }
 
         $this->jar["pages"][$this->page_count]["rows"][$this->line_count]["data"][] = [
-            "style" => $this->getStyleTags($colstyles, $this->query->output_allcell_styles, $this->query->output_allcell_styles),
+            "style" => $this->getStyleTags($colstyles, $column_item->output_cell_styles, $this->query->output_allcell_styles),
             "content" => $padstring
             ];
         $rowcount = count( $this->jar["pages"][$this->page_count]["rows"]);
@@ -231,9 +225,6 @@ class ReportHtml extends Report
 
         if ($grandparent_styleset && is_array($grandparent_styleset)) {
             foreach ($grandparent_styleset as $k => $v) {
-                if (!$outtext) {
-                    $outtext = "style=\"";
-                }
 
                 $outtext .= "$k:$v !important;";
             }
@@ -241,9 +232,6 @@ class ReportHtml extends Report
 
         if ($parent_styleset && is_array($parent_styleset)) {
             foreach ($parent_styleset as $k => $v) {
-                if (!$outtext) {
-                    $outtext = "style=\"";
-                }
 
                 $outtext .= "$k:$v !important;";
             }
@@ -251,16 +239,9 @@ class ReportHtml extends Report
 
         if ($styleset && is_array($styleset)) {
             foreach ($styleset as $k => $v) {
-                if (!$outtext) {
-                    $outtext = "style=\"";
-                }
 
                 $outtext .= "$k:$v !important;";
             }
-        }
-
-        if ($outtext) {
-            $outtext .= "\"";
         }
 
         return $outtext;

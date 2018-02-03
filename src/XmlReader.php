@@ -1533,7 +1533,7 @@ class XmlReader
                     $styletxt .= "applyStyle('" . $updates["AssignStyleLocType"] . "', 'background-color', '" . $updates["AssignStyleBgColor"] . "');";
                 }
 
-                if ($updates["AssignStyleFontName"]) {
+                if (isset($updates["AssignStyleFontName"]) && $updates["AssignStyleFontName"]) {
                     $styletxt .= "applyStyle('" . $updates["AssignStyleLocType"] . "', 'font-family', '" . $updates["AssignStyleFontName"] . "');";
                 }
 

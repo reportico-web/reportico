@@ -43,7 +43,7 @@ function reporticoDefaults($reportico)
             "margin" => "0px 5px 10px 5px",
             "padding" => "0px 5px 0px 5px",
         );
-        echo "oo";
+
         $reportico->applyStyleset("CRITERIA", $styles, false, "HTML");
 
         $styles = array(

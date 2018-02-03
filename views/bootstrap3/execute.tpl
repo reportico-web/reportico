@@ -224,7 +224,7 @@
             <THEAD>
             <TR>
             {% for columnHeader in page.headers %}
-                <TH>
+                <TH style="{{columnHeader.style}}">
                 {{ columnHeader.content }}
                 </TH>
             {% endfor %}

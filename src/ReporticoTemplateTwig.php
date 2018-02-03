@@ -66,6 +66,7 @@ class ReporticoTemplateTwig
      * @return void
      */
     function display($template_file) {
+
         $template = $this->twig->load($template_file);
         echo $template->render($this->twig_vars);
     }

@@ -4119,7 +4119,6 @@ class Reportico extends ReporticoObject
                             restore_error_handler();
 
                             $template = $this->getTemplatePath('execute.tpl');
-
                             if ($this->return_output_to_caller) {
                                 $txt = $this->panels["MAIN"]->smarty->fetch($template);
                                 $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");

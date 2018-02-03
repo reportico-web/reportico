@@ -1075,7 +1075,6 @@ a:visited
 
 @media print {
 
-    body { font-size: 10pt }
     .reportico-ajax-link { display: none; }
     .swRepForm { border: none; }
     .swRepBody { width: 100%; margin: 0; border: none; }
