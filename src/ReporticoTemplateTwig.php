@@ -32,7 +32,7 @@ class ReporticoTemplateTwig
         $this->viewDir = $viewDir ? $viewDir : ReporticoUtility::findBestLocationInIncludePath("views");
         $this->cacheDir = $cacheDir ? $cacheDir : __DIR__ . "/../views/cache";
 
-        $loader = new \Twig_Loader_Filesystem(ReporticoUtility::findBestLocationInIncludePath("views"));
+        $loader = new \Twig_Loader_Filesystem($this->viewDir);
         $this->twig = new \Twig_Environment($loader, array(
             'cache' => $this->cacheDir
             ));

@@ -47,6 +47,7 @@
 {% endif %}
 {% if REPORTICO_CSRF_TOKEN %}
 <script type="text/javascript">var reportico_csrf_token = "{{ REPORTICO_CSRF_TOKEN }}";</script>
+<script type="text/javascript">var ajax_event_handler = "{{ REPORTICO_AJAX_HANDLER }}";</script>
 {% endif %}
 {% if BOOTSTRAP_STYLES %}
 {% if not REPORTICO_BOOTSTRAP_PRELOADED %}
@@ -59,7 +60,6 @@
 <script type="text/javascript" src="{{ ASSETS_PATH }}/js/ui/i18n/jquery.ui.datepicker-{{ AJAX_DATEPICKER_LANGUAGE }}.js"></script>
 
 {% endif %}
-
 {% if not BOOTSTRAP_STYLES %}
 
 <script type="text/javascript" src="{{ ASSETS_PATH }}/js/jquery.jdMenu.js"></script>
@@ -92,9 +92,7 @@
 <script type="text/javascript" src="{{ ASSETS_PATH }}/js/flot/jquery.flot.axislabels.js"></script>
 
 {% endif %}
-
 {% if REPORTICO_CHARTING_ENGINE == "NVD3"  %}
-
 {% if not REPORTICO_AJAX_PRELOADED %}
 
 <script type="text/javascript" src="{{ ASSETS_PATH }}/js/nvd3/d3.min.js"></script>
