@@ -1,6 +1,7 @@
 {
     "name": "reportico-web/reportico",
     "description": "Reportico Open Source PHP report Designer",
+    "version": "5.2",
     "type": "project",
     "keywords": [
         "report",
