@@ -1,20 +1,18 @@
 {
     "name": "reportico-web/reportico",
-    "description": "Reportico Open Source PHP report Designer",
     "version": "5.2",
+    "homepage": "http://www.reportico.org/"
+    "description": "Reportico Open Source PHP report Designer",
     "type": "project",
-    "keywords": [
-        "report",
-        "reporting"
-    ],
+    "keywords": [ "report", "reporting" ],
+    "license": "GPL-3.0-or-later",
     "authors": [
         {
             "name": "Reportico",
-            "email": "info@reportico.org"
+            "email": "info@reportico.org",
+            "homepage": "http://www.reportico.org/"
         }
     ],
-    "homepage": "http://www.reportico.org/",
-    "license": "GPL-3.0-or-later",
     "require": {
         "php": ">=5.4.0",
         "setasign/fpdf": "1.7",
@@ -31,8 +29,6 @@
             "pChart\\": "pChart/"
         }
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "config": {
         "bin-dir": "bin"
     },
