@@ -1,6 +1,5 @@
 {
     "name": "reportico-web/reportico",
-    "version": "5.2",
     "homepage": "http://www.reportico.org/",
     "description": "Reportico Open Source PHP report Designer",
     "type": "project",
