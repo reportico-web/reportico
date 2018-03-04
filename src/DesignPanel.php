@@ -24,7 +24,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * This module provides functionality for reading and writing
  * xml reporting.
- * It also controls browser output through Smarty templating class
+ * It also controls browser output through Twig templating class
  * for the different report modes MENU, PREPARE, DESIGN and
  * EXECUTE
  *
@@ -56,7 +56,7 @@ class DesignPanel
     public $full_text = "";
     public $program = "";
     public $panels = array();
-    public $smarty = false;
+    public $template = false;
     public $reportlink_report = false;
     public $reportlink_report_item = false;
 
@@ -66,9 +66,9 @@ class DesignPanel
         $this->panel_type = $in_type;
     }
 
-    public function setSmarty(&$in_smarty)
+    public function setTemplate(&$in_template)
     {
-        $this->smarty = &$in_smarty;
+        $this->template = &$in_template;
     }
 
     public function setMenuItem($in_program, $in_text)
@@ -107,46 +107,46 @@ class DesignPanel
 
     public function addPanel(&$in_panel)
     {
-        $in_panel->setSmarty($this->smarty);
+        $in_panel->setTemplate($this->template);
         $this->panels[] = &$in_panel;
     }
 
-    public function drawSmarty($send_to_browser = false)
+    public function drawTemplate($send_to_browser = false)
     {
         $text = "";
         if (!$this->visible) {
             return;
         }
 
-        $this->pre_text = $this->preDrawSmarty();
+        $this->pre_text = $this->preDrawTemplate();
 
         // Now draw any panels owned by this panel
         foreach ($this->panels as $k => $panel) {
             $panelref = &$this->panels[$k];
-            $this->body_text .= $panelref->drawSmarty();
+            $this->body_text .= $panelref->drawTemplate();
         }
 
-        $this->post_text = $this->postDrawSmarty();
+        $this->post_text = $this->postDrawTemplate();
         $this->full_text = $this->pre_text . $this->body_text . $this->post_text;
         return $this->full_text;
     }
 
-    public function preDrawSmarty()
+    public function preDrawTemplate()
     {
         $text = "";
         switch ($this->panel_type) {
             case "LOGIN":
                 if (ReporticoApp::getConfig('admin_password') == "__OPENACCESS__") {
-                    $this->smarty->assign('SHOW_OPEN_LOGIN', true);
+                    $this->template->assign('SHOW_OPEN_LOGIN', true);
                 } else {
-                    $this->smarty->assign('SHOW_LOGIN', true);
-                    $this->smarty->assign('SHOW_OPEN_LOGIN', false);
+                    $this->template->assign('SHOW_LOGIN', true);
+                    $this->template->assign('SHOW_OPEN_LOGIN', false);
                 }
                 break;
 
             case "LOGOUT":
                 if (!ReporticoApp::getConfig("db_connect_from_config")) {
-                    $this->smarty->assign('SHOW_LOGOUT', true);
+                    $this->template->assign('SHOW_LOGOUT', true);
                 }
                 break;
 
@@ -155,7 +155,7 @@ class DesignPanel
                 break;
 
             case "BODY":
-                $this->smarty->assign('EMBEDDED_REPORT', $this->query->embedded_report);
+                $this->template->assign('EMBEDDED_REPORT', $this->query->embedded_report);
                 break;
 
             case "MAIN":
@@ -167,10 +167,10 @@ class DesignPanel
                 // Also for configureproject.xml
                 if ($this->query->xmlinput == "configureproject.xml" || ReporticoApp::getConfig("project") == "admin") {
                     $reporttitle = $this->query->deriveAttribute("ReportTitle", "Set Report Title");
-                    $this->smarty->assign('TITLE', ReporticoLang::translate($reporttitle));
+                    $this->template->assign('TITLE', ReporticoLang::translate($reporttitle));
                 } else {
                     $reporttitle = ReporticoLang::translate($this->query->deriveAttribute("ReportTitle", "Set Report Title"));
-                    $this->smarty->assign('TITLE', $reporttitle);
+                    $this->template->assign('TITLE', $reporttitle);
                 }
 
                 $submit_self = $this->query->getActionUrl();
@@ -179,11 +179,11 @@ class DesignPanel
                     $submit_self .= "?" . $forward;
                 }
 
-                $this->smarty->assign('SCRIPT_SELF', $submit_self);
+                $this->template->assign('SCRIPT_SELF', $submit_self);
                 break;
 
             case "CRITERIA":
-                $this->smarty->assign('SHOW_CRITERIA', true);
+                $this->template->assign('SHOW_CRITERIA', true);
                 break;
 
             case "CRITERIA_FORM":
@@ -270,20 +270,20 @@ class DesignPanel
                         );
                         $lastdisplaygroup = $critdisplaygroup;
                     }
-                    $this->smarty->assign("CRITERIA_ITEMS", $dispcrit);
+                    $this->template->assign("CRITERIA_ITEMS", $dispcrit);
                 }
                 break;
 
             case "CRITERIA_EXPAND":
                 // Expand Cell Table
-                $this->smarty->assign("SHOW_EXPANDED", false);
+                $this->template->assign("SHOW_EXPANDED", false);
 
                 if ($this->query->expand_col) {
-                    $this->smarty->assign("SHOW_EXPANDED", true);
-                    $this->smarty->assign("EXPANDED_ITEM", $this->query->expand_col->query_name);
-                    $this->smarty->assign("EXPANDED_SEARCH_VALUE", false);
+                    $this->template->assign("SHOW_EXPANDED", true);
+                    $this->template->assign("EXPANDED_ITEM", $this->query->expand_col->query_name);
+                    $this->template->assign("EXPANDED_SEARCH_VALUE", false);
                     $title = $this->query->expand_col->deriveAttribute("column_title", $this->query->expand_col->query_name);
-                    $this->smarty->assign("EXPANDED_TITLE", ReporticoLang::translate($title));
+                    $this->template->assign("EXPANDED_TITLE", ReporticoLang::translate($title));
 
                     // Only use then expand value if Search was press
                     $expval = "";
@@ -300,7 +300,7 @@ class DesignPanel
                         }
                     }
 
-                    $this->smarty->assign("EXPANDED_SEARCH_VALUE", $expval);
+                    $this->template->assign("EXPANDED_SEARCH_VALUE", $expval);
 
                     $text .= $this->query->expand_col->expand_template();
                 } else {
@@ -308,39 +308,39 @@ class DesignPanel
                         $desc = $this->query->deriveAttribute("ReportDescription", false);
                     }
 
-                    $this->smarty->assign("REPORT_DESCRIPTION", $desc);
+                    $this->template->assign("REPORT_DESCRIPTION", $desc);
                 }
                 break;
 
             case "USERINFO":
-                $this->smarty->assign('DB_LOGGEDON', true);
+                $this->template->assign('DB_LOGGEDON', true);
                 if (!ReporticoApp::getConfig("db_connect_from_config")) {
-                    $this->smarty->assign('DBUSER', $this->query->datasource->user_name);
+                    $this->template->assign('DBUSER', $this->query->datasource->user_name);
                 } else {
-                    $this->smarty->assign('DBUSER', false);
+                    $this->template->assign('DBUSER', false);
                 }
 
                 break;
 
             case "RUNMODE":
                 if ($this->query->execute_mode == "MAINTAIN") {
-                    $this->smarty->assign('SHOW_MODE_MAINTAIN_BOX', true);
+                    $this->template->assign('SHOW_MODE_MAINTAIN_BOX', true);
                 } else {
                     // In demo mode for reporitco web site allow design
                     if ($this->query->allow_maintain == "DEMO") {
-                        $this->smarty->assign('SHOW_DESIGN_BUTTON', true);
+                        $this->template->assign('SHOW_DESIGN_BUTTON', true);
                     }
 
                     // Dont allow design option when configuring project
                     if ($this->query->xmlinput != "configureproject.xml" && $this->query->xmlinput != "deleteproject.xml") {
-                        $this->smarty->assign('SHOW_DESIGN_BUTTON', true);
+                        $this->template->assign('SHOW_DESIGN_BUTTON', true);
                     }
 
                     if ($this->query->xmlinput == "deleteproject.xml") {
-                        $this->smarty->assign('SHOW_ADMIN_BUTTON', true);
-                        $this->smarty->assign('SHOW_PROJECT_MENU_BUTTON', false);
+                        $this->template->assign('SHOW_ADMIN_BUTTON', true);
+                        $this->template->assign('SHOW_PROJECT_MENU_BUTTON', false);
                     } else if ($this->query->xmlinput == "configureproject.xml") {
-                        $this->smarty->assign('SHOW_ADMIN_BUTTON', true);
+                        $this->template->assign('SHOW_ADMIN_BUTTON', true);
                     }
                 }
 
@@ -351,8 +351,8 @@ class DesignPanel
                     $configure_project_url .= "&" . $forward;
                     $create_report_url .= "&" . $forward;
                 }
-                $this->smarty->assign('CONFIGURE_PROJECT_URL', $configure_project_url);
-                $this->smarty->assign('CREATE_REPORT_URL', $create_report_url);
+                $this->template->assign('CONFIGURE_PROJECT_URL', $configure_project_url);
+                $this->template->assign('CREATE_REPORT_URL', $create_report_url);
 
                 break;
 
@@ -364,8 +364,8 @@ class DesignPanel
                     $menu_url .= "&" . $forward;
                     $prepare_url .= "&" . $forward;
                 }
-                $this->smarty->assign('MAIN_MENU_URL', $menu_url);
-                $this->smarty->assign('RUN_REPORT_URL', $prepare_url);
+                $this->template->assign('MAIN_MENU_URL', $menu_url);
+                $this->template->assign('RUN_REPORT_URL', $prepare_url);
 
                 $admin_menu_url = $this->query->admin_menu_url;
                 $forward = (ReporticoSession())::sessionRequestItem('forward_url_get_parameters', '');
@@ -373,7 +373,7 @@ class DesignPanel
                     $admin_menu_url .= "&" . $forward;
                 }
 
-                $this->smarty->assign('ADMIN_MENU_URL', $admin_menu_url);
+                $this->template->assign('ADMIN_MENU_URL', $admin_menu_url);
                 break;
 
             case "MENU":
@@ -426,15 +426,15 @@ class DesignPanel
                 break;
 
             case "TOPMENU":
-                $this->smarty->assign('SHOW_TOPMENU', true);
+                $this->template->assign('SHOW_TOPMENU', true);
                 break;
 
             case "DESTINATION":
 
-                $this->smarty->assign('SHOW_OUTPUT', true);
+                $this->template->assign('SHOW_OUTPUT', true);
 
                 if (!ReporticoApp::getConfig("allow_output", true)) {
-                    $this->smarty->assign('SHOW_OUTPUT', false);
+                    $this->template->assign('SHOW_OUTPUT', false);
                 }
 
                 $op = (ReporticoSession())::sessionRequestItem("target_format", "HTML");
@@ -452,7 +452,7 @@ class DesignPanel
                     $noutput_types[] = $val;
                 }
 
-                $this->smarty->assign('OUTPUT_TYPES', $noutput_types);
+                $this->template->assign('OUTPUT_TYPES', $noutput_types);
 
                 $op = (ReporticoSession())::sessionRequestItem("target_style", "TABLE");
                 $output_styles = array(
@@ -465,53 +465,53 @@ class DesignPanel
                     $noutput_styles[] = $val;
                 }
 
-                $this->smarty->assign('OUTPUT_STYLES', $noutput_styles);
+                $this->template->assign('OUTPUT_STYLES', $noutput_styles);
 
                 $attach = ReporticoUtility::getRequestItem("target_attachment", "1", $this->query->first_criteria_selection);
                 if ($attach) {
                     $attach = "checked";
                 }
 
-                $this->smarty->assign("OUTPUT_ATTACH", $attach);
+                $this->template->assign("OUTPUT_ATTACH", $attach);
 
-                $this->smarty->assign("OUTPUT_SHOWGRAPH", (ReporticoSession())::getReporticoSessionParam("target_show_graph") ? "checked" : "");
-                $this->smarty->assign("OUTPUT_SHOWCRITERIA", (ReporticoSession())::getReporticoSessionParam("target_show_criteria") ? "checked" : "");
-                $this->smarty->assign("OUTPUT_SHOWDETAIL", (ReporticoSession())::getReporticoSessionParam("target_show_detail") ? "checked" : "");
-                $this->smarty->assign("OUTPUT_SHOWGROUPHEADERS", (ReporticoSession())::getReporticoSessionParam("target_show_group_headers") ? "checked" : "");
-                $this->smarty->assign("OUTPUT_SHOWGROUPTRAILERS", (ReporticoSession())::getReporticoSessionParam("target_show_group_trailers") ? "checked" : "");
-                $this->smarty->assign("OUTPUT_SHOWCOLHEADERS", (ReporticoSession())::getReporticoSessionParam("target_showColumnHeaders") ? "checked" : "");
+                $this->template->assign("OUTPUT_SHOWGRAPH", (ReporticoSession())::getReporticoSessionParam("target_show_graph") ? "checked" : "");
+                $this->template->assign("OUTPUT_SHOWCRITERIA", (ReporticoSession())::getReporticoSessionParam("target_show_criteria") ? "checked" : "");
+                $this->template->assign("OUTPUT_SHOWDETAIL", (ReporticoSession())::getReporticoSessionParam("target_show_detail") ? "checked" : "");
+                $this->template->assign("OUTPUT_SHOWGROUPHEADERS", (ReporticoSession())::getReporticoSessionParam("target_show_group_headers") ? "checked" : "");
+                $this->template->assign("OUTPUT_SHOWGROUPTRAILERS", (ReporticoSession())::getReporticoSessionParam("target_show_group_trailers") ? "checked" : "");
+                $this->template->assign("OUTPUT_SHOWCOLHEADERS", (ReporticoSession())::getReporticoSessionParam("target_showColumnHeaders") ? "checked" : "");
 
                 if ($this->query->allow_debug && ReporticoApp::getConfig("allow_debug", true)) {
-                    $this->smarty->assign("OUTPUT_SHOW_DEBUG", true);
+                    $this->template->assign("OUTPUT_SHOW_DEBUG", true);
                     $debug_mode = ReporticoUtility::getRequestItem("debug_mode", "0", $this->query->first_criteria_selection);
-                    $this->smarty->assign("DEBUG_NONE", "");
-                    $this->smarty->assign("DEBUG_LOW", "");
-                    $this->smarty->assign("DEBUG_MEDIUM", "");
-                    $this->smarty->assign("DEBUG_HIGH", "");
+                    $this->template->assign("DEBUG_NONE", "");
+                    $this->template->assign("DEBUG_LOW", "");
+                    $this->template->assign("DEBUG_MEDIUM", "");
+                    $this->template->assign("DEBUG_HIGH", "");
                     switch ($debug_mode) {
                     case 1:
-                            $this->smarty->assign("DEBUG_LOW", "selected");
+                            $this->template->assign("DEBUG_LOW", "selected");
                             break;
                     case 2:
-                            $this->smarty->assign("DEBUG_MEDIUM", "selected");
+                            $this->template->assign("DEBUG_MEDIUM", "selected");
                             break;
                     case 3:
-                            $this->smarty->assign("DEBUG_HIGH", "selected");
+                            $this->template->assign("DEBUG_HIGH", "selected");
                             break;
                     default:
-                            $this->smarty->assign("DEBUG_NONE", "selected");
+                            $this->template->assign("DEBUG_NONE", "selected");
                     }
 
                     if ($debug_mode) {
                         $debug_mode = "checked";
                     }
 
-                    $this->smarty->assign("OUTPUT_DEBUG", $debug_mode);
+                    $this->template->assign("OUTPUT_DEBUG", $debug_mode);
                 }
 
                 $checked = "";
 
-                $this->smarty->assign("OUTPUT_SHOW_SHOWGRAPH", false);
+                $this->template->assign("OUTPUT_SHOW_SHOWGRAPH", false);
                 if (count($this->query->graphs) > 0) {
                     $checked = "";
                     if ($this->query->getAttribute("graphDisplay")) {
@@ -522,8 +522,8 @@ class DesignPanel
                         $checked = "";
                     }
 
-                    $this->smarty->assign("OUTPUT_SHOW_SHOWGRAPH", true);
-                    $this->smarty->assign("OUTPUT_SHOWDET", $checked);
+                    $this->template->assign("OUTPUT_SHOW_SHOWGRAPH", true);
+                    $this->template->assign("OUTPUT_SHOWDET", $checked);
                 }
                 break;
 
@@ -531,7 +531,7 @@ class DesignPanel
 
                 $msg = "";
                 if ($this->query->status_message) {
-                    $this->smarty->assign('STATUSMSG', $this->query->status_message);
+                    $this->template->assign('STATUSMSG', $this->query->status_message);
                 }
 
                 $debug = ReporticoApp::getSystemDebug();
@@ -544,7 +544,7 @@ class DesignPanel
                     $msg = "<BR><B>" . ReporticoLang::templateXlate("INFORMATION") . "</B>" . $msg;
                 }
 
-                $this->smarty->assign('STATUSMSG', $msg);
+                $this->template->assign('STATUSMSG', $msg);
                 break;
 
             case "ERROR":
@@ -603,7 +603,7 @@ class DesignPanel
 
                 $debugmsg = "";
                 if ($this->query->status_message) {
-                    $this->smarty->assign('STATUSMSG', $this->query->status_message);
+                    $this->template->assign('STATUSMSG', $this->query->status_message);
                 }
 
                 $debug = ReporticoApp::getSystemDebug();
@@ -630,14 +630,14 @@ class DesignPanel
 
                 }
 
-                $this->smarty->assign('ERRORMSG', $msg);
+                $this->template->assign('ERRORMSG', $msg);
                 (ReporticoSession())::setReporticoSessionParam('latestRequest', "");
                 break;
         }
         return $text;
     }
 
-    public function postDrawSmarty()
+    public function postDrawTemplate()
     {
         $text = "";
         switch ($this->panel_type) {
@@ -660,12 +660,12 @@ class DesignPanel
                 break;
 
             case "MENU":
-                $this->smarty->assign('MENU_ITEMS', $this->query->menuitems);
+                $this->template->assign('MENU_ITEMS', $this->query->menuitems);
                 break;
 
             case "ADMIN":
-                $this->smarty->assign('DOCDIR', ReporticoUtility::findBestLocationInIncludePath("doc"));
-                $this->smarty->assign('PROJECT_ITEMS', $this->query->projectitems);
+                $this->template->assign('DOCDIR', ReporticoUtility::findBestLocationInIncludePath("doc"));
+                $this->template->assign('PROJECT_ITEMS', $this->query->projectitems);
                 break;
 
             case "MENUBUTTON":

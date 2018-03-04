@@ -1754,7 +1754,7 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     // Function : login_check
     // -----------------------------------------------------------------------------
-    public function loginCheck($smarty)
+    public function loginCheck($template)
     {
         if (!$this->datasource) {
             $this->datasource = new ReporticoDataSource($this->external_connection, $this->available_connections);
@@ -1775,7 +1775,7 @@ class Reportico extends ReporticoObject
                         (ReporticoSession())::setReporticoSessionParam('admin_password', "1");
                         $loggedon = "ADMIN";
                     } else {
-                        $smarty->assign('ADMIN_PASSWORD_ERROR', ReporticoLang::templateXlate("PASSWORD_ERROR"));
+                        $template->assign('ADMIN_PASSWORD_ERROR', ReporticoLang::templateXlate("PASSWORD_ERROR"));
                     }
                 }
             }
@@ -1847,7 +1847,7 @@ class Reportico extends ReporticoObject
 
                 } else {
                     if (isset($_REQUEST["login"])) {
-                        $smarty->assign('PROJ_PASSWORD_ERROR', "Error");
+                        $template->assign('PROJ_PASSWORD_ERROR', "Error");
                     }
 
                 }
@@ -2820,8 +2820,7 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function initializePanels($mode)
     {
-        //$smarty = new ReporticoTemplateSmarty();
-        $smarty = new ReporticoTemplateTwig($this->templateViewPath, $this->templateCachePath);
+        $template = new ReporticoTemplateTwig($this->templateViewPath, $this->templateCachePath);
 
         $dummy = "";
         $version = $this->version;
@@ -2830,110 +2829,110 @@ class Reportico extends ReporticoObject
         $forward_url_params_graph = (ReporticoSession())::sessionRequestItem('forward_url_get_parameters_graph', $this->forward_url_get_parameters_graph);
         $forward_url_params_dbimage = (ReporticoSession())::sessionRequestItem('forward_url_get_parameters_dbimage', $this->forward_url_get_parameters_dbimage);
 
-        $smarty->assign('REPORTICO_VERSION', $version);
-        $smarty->assign('REPORTICO_SITE', $this->url_site);
-        $smarty->assign('REPORTICO_CSRF_TOKEN', $this->csrfToken);
-        $smarty->assign('REPORTICO_AJAX_HANDLER', $this->ajaxHandler);
+        $template->assign('REPORTICO_VERSION', $version);
+        $template->assign('REPORTICO_SITE', $this->url_site);
+        $template->assign('REPORTICO_CSRF_TOKEN', $this->csrfToken);
+        $template->assign('REPORTICO_AJAX_HANDLER', $this->ajaxHandler);
 
 
         // Assign user parameters to template
         if ($this->user_parameters && is_array($this->user_parameters)) {
             foreach ($this->user_parameters as $k => $v) {
                 $param = preg_replace("/ /", "_", $k);
-                $smarty->assign('USER_' . $param, $v);
+                $template->assign('USER_' . $param, $v);
             }
         }
 
-        // Smarty needs to include Javascript if AJAX enabled
+        // Twig needs to include Javascript if AJAX enabled
         if (!defined('AJAX_ENABLED')) {
             define('AJAX_ENABLED', true);
         }
 
-        $smarty->assign('AJAX_ENABLED', AJAX_ENABLED);
+        $template->assign('AJAX_ENABLED', AJAX_ENABLED);
 
         // Date format for ui Datepicker
-        $smarty->assign('AJAX_DATEPICKER_LANGUAGE', ReporticoLocale::getDatepickerLanguage(ReporticoApp::get("language")));
-        $smarty->assign('AJAX_DATEPICKER_FORMAT', ReporticoLocale::getDatepickerFormat(ReporticoApp::getConfig("prep_dateformat")));
-        $smarty->assign('PDF_DELIVERY_MODE', $this->pdf_delivery_mode);
+        $template->assign('AJAX_DATEPICKER_LANGUAGE', ReporticoLocale::getDatepickerLanguage(ReporticoApp::get("language")));
+        $template->assign('AJAX_DATEPICKER_FORMAT', ReporticoLocale::getDatepickerFormat(ReporticoApp::getConfig("prep_dateformat")));
+        $template->assign('PDF_DELIVERY_MODE', $this->pdf_delivery_mode);
 
-        $smarty->assign('SHOW_OPEN_LOGIN', false);
-        $smarty->assign('DB_LOGGEDON', false);
-        $smarty->assign('ADMIN_MENU_URL', false);
-        $smarty->assign('CONFIGURE_MENU_URL', false);
-        $smarty->assign('CREATE_REPORT_URL', false);
-        $smarty->assign('SESSION_ID', (ReporticoSession())::reporticoSessionName());
+        $template->assign('SHOW_OPEN_LOGIN', false);
+        $template->assign('DB_LOGGEDON', false);
+        $template->assign('ADMIN_MENU_URL', false);
+        $template->assign('CONFIGURE_MENU_URL', false);
+        $template->assign('CREATE_REPORT_URL', false);
+        $template->assign('SESSION_ID', (ReporticoSession())::reporticoSessionName());
 
-        // Set smarty variables
-        $smarty->assign('SCRIPT_SELF', $this->url_path_to_calling_script);
+        // Set template variables
+        $template->assign('SCRIPT_SELF', $this->url_path_to_calling_script);
 
-        $smarty->assign('REPORTICO_AJAX_MODE', $this->reportico_ajax_mode);
-        $smarty->assign('REPORTICO_AJAX_CALLED', $this->reportico_ajax_called);
+        $template->assign('REPORTICO_AJAX_MODE', $this->reportico_ajax_mode);
+        $template->assign('REPORTICO_AJAX_CALLED', $this->reportico_ajax_called);
 
         if ($this->url_path_to_assets) {
-            $smarty->assign('REPORTICO_URL_DIR', $this->url_path_to_assets);
+            $template->assign('REPORTICO_URL_DIR', $this->url_path_to_assets);
         } else {
-            $smarty->assign('REPORTICO_URL_DIR', $this->reportico_url_path);
+            $template->assign('REPORTICO_URL_DIR', $this->reportico_url_path);
         }
 
-        $smarty->assign('REPORTICO_AJAX_RUNNER', $this->reportico_ajax_script_url);
+        $template->assign('REPORTICO_AJAX_RUNNER', $this->reportico_ajax_script_url);
 
-        $smarty->assign('PRINTABLE_HTML', false);
+        $template->assign('PRINTABLE_HTML', false);
         if (ReporticoUtility::getRequestItem("printable_html")) {
-            $smarty->assign('PRINTABLE_HTML', true);
+            $template->assign('PRINTABLE_HTML', true);
         }
 
         // In frameworks we dont want to load jquery when its intalled once when the module load
         // so flag this unless specified in new_reportico_window
-        $smarty->assign('REPORTICO_STANDALONE_WINDOW', false);
-        $smarty->assign('REPORTICO_AJAX_PRELOADED', $this->reportico_ajax_preloaded);
+        $template->assign('REPORTICO_STANDALONE_WINDOW', false);
+        $template->assign('REPORTICO_AJAX_PRELOADED', $this->reportico_ajax_preloaded);
         if (ReporticoUtility::getRequestItem("new_reportico_window", false)) {
-            $smarty->assign('REPORTICO_AJAX_PRELOADED', false);
-            $smarty->assign('REPORTICO_STANDALONE_WINDOW', true);
+            $template->assign('REPORTICO_AJAX_PRELOADED', false);
+            $template->assign('REPORTICO_STANDALONE_WINDOW', true);
         }
 
-        $smarty->assign('SHOW_LOGOUT', false);
-        $smarty->assign('SHOW_LOGIN', false);
-        $smarty->assign('SHOW_REPORT_MENU', false);
-        $smarty->assign('SHOW_SET_ADMIN_PASSWORD', false);
-        $smarty->assign('SHOW_OUTPUT', false);
-        $smarty->assign('IS_ADMIN_SCREEN', false);
-        $smarty->assign('SHOW_DESIGN_BUTTON', false);
-        $smarty->assign('SHOW_ADMIN_BUTTON', true);
-        $smarty->assign('PROJ_PASSWORD_ERROR', "");
-        $smarty->assign('SHOW_PROJECT_MENU_BUTTON', true);
+        $template->assign('SHOW_LOGOUT', false);
+        $template->assign('SHOW_LOGIN', false);
+        $template->assign('SHOW_REPORT_MENU', false);
+        $template->assign('SHOW_SET_ADMIN_PASSWORD', false);
+        $template->assign('SHOW_OUTPUT', false);
+        $template->assign('IS_ADMIN_SCREEN', false);
+        $template->assign('SHOW_DESIGN_BUTTON', false);
+        $template->assign('SHOW_ADMIN_BUTTON', true);
+        $template->assign('PROJ_PASSWORD_ERROR', "");
+        $template->assign('SHOW_PROJECT_MENU_BUTTON', true);
         if ($this->access_mode && ($this->access_mode != "DEMO" && $this->access_mode != "FULL" && $this->access_mode != "ALLPROJECTS" && $this->access_mode != "ONEPROJECT")) {
-            $smarty->assign('SHOW_PROJECT_MENU_BUTTON', false);
+            $template->assign('SHOW_PROJECT_MENU_BUTTON', false);
         }
-        $smarty->assign('SHOW_EXPAND', false);
-        $smarty->assign('SHOW_CRITERIA', false);
-        $smarty->assign('SHOW_EXPANDED', false);
-        $smarty->assign('SHOW_MODE_MAINTAIN_BOX', false);
-        $smarty->assign('STATUSMSG', '');
-        $smarty->assign('ERRORMSG', false);
-        $smarty->assign('SET_ADMIN_PASSWORD_INFO', '');
-        $smarty->assign('SET_ADMIN_PASSWORD_ERROR', '');
-        $smarty->assign('ADMIN_PASSWORD_ERROR', '');
-        $smarty->assign('PASSWORD_ERROR', '');
-        $smarty->assign('DEMO_MODE', false);
-        $smarty->assign('DROPDOWN_MENU_ITEMS', false);
+        $template->assign('SHOW_EXPAND', false);
+        $template->assign('SHOW_CRITERIA', false);
+        $template->assign('SHOW_EXPANDED', false);
+        $template->assign('SHOW_MODE_MAINTAIN_BOX', false);
+        $template->assign('STATUSMSG', '');
+        $template->assign('ERRORMSG', false);
+        $template->assign('SET_ADMIN_PASSWORD_INFO', '');
+        $template->assign('SET_ADMIN_PASSWORD_ERROR', '');
+        $template->assign('ADMIN_PASSWORD_ERROR', '');
+        $template->assign('PASSWORD_ERROR', '');
+        $template->assign('DEMO_MODE', false);
+        $template->assign('DROPDOWN_MENU_ITEMS', false);
 
         // Dont allow admin menu buttons to show in demo mode
         if ($this->allow_maintain == "DEMO") {
-            $smarty->assign('DEMO_MODE', true);
-            $smarty->assign('SHOW_ADMIN_BUTTON', false);
+            $template->assign('DEMO_MODE', true);
+            $template->assign('SHOW_ADMIN_BUTTON', false);
         }
 
         if (!$this->admin_accessible) {
-            $smarty->assign('SHOW_ADMIN_BUTTON', false);
+            $template->assign('SHOW_ADMIN_BUTTON', false);
         }
 
         // Dont show admin button
         if ($this->access_mode && ($this->access_mode != "DEMO" && $this->access_mode != "FULL" && $this->access_mode != "ALLPROJECTS")) {
-            $smarty->assign('SHOW_ADMIN_BUTTON', false);
+            $template->assign('SHOW_ADMIN_BUTTON', false);
         }
 
         $partialajaxpath = ReporticoUtility::findBestLocationInIncludePath("partial.php");
-        $smarty->assign('AJAX_PARTIAL_RUNNER', $this->reportico_url_path . $partialajaxpath);
+        $template->assign('AJAX_PARTIAL_RUNNER', $this->reportico_url_path . $partialajaxpath);
 
         // Use alternative location for js/css/images if specified.
         // Set stylesheet to the reportico bootstrap if bootstrap styles in place
@@ -2958,14 +2957,14 @@ class Reportico extends ReporticoObject
             $this->url_path_to_assets = $asset_path;
         }
 
-        $smarty->assign('ASSETS_PATH', $asset_path);
+        $template->assign('ASSETS_PATH', $asset_path);
 
         //Define the template dir where we could find specific template css js and template files
         // if not already provided
         $theme_dir = $this->url_path_to_templates;
         if ( !$this->url_path_to_templates )
             $theme_dir = ReporticoUtility::findBestUrlInIncludePath('views');
-        $smarty->assign('THEME_DIR', "$theme_dir/".$this->getTheme());
+        $template->assign('THEME_DIR', "$theme_dir/".$this->getTheme());
 
         /*@todo Must be in the theme and not in the code*/
         if (!$this->bootstrap_styles) {
@@ -2984,44 +2983,44 @@ class Reportico extends ReporticoObject
             }
 
         }
-        $smarty->assign('STYLESHEET', $csspath);
-        $smarty->assign('STYLESHEETDIR', dirname($csspath));
+        $template->assign('STYLESHEET', $csspath);
+        $template->assign('STYLESHEETDIR', dirname($csspath));
 
-        $smarty->assign('REPORTICO_JQUERY_PRELOADED', $this->jquery_preloaded);
-        $smarty->assign('BOOTSTRAP_STYLES', $this->bootstrap_styles);
-        $smarty->assign('REPORTICO_BOOTSTRAP_PRELOADED', $this->bootstrap_preloaded);
-        $smarty->assign('BOOTSTRAP_STYLE_GO_BUTTON', $this->getBootstrapStyle('button_go'));
-        $smarty->assign('BOOTSTRAP_STYLE_PRIMARY_BUTTON', $this->getBootstrapStyle('button_primary'));
-        $smarty->assign('BOOTSTRAP_STYLE_RESET_BUTTON', $this->getBootstrapStyle('button_reset'));
-        $smarty->assign('BOOTSTRAP_STYLE_ADMIN_BUTTON', $this->getBootstrapStyle('button_admin'));
-        $smarty->assign('BOOTSTRAP_STYLE_DROPDOWN', $this->getBootstrapStyle('dropdown'));
-        $smarty->assign('BOOTSTRAP_STYLE_CHECKBOX_BUTTON', $this->getBootstrapStyle('checkbox_button'));
-        $smarty->assign('BOOTSTRAP_STYLE_CHECKBOX', $this->getBootstrapStyle('checkbox'));
-        $smarty->assign('BOOTSTRAP_STYLE_TOOLBAR_BUTTON', $this->getBootstrapStyle('toolbar_button'));
-        $smarty->assign('BOOTSTRAP_STYLE_MENU_TABLE', $this->getBootstrapStyle('menu_table'));
-        $smarty->assign('BOOTSTRAP_STYLE_TEXTFIELD', $this->getBootstrapStyle('textfield'));
-        $smarty->assign('BOOTSTRAP_STYLE_SMALL_BUTTON', $this->getBootstrapStyle('small_button'));
+        $template->assign('REPORTICO_JQUERY_PRELOADED', $this->jquery_preloaded);
+        $template->assign('BOOTSTRAP_STYLES', $this->bootstrap_styles);
+        $template->assign('REPORTICO_BOOTSTRAP_PRELOADED', $this->bootstrap_preloaded);
+        $template->assign('BOOTSTRAP_STYLE_GO_BUTTON', $this->getBootstrapStyle('button_go'));
+        $template->assign('BOOTSTRAP_STYLE_PRIMARY_BUTTON', $this->getBootstrapStyle('button_primary'));
+        $template->assign('BOOTSTRAP_STYLE_RESET_BUTTON', $this->getBootstrapStyle('button_reset'));
+        $template->assign('BOOTSTRAP_STYLE_ADMIN_BUTTON', $this->getBootstrapStyle('button_admin'));
+        $template->assign('BOOTSTRAP_STYLE_DROPDOWN', $this->getBootstrapStyle('dropdown'));
+        $template->assign('BOOTSTRAP_STYLE_CHECKBOX_BUTTON', $this->getBootstrapStyle('checkbox_button'));
+        $template->assign('BOOTSTRAP_STYLE_CHECKBOX', $this->getBootstrapStyle('checkbox'));
+        $template->assign('BOOTSTRAP_STYLE_TOOLBAR_BUTTON', $this->getBootstrapStyle('toolbar_button'));
+        $template->assign('BOOTSTRAP_STYLE_MENU_TABLE', $this->getBootstrapStyle('menu_table'));
+        $template->assign('BOOTSTRAP_STYLE_TEXTFIELD', $this->getBootstrapStyle('textfield'));
+        $template->assign('BOOTSTRAP_STYLE_SMALL_BUTTON', $this->getBootstrapStyle('small_button'));
 
         // Set charting engine
-        $smarty->assign('REPORTICO_CHARTING_ENGINE', $this->charting_engine_html);
+        $template->assign('REPORTICO_CHARTING_ENGINE', $this->charting_engine_html);
 
         // Set on/off template elements
         foreach ($this->output_template_parameters as $k => $v) {
-            $smarty->assign(strtoupper($k), $v);
+            $template->assign(strtoupper($k), $v);
         }
         if ($this->url_path_to_assets) {
             $jspath = $this->url_path_to_assets . "/js";
-            $smarty->assign('JSPATH', $jspath);
+            $template->assign('JSPATH', $jspath);
         } else {
             $jspath = ReporticoUtility::findBestUrlInIncludePath("js/reportico.js");
             if ($jspath) {
                 $jspath = dirname($jspath);
             }
 
-            $smarty->assign('JSPATH', $this->reportico_url_path . $jspath);
+            $template->assign('JSPATH', $this->reportico_url_path . $jspath);
         }
         $this->panels["MAIN"] = new DesignPanel($this, "MAIN");
-        $this->panels["MAIN"]->setSmarty($smarty);
+        $this->panels["MAIN"]->setTemplate($template);
         $this->panels["BODY"] = new DesignPanel($this, "BODY");
         $this->panels["TITLE"] = new DesignPanel($this, "TITLE");
         $this->panels["TOPMENU"] = new DesignPanel($this, "TOPMENU");
@@ -3111,9 +3110,9 @@ class Reportico extends ReporticoObject
 
         if ($this->dropdown_menu && ($mode == "MENU" || $mode == "PREPARE")) {
             $this->generateDropdownMenu($this->dropdown_menu);
-            $smarty->assign('DROPDOWN_MENU_ITEMS', $this->dropdown_menu);
+            $template->assign('DROPDOWN_MENU_ITEMS', $this->dropdown_menu);
         }
-        $smarty->assign('MENU_TITLE', ReporticoApp::get('menu_title'));
+        $template->assign('MENU_TITLE', ReporticoApp::get('menu_title'));
 
         if ($mode == "MENU") {
             // Store the URL of thi smenu so it can be referred to
@@ -3158,37 +3157,37 @@ class Reportico extends ReporticoObject
         $this->panels["USERINFO"]->setVisibility(true);
         $this->panels["RUNMODE"]->setVisibility(true);
 
-        $smarty->assign('REPORTICO_BOOTSTRAP_MODAL', true);
+        $template->assign('REPORTICO_BOOTSTRAP_MODAL', true);
         if (!$this->bootstrap_styles || $this->force_reportico_mini_maintains) {
-            $smarty->assign('REPORTICO_BOOTSTRAP_MODAL', false);
+            $template->assign('REPORTICO_BOOTSTRAP_MODAL', false);
         }
 
         // If no admin password then force user to enter one and  a language
         if (ReporticoApp::getConfig("project") == "admin" && ReporticoApp::getConfig("admin_password") == "PROMPT") {
-            $smarty->assign('LANGUAGES', ReporticoLang::availableLanguages());
+            $template->assign('LANGUAGES', ReporticoLang::availableLanguages());
             // New Admin password submitted, attempt to set password and go to MENU option
             if (array_key_exists("submit_admin_password", $_REQUEST)) {
-                $smarty->assign('SET_ADMIN_PASSWORD_ERROR',
+                $template->assign('SET_ADMIN_PASSWORD_ERROR',
                     $this->saveAdminPassword($_REQUEST["new_admin_password"], $_REQUEST["new_admin_password2"], $_REQUEST["jump_to_language"]));
             }
 
             $this->panels["SET_ADMIN_PASSWORD"]->setVisibility(true);
-            $smarty->assign('SHOW_SET_ADMIN_PASSWORD', true);
+            $template->assign('SHOW_SET_ADMIN_PASSWORD', true);
             $this->panels["LOGOUT"]->setVisibility(false);
             $this->panels["MENU"]->setVisibility(false);
-            $smarty->assign('SHOW_REPORT_MENU', false);
+            $template->assign('SHOW_REPORT_MENU', false);
             if (!ReporticoApp::isSetConfig('admin_password_reset')) {
                 return;
             } else {
-                $smarty->assign('SHOW_SET_ADMIN_PASSWORD', false);
+                $template->assign('SHOW_SET_ADMIN_PASSWORD', false);
             }
 
         }
 
-        $smarty->assign('SHOW_MINIMAINTAIN', false);
+        $template->assign('SHOW_MINIMAINTAIN', false);
         {
             (ReporticoSession())::setReporticoSessionParam("loggedin", true);
-            if ($this->loginCheck($smarty)) {
+            if ($this->loginCheck($template)) {
                 // User has supplied details ( user and password ), so assume that login box should
                 // not occur ( user details
                 $this->panels["MENUBUTTON"]->setVisibility(true);
@@ -3201,7 +3200,7 @@ class Reportico extends ReporticoObject
                 // Show quick edit/mini maintain elements if in design or demo mode
                 // unless the report is a reportico configuration report
                 if ($this->login_type == "DESIGN" || $this->access_mode == "DEMO") {
-                    $smarty->assign('SHOW_MINIMAINTAIN', true);
+                    $template->assign('SHOW_MINIMAINTAIN', true);
                 }
 
                 if ($this->login_type == "DESIGN") {
@@ -3210,17 +3209,17 @@ class Reportico extends ReporticoObject
                     $this->panels["RUNMODE"]->setVisibility(false);
                 }
 
-                $smarty->assign('SHOW_REPORT_MENU', true);
+                $template->assign('SHOW_REPORT_MENU', true);
 
                 // Only show a logout button if a password is in effect
                 $project_password = ReporticoApp::getConfig("project_password");
                 if ($this->login_type == "DESIGN" || $this->login_type == "ADMIN" || (ReporticoApp::isSetConfig('project_password') && ReporticoApp::getConfig('PROJECT_PASSWORD') != '')) {
-                    $smarty->assign('SHOW_LOGOUT', true);
+                    $template->assign('SHOW_LOGOUT', true);
                 }
 
                 // Dont show logout button in ALLPROJECTS, ONE PROJECT
                 if ($this->access_mode && ($this->access_mode != "DEMO" && $this->access_mode != "FULL" && $this->access_mode != "ALLPROJECTS")) {
-                    $smarty->assign('SHOW_LOGOUT', false);
+                    $template->assign('SHOW_LOGOUT', false);
                 }
 
                 if ($mode == "PREPARE" && ($this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml")) {
@@ -3646,22 +3645,6 @@ class Reportico extends ReporticoObject
         $this->db_charset = ReporticoLocale::dbCharsetToPhpCharset(ReporticoApp::getConfig("db_encoding", "UTF8"));
         $this->output_charset = ReporticoLocale::outputCharsetToPhpCharset(ReporticoApp::getConfig("output_encoding", "UTF8"));
 
-        // Ensure Smarty Template folder exists and is writeable
-        $include_template_dir = $this->compiled_templates_folder;
-        if (!(is_dir("templates_c"))) {
-            ReporticoUtility::findFileToInclude("templates_c", $include_template_dir, $include_template_dir);
-        }
-
-        if (!(is_dir($include_template_dir))) {
-            echo "Unable to generate output. The <b>$include_template_dir</b> folder does not exist within the main reportico area. Please create this folder and ensure it has read, write and execute permissions and then retry.";
-            die;
-        }
-
-        if (!ReporticoUtility::swPathExecutable($include_template_dir)) {
-            echo "Unable to generate output. The <b>$include_template_dir</b> folder does not have read, write and execute permissions. Please correct and retry.";
-            die;
-        }
-
         ReporticoApp::set("debug_mode", ReporticoUtility::getRequestItem("debug_mode", "0", $this->first_criteria_selection));
 
         if (!$mode) {
@@ -3839,15 +3822,15 @@ class Reportico extends ReporticoObject
                 $txt = "";
                 $this->handleXmlQueryInput($mode);
                 $this->buildAdminScreen();
-                $text = $this->panels["BODY"]->drawSmarty();
-                $this->panels["MAIN"]->smarty->debugging = false;
-                $this->panels["MAIN"]->smarty->assign('LANGUAGES', ReporticoLang::availableLanguages());
-                $this->panels["MAIN"]->smarty->assign('CONTENT', $txt);
-                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
-                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
-                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
-                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
-                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
+                $text = $this->panels["BODY"]->drawTemplate();
+                $this->panels["MAIN"]->template->debugging = false;
+                $this->panels["MAIN"]->template->assign('LANGUAGES', ReporticoLang::availableLanguages());
+                $this->panels["MAIN"]->template->assign('CONTENT', $txt);
+                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
+                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
+                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
+                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
+                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
 
                 restore_error_handler();
 
@@ -3857,11 +3840,11 @@ class Reportico extends ReporticoObject
                 $template = $this->getTemplatePath('admin.tpl');
 
                 if ($this->return_output_to_caller) {
-                    $txt = $this->panels["MAIN"]->smarty->fetch($template);
+                    $txt = $this->panels["MAIN"]->template->fetch($template);
                     $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                     return $txt;
                 } else {
-                    $this->panels["MAIN"]->smarty->display($template);
+                    $this->panels["MAIN"]->template->display($template);
                     $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                 }
                 break;
@@ -3872,17 +3855,17 @@ class Reportico extends ReporticoObject
                 $this->buildMenu();
                 ReporticoLang::loadModeLanguagePack("languages", $this->output_charset);
                 ReporticoLang::loadModeLanguagePack("menu", $this->output_charset);
-                ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->smarty);
+                ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->template);
 
-                $text = $this->panels["BODY"]->drawSmarty();
-                $this->panels["MAIN"]->smarty->debugging = false;
-                $this->panels["MAIN"]->smarty->assign('CONTENT', $text);
-                $this->panels["MAIN"]->smarty->assign('LANGUAGES', ReporticoLang::availableLanguages());
-                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
-                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
-                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
-                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
-                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
+                $text = $this->panels["BODY"]->drawTemplate();
+                $this->panels["MAIN"]->template->debugging = false;
+                $this->panels["MAIN"]->template->assign('CONTENT', $text);
+                $this->panels["MAIN"]->template->assign('LANGUAGES', ReporticoLang::availableLanguages());
+                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
+                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
+                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
+                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
+                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
 
                 restore_error_handler();
                 // Some calling frameworks require output to be returned
@@ -3891,11 +3874,11 @@ class Reportico extends ReporticoObject
                 $template = $this->getTemplatePath('menu.tpl');
 
                 if ($this->return_output_to_caller) {
-                    $txt = $this->panels["MAIN"]->smarty->fetch($template);
+                    $txt = $this->panels["MAIN"]->template->fetch($template);
                     $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                     return $txt;
                 } else {
-                    $this->panels["MAIN"]->smarty->display($template);
+                    $this->panels["MAIN"]->template->display($template);
                     $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                 }
                 break;
@@ -3910,20 +3893,20 @@ class Reportico extends ReporticoObject
                     // If configuring project then use project language strings from admin project
                     // found in projects/admin/lang.php
                     ReporticoLang::loadProjectLanguagePack("admin", $this->output_charset);
-                    $this->panels["MAIN"]->smarty->assign('SHOW_MINIMAINTAIN', false);
-                    $this->panels["MAIN"]->smarty->assign('IS_ADMIN_SCREEN', true);
+                    $this->panels["MAIN"]->template->assign('SHOW_MINIMAINTAIN', false);
+                    $this->panels["MAIN"]->template->assign('IS_ADMIN_SCREEN', true);
                 }
                 ReporticoLang::loadModeLanguagePack("prepare", $this->output_charset);
-                ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->smarty);
+                ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->template);
 
-                $text = $this->panels["BODY"]->drawSmarty();
-                $this->panels["MAIN"]->smarty->debugging = false;
-                $this->panels["MAIN"]->smarty->assign('CONTENT', $text);
-                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
-                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
-                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
-                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
-                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
+                $text = $this->panels["BODY"]->drawTemplate();
+                $this->panels["MAIN"]->template->debugging = false;
+                $this->panels["MAIN"]->template->assign('CONTENT', $text);
+                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
+                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
+                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
+                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
+                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
 
                 if ($this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml" || $this->xmlinput == "createproject.xml" || $this->xmlinput == "generate_tutorial.xml") {
                     $reportfile = "";
@@ -3931,7 +3914,7 @@ class Reportico extends ReporticoObject
                     $reportfile = preg_replace("/\.xml/", "", $this->xmloutfile);
                 }
 
-                $this->panels["MAIN"]->smarty->assign('XMLFILE', $reportfile);
+                $this->panels["MAIN"]->template->assign('XMLFILE', $reportfile);
 
                 $reportname = preg_replace("/.xml/", "", $this->xmloutfile . '_prepare.tpl');
                 restore_error_handler();
@@ -3942,11 +3925,11 @@ class Reportico extends ReporticoObject
                 $template = $this->getTemplatePath('prepare.tpl');
 
                 if ($this->return_output_to_caller) {
-                    $txt = $this->panels["MAIN"]->smarty->fetch($template);
+                    $txt = $this->panels["MAIN"]->template->fetch($template);
                     $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                     return $txt;
                 } else {
-                    $this->panels["MAIN"]->smarty->display($template);
+                    $this->panels["MAIN"]->template->display($template);
                     $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                 }
                 break;
@@ -3978,17 +3961,17 @@ class Reportico extends ReporticoObject
                     $this->dynamic_grids_page_size = $this->attributes["gridPageSize"];
                 }
 
-                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
-                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
-                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
-                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
-                $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
+                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
+                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
+                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
+                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
+                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
 
                 ReporticoApp::set("code_area", "Main Query");
                 $this->buildQuery(false, "");
                 ReporticoApp::set("code_area", false);
                 ReporticoLang::loadModeLanguagePack("execute", $this->output_charset);
-                ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->smarty);
+                ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->template);
                 $this->checkCriteriaValidity();
 
 
@@ -4039,23 +4022,23 @@ class Reportico extends ReporticoObject
                     //$this->setRequestColumns();
 
                     $this->panels["FORM"]->setVisibility(false);
-                    $text = $this->panels["BODY"]->drawSmarty();
+                    $text = $this->panels["BODY"]->drawTemplate();
 
-                    $this->panels["MAIN"]->smarty->debugging = false;
+                    $this->panels["MAIN"]->template->debugging = false;
                     $title = ReporticoLang::translate($this->deriveAttribute("ReportTitle", "Unknown"));
-                    $this->panels["MAIN"]->smarty->assign('TITLE', $title);
+                    $this->panels["MAIN"]->template->assign('TITLE', $title);
                     
-                    $this->panels["MAIN"]->smarty->assign('CONTENT', $text);
+                    $this->panels["MAIN"]->template->assign('CONTENT', $text);
                     if ($this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml" || $this->xmlinput == "createproject.xml" || $this->xmlinput == "generate_tutorial.xml") {
                         // If configuring project then use project language strings from admin project
                         // found in projects/admin/lang.php
                         ReporticoLang::loadProjectLanguagePack("admin", $this->output_charset);
-                        $this->panels["MAIN"]->smarty->assign('SHOW_MINIMAINTAIN', false);
-                        $this->panels["MAIN"]->smarty->assign('IS_ADMIN_SCREEN', true);
+                        $this->panels["MAIN"]->template->assign('SHOW_MINIMAINTAIN', false);
+                        $this->panels["MAIN"]->template->assign('IS_ADMIN_SCREEN', true);
                     }
                     ReporticoLang::loadModeLanguagePack("languages", $this->output_charset, true);
                     ReporticoLang::loadModeLanguagePack("prepare", $this->output_charset);
-                    ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->smarty);
+                    ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->template);
                     $reportname = preg_replace("/.xml/", "", $this->xmloutfile . '_execute.tpl');
                     restore_error_handler();
 
@@ -4065,11 +4048,11 @@ class Reportico extends ReporticoObject
                     $template = $this->getTemplatePath('error.tpl');
 
                     if (false && $this->return_output_to_caller) {
-                        $txt = $this->panels["MAIN"]->smarty->fetch($template);
+                        $txt = $this->panels["MAIN"]->template->fetch($template);
                         $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                         return $txt;
                     } else {
-                        $this->panels["MAIN"]->smarty->display($template);
+                        $this->panels["MAIN"]->template->display($template);
                         $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                     }
                 } else {
@@ -4083,14 +4066,14 @@ class Reportico extends ReporticoObject
 
                         $pagestyle = $this->targets[0]->getStyleTags($this->output_reportbody_styles);
 
-                        $this->panels["MAIN"]->smarty->assign('REPORT_PAGE_STYLE', $pagestyle);
-                        $this->panels["MAIN"]->smarty->assign('TITLE', $title);
-                        $this->panels["MAIN"]->smarty->assign('CONTENT', $text);
-                        $this->panels["MAIN"]->smarty->assign('EMBEDDED_REPORT', $this->embedded_report);
+                        $this->panels["MAIN"]->template->assign('REPORT_PAGE_STYLE', $pagestyle);
+                        $this->panels["MAIN"]->template->assign('TITLE', $title);
+                        $this->panels["MAIN"]->template->assign('CONTENT', $text);
+                        $this->panels["MAIN"]->template->assign('EMBEDDED_REPORT', $this->embedded_report);
 
                         // When printing in separate html window make sure we dont treat report as embedded
                         if (ReporticoUtility::getRequestItem("new_reportico_window", false)) {
-                            $this->panels["MAIN"]->smarty->assign('EMBEDDED_REPORT', false);
+                            $this->panels["MAIN"]->template->assign('EMBEDDED_REPORT', false);
                         }
 
                         if ($this->email_recipients) {
@@ -4099,9 +4082,9 @@ class Reportico extends ReporticoObject
                             foreach ($recipients as $rec) {
                                 ReporticoLang::loadModeLanguagePack("languages", $this->output_charset, true);
                                 ReporticoLang::loadModeLanguagePack("execute", $this->output_charset);
-                                ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->smarty);
+                                ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->template);
                                 $template = $this->getTemplatePath('execute.tpl');
-                                $mailtext = $this->panels["MAIN"]->smarty->fetch($template, null, null, false);
+                                $mailtext = $this->panels["MAIN"]->template->fetch($template, null, null, false);
                                 //$boundary = '-----=' . md5( uniqid ( rand() ) );
                                 //$message = "Content-Type: text/html; name=\"my attachment\"\n";
                                 //$message .= "Content-Transfer-Encoding: base64\n";
@@ -4120,19 +4103,19 @@ class Reportico extends ReporticoObject
                         } else {
                             ReporticoLang::loadModeLanguagePack("languages", $this->output_charset, true);
                             ReporticoLang::loadModeLanguagePack("execute", $this->output_charset);
-                            ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->smarty);
+                            ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->template);
                             $reportname = preg_replace("/.xml/", "", $this->xmloutfile . '_execute.tpl');
                             restore_error_handler();
 
                             $template = $this->getTemplatePath('execute.tpl');
                             if ($this->return_output_to_caller) {
-                                $txt = $this->panels["MAIN"]->smarty->fetch($template);
+                                $txt = $this->panels["MAIN"]->template->fetch($template);
                                 $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                                 return $txt;
                             } else {
-                                //$txt = $this->panels["MAIN"]->smarty->fetch($template);
+                                //$txt = $this->panels["MAIN"]->template->fetch($template);
                                 //file_put_contents("/tmp/fred1", $txt);
-                                $this->panels["MAIN"]->smarty->display($template);
+                                $this->panels["MAIN"]->template->display($template);
                                 $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                             }
 
@@ -4151,20 +4134,20 @@ class Reportico extends ReporticoObject
                     }
 
                     ReporticoLang::loadModeLanguagePack("maintain", $this->output_charset);
-                    ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->smarty);
+                    ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->template);
                     $this->xmlin->handleUserEntry();
                     (ReporticoSession())::setReporticoSessionParam("xmlintext", $this->xmlintext);
 
-                    $text = $this->panels["BODY"]->drawSmarty();
-                    $this->panels["MAIN"]->smarty->assign('PARTIALMAINTAIN', ReporticoUtility::getRequestItem("partialMaintain", false));
-                    $this->panels["MAIN"]->smarty->assign('CONTENT', $text);
-                    $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
-                    $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
-                    $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
-                    $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
-                    $this->panels["MAIN"]->smarty->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
+                    $text = $this->panels["BODY"]->drawTemplate();
+                    $this->panels["MAIN"]->template->assign('PARTIALMAINTAIN', ReporticoUtility::getRequestItem("partialMaintain", false));
+                    $this->panels["MAIN"]->template->assign('CONTENT', $text);
+                    $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
+                    $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
+                    $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
+                    $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
+                    $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
                     $template = $this->getTemplatePath('maintain.tpl');
-                    $this->panels["MAIN"]->smarty->display($template);
+                    $this->panels["MAIN"]->template->display($template);
                 } else {
                     $this->premaintainQuery();
                 }
@@ -4219,7 +4202,7 @@ class Reportico extends ReporticoObject
         $this->setAttribute("ReportTitle", ReporticoApp::get('menu_title'));
         ReporticoLang::loadModeLanguagePack("languages", $this->output_charset);
         ReporticoLang::loadModeLanguagePack("admin", $this->output_charset);
-        ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->smarty);
+        ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->template);
 
         if (ReporticoApp::getConfig("project") != "admin") {
             return;

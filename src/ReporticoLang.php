@@ -125,17 +125,17 @@ class ReporticoLang
     }
 
     // Set local language strings in templates
-    static function localiseTemplateStrings(&$in_smarty, $in_template = "")
+    static function localiseTemplateStrings(&$in_template)
     {
         $local = ReporticoApp::get("locale");
         if ($local) {
             foreach ($local["template"] as $key => $string) {
-                $in_smarty->assign($key, $string);
+                $in_template->assign($key, $string);
             }
         }
 
         // Now set the HTML META tag for identifying the HTML encoding character set
-        $in_smarty->assign("OUTPUT_ENCODING", ReporticoLocale::getOutputEncodingHtml());
+        $in_template->assign("OUTPUT_ENCODING", ReporticoLocale::getOutputEncodingHtml());
     }
 
     // Fetched translation for a template string
