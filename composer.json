@@ -1,7 +1,7 @@
 {
     "name": "reportico-web/reportico",
     "homepage": "http://www.reportico.org/",
-    "description": "Reportico Open Source PHP report Designer",
+    "description": "Reportico Open Source PHP Report Designer",
     "type": "project",
     "keywords": [ "report", "reporting" ],
     "license": "GPL-3.0-or-later",
