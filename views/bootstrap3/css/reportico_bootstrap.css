@@ -29,6 +29,8 @@
 .swDisplayGroupLine td
 {
     background-color: #eeeeff;
+    padding-left: 20px;
+    font-weight: normal;
 }
 
 #swPrpSaveFile
@@ -283,6 +285,11 @@ a:visited
     font-weight: bold;
     border: none;
     text-decoration: none;
+}
+
+.swToggleCriteriaDiv td
+{ 
+    font-weight: bold;
 }
 
 .swToggleCriteria, .swToggleCriteria:link, .swToggleCriteria:visited
@@ -1373,7 +1380,7 @@ border-top: 1px solid #e5e5e5;
 
 /* Chart Default Text */
 .nvd3 text {
-  font: normal 12pt sans-serif !important;
+  font: normal 8pt sans-serif !important;
 }
 
 /* Axis Tick Styles */
@@ -1385,17 +1392,20 @@ border-top: 1px solid #e5e5e5;
 
 /* Axis Title Styles */
 .nvd3 .nv-axislabel {
-  font: normal 14pt sans-serif !important;
+  font: normal 10pt sans-serif !important;
 }
 
 /* Legend Styles */
 .nvd3 .nv-series text {
-  font: normal 10pt sans-serif !important;
+  font: normal 8pt sans-serif !important;
 }
 /* Title Styles */
 .nvd3 .title {
-  font: normal 16px sans-serif !important;
+  font: normal 16pt sans-serif !important;
 }
 .nvtooltip {
   font-family: sans-serif !important;
+}
+.reportico-dropdown {
+  z-index: 1001 !important;
 }
