@@ -93,7 +93,8 @@ else
     $configparams["SW_PROJECT_TITLE"] = SW_PROJECT_TITLE;
 }
 
-$proj_parent = ReporticoUtility::findBestLocationInIncludePath( "projects" );
+$proj_parent = $this->projects_folder;
+
 $proj_dir = $proj_parent."/".$configparams["SW_PROJECT"];
 $proj_conf = $proj_dir."/config.php";
 $proj_menu = $proj_dir."/menu.php";

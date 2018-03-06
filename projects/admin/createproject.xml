@@ -17,7 +17,9 @@ global $_configure_mode;
 
 $_configure_mode = "CREATE";
 
-include('projects/admin/configureproject.xml.php');</PreExecuteCode>
+$path = $this-&gt;admin_projects_folder.'/admin/configureproject.xml.php';
+include($path);
+</PreExecuteCode>
       <bodyDisplay>show</bodyDisplay>
       <graphDisplay>show</graphDisplay>
     </Format>
