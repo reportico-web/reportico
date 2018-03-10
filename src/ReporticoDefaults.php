@@ -20,15 +20,14 @@ function reporticoDefaults($reportico)
 
     // Don't apply  apply body styles to pdf docuement when using fpdf engine
     if ($reportico->pdf_engine != "fpdf") {
+
         // REPORT BODY STYLES
         $styles = array(
             //"background-color" => "#cccccc",
             "border-width" => "1px 1px 1px 1px",
-            "border-style" => "solid",
+            "border-style" => "none",
             "border-color" => "#333333",
-            //"background-color" => "#eeeeee",
-            //"padding" => "0 20 0 20",
-            //"margin" => "0 0 0 5",
+            "font-size" => "8pt",
             "font-family" => "freesans",
         );
         $reportico->applyStyleset("BODY", $styles, false, "PDF");
@@ -43,9 +42,9 @@ function reporticoDefaults($reportico)
             "margin" => "0px 5px 10px 5px",
             "padding" => "0px 5px 0px 5px",
         );
-
         $reportico->applyStyleset("CRITERIA", $styles, false, "HTML");
 
+        // Hide crtieria box on PDF output
         $styles = array(
             "display" => "none",
         );
@@ -56,6 +55,7 @@ function reporticoDefaults($reportico)
     // PAGE DETAIL BOX STYLES
     $styles = array(
         "margin" => "0 2 0 2",
+        "font-size" => "8pt",
     );
     $reportico->applyStyleset("PAGE", $styles, false, "PDF");
     $reportico->applyStyleset("PAGE", $styles, false, "HTML2PDF");
@@ -88,6 +88,7 @@ function reporticoDefaults($reportico)
         "margin" => "0 0 0 5",
         "width" => "3cm",
         "requires-before" => "8cm",
+        "font-size" => "8pt",
     );
     $reportico->applyStyleset("GROUPHEADERLABEL", $styles, false, "PDF");
     $reportico->applyStyleset("GROUPHEADERLABEL", $styles, false, "HTML2PDF");
@@ -95,6 +96,7 @@ function reporticoDefaults($reportico)
     // GROUP HEADER VALUE STYLES
     $styles = array(
         "margin" => "0 20 0 0",
+        "font-size" => "8pt",
     );
     $reportico->applyStyleset("GROUPHEADERVALUE", $styles, false, "PDF");
     $reportico->applyStyleset("GROUPHEADERVALUE", $styles, false, "HTML2PDF");
@@ -181,8 +183,8 @@ function reporticoDefaults($reportico)
         $reportico->setPageHeaderAttribute("H3", "justify", "right");
 
         //$reportico->createPageHeader("H4", 1, "<img src='http://127.0.0.1/newarc/images/reportico100.png' style='width: 100%'>{STYLE width: 100; height: 50; margin: 0 0 0 0; background-image:http://127.0.0.1/newarc/images/reportico100.png;}" );
-        $reportico->createPageHeader("H4", 1, "<img src='http://127.0.0.1/newarc/images/reportico100.png' style='width: 100%'>{STYLE width: 100; height: 50; margin: 0 0 0 0; background-image:http://127.0.0.1/newarc/images/reportico100.png;}" );
-        $reportico->setPageHeaderAttribute("H4", "ShowInHTML", "no" );
+        //$reportico->createPageHeader("H4", 1, "<img src='http://127.0.0.1/newarc/images/reportico100.png' style='width: 100%'>{STYLE width: 100; height: 50; margin: 0 0 0 0; background-image:http://127.0.0.1/newarc/images/reportico100.png;}" );
+        //$reportico->setPageHeaderAttribute("H4", "ShowInHTML", "no" );
 
         // Create Page No on bottom of PDF page
         $reportico->createPageFooter("F1", 2, "Page: {PAGE} of {PAGETOTAL} {STYLE border-width: 1 0 0 0; margin: 0 0 0 0; font-style: italic; }");

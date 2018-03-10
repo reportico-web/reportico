@@ -35,7 +35,6 @@ function reporticoDefaults($reportico)
 
         // CRITERIA BOX STYLES
         $styles = array(
-            "font-size" => "8pt",
             "background-color" => "#eeeeee",
             "border-style" => "solid",
             "border-width" => "1px 1px 1px 1px",
@@ -45,6 +44,7 @@ function reporticoDefaults($reportico)
         );
         $reportico->applyStyleset("CRITERIA", $styles, false, "HTML");
 
+        // Hide crtieria box on PDF output
         $styles = array(
             "display" => "none",
         );

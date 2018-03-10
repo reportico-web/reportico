@@ -1375,7 +1375,7 @@ border-top: 1px solid #e5e5e5;
 
 /* Chart Title */
 .reportico-chart-title {
-  font: normal 16pt sans-serif !important;
+  font: normal 12pt sans-serif !important;
 }
 
 /* Chart Default Text */
@@ -1387,12 +1387,12 @@ border-top: 1px solid #e5e5e5;
 .nvd3 .axis .tick text,
 .nvd3 .axis .nv-axisMaxMin text
 {
-  font: normal 10pt sans-serif !important;
+  font: normal 8pt sans-serif !important;
 }
 
 /* Axis Title Styles */
 .nvd3 .nv-axislabel {
-  font: normal 10pt sans-serif !important;
+  font: normal 8pt sans-serif !important;
 }
 
 /* Legend Styles */
@@ -1401,7 +1401,7 @@ border-top: 1px solid #e5e5e5;
 }
 /* Title Styles */
 .nvd3 .title {
-  font: normal 16pt sans-serif !important;
+  font: normal 8pt sans-serif !important;
 }
 .nvtooltip {
   font-family: sans-serif !important;

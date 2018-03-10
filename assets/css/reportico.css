@@ -25,6 +25,23 @@ form,table,input,a,div
     cursor: pointer;
 }
 
+.swDisplayGroupLine td
+{
+    background-color: #eeeeff;
+    padding-left: 20px;
+    font-weight: normal;
+}
+
+#swPrpSaveFile
+{
+    display: inline !important;
+}
+
+.reportico_bootstrap2_checkbox
+{
+    margin:0px 0px 0px 5px !important;
+}
+
 #swPrpSubmitPane input
 {
     float: right;
@@ -1226,20 +1243,57 @@ text-align: right;
 border-top: 1px solid #e5e5e5;
 }
 
+#reporticoNoticeModalBody
+{
+    padding: 15px !important;
+}
 
+
+.unbreakable {
+    display:inline-block;
+}
+.unbreakable:after {
+    content: '';
+    display:block;
+    height:0px;
+    visibility: hidden;
+}
+
+/* Styles for NVD3 charts */
+
+/* Chart Title */
 .reportico-chart-title {
-  font: normal 16px sans-serif !important;
+  font: normal 16pt sans-serif !important;
 }
 
-.nvd3 axis text {
-  font: normal 16px sans-serif !important;
-}
+/* Chart Default Text */
 .nvd3 text {
-  font: normal 8px sans-serif !important;
+  font: normal 8pt sans-serif !important;
 }
+
+/* Axis Tick Styles */
+.nvd3 .axis .tick text,
+.nvd3 .axis .nv-axisMaxMin text
+{
+  font: normal 10pt sans-serif !important;
+}
+
+/* Axis Title Styles */
+.nvd3 .nv-axislabel {
+  font: normal 10pt sans-serif !important;
+}
+
+/* Legend Styles */
+.nvd3 .nv-series text {
+  font: normal 8pt sans-serif !important;
+}
+/* Title Styles */
 .nvd3 .title {
-   font: normal 8px sans-serif !important;
+  font: normal 16pt sans-serif !important;
 }
 .nvtooltip {
    font-family: sans-serif !important;
+}
+.reportico-dropdown {
+  z-index: 1001 !important;
 }
