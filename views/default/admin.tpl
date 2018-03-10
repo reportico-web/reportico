@@ -1,5 +1,5 @@
 {% autoescape false %}
-{% include 'bootstrap3/header.inc.tpl' %}
+{% include 'default/header.inc.tpl' %}
 <div id="reportico_container">
     <script>
         reportico_criteria_items = [];
@@ -238,11 +238,11 @@
 	</TABLE>
 {% endif %}
 
-{% include 'bootstrap3/message-error.inc.tpl' %}
+{% include 'default/message-error.inc.tpl' %}
 </FORM>
 
 
 
 </div>
-{% include 'bootstrap3/footer.inc.tpl' %}
+{% include 'default/footer.inc.tpl' %}
 {% endautoescape %}

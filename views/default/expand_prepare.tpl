@@ -1,1 +1,1 @@
-{% include 'bootstrap3/prepare-expand-contents.inc.tpl' %}
+{% include 'default/prepare-expand-contents.inc.tpl' %}

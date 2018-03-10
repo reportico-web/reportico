@@ -1,5 +1,5 @@
 {% autoescape false %}
-{% include 'bootstrap3/header.inc.tpl' %}
+{% include 'default/header.inc.tpl' %}
 <div id="reportico_container">
 <FORM class="swMenuForm" name="topmenu" method="POST" action="{{ SCRIPT_SELF }}">
 <input type="hidden" name="reportico_session_name" value="{{ SESSION_ID }}" /> 
@@ -17,20 +17,20 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-{% include 'bootstrap3/dropdown-brand.inc.tpl' %}
+{% include 'default/dropdown-brand.inc.tpl' %}
             <div class= "nav-collapse collapse in" id="reportico-bootstrap-collapse">
-{% include 'bootstrap3/dropdown-menu.inc.tpl' %}
+{% include 'default/dropdown-menu.inc.tpl' %}
 {% if SHOW_HIDE_NAVIGATION_MENU == "show"  %}
             <ul class= "nav navbar-nav pull-right navbar-right">
 {% else %}
             <ul style="display:none" class= "nav navbar-nav pull-right navbar-right">
 {% endif %}
 {% if SHOW_TOPMENU %}
-{% include 'bootstrap3/menu-bar-logout.inc.tpl' %}
-{% include 'bootstrap3/menu-bar-project-password.inc.tpl' %}
+{% include 'default/menu-bar-logout.inc.tpl' %}
+{% include 'default/menu-bar-project-password.inc.tpl' %}
 {% endif %}
-{% include 'bootstrap3/menu-bar-admin-menu.inc.tpl' %}
-{% include 'bootstrap3/menu-bar-configure-create-buttons.inc.tpl' %}
+{% include 'default/menu-bar-admin-menu.inc.tpl' %}
+{% include 'default/menu-bar-configure-create-buttons.inc.tpl' %}
 </div>
 </ul>
         </div>
@@ -70,7 +70,7 @@
 			</TABLE>
 {% endif %}
 </FORM>
-{% include 'bootstrap3/reportico-banner.inc.tpl' %}
+{% include 'default/reportico-banner.inc.tpl' %}
 </div>
-{% include 'bootstrap3/footer.inc.tpl' %}
+{% include 'default/footer.inc.tpl' %}
 {% endautoescape %}

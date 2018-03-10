@@ -2851,7 +2851,7 @@ class Reportico extends ReporticoObject
         $template->assign('AJAX_ENABLED', AJAX_ENABLED);
 
         // Date format for ui Datepicker
-        $template->assign('AJAX_DATEPICKER_LANGUAGE', ReporticoLocale::getDatepickerLanguage(ReporticoApp::get("language")));
+        $template->assign('AJAX_DATEPICKER_LANGUAGE', ReporticoLocale::getDatepickerLanguage(ReporticoApp::getConfig("language")));
         $template->assign('AJAX_DATEPICKER_FORMAT', ReporticoLocale::getDatepickerFormat(ReporticoApp::getConfig("prep_dateformat")));
         $template->assign('PDF_DELIVERY_MODE', $this->pdf_delivery_mode);
 
@@ -2962,6 +2962,7 @@ class Reportico extends ReporticoObject
         //Define the template dir where we could find specific template css js and template files
         // if not already provided
         $theme_dir = $this->url_path_to_templates;
+        echo $this->url_path_to_templates;
         if ( !$this->url_path_to_templates )
             $theme_dir = ReporticoUtility::findBestUrlInIncludePath('views');
         $template->assign('THEME_DIR', "$theme_dir/".$this->getTheme());

@@ -234,10 +234,8 @@
 
     // Set a theme
     // ======================
-    // Use the specified folder under the templates area to identify with templates, stylesheets and js to use for the instance
-    $q->setTheme('bootstrap3');
-    //$q->setTheme('bootstrap2');
-    //$q->setTheme('default');
+    // Use the specified folder under the views folder to identify which templates, stylesheets and js to use for the instance
+    $q->setTheme('default');
 
     // Label for criteria section if required
     // $q->criteria_block_label = "Report Criteria:";

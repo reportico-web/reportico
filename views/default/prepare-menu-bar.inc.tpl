@@ -11,9 +11,9 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-{% include 'bootstrap3/dropdown-brand.inc.tpl' %}
+{% include 'default/dropdown-brand.inc.tpl' %}
             <div class= "nav-collapse collapse in" id="reportico-bootstrap-collapse">
-{% include 'bootstrap3/dropdown-menu.inc.tpl' %}
+{% include 'default/dropdown-menu.inc.tpl' %}
 
 <!-- right hand side option buttons in  nav bar -->
 {% if SHOW_HIDE_NAVIGATION_MENU == "show"  %}
@@ -22,13 +22,13 @@
             <ul style="display:none" class= "nav navbar-nav pull-right navbar-right">
 {% endif %}
 {% if SHOW_TOPMENU %}
-{% include 'bootstrap3/menu-bar-design.inc.tpl' %}
-{% include 'bootstrap3/menu-bar-debug-level.inc.tpl' %}
-{% include 'bootstrap3/menu-bar-project-password.inc.tpl' %}
+{% include 'default/menu-bar-design.inc.tpl' %}
+{% include 'default/menu-bar-debug-level.inc.tpl' %}
+{% include 'default/menu-bar-project-password.inc.tpl' %}
 {% endif %}
-{% include 'bootstrap3/menu-bar-admin-menu.inc.tpl' %}
-{% include 'bootstrap3/menu-bar-project-menu.inc.tpl' %}
-{% include 'bootstrap3/menu-bar-logout.inc.tpl' %}
+{% include 'default/menu-bar-admin-menu.inc.tpl' %}
+{% include 'default/menu-bar-project-menu.inc.tpl' %}
+{% include 'default/menu-bar-logout.inc.tpl' %}
 </ul>
 </div>
 </ul>
