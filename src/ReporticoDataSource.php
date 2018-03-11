@@ -375,7 +375,7 @@ class ReporticoDataSource extends ReporticoObject
                 case 2: $m = PDO::CASE_NATURAL; break;
                 }
 
-                //$this->ado_connection->_connectionID->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_SILENT );
+                $this->ado_connection->_connectionID->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_SILENT );
                 //$this->ado_connection->_connectionID->setAttribute(PDO::ATTR_CASE,$m);
 
                 $class = 'ADODB_pdo_'.$this->ado_connection->dsnType;
