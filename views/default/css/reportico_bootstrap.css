@@ -334,28 +334,6 @@ input.swAdminButton2
     padding-bottom: 5px;
 }
 
-/*
-.reportico-ajax-link 
-{ 
-    padding-right: 10px;
-    padding-left: 10px;
-    text-align: center;
-    margin: 5px !important;
-    color: #000000;
-    text-decoration: none;
-    border: 1px solid #D0CCC9;
-    /*background-color: #EFEFEF;*/
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
-*/
-
-/*.reportico-ajax-link:hover
-{
-    border: solid thin #000000;	
-    color: #000000 !important;
-    background-color: #F2F2f2 !important;
-}*/
 
 /* ------------------------------------------------------------------------------------*/
 /* -----------------------------Styles for Prepare Execute Mode -----------------------*/
