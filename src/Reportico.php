@@ -4063,7 +4063,6 @@ class Reportico extends ReporticoObject
 
                     } else {
                         $title = ReporticoLang::translate($this->deriveAttribute("ReportTitle", "Unknown"));
-
                         $pagestyle = $this->targets[0]->getStyleTags($this->output_reportbody_styles);
 
                         $this->panels["MAIN"]->template->assign('REPORT_PAGE_STYLE', $pagestyle);

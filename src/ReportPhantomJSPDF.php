@@ -214,8 +214,9 @@ class ReportPhantomJSPDF extends Report
         }
 
         $attachfile = "reportico.pdf";
+        $reporttitle = ReporticoLang::translate($engine->deriveAttribute("ReportTitle", "Unknown"));
         if ($reporttitle) {
-            $attachfile = preg_replace("/ /", "_", $engine->reportfilename . ".pdf");
+            $attachfile = preg_replace("/ /", "_", $reporttitle . ".pdf");
         }
 
         // INLINE output is just returned to browser window it is invoked from
