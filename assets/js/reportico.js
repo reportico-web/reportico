@@ -295,7 +295,7 @@ function resizeTables()
   var tableArr = reportico_jquery('.reportico-page');
   if ( tableArr.length == 0 )
     return;
-  var tableDataRow = reportico_jquery('.swRepResultLine:first');
+  var tableDataRow = reportico_jquery('.reportico-row:first');
   var cellWidths = new Array();
   reportico_jquery(tableDataRow).each(function() {
     for(j = 0; j < reportico_jquery(this)[0].cells.length; j++){
@@ -310,7 +310,7 @@ function resizeTables()
     if ( tablect == 1 )
         return;
 
-    reportico_jquery(this).find(".swRepResultLine:first").each(function() {
+    reportico_jquery(this).find(".reportico-row:first").each(function() {
       for(j = 0; j < reportico_jquery(this)[0].cells.length; j++){
         reportico_jquery(this)[0].cells[j].style.width = cellWidths[j]+'px';
       }

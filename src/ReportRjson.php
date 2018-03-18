@@ -348,7 +348,7 @@ class ReportRjson extends Report
         $graph->xtitle_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->xtitle, true);
         $graph->ytitle_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->ytitle, true);
         $url_string = $graph->generateUrlParams("HTML", $this->graph_sessionPlaceholder);
-        $this->jar[""] .= '<div class="swRepResultGraph">';
+        $this->jar[""] .= '<div class="reportico-chart">';
         if ($url_string) {
             $this->jar[""] .= $url_string;
         }

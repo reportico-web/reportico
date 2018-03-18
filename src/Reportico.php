@@ -4069,6 +4069,12 @@ class Reportico extends ReporticoObject
                         $this->panels["MAIN"]->template->assign('REPORT_PAGE_STYLE', $pagestyle);
                         $this->panels["MAIN"]->template->assign('TITLE', $title);
                         $this->panels["MAIN"]->template->assign('CONTENT', $text);
+
+                        if ( $this->target_format == "HTML2PDF" ) 
+                            $this->panels["MAIN"]->template->assign('PRINT_FORMAT', "reportico-print-pdf");
+                        else
+                            $this->panels["MAIN"]->template->assign('PRINT_FORMAT', "reportico-print-html");
+
                         $this->panels["MAIN"]->template->assign('EMBEDDED_REPORT', $this->embedded_report);
 
                         // When printing in separate html window make sure we dont treat report as embedded

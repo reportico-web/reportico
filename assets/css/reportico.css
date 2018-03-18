@@ -491,7 +491,7 @@ a:visited
 /* -----------------------------Styles for EXECUTE Execute Mode -----------------------*/
 /* ----------------------------- i.e for the HTML Report Output -----------------------*/
 /* Report Title Header */
-.swRepTitle 
+.reportico-title 
 { 
     font-size: 18pt;
     text-align: center;
@@ -503,7 +503,7 @@ a:visited
 }
 
 /* Table container for whole Report */
-.swRepBody 
+.reportico-body 
 { 
     width: 90%;
     margin-left: 5%;
@@ -568,15 +568,15 @@ a:visited
 }
 
 /* Container for Group Headers  */
-.swRepResultLine td
+.reportico-row td
 {
     padding: 2px 2px 1px 2px;
 }
 
-.swRepResultLine:nth-child(even) { background-color: inherit; }
-.swRepResultLine:nth-child(odd) { background-color: inherit; }
+.reportico-row:nth-child(even) { background-color: inherit; }
+.reportico-row:nth-child(odd) { background-color: inherit; }
 
-.swRepResultLine td a
+.reportico-row td a
 {
     text-decoration: underline;
 }
@@ -617,7 +617,7 @@ a:visited
     margin-right: auto;
 }
 
-.swRepResultGraph
+.reportico-chart
 {
 }
 
@@ -1095,7 +1095,7 @@ a:visited
     .reportico-ajax-link { display: none; }
     .swLinkMenu { display: none; }
     .swRepForm { border: none; }
-    .swRepBody { width: 100%; margin: 0; border: none; }
+    .reportico-body { width: 100%; margin: 0; border: none; }
 /* Column Header Label  */
     .swRepColHdrRow td,
     .swRepColHdrRow th
@@ -1109,7 +1109,7 @@ a:visited
 
     .swNewPage { page-break-before: always; }
 
-    .swRepTitle { font-size: 18pt; text-align: center; margin-top: 0px; border: none;}
+    .reportico-title { font-size: 18pt; text-align: center; margin-top: 0px; border: none;}
     .swMntForm { text-align: left; margin-left: 0%; background-color: #ffffff; border: none; }
 }
 
