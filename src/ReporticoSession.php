@@ -116,6 +116,7 @@ class ReporticoSession
      */
     static function closeReporticoSession()
     {
+        session_write_close();
     }
 
     static function sessionItem($in_item, $in_default = false)

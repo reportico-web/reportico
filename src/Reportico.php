@@ -2962,7 +2962,6 @@ class Reportico extends ReporticoObject
         //Define the template dir where we could find specific template css js and template files
         // if not already provided
         $theme_dir = $this->url_path_to_templates;
-        echo $this->url_path_to_templates;
         if ( !$this->url_path_to_templates )
             $theme_dir = ReporticoUtility::findBestUrlInIncludePath('views');
         $template->assign('THEME_DIR', "$theme_dir/".$this->getTheme());

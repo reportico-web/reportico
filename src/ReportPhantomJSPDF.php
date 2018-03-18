@@ -48,11 +48,6 @@ class ReportPhantomJSPDF extends Report
         if ( !$engine->pdf_phantomjs_temp_path )
             $engine->pdf_phantomjs_temp_path = __DIR__."/../tmp/";
 
-        // Since we are going to spawn web call to fetch HTML version of report for conversion to PDF, 
-        // we must close current sessions so they can be subsequently opened within the web call
-        (ReporticoSession())::closeReporticoSession();
-        session_write_close();
-
         // Instantiate PhantomJS
         $this->client = Client::getInstance();
         if ( $engine->pdf_phantomjs_path )
@@ -63,12 +58,18 @@ class ReportPhantomJSPDF extends Report
         if ( !preg_match("/:\/\//", $url) ) 
         $url = "${_SERVER["REQUEST_SCHEME"]}://${_SERVER["HTTP_HOST"]}:${_SERVER["SERVER_PORT"]}{$engine->reportico_ajax_script_url}?execute_mode=EXECUTE&target_format=HTML2PDF&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
 
+        // Add in any extra forwarded URL parameters
+        if ($engine->forward_url_get_parameters) 
+            $url .= "&".$engine->forward_url_get_parameters;
+
         // Generate Request Call
         $request = $this->client->getMessageFactory()->createPdfRequest($url, 'GET', 4000);
 
         // Add any CSRF tokens for when Reportico is called inside a framework
         // And retain any cookies too
         if ( $engine->csrfToken ) {
+
+            // Its Laravel 
             $oldHeaders = getallheaders();
 
             $newHeaders = array();
@@ -78,7 +79,6 @@ class ReportPhantomJSPDF extends Report
 
             $request->setHeaders($newHeaders);
         }
-
 
         // Generate temporary name for pdf file to generate on disk. Since phantomjs must write to a file with pdf extension use tempn, to create a file
         // without PDF extensiona and then delete this and use the name with etension for phantom generation
@@ -93,7 +93,6 @@ class ReportPhantomJSPDF extends Report
         $request->setOrientation(strtolower($engine->getAttribute("PageOrientation")));
         $request->setMargin(strtolower($engine->getAttribute("LeftMargin")));
         $request->setDelay(2);
-
 
         $headertext .= '';
         foreach ($engine->pageHeaders as $header) {
@@ -189,15 +188,18 @@ class ReportPhantomJSPDF extends Report
         $request->setRepeatingHeader('<div style="position:relative">'.$headertext.'</div>', $engine->getAttribute("TopMargin"));
         $request->setRepeatingFooter('<footer style="margin-top: 5px;border-top: solid 1px">'.$footertext.'</footer>', $engine->getAttribute("BottomMargin"));
 
-
         // Get Response
         $response = $this->client->getMessageFactory()->createResponse();
+
+        // Since we are going to spawn web call to fetch HTML version of report for conversion to PDF, 
+        // we must close current sessions so they can be subsequently opened within the web call
+        (ReporticoSession())::closeReporticoSession();
 
         // Send the request
         $this->client->send($request, $response);
         if( $response->getStatus() !== 200) {
             header("HTTP/1.0 {$response->getStatus()}", true);
-            echo "Failed to produce PDF file error {$response->getStatus()} {$response->getContent()} - <BR>";
+            echo "Failed to produce PDF file error {$response->getStatus()} - <BR>Content:<b><BR>{$response->getContent()}</b> - <BR>";
             die;
         }
 

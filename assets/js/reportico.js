@@ -791,7 +791,6 @@ reportico_jquery(document).on('click', '#returnFromExpand', function() {
     params += "&partial_template=critbody";
     params += "&" + reportico_jquery(this).prop("name") + "=1";
     params += getFilterGroupState();
-console.log(params);
 
 	forms = reportico_jquery(this).closest('.swMntForm,.swPrpForm,form');
     ajaxaction = reportico_ajax_script;
