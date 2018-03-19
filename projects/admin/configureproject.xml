@@ -14,7 +14,10 @@
             <LeftMargin></LeftMargin>
             <pdfFont></pdfFont>
             <pdfFontSize></pdfFontSize>
-            <PreExecuteCode>global $_configure_mode; $_configure_mode = &quot;MODIFY&quot;; include('projects/admin/configureproject.xml.php');
+            <PreExecuteCode>global $_configure_mode; $_configure_mode = &quot;MODIFY&quot;; 
+            $path = $this-&gt;admin_projects_folder.'/admin/configureproject.xml.php';
+            include($path);
+
             </PreExecuteCode>
             <bodyDisplay>show</bodyDisplay>
             <graphDisplay>show</graphDisplay>
