@@ -5112,6 +5112,7 @@ return $text;
                     $this->query->setCriteriaInput($critnm, $crittp, $critds, $critexp, $crituse);
                     $this->query->setCriteriaLinkReport($critnm, $linked_report, $linked_report_item);
 //echo "SET $critnm $crit_required<BR>";
+                    $this->query->setCriteriaDefaults($critnm, $critdefault);
                     $this->query->setCriteriaList($critnm, $critlt);
                     //var_dump($crit_required);
                     $this->query->setCriteriaRequired($critnm, $crit_required);
@@ -5120,7 +5121,6 @@ return $text;
                     //$this->query->setCriteriaHelp($critnm, $crithelp);
                     $this->query->setCriteriaAttribute($critnm, "column_title", $crittitle);
 
-                    $this->query->setCriteriaDefaults($critnm, $critdefault);
                     $this->query->setCriteriaHelp($critnm, $crithelp);
 
                 } // End Criteria Item
