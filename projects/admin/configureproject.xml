@@ -122,8 +122,7 @@
                     <OverviewColumn></OverviewColumn>
                     <MatchColumn></MatchColumn>
                     <CriteriaDefaults>{constant,SW_DB_DRIVER}</CriteriaDefaults>
-                    <CriteriaList>MySQL=pdo_mysql,PostgreSQL with PDO=pdo_pgsql,Informix=pdo_informix,Oracle without PDO (Beta)=oci8,Oracle with PDO (Beta)=pdo_oci,Mssql (with DBLIB/MSSQL PDO)=pdo_mssql,Mssql (with SQLSRV PDO)=pdo_sqlsrv,SQLite3=pdo_sqlite3,No Database=none,Framework(e.g.
-                        Joomla)=framework</CriteriaList>
+                    <CriteriaList>{connections}</CriteriaList>
                     <Query>
                         <TableSql></TableSql>
                         <WhereSql></WhereSql>

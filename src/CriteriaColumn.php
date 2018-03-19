@@ -359,7 +359,7 @@ class CriteriaColumn extends QueryColumn
     {
         if ($in_list) {
             $choices = array();
-            if ($in_list == "{laravelconnections}") {
+            if ($in_list == "{connections}" && $this->parent_reportico->framework_parent == "laravel" ) {
                 $choices[] = "Existing Laravel Connection=existingconnection";
                 if (isset($this->parent_reportico) && $this->parent_reportico->available_connections) {
                     foreach ($this->parent_reportico->available_connections as $k => $v) {
@@ -368,20 +368,32 @@ class CriteriaColumn extends QueryColumn
 
                 }
 
-                //$choices[] = "MySQL=pdo_mysql";
-                //$choices[] = "PostgreSQL with PDO=pdo_pgsql";
-                //$choices[] = "Informix=pdo_informix";
-                //$choices[] = "Oracle without PDO (Beta)=oci8";
-                //$choices[] = "Oracle with PDO (Beta)=pdo_oci";
-                //$choices[] = "Mssql (with DBLIB/MSSQL PDO)=pdo_mssql";
-                //$choices[] = "Mssql (with SQLSRV PDO)=pdo_sqlsrv";
-                //$choices[] = "SQLite3=pdo_sqlite3";
-                //$choices[] = "No Database=none";
                 $this->criteria_list = $in_list;
             } else
             if ($in_list == "{connections}") {
+                if ( !isset($this->available_connections) ) {
+                    $this->available_connections = array(
+                        "pdo_mysql" => "MySQL",
+                        "pdo_pgsql" => "PostgreSQL with PDO",
+                        "oci8" => "Oracle without PDO (Beta)",
+                        "pdo_oci" => "Oracle with PDO (Beta)",
+                        "pdo_mssql" => "Mssql (with DBLIB/MSSQL PDO)",
+                        "pdo_sqlsrv" => "Mssql (with SQLSRV PDO)",
+                        "pdo_sqlite3" => "SQLite3",
+                        "framework" => "Framework(e.g. Joomla)",
+                       );
+                }
+
+                // For Yii, Laravel etc show framework option as first option relating to the framework name
+                if ( $this->parent_reportico->framework_parent ) {
+                    $ftype = ucwords($this->parent_reportico->framework_parent);
+                    $choices[] = "My $ftype Connection=framework";
+                    unset ( $this->available_connections["framework"] );
+                    $this->setCriteriaDefaults("framework");
+                }
+
                 foreach ($this->available_connections as $k => $v) {
-                    $choices[] = $k . "=" . $k;
+                    $choices[] = $v . "=" . $k;
                 }
                 $this->criteria_list = $in_list;
             } else
@@ -417,7 +429,6 @@ class CriteriaColumn extends QueryColumn
         if (!$in_delimiter) {
             $in_delimiter = ",";
         }
-
         $this->defaults_raw = $in_default;
         $this->defaults = preg_split("/" . $in_delimiter . "/", $this->deriveMetaValue($in_default));
     }
