@@ -99,6 +99,12 @@ ReporticoApp::setConfig('pdf_RightMargin','1cm');
 ReporticoApp::setConfig('pdf_pdfFont','Helvetica');
 ReporticoApp::setConfig('pdf_pdfFontSize','10');
 
+// Pagination and Zoom default
+ReporticoApp::setConfig('AutoPaginate','HTML+PDF');
+ReporticoApp::setConfig('PdfZoomFactor','0.74');
+ReporticoApp::setConfig('HtmlZoomFactor','1');
+ReporticoApp::setConfig('PageTitleDisplay','TopOfFirstPage');
+
 // FPDF parameters
 define('FPDF_FONTPATH', 'fpdf/font/');
 
@@ -258,4 +264,39 @@ ReporticoApp::set('admin_menu', array (
 // Dropdown project menu, default to none
 ReporticoApp::set('dropdown_menu', false );
 
+// Default Report Page Sections
+
+ReporticoApp::setConfig('output_sections', array (
+
+        'page-header-block' => array (
+                array ( 
+                        'content' => '{REPORT_TITLE}', 
+                        'styles' => 'border-width: 0px 0px 1px 0px; margin: 15px 0px 0px 0px; border-color: #000000; font-size: 18; border-style: solid;padding:0px 0px 0px 0px; width: 100%; background-color: inherit; color: #000; margin-left: 0%;margin-bottom: 20px;text-align:center' 
+                      ),
+                ),
+
+        'page-footer-block' => array (
+                array ( 
+                        'content' => 'Page: {PAGE} of {PAGETOTAL}', 
+                        'styles' => 'border-width: 1 0 0 0; top: 0px; font-size: 8pt; margin: 2px 0px 0px 0px; font-style: italic; margin-top: 30px;' 
+                      ),
+                array ( 
+                        'content' => 'Time: date('Y-m-d H:i:s')', 
+                        'styles' => 'font-size: 8pt; text-align: right; font-style: italic; width: 100%; margin-top: 30px;' 
+                      ),
+                ),
+
+        'page-title-block' => array (
+                array ( 
+                        'content' => '{REPORT_TITLE}', 
+                        'styles' => 'border-width: 1 0 0 0; top: 0px; font-size: 8pt; margin: 2px 0px 0px 0px; font-style: italic;' ,
+                        'template' => '<h1>' 
+                      ),
+                array ( 
+                        'content' => 'Time: date('Y-m-d H:i:s')', 
+                        'styles' => 'STYLE font-size: 8pt; text-align: right; font-style: italic;text-align:right;' 
+                      ),
+                ),
+
+        ));
 ?>
