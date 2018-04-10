@@ -28,7 +28,7 @@
 {% include 'prepare-title.inc.tpl' %}
 
 <!-- Report Output options -->
-<div class="swPrpCritBox" style="background-color: #ffffff" id="critbody">
+<div class="swPrpCritOutputOptions" style="background-color: #ffffff" id="critbody">
 {% if SHOW_OUTPUT and not IS_ADMIN_SCREEN %}
 {% include 'prepare-output-table-form.inc.tpl' %}
 {% include 'prepare-output-formats.inc.tpl' %}
@@ -66,10 +66,10 @@
 </FORM>
 {% include 'prepare-modals.inc.tpl' %}
 
-<div class="reportico-show-criteria" >
+<div class="reportico-show-criteria" style="display:none">
     <a href="#"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></a>
 </div>
-<div class="reportico-hide-criteria" >
+<div class="reportico-hide-criteria" style="display:none">
     <a href="#"><span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span></a>
 </div>
 

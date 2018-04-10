@@ -114,8 +114,11 @@
 
 <script type="text/javascript" src="{{ ASSETS_PATH }}/js/reportico.js"></script>
 
-<div id="reportico_container">
 
+{% endif %}
+
+{% if not REPORTICO_AJAX_CALLED %}
+<div id="reportico_container">
 {% endif %}
 
 <div id="reportico-top-margin" style="z-index: 1; display: none;left: 80px;float: left; border: solid; height: {{ PAGE_TOP_MARGIN }}; width: {{ PAGE_LEFT_MARGIN }};">t</div>
@@ -203,7 +206,7 @@
 
 {% include 'execute-content.inc.tpl' %}
 
-{% if PRINTABLE_HTML %}
+{% if not REPORTICO_AJAX_CALLED %}
 </div>
 {% endif %}
 </div>

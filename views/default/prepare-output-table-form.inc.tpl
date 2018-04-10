@@ -1,7 +1,7 @@
 {% if SHOW_HIDE_PREPARE_PAGE_STYLE == "show" %}
-			<div style="padding: 10px 15px; float: left;vertical-align: bottom;text-align: center; border-right: solid 1px #bbb">
+			<!--div style="padding: 10px 15px; float: left;vertical-align: bottom;text-align: center; border-right: solid 1px #bbb">
 {% else %}
-			<div style="display:none; width: 20%; padding-top: 15px;float: left;vertical-align: bottom;text-align: center">
+			<!--div style="display:none; width: 20%; padding-top: 15px;float: left;vertical-align: bottom;text-align: center">
 {% endif %}
                 <b>{{ T_REPORT_STYLE }}</b>
 
@@ -14,4 +14,4 @@
   </label>
 </div>
 
-			</div>
+			</div-->

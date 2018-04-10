@@ -621,6 +621,7 @@ reportico_jquery(document).on('click', '.swMiniMaintainSubmit,.reportico-bootstr
         var loadpanel = reportico_jquery("#reporticoModal .reportico-modal-dialog .reportico-modal-content .reportico-modal-header");
 
 	var expandpanel = reportico_jquery('#swPrpExpandCell');
+	var expandpanel = reportico_jquery('.swPrpCritOutputOptions');
     reportico_jquery(loadpanel).addClass("modal-loading");
 
     forms = reportico_jquery(this).closest('#reportico_container').find(".swPrpForm");
@@ -691,6 +692,7 @@ reportico_jquery(document).on('click', '.swMiniMaintainSubmit,.reportico-bootstr
 reportico_jquery(document).on('click', '.swMiniMaintain', function(event) 
 {
 	var expandpanel = reportico_jquery(this).closest('#criteriaform').find('#swPrpExpandCell');
+	var expandpanel = reportico_jquery(this).closest('#criteriaform').find('.swPrpCritOutputOptions');
     var reportico_container = reportico_jquery(this).closest("#reportico_container");
 
     reportico_jquery(expandpanel).addClass("loading");
@@ -798,6 +800,7 @@ reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenu
     if ( reportico_jquery(this).parents("#swMiniMaintain").length == 1 ) 
     {
 	    var expandpanel = reportico_jquery(this).closest('#criteriaform').find('#swPrpExpandCell');
+	    var expandpanel = reportico_jquery(this).closest('#criteriaform').find('.swPrpCritOutputOptions');
         if ( reportico_bootstrap_modal )
             var loadpanel = reportico_jquery("#reporticoModal .modal-dialog .modal-content .modal-header");
         else
@@ -859,6 +862,7 @@ reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenu
     }
 
 	var expandpanel = reportico_jquery(this).closest('#criteriaform').find('#swPrpExpandCell');
+	var expandpanel = reportico_jquery(this).closest('#criteriaform').find('.swPrpCritOutputOptions');
     var reportico_container = reportico_jquery(this).closest("#reportico_container");
 
     if ( !reportico_jquery(this).prop("href") )
@@ -1048,6 +1052,7 @@ reportico_jquery(document).on('click', '#returnFromExpand', function() {
 
 	var critform = reportico_jquery(this).closest('#criteriaform');
 	var expandpanel = reportico_jquery(this).closest('#criteriaform').find('#swPrpExpandCell');
+	var expandpanel = reportico_jquery(this).closest('#criteriaform').find('.swPrpCritOutputOptions');
     reportico_jquery(expandpanel).addClass("loading");
 
     var params = reportico_jquery(critform).serialize();
@@ -1159,6 +1164,7 @@ reportico_jquery(document).on('click', '.swPrintBox,.prepareAjaxExecute,#prepare
 
 
 	var expandpanel = reportico_jquery(this).closest('#criteriaform').find('#swPrpExpandCell');
+	var expandpanel = reportico_jquery(this).closest('#criteriaform').find('.swPrpCritOutputOptions');
 	var critform = reportico_jquery(this).closest('#criteriaform');
     reportico_jquery(expandpanel).addClass("loading");
 
