@@ -1,5 +1,5 @@
 {% autoescape false %}
-{% include 'default/header.inc.tpl' %}
+{% include './header.inc.tpl' %}
 <div id="reportico_container">
     <script>
         reportico_criteria_items = [];
@@ -238,11 +238,11 @@
 	</TABLE>
 {% endif %}
 
-{% include 'default/message-error.inc.tpl' %}
+{% include 'message-error.inc.tpl' %}
 </FORM>
 
 
 
 </div>
-{% include 'default/footer.inc.tpl' %}
+{% include 'footer.inc.tpl' %}
 {% endautoescape %}

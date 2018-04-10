@@ -73,6 +73,7 @@
 <script type="text/javascript">var reportico_ajax_script = "{{ REPORTICO_AJAX_RUNNER }}";</script>
 <script type="text/javascript">var pdf_delivery_mode = "{{ PDF_DELIVERY_MODE }}";</script>
 
+
 {% if REPORTICO_BOOTSTRAP_MODAL %}
 <script type="text/javascript">var reportico_bootstrap_styles = "{{ BOOTSTRAP_STYLES }}";</script>
 <script type="text/javascript">var reportico_bootstrap_modal = true;</script>
@@ -104,7 +105,9 @@
 {% if not REPORTICO_AJAX_PRELOADED %}
 
 <script type="text/javascript" src="{{ ASSETS_PATH }}/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="{{ ASSETS_PATH }}/js/select2/js/select2.min.js"></script>
 
+<LINK id="PRP_StyleSheet_s2" REL="stylesheet" TYPE="text/css" HREF="{{ ASSETS_PATH }}/js/select2/css/select2.min.css">
 <LINK id="datatable_css" REL="stylesheet" TYPE="text/css" HREF="{{ STYLESHEETDIR }}/jquery.dataTables.css">
 {% endif %}
 {% if PRINTABLE_HTML %}
@@ -114,7 +117,10 @@
 {% endif %}
 <div id="reportico_container">
 
-<div style="{{ CONTENT.styles.body }}">
+<div id="reportico-top-margin" style="z-index: 1; display: none;left: 80px;float: left; border: solid; height: {{ PAGE_TOP_MARGIN }}; width: {{ PAGE_LEFT_MARGIN }};">t</div>
+<div id="reportico-bottom-margin" style="z-index: 1; display: none;left: 160;float: right; border: solid; height: {{ PAGE_BOTTOM_MARGIN }}; width: {{ PAGE_RIGHT_MARGIN }};">b</div>
+
+<div style="{{ CONTENT.styles.body }}" class="reportico-output {{ PRINT_FORMAT }}">
 
     <script>
         reportico_criteria_items = [];
@@ -182,12 +188,19 @@
 <script type="text/javascript">var reportico_dynamic_grids = false;</script>
 {% endif %}
 
+<div class="reportico-output-button-block">
 {# Navigation Buttons #}
 {% for button in CONTENT.buttons %}
-<div class="{{ button.class }}"><a class="reportico-ajax-link" href="{{ button.href }}" title="{{ button.title }}">&nbsp;</a></div>
-{% endfor %}
+{% if button.linkClass is defined %}
+    <div class="{{ button.class }}"><a class="{{ button.linkClass }}" href="{{ button.href }}" title="{{ button.title }}">&nbsp;</a></div>
+{% else %}
+    <div class="{{ button.class }}"><a class="reportico-ajax-link" href="{{ button.href }}" title="{{ button.title }}">&nbsp;</a></div>
+{% endif %}
 
-{% include 'default/execute-content.inc.tpl' %}
+{% endfor %}
+</div>
+
+{% include 'execute-content.inc.tpl' %}
 
 </div>
 </div>

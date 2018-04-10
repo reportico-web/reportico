@@ -170,6 +170,10 @@ class Reportico extends ReporticoObject
         "BottomMargin" => "",
         "RightMargin" => "",
         "LeftMargin" => "",
+        "AutoPaginate" => "",
+        "PdfZoomFactor" => "",
+        "HtmlZoomFactor" => "",
+        "PageTitleDisplay" => "",
         "pdfFont" => "",
         "pdfFontSize" => "",
         "PreExecuteCode" => "NONE",
@@ -1655,6 +1659,7 @@ class Reportico extends ReporticoObject
 
 
             $this->target_format = strtoupper($tf);
+            //$this->target_format = "HTML2PDF";
             switch ($tf) {
                 case "CSV":
                 case "csv":
@@ -2820,7 +2825,7 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function initializePanels($mode)
     {
-        $template = new ReporticoTemplateTwig($this->templateViewPath, $this->templateCachePath);
+        $template = new ReporticoTemplateTwig($this->templateViewPath, $this->templateCachePath, $this->theme);
 
         $dummy = "";
         $version = $this->version;
@@ -3516,25 +3521,61 @@ class Reportico extends ReporticoObject
             $this->xmlin->xml2query();
         }
 
-        // Custom query stuff loaded from reporticoDefaults.php. First look in project folder for
-        // for project specific defaults
+
+        // Custom query stuff loaded from project config.php.
         if ($do_defaults) {
-            $custom_functions = array();
 
-            $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler", 0);
-            if (@file_exists($this->projects_folder . "/" . ReporticoApp::getconfig("project") . "/ReporticoDefaults.php")) {
-                include_once $this->projects_folder . "/" . ReporticoApp::getconfig("project") . "/ReporticoDefaults.php";
-            } else if (@file_exists(__DIR__ . "/ReporticoDefaults.php")) {
-                include_once __DIR__ . "/ReporticoDefaults.php";
-            }
+            $this->applyOutputOptionsFromConfig();
 
-            if (function_exists("ReporticoDefaults")) {
-                reporticoDefaults($this);
-            }
-
-            $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
         }
 
+    }
+
+    // -----------------------------------------------------------------------------
+    // Function : Set page header, footers and other options form config.php
+    // -----------------------------------------------------------------------------
+    function applyOutputOptionsFromConfig() {
+
+        $keyct = 1;
+        if ( $output_config = ReporticoApp::getConfig("output_sections"))  {
+            
+            foreach ( $output_config as $k => $v ) {
+
+                if ( $k == "page-header-block" ) {
+                    
+                    foreach ( $v as $header ) {
+                    
+                        $key = "AUTO$keyct";
+                        $content = $header["content"];
+                        if ( isset($header["content"]) )
+                            $content .= "{STYLE {$header["styles"]}}";
+                        $this->createPageHeader($key, 1, $content); 
+                        $this->setPageHeaderAttribute($key, "ShowInHTML", "yes" );
+                        $this->setPageHeaderAttribute($key, "ShowInPDF", "yes" );
+                        $keyct++;
+                        
+                    }
+
+                }
+                
+                if ( $k == "page-footer-block" ) {
+                    
+                    foreach ( $v as $footer ) {
+                    
+                        $key = "AUTO$keyct";
+                        $content = $footer["content"];
+                        if ( isset($footer["content"]) )
+                            $content .= "{STYLE {$footer["styles"]}}";
+                        $this->createPageFooter($key, 1, $content); 
+                        $this->setPageFooterAttribute($key, "ShowInHTML", "yes" );
+                        $this->setPageFooterAttribute($key, "ShowInPDF", "yes" );
+                        $keyct++;
+                        
+                    }
+
+                }
+            }
+        }
     }
 
     // -----------------------------------------------------------------------------
@@ -3746,8 +3787,21 @@ class Reportico extends ReporticoObject
             $runfromcriteriascreen = ReporticoUtility::getRequestItem("user_criteria_entered", false);
             $refreshmode = ReporticoUtility::getRequestItem("refreshReport", false);
 
-            if (!ReporticoUtility::getRequestItem("printable_html") && ($runfromcriteriascreen || (!(ReporticoSession())::issetReporticoSessionParam('latestRequest') || !ReporticoSession::getReporticoSessionParam('latestRequest')))) {
+            // HTML2PDF format is called locally and must pick up criteria from prior request
+            if ( $this->target_format == "HTML2PDF" && (ReporticoSession())::issetReporticoSessionParam('latestRequest') )
+            {
+                $_REQUEST = (ReporticoSession())::getReporticoSessionParam('latestRequest');
+                $_REQUEST["target_format"] = $this->target_format;
+                $_REQUEST["reportico_ajax_called"] = false;
+            }
+
+            else if (!ReporticoUtility::getRequestItem("printable_html") && 
+                ($runfromcriteriascreen || 
+                (!(ReporticoSession())::issetReporticoSessionParam('latestRequest')  ||
+                !ReporticoSession::getReporticoSessionParam('latestRequest')))) 
+            {
                 (ReporticoSession())::setReporticoSessionParam('latestRequest', $_REQUEST);
+
             } else {
                 if (!$runfromcriteriascreen && ( $refreshmode || $this->target_format == "HTML2PDF" )) {
                     $_REQUEST = (ReporticoSession())::getReporticoSessionParam('latestRequest');
@@ -3762,7 +3816,7 @@ class Reportico extends ReporticoObject
 
                     // If a new report is being run dont bother trying to restore previous
                     // run crtieria
-                    if (!ReporticoUtility::getRequestItem("xmlin")) {
+                    if (!ReporticoUtility::getRequestItem("xmlin") && !ReporticoUtility::getRequestItem("partialMaintain", false)) {
                         $_REQUEST = (ReporticoSession())::getReporticoSessionParam('latestRequest');
                     }
 
@@ -3961,11 +4015,13 @@ class Reportico extends ReporticoObject
                     $this->dynamic_grids_page_size = $this->attributes["gridPageSize"];
                 }
 
+
                 $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
                 $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
                 $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
                 $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
                 $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
+
 
                 ReporticoApp::set("code_area", "Main Query");
                 $this->buildQuery(false, "");
@@ -4069,12 +4125,40 @@ class Reportico extends ReporticoObject
                         $this->panels["MAIN"]->template->assign('TITLE', $title);
                         $this->panels["MAIN"]->template->assign('CONTENT', $text);
 
-                        if ( $this->target_format == "HTML2PDF" ) 
+                        // Pass Print formatting options to Template
+                        if ( $this->target_format == "HTML2PDF" ) {
                             $this->panels["MAIN"]->template->assign('PRINT_FORMAT', "reportico-print-pdf");
-                        else
+
+                            if ( preg_match("/PDF/i", $this->getAttribute("AutoPaginate") ) )
+                                $this->panels["MAIN"]->template->assign('AUTOPAGINATE', "autopaginate");
+                            else
+                                $this->panels["MAIN"]->template->assign('AUTOPAGINATE', "");
+                            $this->panels["MAIN"]->template->assign('ZOOM_FACTOR', strtolower($this->getAttribute("PdfZoomFactor")));
+                        }
+                        else {
                             $this->panels["MAIN"]->template->assign('PRINT_FORMAT', "reportico-print-html");
 
+                            if ( preg_match("/HTML/i", $this->getAttribute("AutoPaginate") ) ) {
+                                $this->panels["MAIN"]->template->assign('AUTOPAGINATE', "autopaginate");
+                            }
+                            else
+                                $this->panels["MAIN"]->template->assign('AUTOPAGINATE', "");
+                            $this->panels["MAIN"]->template->assign('ZOOM_FACTOR', strtolower($this->getAttribute("HtmlZoomFactor")));
+                        }
+                        $this->panels["MAIN"]->template->assign('PAGE_TITLE_DISPLAY', strtolower($this->getAttribute("PageTitleDisplay")));
+
                         $this->panels["MAIN"]->template->assign('EMBEDDED_REPORT', $this->embedded_report);
+
+                        $this->panels["MAIN"]->template->assign('PAGE_SIZE', $this->getAttribute("PageSize"));
+                        $this->panels["MAIN"]->template->assign('PAGE_ORIENTATION', strtolower($this->getAttribute("PageOrientation")));
+                        $this->panels["MAIN"]->template->assign('PAGE_TOP_MARGIN', strtolower($this->getAttribute("TopMargin")));
+                        $this->panels["MAIN"]->template->assign('PAGE_BOTTOM_MARGIN', strtolower($this->getAttribute("BottomMargin")));
+                        $this->panels["MAIN"]->template->assign('PAGE_LEFT_MARGIN', strtolower($this->getAttribute("LeftMargin")));
+                        $this->panels["MAIN"]->template->assign('PAGE_RIGHT_MARGIN', strtolower($this->getAttribute("RightMargin")));
+                        //$this->panels["MAIN"]->template->assign('PAGE_TOP_MARGIN', "100px");
+                        //$this->panels["MAIN"]->template->assign('PAGE_BOTTOM_MARGIN', "50px");
+
+
 
                         // When printing in separate html window make sure we dont treat report as embedded
                         if (ReporticoUtility::getRequestItem("new_reportico_window", false)) {
@@ -4130,9 +4214,16 @@ class Reportico extends ReporticoObject
                 break;
 
             case "MAINTAIN":
+
                 // Avoid url manipulation by only allowing maintain mode in design or demo mode
                 $this->handleXmlQueryInput($mode);
                 if ($this->top_level_query) {
+
+                    // Allow read-only access to MAINTAIN is an in-criteria screen edit button was called
+                    if ( ReporticoUtility::getRequestItem("partialMaintain", false)) {
+                        $this->allow_maintain = "DEMO";
+                    }
+
                     $this->initializePanels($mode);
                     if (!($this->login_type == "DESIGN" || $this->access_mode == "DEMO")) {
                         break;
@@ -5781,8 +5872,8 @@ class Reportico extends ReporticoObject
             $template = $this->user_template . "_$template";
         }
 
-        //ReporticoLog::getI()->debug("Template : >$template<");
-        return $this->getTheme() . '/' . $template;
+        return $template;
+        //return $this->getTheme() . '/' . $template;
     }
 
     public function applyStyleset($type, $styles, $column = false, $mode = false, $condition = false)

@@ -2,13 +2,15 @@
                                         <input style="display:none" type="checkbox" name="target_show_graph" value="1" {{ OUTPUT_SHOWGRAPH }}>
 {% endif %}
 <INPUT type="checkbox" style="display:none" name="user_criteria_entered" value="1" checked="1">
-<div class="container" style="width: 100%">
+<div class="container" style="width: 100%; display: block">
+
+
 
 <div class="nav-collapse collapse in" id="reportico-bootstrap-collapse">
    <ul class="nav navbar-nav pull-right navbar-right">
            <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">{{ T_SHOW }}<span class="caret"></span></a>
                <ul class="dropdown-menu reportico-dropdown" style="padding-top:0px; padding-bottom:0px">
-       <li>
+                  <li>
                        <div class="input-group" style="margin-bottom: 0px; ; float: right">
                            <label style="width:200px" class="form-control" aria-label="Text input with checkbox">{{ T_SHOW_CRITERIA }}</label>
                            <span class="input-group-addon">

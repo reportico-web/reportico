@@ -64,6 +64,8 @@ class ReportHtml extends Report
             "column_header_styles" => false,
         ),
         "title" => "Set Report Title",
+        "pageheaderstop" => array(),
+        "pagefooters" => array(),
         "criteria" => array(),
         "groups" => array(),
         "columns" => array(),
@@ -174,7 +176,7 @@ class ReportHtml extends Report
         }
 
         $this->jar["pages"][$this->page_count]["headers"][] = [
-            "style" => $this->getStyleTags($colstyles, $this->query->output_header_styles),
+            "styles" => $this->getStyleTags($colstyles, $this->query->output_header_styles),
             "content" => $padstring
             ];
     }
@@ -211,7 +213,7 @@ class ReportHtml extends Report
         }
 
         $this->jar["pages"][$this->page_count]["rows"][$this->line_count]["data"][] = [
-            "style" => $this->getStyleTags($colstyles, $column_item->output_cell_styles, $this->query->output_allcell_styles),
+            "styles" => $this->getStyleTags($colstyles, $column_item->output_cell_styles, $this->query->output_allcell_styles),
             "content" => $padstring
             ];
         $rowcount = count( $this->jar["pages"][$this->page_count]["rows"]);
@@ -249,12 +251,10 @@ class ReportHtml extends Report
 
     public function formatFormat($in_value, $format)
     {
-        $applyToLine = $this->line_count;
+        if ( $in_value == "newpage" ) {
+            $this->currentGroup[$format] = $in_value;
+        }
 
-        if ( preg_match("/header/", $format) )
-            $applyToLine++;
-
-        $this->currentGroup[$format] = $in_value;
         switch ($in_value) {
             case "blankline":
                 break;
@@ -321,8 +321,9 @@ class ReportHtml extends Report
      */
     public function openGroup() {
 
-        $this->jar["groups"][] = array ( "parentGroup" => &$this->currentGroup,
+        $this->jar["groups"][] = array ( "parentGroup" => $this->currentGroup,
             "customheaders" => [],
+            "pageheaders" => [],
             "headers" => [],
             "customtrailers" => [],
             "startrow" => $this->line_count,
@@ -353,13 +354,13 @@ class ReportHtml extends Report
         $x= $this->line_count;
         $this->currentGroup["endrow"] = $this->line_count - 1;
         $this->jar["pages"][$this->page_count]["rows"][$this->line_count]["closerowsection"] = true;
-        if ( $this->currentGroup["parentGroup"] ) {
+        if ( isset($this->currentGroup["parentGroup"]) && $this->currentGroup["parentGroup"] ) {
             $this->jar["pages"][$this->page_count]["rows"][$this->line_count]["groupends"][]  = $this->currentGroup;
             $this->currentGroup = &$this->currentGroup["parentGroup"];
-        } else
+        } else {
+            unset($this->currentGroup);
             $this->currentGroup = false;
-        //var_dump($this->jar["pages"]);
-        //die;
+        }
     }
 
 
@@ -417,9 +418,9 @@ class ReportHtml extends Report
         $this->graph_sessionPlaceholder++;
         $graph->width_actual = ReporticoApp::getDefaultConfig("GraphWidth", $graph->width);
         $graph->height_actual = ReporticoApp::getDefaultConfig("GraphHeight", $graph->height);
-        $graph->title_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->title, true);
-        $graph->xtitle_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->xtitle, true);
-        $graph->ytitle_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->ytitle, true);
+        $graph->title_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->title, true, true);
+        $graph->xtitle_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->xtitle, true, true);
+        $graph->ytitle_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->ytitle, true, true);
         $url_string = $graph->generateUrlParams("HTML", $this->graph_sessionPlaceholder);
         if ($url_string) {
             $this->jar["pages"][$this->page_count]["rows"][$this->line_count]["graphs"][] = [ "url" => $url_string ];
@@ -440,7 +441,7 @@ class ReportHtml extends Report
         }
 
 
-        if ($value_col) {
+        if ($value_col && !$value_col["GroupTrailerCustom"]) {
             $group_label = $value_col["GroupTrailerValueColumn"]->getAttribute("group_trailer_label");
             if (!$group_label) {
                 $group_label = $value_col["GroupTrailerValueColumn"]->getAttribute("column_title");
@@ -468,7 +469,7 @@ class ReportHtml extends Report
         }
 
         $this->currentGroup["trailers"][$this->currentTrailerRow][] =
-                    ["style" => $this->getStyleTags($this->query->output_group_trailer_styles),
+                    ["styles" => $this->getStyleTags($this->query->output_group_trailer_styles),
                       "content" => $content];
     }
 
@@ -515,7 +516,7 @@ class ReportHtml extends Report
         $style = "";
         $attr = array();
         $this->extractStylesAndTextFromString ( $custom, $styles, $attr );
-        $this->currentGroup["customheaders"][] = [ "text" => $custom, "style" => $styles, "attr" => $attr];
+        $this->currentGroup["customheaders"][] = [ "content" => $custom, "styles" => $styles, "attr" => $attr];
         $styles .= "position: absolute;";
         return;
 
@@ -549,8 +550,8 @@ class ReportHtml extends Report
         $styles .= "position: absolute";
 
         $this->currentGroup["customtrailers"][] = [
-            "style" => $styles,
-            "custom"=> $custom
+            "styles" => $styles,
+            "content"=> $custom
         ];
         return;
 
@@ -579,6 +580,8 @@ class ReportHtml extends Report
                 "groupstarts" => [],
                 "groupends" => []
             ];
+
+        $this->jar["pages"][$this->page_count]["rows"][$this->line_count]["line"] = $this->line_count;
 
         if ((ReporticoSession())::sessionRequestItem("target_style", "TABLE") == "FORM") {
             if (!$this->page_started) {
@@ -675,6 +678,9 @@ class ReportHtml extends Report
         $this->jar["styles"]["page"] = $this->getStyleTags($colstyles, $this->query->output_page_styles);
         $this->jar["styles"]["row"] = $this->getStyleTags($colstyles, $this->query->output_row_styles);
         $this->jar["styles"]["criteria"] = $this->getStyleTags($colstyles, $this->query->output_criteria_styles);
+        $this->jar["styles"]["body"] = $this->getStyleTags($colstyles, $this->query->output_reportbody_styles);
+        $this->jar["styles"]["group_header_label"] = $this->getStyleTags($colstyles, $this->query->output_group_header_label_styles);
+        $this->jar["styles"]["group_header_value"] = $this->getStyleTags($colstyles, $this->query->output_group_header_value_styles);
 
         $this->jar["classes"]["page"] = $this->query->getBootstrapStyle("page");
 
@@ -702,6 +708,9 @@ class ReportHtml extends Report
 
     public function finishPage()
     {
+        // Page Footers
+        Report::pageFooters();
+
         $this->closeGroup();
     }
 
@@ -714,70 +723,88 @@ class ReportHtml extends Report
     public function formatPageHeaderStart()
     {
         return;
-        if ($this->line_count > 0) {
-            $this->jar[""][] = "</div>";
-            $this->footer_count++;
-            $this->jar[""][] = "<footer class=\"swPageFooterBlock swLastPageFooterBlock swPageFooterBlock{$this->footer_count}\">";
-            $this->jar[""][] = "Page Footer";
-            $this->jar[""][] = "</footer>";
-            $this->jar[""][] = "<div class=\"swPageBlock\" >";
-            $this->header_count++;
-            $this->jar[""][] = "<div class=\"swPageHeaderBlock swNewPageHeaderBlock swPageHeaderBlock{$this->header_count}\" >";
-        } else {
-            $this->jar[""][] = "<div class=\"swPageBlock\" >";
-            $this->header_count++;
-            $this->jar[""][] = "<div class=\"swPageHeaderBlock swPageHeaderBlock{$this->header_count}\" >";
-        }
     }
 
     public function formatPageHeaderEnd()
     {
-        $this->jar[""][] = "</div>";
+        return;
     }
 
     public function formatPageHeader(&$header)
     {
-        //echo "format Page Header";
-        return;
         $styles = "";
         $text = $header->text;
 
         $this->extractStylesAndTextFromString($text, $styles, $header->attributes, $parent_styleset = false, $grandparent_styleset = false);
         $just = strtolower($header->getAttribute("justify"));
 
-//echo "Value $text<BR>";
         //var_dump($header->attributes);
         //echo "Styles = $styles <BR>";
-        $img = "";
+        $img = false;
+        $imgstyles = false;
+
         if ($styles) {
             $matches = array();
             if (preg_match("/background: url\('(.*)'\).*;/", $styles, $matches)) {
-                $styles = preg_replace("/background: url\('(.*)'\).*;/", "", $styles);
-                if (count($matches) > 1) {
-                    $img = "<img src='" . $matches[1] . "'/>";
-                }
+                if ( preg_match("/[ ;]height:/",$styles) || preg_match("/^height:/",$styles))
+                    $imgstyles .= "height: 100%;";
+                if ( preg_match("/[ ;]width:/",$styles) || preg_match("/^width:/",$styles))
+                    $imgstyles .= "width:100%;";
+                $styles = preg_replace("/background: url\('(.*)'\)[^;]*;/", "", $styles);
+                if (count($matches) > 1) 
+                    $img = $matches[1];
             }
-            $this->jar[""][] = "<DIV class=\"swPageHeader\" style=\"$styles\">";
-        } else {
-            $this->jar[""][] = "<DIV class=\"swPageHeader\" >";
         }
 
-        $this->jar[""][] = "$img$text";
-        $this->jar[""][] = "</DIV>";
-        //$this->jar[""][] = "<TR>";
-        //$this->jar[""][] = '<TD colspan="10" justify="'.$just.'">';
-        //$this->jar[""][] =($header->text);
-        //$this->jar[""][] = "</TD>";
-        //$this->jar[""][] = "</TR>";
+        if ( !$this->currentGroup ) {
+            $this->jar["pageheaderstop"][] = [
+                    "styles" => $styles,
+                    "content" => "$text",
+                    "image" => "$img",
+                    "imagestyles" => "$imgstyles"
+                ];
+        } else
+            $this->currentGroup["pageheaders"][] = [
+                    "styles" => $styles,
+                    "content" => "$text",
+                    "image" => "$img",
+                    "imagestyles" => "$imgstyles"
+                ];
 
         return;
     }
 
-    public function formatPageFooter(&$header)
+    public function formatPageFooter(&$footer)
     {
-        $just = strtolower($header->getAttribute("justify"));
+        $styles = "";
+        $text = $footer->text;
 
-        $this->jar["pageFooter"][] = ($header->text);
+        $this->extractStylesAndTextFromString($text, $styles, $footer->attributes, $parent_styleset = false, $grandparent_styleset = false);
+        $just = strtolower($footer->getAttribute("justify"));
+
+        $img = false;
+        $imgstyles = false;
+
+        if ($styles) {
+            $matches = array();
+            if (preg_match("/background: url\('(.*)'\).*;/", $styles, $matches)) {
+                if ( preg_match("/[ ;]height:/",$styles) || preg_match("/^height:/",$styles))
+                    $imgstyles .= "height: 100%;";
+                if ( preg_match("/[ ;]width:/",$styles) || preg_match("/^width:/",$styles))
+                    $imgstyles .= "width:100%;";
+                $styles = preg_replace("/background: url\('(.*)'\)[^;]*;/", "", $styles);
+                if (count($matches) > 1) 
+                    $img = $matches[1];
+            }
+        }
+
+
+        $this->jar["pagefooters"][] = [
+            "styles" => $styles,
+            "content" => "$text",
+            "image" => "$img",
+            "imagestyles" => "$imgstyles"
+        ];
 
         return;
     }
@@ -974,10 +1001,13 @@ class ReportHtml extends Report
         $styles = false;
         $matches = array();
         if (preg_match("/{STYLE[ ,]*([^}].*)}/", $tx, $matches)) {
+
             if (isset($matches[1])) {
                 $stylearr = explode(";", $matches[1]);
                 $tx = preg_replace("/{STYLE[ ,]*[^}].*}/", "", $tx);
+
                 foreach ($stylearr as $v) {
+
                     if (!$v) {
                         continue;
                     }
@@ -986,7 +1016,10 @@ class ReportHtml extends Report
                     if (count($style) >= 2) {
                         $name = trim($style[0]);
                         $value = trim($style[1]);
-//echo "$name = $value, ";
+
+                        if ( isset($style[2] ))
+                            $value .= ":".$style[2];
+
                         if (is_numeric($value)) {
                             if ($name == "width") {
                                 $value .= "px";
@@ -1001,7 +1034,7 @@ class ReportHtml extends Report
 //echo "<BR>";
 
         $tx = $this->reporticoStringToPhp($tx);
-        $tx = Assignment::reporticoMetaSqlCriteria($this->query, $tx);
+        $tx = Assignment::reporticoMetaSqlCriteria($this->query, $tx, false, true);
         $tx = preg_replace("/<\/*u>/", "", $tx);
 
         return $styles;
@@ -1047,6 +1080,12 @@ class ReportHtml extends Report
                     "title" => ReporticoLang::templateXlate("GO_REFRESH")
                 ];
             }
+                $this->jar["buttons"]["print"] = [ 
+                        "href" => $this->query->getActionUrl() . $url_join_char . 
+                                $forward . 'printReport=1&execute_mode=EXECUTE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName(),
+                        "class" => "reportico-print-button",
+                        "title" => ReporticoLang::templateXlate("GO_PRINT")
+                    ];
 
         } else {
                 $this->jar["buttons"]["print"] = [ 
@@ -1056,6 +1095,16 @@ class ReportHtml extends Report
                         "title" => ReporticoLang::templateXlate("GO_PRINT")
                     ];
 
+        }
+
+        if ( ! preg_match("/HTML/", $this->query->getAttribute("AutoPaginate")) ) {
+            $this->jar["buttons"]["paginate"] = [ 
+                        "href" => $this->query->getActionUrl() . $url_join_char . 
+                                $forward . 'printReport=1&execute_mode=EXECUTE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName(),
+                        "class" => "reportico-paginate-button",
+                        "linkClass" => "reportico-paginate-button-link",
+                        "title" => ReporticoLang::templateXlate("PAGINATE")
+                    ];
         }
 
         if ($this->line_count < 1) {

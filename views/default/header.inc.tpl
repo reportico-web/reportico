@@ -31,6 +31,7 @@
 {% endif %}
 {% if REPORTICO_CSRF_TOKEN %}
 <script type="text/javascript">var reportico_csrf_token = "{{ REPORTICO_CSRF_TOKEN }}";</script>
+<script type="text/javascript">var ajax_event_handler = "{{ REPORTICO_AJAX_HANDLER }}";</script>
 {% endif %}
 {% if not REPORTICO_BOOTSTRAP_PRELOADED %}
 <script type="text/javascript" src="{{ ASSETS_PATH }}/js/bootstrap3/js/bootstrap.min.js"></script>

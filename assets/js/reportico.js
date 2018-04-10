@@ -56,7 +56,7 @@ function getFilterGroupState()
 {
     var openfilters = "";
     var closedfilters = "";
-    console.log("Filter");
+    
     var arr = [];
     reportico_jquery(".swToggleCriteriaDiv").each(function(){
         filterid = reportico_jquery(this).prop("id");
@@ -64,10 +64,9 @@ function getFilterGroupState()
         filterno = filterid;
         filterid = ".displayGroup" + filterid;
         
-            console.log("check" + filterid);
+            
         if ( reportico_jquery(filterid).first().is(":visible") )
         {
-            console.log("yes" + filterid);
             if ( !openfilters )
                 openfilters = "&openfilters[]="+filterno;
             else
@@ -76,14 +75,13 @@ function getFilterGroupState()
         }
         else
         {
-            console.log("no" + filterid);
+            
             if ( !closedfilters )
                 closedfilters = "&closedfilters[]="+filterno;
             else
                 closedfilters += "&closedfilters[]="+filterno;
             
         }
-            console.log("visible" + openfilters);
     });
     openfilters = closedfilters  + openfilters;
     return openfilters;
@@ -181,7 +179,7 @@ function select2FormatSelection(data)
 
 function formatState (state) {
   if (!state.id) { return state.text; }
-  var $state = $(
+  var $state = reportico_jquery(
     '<span><img src="vendor/images/flags/' + state.element.value.toLowerCase() + '.png" class="img-flag" /> ' + state.text + '</span>'
   );
   return $state;
@@ -222,6 +220,253 @@ function setupCheckboxes()
 }
 
 /*
+** Pagination in HTML
+*/
+var max_pages = 100;
+var page_count = 0;
+
+function paginate() {
+
+    // Set pageno so we can do things just on first page
+    pagination_page_no = 1;
+
+    var paged = false;
+    reportico_jquery('.autopaginate.original-page').each(function() {
+        if ( !reportico_jquery(this).hasClass("already-paginated") )  {
+            splitPage.call(this);
+            paged = true;
+        }
+    });
+    if ( paged )
+        postPagination();
+
+}
+
+/*
+** Pass through each page setting page numbers and page counts
+** Also flag first page so we can ensure for example
+** browser printouts dont throw page before first page
+*/
+function postPagination() {
+
+      var page_count = 0;
+      var page_total = reportico_jquery('.autopaginate.original-page').length;
+      reportico_jquery('.reportico-paginated').each(function() {
+
+        page_count++;
+
+        // Dont allow repagination
+        reportico_jquery(this).addClass("already-paginated");
+
+        if ( page_count == 1 ) {
+            reportico_jquery(this).addClass("first-page");
+        } else {
+            reportico_jquery(this).addClass("mid-page");
+        }
+
+      });
+
+      var page_count = 0;
+      reportico_jquery('.reportico-page-number').each(function() {
+
+        page_count++;
+        reportico_jquery(this).html(page_count);
+
+      });
+
+      reportico_jquery('.reportico-page-count').each(function() {
+        reportico_jquery(this).html(page_total);
+      });
+}
+
+function splitPage() {
+
+      page_count++;
+      if (page_count > max_pages) {
+        return;
+      }
+
+      var topMargin = reportico_jquery("#reportico-top-margin").outerHeight();
+      var bottomMargin = reportico_jquery("#reportico-bottom-margin").outerHeight();
+
+
+      //alert("margin " + topMargin +" " + bottomMargin );
+      var long = reportico_jquery(this)[0].scrollHeight - Math.ceil(reportico_jquery(this).innerHeight());
+
+      // Start pag size off as total of margin we dont want to exceed this
+      long = topMargin + bottomMargin;
+
+      var pageheight = Math.ceil(reportico_jquery(this).innerHeight());
+      var pageclasses = reportico_jquery(this).attr("class");
+      var pagestyles = reportico_jquery(this).attr("style");
+      var children = reportico_jquery(this).children().toArray(); // Save elements in this page to children[] array
+      var removed = [];
+      var thispage = reportico_jquery(this);
+      // Loop while this page is longer than an A4 page
+      lastlong = long;
+      //console.log("============== " + children.length + " =====================");
+      ct = 0;
+
+      var pageheaders = false;
+      var pagefooters = false;
+      var putbackheaders = false;
+      var putbackfooters = false;
+
+      while (long > 0 && children.length > 0) {
+
+        var child = children.shift();
+        var childheight = reportico_jquery(child).outerHeight();
+        var childclass = reportico_jquery(child).prop("className");
+
+        // Clone page title
+        if ( reportico_jquery(child).hasClass("reportico-title") ) {
+            putbacktitle = reportico_jquery(child).clone();
+        }
+
+        // Clone page headers
+        if ( reportico_jquery(child).hasClass("swPageHeaderBlock") ) {
+            putbackheaders = reportico_jquery(child).clone();
+        }
+
+        // Extract first footer and remove all others. Then apply this one to all pages
+        firstfooter = reportico_jquery(thispage).find(".swPageFooterBlock:first");
+        if ( firstfooter.length > 0 ) {
+            putbackfooters = firstfooter.clone();
+        }
+
+        // Remove this pages footers as they have been stored in previous statement
+        if ( reportico_jquery(child).hasClass("swPageFooterBlock") ) {
+            reportico_jquery(child).remove();
+        }
+
+
+        var nextlong = long +  childheight;
+
+        var newpage = false;
+        if ( nextlong > pageheight ) {
+            //console.log("ALERT " + childclass + " " + nextlong + " > " + pageheight + "!" );
+
+            var newtable = false;
+            //if ( reportico_jquery(child).hasClass("swPageHeaderBlock") ) {
+                //pageheaders = reportico_jquery(child).clone();
+            //}
+            if ( reportico_jquery(child).hasClass("reportico-page") ) {
+
+                var th = reportico_jquery(child).find("thead");
+                var hf = reportico_jquery(child).find("thead").first();
+
+                //var headers = reportico_jquery(child).find("thead").first().outerHtml();
+                var headers = reportico_jquery(child).find("thead").clone();
+
+                var hheight = reportico_jquery(hf).outerHeight();
+
+                var hf = reportico_jquery(child).find("tfoot").first();
+                var fheight = reportico_jquery(hf).outerHeight();
+                
+                var body = reportico_jquery(child).find("tbody");
+                var rows = reportico_jquery(child).find("tr");
+
+                var rheight = 0;
+
+                var rlong = long;
+                var sliceAt = 0;
+
+                var looping = true;
+                reportico_jquery(thispage).find("tr").each(function() {
+                    if ( !looping ) 
+                        return;
+                    rheight = reportico_jquery(this).outerHeight();
+                    rlong += rheight;
+                    if ( rlong + rheight > pageheight ) {
+
+                        newtable = reportico_jquery('<TABLE class="table table-striped table-condensed  reportico-page"><TBODY></TBODY></TABLE>');
+                        reportico_jquery(newtable).find("tbody").append(reportico_jquery(child).find("tbody tr,tfoot tr").slice(0,sliceAt));
+                        reportico_jquery(newtable).prepend(headers);
+                        /*reportico_jquery(thispage).after(newpage); */
+                        //console.log(" ALERT IN " + rlong + " > " + pageheight );
+                        looping = false;
+                        long = topMargin + bottomMargin;
+                    }
+
+                    sliceAt++;
+
+                    /*reportico_jquery(newpage).append(headers);
+                    reportico_jquery(thispage).before(newpage);*/
+                });
+
+            }
+
+            //newpage = reportico_jquery('<div class="reportico-paginated autopaginate' + ' page-size-' + reportico_page_size + ' page-orientation-' + reportico_page_orientation + ' newPage">' /*+ reportico_page_size + "," + reportico_page_orientation*/ + ' </div>');
+            newpage = reportico_jquery('<div class="' + pageclasses + '" style="' + pagestyles + '">' + ' </div>');
+
+            // Copy back in the current page title moved to the new page
+            if ( putbacktitle && reportico_page_title_display == "topofallpages" ) {
+                reportico_jquery(thispage).prepend(putbacktitle);
+            }
+
+            // Copy back in the current page headers moved to the new page
+            if ( putbackheaders ) 
+                reportico_jquery(thispage).prepend(putbackheaders);
+
+            newpage.append(reportico_jquery(removed));
+
+            // Copy back in the current page footers moved to the new page
+            if ( putbackfooters ) {
+                var footer = putbackfooters.clone();
+                newpage.append(footer);
+            }
+
+
+            if ( newtable ) {
+                if ( reportico_jquery(newtable).find("tbody tr").length > 0 ) {
+                    reportico_jquery(newpage).append(newtable);
+                }
+            }
+
+            // Prepend the snipped page before the current but only if there are chidren that were snipped
+            // else weve snipped everything form the main page so delete current, this wil be then the
+            // last iteration through
+            if ( children.length > 0 )
+                reportico_jquery(thispage).before(newpage);
+            else
+                reportico_jquery(thispage).remove();
+            children.unshift(child); 
+
+            break;
+        }
+        else
+        {
+            reportico_jquery(child).detach();  // JQuery Method detach() removes the "child" element from DOM for the current page
+            long = nextlong;
+        }
+        removed.push(child); 
+      }
+
+      if (newpage) {
+        pagination_page_no++;
+        splitPage.call(thispage); // Recursively call myself to adjust the remainder of the pages
+      } else {
+
+        // We are down to the last page. If anything that was not a header or footer was detached from the page we have been snipping
+        // then it justifies being put back
+        nonbody=0;
+        for(j = 0; j < removed.length; j++){
+            x = removed[j];
+            if ( reportico_jquery(x).hasClass("swPageHeaderBlock") || reportico_jquery(x).hasClass("swPageFooterBlock") ) 
+                nonbody++;
+        }
+
+        if ( removed.length > nonbody ) {
+            // There are report body items
+            reportico_jquery(thispage).append(removed);
+        } else {
+            // No report body items remove the last blank page
+            reportico_jquery(thispage).remove();
+        }
+      }
+    }
+
+/*
 * Where multiple data tables exist due to graphs
 * resize the columns of all tables to match the first
 */
@@ -235,8 +480,8 @@ function resizeHeaders()
         var headerheight  = reportico_jquery(this).outerHeight();
         reportico_jquery(this).find("img").each(function() {
             var imgheight = reportico_jquery(this).prop("height");
-            if ( imgheight > headerheight )
-                headerheight = imgheight;
+            //if ( imgheight > headerheight )
+                //headerheight = imgheight;
         });
         var margintop  = parseInt(reportico_jquery(this).css("margin-top"));
         var marginbottom  = parseInt(reportico_jquery(this).css("margin-bottom"));
@@ -247,24 +492,8 @@ function resizeHeaders()
    reportico_jquery(this).css("height", maxheight + "px");
   });
 
-  //reportico_jquery(".swNewPageHeaderBlock").hide();
-        //ct = 1;
-        //hdrpos = 0;
-        //while ( reportico_jquery(".swPageFooterBlock"+ct).length )
-        //{
-            //if ( reportico_jquery(".swPageHeaderBlock"+(ct+1)).length )
-                //hdrpos = reportico_jquery(".swPageHeaderBlock"+(ct+1)).offset().top;
-            //else
-                //hdrpos = hdrpos + 1000;
-            //reportico_jquery(".swPageFooterBlock"+ct).css("top", ( hdrpos ) + "px" );
-            //ct++;
-        //}
-    
-
-  //reportico_jquery(".swRepForm").columnize();
-
   // Resize Custom Headers
-  reportico_jquery(".reporticoGroupCustomHeader,.reporticoGroupCustomTrailer").each(function() {
+  reportico_jquery(".reportico-custom-header-block,.reportico-custom-trailer-block").each(function() {
     var parenty = reportico_jquery(this).position().top;
     var maxheight = 0;
     reportico_jquery(this).find("div").each(function() {
@@ -319,6 +548,14 @@ function resizeTables()
 }
 
 
+reportico_jquery(document).on('click', '.reportico-paginate-button-link', function(event) 
+{
+    // On manual paginate add class to trigger pagination
+    reportico_jquery(".reportico-paginated").addClass("autopaginate");
+    paginate();
+    return false;
+});
+
 //reportico_jquery(document).on('click', 'ul.dropdown-menu li a, ul.dropdown-menu li ul li a, ul.jd_menu li a, ul.jd_menu li ul li a', function(event) 
 //{
     //event.preventDefault();
@@ -349,8 +586,7 @@ reportico_jquery(document).ready(function()
     setupDynamicGrids();
     setupCriteriaItems();
     setupCheckboxes();
-    //reportico_jquery('#select2_dropdown_country').select2();
-
+    paginate();
 });
 
 reportico_jquery(document).on('click', '.reportico-notice-modal-close,.reportico-notice-modal-button', function(event) 
@@ -437,7 +673,6 @@ reportico_jquery(document).on('click', '.swMiniMaintain', function(event)
     {
         ajaxaction = reportico_ajax_script;
     }
-    console.log(ajaxaction);
     
     reportico_jquery(".reportico-modal-title").html(reportico_jquery(this).prop("title")); 
     
@@ -446,7 +681,6 @@ reportico_jquery(document).on('click', '.swMiniMaintain', function(event)
 	var params = forms.serialize();
     params += "&execute_mode=MAINTAIN&partialMaintain=" + maintainButton + "&partial_template=mini&submit_" + bits[0] + "_SHOW=1";
     params += "&reportico_ajax_called=1";
-    console.log(params);
     
     reportico_jquery.ajax({
         type: 'POST',
@@ -581,7 +815,7 @@ reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenu
         return false;
     }
 
-    if ( reportico_jquery(this).parent().hasClass("swRepPrintBox" )  )
+    if ( reportico_jquery(this).parent().hasClass("reportico-print-button" )  )
     {
         //var data = reportico_jquery(this).closest("#reportico_container").html();
         //html_print(data);
@@ -831,7 +1065,6 @@ reportico_jquery(document).on('click', '#reporticoPerformExpand', function() {
     params += "&partial_template=expand";
     params += "&" + reportico_jquery(this).prop("name") + "=1";
     params += getFilterGroupState();
-console.log(params);
 
 	var fillPoint = reportico_jquery(this).closest('#criteriaform').find('#swPrpExpandCell');
     reportico_jquery(fillPoint).addClass("loading");
@@ -1076,6 +1309,8 @@ function fillDialog(results, cont) {
   setupCriteriaItems();
   setupCheckboxes();
   resizeTables();
+
+  paginate();
 }
 
 var ie7 = (document.all && !window.opera && window.XMLHttpRequest) ? true : false;

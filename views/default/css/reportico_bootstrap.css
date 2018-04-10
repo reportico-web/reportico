@@ -191,10 +191,6 @@ div.modal-loading {
 .swMenuBody 
 { 
     background-color: #ffffff;
-    width: 90%;
-    margin-left: 5%;
-    margin-right: 5%;
-    margin-top: 0px;
 }
 
 .swMenuForm
@@ -350,6 +346,9 @@ input.swAdminButton2
 /* ------------------ Main Screen Form Box --------------*/
 .swPrpForm 
 { 
+    width: 90% !important;
+    margin-left: 5% !important;
+    margin-right: 5% !important;
     text-align: left;
     margin-left: 0%;
     width: 100%;
@@ -390,7 +389,6 @@ input.swAdminButton2
 
 .swPrpCritBox
 {
-    background-color: #f8f8f8;
     width: 100%;
     border: none;
     border-width: 0px;
@@ -532,29 +530,28 @@ input.swAdminButton2
     font-size: 18pt;
     text-align: center;
     margin: 0px !important;
-    padding-bottom: 10px;
-    padding-top: 20px;
+    padding: 2px 0px 2px 0px;
     border-bottom: 1px solid #d0ccc9;
     padding-left: 20px;
+    color: #f00;
 }
 
 /* Table container for whole Report */
 .reportico-body 
 { 
-    width: 90%;
-    margin-left: 5%;
-    margin-right: 5%;
     /*background: #e5e9fc;*/
-    border-right: solid thin #333333;
+    /*border-right: solid thin #333333;
     border-left: solid thin #333333;
+    border-bottom: solid thin #333333;*/
     margin-top: 0px;
-    border-bottom: solid thin #333333;
 }
 
 /* ------------------ Report Output Main Box --------------*/
 .swRepForm
 {
-    border: solid 1px #AAAAAA;
+    /*border: solid 1px #AAAAAA;*/
+    background-color: #999;
+    /*min-width: 100vw;*/
 }
 
 /* Table container for each Page of Output */
@@ -564,7 +561,6 @@ input.swAdminButton2
     background-color: #FFFFFF;
     font-size: 10pt;
     margin-top: 5px;
-    margin-left: 0.4% !important;
     margin-right: 0.5%;
     border-collapse: collapse;
 }
@@ -590,7 +586,7 @@ input.swAdminButton2
 }
 
 /* Column Header Label  */
-.swRepColHdrRow td,
+.swRepColHdrRow td, .swRepColHdrRow div,
 .swRepColHdrRow th
 {
     border-bottom: dotted;
@@ -600,7 +596,7 @@ input.swAdminButton2
 }
 
 /* Container for Group Headers  */
-.reportico-row td
+.reportico-row td, .reportico-row div
 {
     padding: 2px 2px 1px 2px;
 }
@@ -608,7 +604,7 @@ input.swAdminButton2
 /*.reportico-row:nth-child(even) { background-color: inherit; }
 .reportico-row:nth-child(odd) { background-color: inherit; }*/
 
-.reportico-row td a
+.reportico-row td a, .reportico-row div a
 {
     text-decoration: underline;
 }
@@ -621,22 +617,23 @@ input.swAdminButton2
     width: 99%;
     padding-top: 5px;
     padding-left: 1px;
-    margin-left: 0.5%;
     margin-right: 0.5%;
     padding-bottom: 5px;
 }
+
 .reportico-criteria
 {
-    border-top: solid 1px #ddddff;
+    border: solid 1px #cccccc;
     font-weight: bold;
     font-size: 10pt;
     width: 99%;
     padding-top: 5px;
-    padding-left: 1px;
-    margin-left: 0.5%;
+    padding: 0px 5px 0px 5px;
     margin-right: 0.5%;
     padding-bottom: 5px;
-    background-color: #eeeeee;
+    border-width: 1px !important;
+    background-color: #eee !important;
+    margin-top: 5px;
     margin-bottom: 5px;
 }
 
@@ -758,7 +755,13 @@ input.swAdminButton2
     margin: 0px 0px 0px 0px;
 }
 
-.swRepPrintBox .reportico-ajax-link,
+.reportico-output-button-block {
+    width: 100%;
+    height: 36px;
+}
+
+.reportico-paginate-button a,
+.reportico-print-button .reportico-ajax-link,
 .swRepRefreshBox .reportico-ajax-link,
 .reportico-back-button .reportico-ajax-link
 {
@@ -768,9 +771,11 @@ input.swAdminButton2
     margin: 2px 5px 2px 5px;
     text-decoration: none;
     float: left;
+    z-index: 1001;
 }
 
-.swRepPrintBox .reportico-ajax-link { height: 32px !important; border: none; background-image: url(../images/printer.png); background-color: #ffffff;}
+.reportico-paginate-button a { height: 32px !important; border: none; background-image: url(../images/paginate.png); background-color: #ffffff;}
+.reportico-print-button .reportico-ajax-link { height: 32px !important; border: none; background-image: url(../images/printer.png); background-color: #ffffff;}
 .swRepRefreshBox .reportico-ajax-link { height: 32px !important; border: none; background-image: url(../images/refreshbutton.png); }
 .reportico-back-button .reportico-ajax-link { height: 32px !important; border: none; background-image: url(../images/backbutton.png); }
 
@@ -795,9 +800,7 @@ input.swAdminButton2
 { 
     /*background-color: #efefef;*/
     /*width: 100%;*/
-    margin-top: 0px;
-    margin-left: 5%;
-    margin-right: 5%;
+    /*margin-top: 0px;*/
 }
 
 /* ------------------ Main Screen Form Box --------------*/
@@ -1115,21 +1118,18 @@ input.swAdminButton2
 }
 
 /* -------------------------- Printed Output Styles ----------------------------------*/
-.swPageHeaderBlock { display: block; width: 100%; position: relative; }
+.reportico-custom-trailer-block { display: block; width: 100%; position: relative; }
 .swNewPageHeaderBlock { display: none; }
-/*.swPageFooterBlock { display: none; width: 100%; position: absolute; bottom: 300px; }*/
-.swPageFooterBlock { display: none; width: 100%; position: absolute; bottom: -200px;}
-.swFirstPageFooterBlock { display: none; width: 100%; position: absolute; top: 100px; }
-.swLastPageFooterBlock { display: none; width: 100%; position: absolute; bottom: -200px; }
-/*.swPageFooterBlock { display: block; width: 100%; position: relative; bottom: 100%; }*/
-/*.swPageFooterBlock { display: block; width: 100%; }*/
-/*.swPageBlock { display: block; width: 100%; position: relative; margin: 0 0 100px 0 }*/
+.swPageHeaderBlock { display: block; width: 100%; left: 0px; position: relative; top: 0;}
+.swPageFooterBlock { display: block; width: 100%; left: 0px; position: absolute; bottom: 0 !important;}
+.swPageHeaderBody { position: relative; }
+.swPageFooterBody { position: relative; }
+.swPageFooter { position: absolute; }
 .swPageHeader { position: absolute; }
+.reportico-custom-trailer { position: absolute; }
 
 @page {
-    @top {
-        content: element(pageHeader);
-    }
+    size: A4;
 }
 
 #pageHeader {
@@ -1142,60 +1142,47 @@ input.swAdminButton2
     .swPageHeaderBlock { display: none; }
 }*/
 
+.reportico-paginated.autopaginate {
+  margin-bottom: 0.5cm;
+}
+
+.reportico-paginated {
+  background: white;
+  display: block;
+  margin: 0 auto;
+  padding: 0px 0px;
+  box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
+  /*overflow-y: scroll;*/
+  box-sizing: border-box;
+  font-size: 12pt;
+  position: relative;
+  /*zoom: 0.68;*/
+  /*height: 100vh !important;*/
+}
+
+.page-size-A4.page-orientation-portrait.autopaginate { width: 21cm; height: 29.7cm; }
+.page-size-A4.page-orientation-landscape.autopaginate { width: 29.7cm; height: 21cm; }
+.page-size-A5.page-orientation-portrait.autopaginate { width: 21cm; height: 29.7cm; }
+.page-size-A5.page-orientation-landscape.autopaginate { width: 29.7cm; height: 21cm; }
+
 @media print {
 
-    -webkit-print-color-adjust: exact;
+    .reportico-paginated {
+        overflow:hidden !important;
+    }
 
-    print { position: fixed; top: 0; left: 0; z-index -1; }
-
-    body { font-size: 10pt }
-
-    /*.swPageHeader { display: block; position: fixed; top: 0; }*/
     .swPageHeader { display: block; }
     .reportico-ajax-link { display: none; }
     .reportico-back-button { display: none; }
+    
+    .reportico-output-button-block { display: none; }
     .swRepButtons { display: none; }
     .prepareAjaxExecuteIgnore { display: none; }
     .swRepForm { border: none; }
     .reportico-body { width: 100%; margin: 0px; border: none; }
 
-    .swLastPageFooterBlock { display: block; }
     .swNewPageHeaderBlock { display: block; } 
-    .swPageBlock { padding-bottom: 200px }
-    /*.sswPageFooterBlock { display: block; width: 100%; position: fixed; bottom: 0; }
-    .swPageFooterBlock { position: fixed; bottom: 0;}
-    .swPageBlock { padding-bottom: 200px }*/
 
-   #whiteBg {
-      display: block;
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: -1; //to send it to the background
-   } 
-   #wrapper {
-      padding-bottom: (the size of the footer, to make footer visible on last page).
-   }
-   #footer {
-     position: relative;
-     bottom: 0;
-   }
-
-    .swRepColHdrRow td,
-    .swRepColHdrRow th
-    {
-        padding-left: 2px;
-        border-bottom: solid;
-        border-width: 1px;
-        border-color : #000000;
-        color : #000000;
-    }
-
-    .swNewPageHeaderBlock { page-break-before: always; }
-    /*.swNewPage { page-break-before: always; }*/
-
-    .reportico-title { font-size: 18pt; text-align: center; margin-top: 0px; border: none;}
-    .swMntForm { text-align: left; margin-left: 0%; background-color: #ffffff; border: none; }
     .reportico-row td a
     {
         text-decoration: underline;
@@ -1209,6 +1196,11 @@ input.swAdminButton2
     .reportico-chart {
         page-break-inside: avoid;
     }
+
+    .reportico-paginated {
+       page-break-after: always;
+    }
+
 }
 
 
@@ -1274,7 +1266,7 @@ text-shadow: 0 1px 0 #fff;
 opacity: .2;
 }
 
-.reportico-modal
+.reportico-modal, .reportico-notice-modal
 {
 display: none;
 overflow: auto;
@@ -1289,7 +1281,7 @@ outline: 0;
 display: none;
 }
 
-.reportico-modal-header
+.reportico-modal-header, .reportico-notice-modal-header
 {
 padding: 15px;
 border-bottom: 1px solid #e5e5e5;
@@ -1299,20 +1291,20 @@ line-height: 1.42857143;
 color: #333;
 }
 
-.reportico-modal-dialog
+.reportico-modal-dialog, .reportico-notice-modal-dialog 
 {
 margin: 30px auto;
 position: relative;
 width: 900px;
 }
 
-.reportico-modal-body
+.reportico-modal-body, .reportico-notice-modal-body
 {
     position: relative;
     padding: 20px;
 }
 
-.reportico-modal-content
+.reportico-modal-content, .reportico-notice-modal-content
 {
 position: relative;
 background-color: #fff;
@@ -1325,7 +1317,7 @@ background-clip: padding-box;
 outline: none;
 }
 
-.reportico-modal-footer
+.reportico-modal-footer, .reportico-notice-modal-footer
 {
 margin-top: 15px;
 padding: 19px 20px 20px;

@@ -27,10 +27,13 @@ class ReporticoTemplateTwig
     private $cacheDir = false;
     private $viewDir = false;
 
-    public function __construct($viewDir = false, $cacheDir = false) {
+    public function __construct($viewDir = false, $cacheDir = false, $theme = false) {
         
         $this->viewDir = $viewDir ? $viewDir : ReporticoUtility::findBestLocationInIncludePath("views");
         $this->cacheDir = $cacheDir ? $cacheDir : __DIR__ . "/../views/cache";
+
+        if ( $theme ) 
+            $this->viewDir .= DIRECTORY_SEPARATOR. $theme;
 
         $loader = new \Twig_Loader_Filesystem($this->viewDir);
         $this->twig = new \Twig_Environment($loader, array(

@@ -364,10 +364,7 @@ class ReporticoDataSource extends ReporticoObject
             $connected = true;
         }
 
-        $dbtype = ReporticoApp::getConfig("db_type", false);
-
-        if ($dbtype == "existingconnection" && $this->external_connection) {
-
+        if ($this->external_connection) {
             $this->ado_connection = NewADOConnection("pdo");
             $this->ado_connection->_connectionID = $this->external_connection;
             if ($this->ado_connection->_connectionID) {

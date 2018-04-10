@@ -172,19 +172,19 @@ function reporticoDefaults($reportico)
     } else // PhantomJS page headers
     {
         // Create Report Title Page Header on every page of PDF
-        $reportico->createPageHeader("H1", 2, "{REPORT_TITLE}{STYLE border-width: 0 0 1 0; margin: 15px 0px 0px 0px; border-color: #000000; font-size: 18; border-style: solid;padding:0px 0px 0px 0px; width: 100%; background-color: inherit; color: #000}");
-        $reportico->setPageHeaderAttribute("H1", "ShowInHTML", "no");
-        $reportico->setPageHeaderAttribute("H1", "ShowInPDF", "yes");
-        $reportico->setPageHeaderAttribute("H1", "justify", "center");
+        //$reportico->createPageHeader("H1", 2, "{REPORT_TITLE}{STYLE border-width: 0 0 1 0; margin: 15px 0px 0px 0px; border-color: #000000; font-size: 18; border-style: solid;padding:0px 0px 0px 0px; width: 100%; background-color: inherit; color: #000}");
+        //$reportico->setPageHeaderAttribute("H1", "ShowInHTML", "no");
+        //$reportico->setPageHeaderAttribute("H1", "ShowInPDF", "yes");
+        //$reportico->setPageHeaderAttribute("H1", "justify", "center");
 
         // Create Image on every page of PDF
         $reportico->createPageHeader("H3", 1, "Time: date('Y-m-d H:i:s'){STYLE font-size: 10; text-align: right; font-style: italic;float:right;}");
         $reportico->setPageHeaderAttribute("H3", "ShowInHTML", "no");
         $reportico->setPageHeaderAttribute("H3", "justify", "right");
 
-        //$reportico->createPageHeader("H4", 1, "<img src='http://127.0.0.1/newarc/images/reportico100.png' style='width: 100%'>{STYLE width: 100; height: 50; margin: 0 0 0 0; background-image:http://127.0.0.1/newarc/images/reportico100.png;}" );
-        //$reportico->createPageHeader("H4", 1, "<img src='http://127.0.0.1/newarc/images/reportico100.png' style='width: 100%'>{STYLE width: 100; height: 50; margin: 0 0 0 0; background-image:http://127.0.0.1/newarc/images/reportico100.png;}" );
-        //$reportico->setPageHeaderAttribute("H4", "ShowInHTML", "no" );
+        $reportico->createPageHeader("H4", 1, "<img src='http://127.0.0.1/newarc/images/reportico100.png' style='width: 100%'>{STYLE width: 100; height: 50; margin: 0 0 0 0; background-image:http://127.0.0.1/newarc/images/reportico100.png;}" );
+        $reportico->createPageHeader("H4", 1, "<img src='http://127.0.0.1/newarc/images/reportico100.png' style='width: 100%'>{STYLE width: 100; height: 50; margin: 0 0 0 0; background-image:http://127.0.0.1/newarc/images/reportico100.png;}" );
+        $reportico->setPageHeaderAttribute("H4", "ShowInHTML", "no" );
 
         // Create Page No on bottom of PDF page
         $reportico->createPageFooter("F1", 2, "Page: {PAGE} of {PAGETOTAL} {STYLE border-width: 1 0 0 0; margin: 0 0 0 0; font-style: italic; }");

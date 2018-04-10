@@ -1,1 +1,1 @@
-{% include 'default/prepare-expand-contents.inc.tpl' %}
+{% include 'prepare-expand-contents.inc.tpl' %}

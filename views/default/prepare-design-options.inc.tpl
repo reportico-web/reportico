@@ -1,5 +1,6 @@
 {% if SHOW_MINIMAINTAIN %} 
 {% if not REPORTICO_BOOTSTRAP_MODAL %}
+
     <button type="submit" class="btn btn-default" title="{{ T_EDIT }} {{ T_EDITSQL }}" id="submit_mainquerqury_SHOW" name="mainquerqurysqlt_QuerySql">
         <span class="glyphicon glyphicon-pencil"></span>{{ T_EDITSQL }}
     </button>
@@ -15,6 +16,10 @@
     <button type="submit" class="btn btn-default" title="{{ T_EDIT }} {{ T_EDITGRAPHS }}" id="submit_mainqueroutpgrph" name="mainqueroutpgrph_ANY">
         <span class="glyphicon glyphicon-pencil"></span>{{ T_EDITGRAPHS }}
     </button>
+    <button type="submit" class="btn btn-default" title="{{ T_EDIT }} {{ T_EDITPAGESETUP }}" id="submit_mainquerform_SHOW" name="mainquerform_Page.*|.*Margin">
+        <span class="glyphicon glyphicon-pencil"></span>{{ T_EDITPAGESETUP }}
+    </button>
+
 {% else %}
 
 
@@ -27,6 +32,9 @@
 {{ T_REPORT_FILE }} <input type="text" name="xmlout" id="swPrpSaveFile" value="{{ XMLFILE }}"> <input type="submit" class="{{ BOOTSTRAP_STYLE_PRIMARY_BUTTON }} swPrpSaveButton" type="submit" name="submit_xxx_SAVE" value="{{ T_SAVE }}">
                         </li>
     				   <div class="btn-group" role="group">
+                            <button type="submit" class="btn btn-default prepareMiniMaintain swMiniMaintain" title="{{ T_EDIT }} {{ T_EDITPAGESETUP }}" id="submit_mainquerform_SHOW" name="mainquerform_Page|Margin|Zoom|Paginate">
+                                <span class="glyphicon glyphicon-pencil"></span>{{ T_EDITPAGESETUP }}
+                            </button>
     				       <button type="submit" class="btn btn-default prepareMiniMaintain swMiniMaintain" title="{{ T_EDIT }} {{ T_EDITSQL }}" id="submit_mainquerqury_SHOW" name="mainquerqurysqlt_QuerySql">
                                 <span class="glyphicon glyphicon-pencil"></span>{{ T_EDITSQL }}
                             </button>
@@ -48,6 +56,8 @@
                                 <li><input type="submit" class="{{ BOOTSTRAP_STYLE_TOOLBAR_BUTTON }}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{{ T_EDIT }} {{ T_EDITPAGEHEADERS }}" id="submit_mainqueroutppghd0000form" value="{{ T_EDITPAGEHEADERS }}" name="mainqueroutppghd0000form_ANY"></li>
                                 <li><input type="submit" class="{{ BOOTSTRAP_STYLE_TOOLBAR_BUTTON }}prepareMiniMaintain swMiniMaintain" style="margin-right: 30px" title="{{ T_EDIT }} {{ T_EDITPAGEFOOTERS }}" id="submit_mainqueroutppgft0000form" value="{{ T_EDITPAGEFOOTERS }}" name="mainqueroutppgft0000form_ANY"></li>
                                 <li><input type="submit" class="{{ BOOTSTRAP_STYLE_TOOLBAR_BUTTON }}prepareMiniMaintain swMiniMaintain" style="margin-top: 10px; margin-right: 30px" title="{{ T_EDIT }} {{ T_EDITPRESQLS }}" id="submit_mainquerqurypsql_SHOW" value="{{ T_EDITPRESQLS }}" name="mainquerqurypsql_ANY"></li>
+                                <li><input type="submit" class="{{ BOOTSTRAP_STYLE_TOOLBAR_BUTTON }}prepareMiniMaintain swMiniMaintain" style="margin-top: 10px; margin-right: 30px" title="{{ T_EDIT }} {{ T_EDITGRID }}" id="submit_mainquerform_SHOW" value="{{ T_EDITGRID }}" name="mainquerform_grid"></li>
+                                <li><input type="submit" class="{{ BOOTSTRAP_STYLE_TOOLBAR_BUTTON }}prepareMiniMaintain swMiniMaintain" style="margin-top: 10px; margin-right: 30px" title="{{ T_EDIT }} {{ T_EDITCUSTOMSOURCE }}" id="submit_mainquerfor_SHOW" value="{{ T_EDITCUSTOMSOURCE }}" name="mainquerform_PreExecuteCode"></li>
                             </ul>
                         </li>
                             </div>

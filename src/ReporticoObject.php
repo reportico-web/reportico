@@ -35,8 +35,9 @@ class ReporticoObject
     public function &getAttribute($attrib_name)
     {
         $val = false;
-        if (isset($this->attributes[$attrib_name])) {
-            if ($this->attributes[$attrib_name]) {
+
+        if (isset($this->attributes[$attrib_name]) ) {
+            if ($this->attributes[$attrib_name] && $this->attributes[$attrib_name] != ".DEFAULT" ) {
                 $val = $this->attributes[$attrib_name];
                 return $val;
             } else {

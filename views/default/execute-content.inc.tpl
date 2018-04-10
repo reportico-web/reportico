@@ -1,21 +1,93 @@
 {% autoescape false %}
-<h1 class="reportico-title">{{ CONTENT.title }}</h1>
 
-{% if ( CONTENT.criteria ) %}
-<table class="reportico-criteria" style="{{ CONTENT.styles.criteria }}">
-    <tbody>
-        {% for criterium in CONTENT.criteria %}
-        <tr class="reportico-group-header-row"><td class="reportico-group-header-label">{{criterium.label }}</td><td class="reportico-group-header-value">{{ criterium.value }}</td></tr>
-        {% endfor %}
-    </tbody>
-</table>
+
+<script type="text/javascript">
+    var reportico_page_size = "{{ PAGE_SIZE }}";
+    var reportico_page_orientation = "{{ PAGE_ORIENTATION }}";
+    var reportico_page_title_display = "{{ PAGE_TITLE_DISPLAY }}";
+</script>
+
+<style>
+@media print {
+    html {
+        zoom: {{ ZOOM_FACTOR }};
+    }
+}
+</style>
+
+
+{# Begin new page =============================================== #}
+<div class="reportico-paginated {{ AUTOPAGINATE }} original-page page-size-{{ PAGE_SIZE }} page-orientation-{{ PAGE_ORIENTATION }}" style="zoom1: {{ ZOOM_FACTOR }}; padding-top: 0px; padding-bottom: {{ PAGE_BOTTOM_MARGIN }}; padding-right: {{ PAGE_RIGHT_MARGIN }}; padding-left: {{ PAGE_LEFT_MARGIN }};">
+
+{% set groupcount = 0 %}
+{% set pageno = 1 %}
+
+{# Top Page Headers ============================================= #}
+{% if ( CONTENT.pageheaderstop ) %}
+    {% include 'execute-content-page-headers.inc.tpl' %}
 {% endif %}
 
+{# Document Title =============================================== #}
+{% include 'execute-content-page-title.inc.tpl' %}
+
+{# Document Criteria  =========================================== #}
+{% include 'execute-content-criteria.inc.tpl' %}
+
+{# End Criteria ================================================= #}
+
 {% for page in CONTENT.pages %}
+
     {% for row in page.rows %}
 
-        {# Group Headers ================================================ #}
+        {# Page Headers On Group Start ================================== #}
+        {% set triggered = 0 %}
         {% for group in row.groupstarts %}
+
+            {# Group change triggers new page #}
+            <!--{{ group.before_header  }} triggered {{ triggered }} {{ row.line }}<BR> !-->
+            {% if row.line > 1 and group.before_header is defined and group.before_header == "newpage" and triggered == 0 %}
+
+                {# Page Footer on group change ============================================= #}
+                {% include 'execute-content-page-footers.inc.tpl' %}
+
+
+                <div class="reportico-paginated {{ AUTOPAGINATE }} original-page page-size-{{ PAGE_SIZE }} page-orientation-{{ PAGE_ORIENTATION }}" style="zoom1: {{ ZOOM_FACTOR }}; padding-top: 0px; padding-bottom: {{ PAGE_BOTTOM_MARGIN }}; padding-right: {{ PAGE_RIGHT_MARGIN }}; padding-left: {{ PAGE_LEFT_MARGIN }};">
+
+                {% set triggered = 1 %}
+
+            {% set headersexist = 0 %}
+            {% set pageno = pageno + 1 %}
+
+            {# Page Header on group change ============================================= #}
+            {% include 'execute-content-page-headers.inc.tpl' %}
+
+            {# Report title group change =============================================== #}
+            {% include 'execute-content-page-title.inc.tpl' %}
+
+            {% set groupcount = groupcount + 1 %}
+
+        {% endif %}
+
+
+
+        {# Group Headers + Detail ======================================= #}
+        <!--div class="reportico-group-section"--> 
+
+        {# Custom group headers ======================================== #}
+        <div class="reportico-custom-header-block" >
+        {% for group in row.groupstarts %}
+            {% for header in group.customheaders %}
+                <div class="reportico-custom-header" style="{{ header.styles }}">
+                    {% if ( header.image ) %}
+                        <img src='{{ header.image}}' style="{{ header.imagestyles }}">
+                    {% endif %}
+                    {{ header.content }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+         </div>
+
+        {# Group Headers ================================================ #}
         <table class="reportico-group-header-box">
             <tbody>
                 {% for header in group.headers %}
@@ -36,7 +108,7 @@
             <THEAD>
             <TR>
             {% for columnHeader in page.headers %}
-                <TH style="{{columnHeader.style}}">
+                <TH style="{{columnHeader.styles}}">
                 {{ columnHeader.content }}
                 </TH>
             {% endfor %}
@@ -46,9 +118,9 @@
         {% endif %}
 
         {# Report Detail Row  ================================================ #}
-        <TR class="reportico-row" style="{{ row.style }}">
+        <TR class="reportico-row" style="{{ row.styles }}">
         {% for column in row.data %}
-            <TD style="{{column.style}}">
+            <TD style="{{column.styles}}">
             {{ column.content }}
             </TD>
         {% endfor %}
@@ -64,7 +136,7 @@
                 {% for trailer in group.trailers %}
                     <tr class="trailer">
                         {% for column in trailer %}
-                            <td style="{{ column.style }}">{{ column.content }}</td>
+                            <td style="{{ column.styles }}">{{ column.content }}</td>
                         {% endfor %}
                     </tr>
                 {% endfor %}
@@ -74,7 +146,23 @@
             {% endif %}
         </table>
 
-        {# After Group Charts #}
+        <!--/div--> 
+
+        {# Custom group tailers ======================================== #}
+        <div class="reportico-custom-trailer-block" >
+        {% for group in row.groupends %}
+            {% for trailer in group.customtrailers %}
+                <div class="reportico-custom-trailer" style="{{ trailer.styles }}">
+                    {% if ( trailer.image ) %}
+                        <img src='{{ trailer.image}}' style="{{ trailer.imagestyles }}">
+                    {% endif %}
+                    {{ trailer.content }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+         </div>
+
+        {# After Group Charts ========================================== #}
         {% for graph in row.graphs %}
         <div class="reportico-chart {{ PRINT_FORMAT }}">
             {{ graph.url }}
@@ -86,5 +174,10 @@
     {% endfor %}  {# each row #}
 
 {% endfor %}  {# each page #}
+
+{# Page Footer on group change ============================================= #}
+{% include 'execute-content-page-footers.inc.tpl' %}
+
+</div>
 
 {% endautoescape %}

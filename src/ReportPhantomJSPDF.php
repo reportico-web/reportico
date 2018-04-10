@@ -50,6 +50,8 @@ class ReportPhantomJSPDF extends Report
 
         // Instantiate PhantomJS
         $this->client = Client::getInstance();
+        //$this->client->isLazy();
+        $this->client->getProcedureCompiler()->disableCache();
         if ( $engine->pdf_phantomjs_path )
             $this->client->getEngine()->setPath($engine->pdf_phantomjs_path);
 
@@ -72,7 +74,6 @@ class ReportPhantomJSPDF extends Report
             // Its Laravel 
             $oldHeaders = getallheaders();
 
-            $newHeaders = array();
             if ( isset($oldHeaders["Cookie"]) )
                 $newHeaders["Cookie"]= $oldHeaders["Cookie"];
             $newHeaders["X-CSRF-TOKEN"]= $engine->csrfToken;
@@ -80,7 +81,7 @@ class ReportPhantomJSPDF extends Report
             $request->setHeaders($newHeaders);
         }
 
-        // Generate temporary name for pdf file to generate on disk. Since phantomjs must write to a file with pdf extension use tempn, to create a file
+        // Generate temporary name for pdf file to generate on disk. Since phantomjs must write to a file with pdf extension use tempnam, to create a file
         // without PDF extensiona and then delete this and use the name with etension for phantom generation
         $outputfile = tempnam($engine->pdf_phantomjs_temp_path, "pdf");
         
@@ -91,19 +92,22 @@ class ReportPhantomJSPDF extends Report
         // Set other PhantomJS parameters
         $request->setFormat(strtoupper($engine->getAttribute("PageSize")));
         $request->setOrientation(strtolower($engine->getAttribute("PageOrientation")));
-        $request->setMargin(strtolower($engine->getAttribute("LeftMargin")));
+        $request->setMargin(0);
         $request->setDelay(2);
 
         $headertext .= '';
+
+        /*
         foreach ($engine->pageHeaders as $header) {
 
+            //break;
             $styles = "";
             $text = $header->text;
             $attr = [];
 
-            if ( $header->getAttribute("ShowInPDF") != "yes" ) {
-                continue;
-            }
+            //if ( $header->getAttribute("ShowInPDF") != "yes" ) {
+                //continue;
+            //}
 
             if ( $text == "{NOMORE}" )
                 break;
@@ -113,14 +117,13 @@ class ReportPhantomJSPDF extends Report
 
             ReportHtml::extractStylesAndTextFromStringStandalone($text, $styles, $attr);
             $text = Report::reporticoStringToPhpStandalone($text, $engine);
-            $text = Assignment::reporticoMetaSqlCriteria($engine, $text);
+            $text = Assignment::reporticoMetaSqlCriteria($engine, $text, false, true);
             $just = strtolower($header->getAttribute("justify"));
 
             $styles = "position:absolute;$styles";
 
             if ( $just == "center" || $just == "centre") $styles .= "width: 98%; text-align: center;";
             if ( $just == "right" ) $styles .= "width: 98%; text-align: right";
-
 
             $img = "";
             if ($styles) {
@@ -185,8 +188,9 @@ class ReportPhantomJSPDF extends Report
             $footertext .= "$img$text";
             $footertext .= "</DIV>";
         }
-        $request->setRepeatingHeader('<div style="position:relative">'.$headertext.'</div>', $engine->getAttribute("TopMargin"));
-        $request->setRepeatingFooter('<footer style="margin-top: 5px;border-top: solid 1px">'.$footertext.'</footer>', $engine->getAttribute("BottomMargin"));
+        $request->setRepeatingHeader('<div style="position:relative; zoom: 0.68;">'.$headertext.'</div>', $engine->getAttribute("TopMargin"));
+        $request->setRepeatingFooter('<div class="swPageFooterBlock" style="margin-top: 5px;border-top: solid 1px">'.$footertext.'</div>', $engine->getAttribute("BottomMargin"));
+        */
 
         // Get Response
         $response = $this->client->getMessageFactory()->createResponse();

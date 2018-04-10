@@ -44,6 +44,7 @@ class XmlReader
     public $search_response = false;
     public $element_counts = array();
     public $wizard_linked_to = false;
+    public $partial_apply_drawn = false;
 
     public function __construct(&$query, $filename, $xmlstring = false, $search_tag = false)
     {
@@ -235,6 +236,12 @@ class XmlReader
             "PageSize" => array("Title" => "PAGESIZE", "Type" => "DROPDOWN", "XlateOptions" => true,
                 "Values" => array(".DEFAULT", "B5", "A6", "A5", "A4", "A3", "A2", "A1",
                     "US-Letter", "US-Legal", "US-Ledger"), "DocId" => "page_size_pdf"),
+            "AutoPaginate" => array("Title" => "AUTOPAGINATE", "Type" => "DROPDOWN", "XlateOptions" => true,
+                "Values" => array(".DEFAULT", "None", "HTML", "PDF", "HTML+PDF" ), "DocId" => "autopaginate"),
+            "PdfZoomFactor" => array("Title" => "PDFZOOMFACTOR", "DocId" => "pdf_zoom_factor"),
+            "HtmlZoomFactor" => array("Title" => "HTMLZOOMFACTOR", "DocId" => "html_zoom_factor"),
+            "PageTitleDisplay" => array("Title" => "PAGETITLEDISPLAY", "Type" => "DROPDOWN", "XlateOptions" => true,
+                "Values" => array(".DEFAULT", "Off", "TopOfFirstPage", "TopOfAllPages" ), "DocId" => "page_title_display"),
             "ReportTemplate" => array("Title" => "REPORTTEMPLATE", "Type" => "TEMPLATELIST"),
             "PageWidthHTML" => array("Title" => "PAGEWIDTHHTML"),
             "PageOrientation" => array("Title" => "PAGEORIENTATION", "Type" => "DROPDOWN", "XlateOptions" => true,
@@ -2588,7 +2595,7 @@ class XmlReader
             if (preg_match("/_ANY$/", $partialMaintain)) {
                 $match1 = preg_replace("/_ANY/", "", $partialMaintain);
                 $match2 = substr($in_tag, 0, strlen($match1));
-                if ($match1 != $match2 || $match1 == $in_tag) {
+                if ($match1 != $match2 || $match1 == $in_tag ) {
                     return $text;
                 }
 
@@ -3785,7 +3792,7 @@ class XmlReader
         $partialMaintain = ReporticoUtility::getRequestItem("partialMaintain", false);
         if ($partialMaintain) {
             $x = $this->id . "_" . $showtag;
-            if ($partialMaintain != $x && !preg_match("/_ANY/", $partialMaintain)) {
+            if ($partialMaintain != $x && !preg_match("/$partialMaintain/", $x) && !preg_match("/_ANY/", $partialMaintain)) {
                 return $text;
             }
 
@@ -3849,7 +3856,6 @@ class XmlReader
         }
 
         $default = ReporticoApp::getDefaultConfig($striptag, ".");
-
         if ($type == "HIDE") {
             $tagct--;
             $test = "";
@@ -4193,7 +4199,10 @@ class XmlReader
 
         $text .= '<TD class="swMntSetField" colspan="1">';
         if ($default) {
-            $text .= '&nbsp;(' . $default . ')';
+            if ( $translateoptions ) 
+                $text .= '&nbsp;(' . ReporticoLang::templateXlate($default) . ')';
+            else
+                $text .= '&nbsp;(' . $default . ')';
         } else {
             $text .= '&nbsp;';
         }
@@ -4207,7 +4216,10 @@ class XmlReader
             }
         }
 
-        if ($tagct == 1 || ($partial == $tag && $partial != "ANY")) {
+        if ($tagct == 1 || ( ( ( preg_match("/$partial/", $tag) && !$this->partial_apply_drawn )  || $partial == $tag ) && $partial != "ANY")) {
+
+            $this->partial_apply_drawn = true;
+
             $text .= "\n<!-- TAG 1-->";
             $text .= '<TD colspan="1">';
             if ($type != "TEXTFIELDNOOK") {

@@ -716,7 +716,7 @@ a:visited
 .swMiniMaintain { background-image: url(../images/icons/pencil-2x.png) !important; }
 
 .swRepRefreshBox,
-.swRepPrintBox,
+.reportico-print-button,
 .reportico-back-button
 {
     width: 38px !important;
@@ -725,7 +725,7 @@ a:visited
     float: left;
 }
 
-.swRepPrintBox .reportico-ajax-link,
+.reportico-print-button .reportico-ajax-link,
 .swRepRefreshBox .reportico-ajax-link,
 .reportico-back-button .reportico-ajax-link
 {
@@ -737,7 +737,7 @@ a:visited
     float: left;
 }
 
-.swRepPrintBox .reportico-ajax-link { height: 32px !important; background-image: url(../images/printer.png); }
+.reportico-print-button .reportico-ajax-link { height: 32px !important; background-image: url(../images/printer.png); }
 .swRepRefreshBox .reportico-ajax-link { height: 32px !important; background-image: url(../images/refreshbutton.png); }
 .reportico-back-button .reportico-ajax-link { height: 32px !important; background-image: url(../images/backbutton.png); }
 

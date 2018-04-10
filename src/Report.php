@@ -181,7 +181,10 @@ class Report extends ReporticoObject
         $out_string = preg_replace('/page\(\)/', "$this->page_count",
             $out_string);
 
-        $out_string = preg_replace('/{page}/i', "$this->page_count",
+        $out_string = preg_replace('/{page}/i', "<span class='reportico-page-number'>$this->page_count</span>",
+            $out_string);
+
+        $out_string = preg_replace('/{pagetotal}/i', "<span class='reportico-page-count'>$this->page_count</span>",
             $out_string);
 
         $out_string = preg_replace('/{#page}/i', "$this->page_count",
@@ -442,8 +445,9 @@ class Report extends ReporticoObject
             }
 
             if (
-                ($ph->getAttribute("ShowInHTML") == "yes" && preg_match("/ReportHtml/", get_class($this)))
-                || ($ph->getAttribute("ShowInPDF") == "yes" && ( $this->query->target_format == "PDF" || $this->query->target_format == "xxxxxPDF" ) )
+                ($ph->getAttribute("ShowInHTML") == "yes" && preg_match("/ReportHtml$/", get_class($this)))
+                || ($ph->getAttribute("ShowInPDF") == "yes" && ( $this->query->target_format == "PDF" || $this->query->target_format == "HTML2PDF" ) )
+                || ($ph->getAttribute("ShowInPDF") == "yes" && preg_match("/ReportHtml2pdf/", get_class($this)))
             ) {
                 $this->formatPageHeader($ph);
             }
@@ -455,6 +459,7 @@ class Report extends ReporticoObject
     {
         $this->formatPageFooterStart();
         foreach ($this->query->pageFooters as $ph) {
+
             // If one of the headers is {NOMORE} then ignore any subsequenct ones problably the default ones form the
             // reporticoDefaults file
             if ($ph->text == "{NOMORE}") {
@@ -668,6 +673,7 @@ class Report extends ReporticoObject
                 }
             } while (next($this->query->groups));
 
+            $graph_ct = 0;
             end($this->query->groups);
             do {
                 $group = current($this->query->groups);
@@ -766,6 +772,7 @@ class Report extends ReporticoObject
                             $this->formatGroupTrailerEnd();
                         }
 
+
                         if ($trailer_first) {
                             $trailer_first = false;
                         }
@@ -774,77 +781,29 @@ class Report extends ReporticoObject
                         $this->endLine();
                     } // while
 
-                }
-
-            } while (prev($this->query->groups));
-
-            if ($group_changed && preg_match("/ReportHtml/", get_class($this))) {
-                $this->formatGroupTrailerEnd();
-            }
-
-            if ($group_changed && $this->query->target_format == "PDF") {
-                $this->endOfPageBlock();
-            }
-
-            // Custom trailers
-            end($this->query->groups);
-            do {
-                $group = current($this->query->groups);
-                if ($this->query->changed($group->group_name) || $this->last_line) {
-                    $this->formatGroupCustomTrailerStart();
-                    // In PDF mode all trailer lines must be passed through twice
-                    // to allow calculation of line height. Otherwise
-                    // Only one pass through
-                    for ($passno = 1; $passno <= 2; $passno++) {
-                        if ($this->query->target_format == "PDF") {
-                            if ($passno == 1) {
-                                $this->draw_mode = "CALCULATE";
-                            }
-
-                            if ($passno == 2) {
-                                $this->draw_mode = "DRAW";
-                                $this->checkPageOverflow();
-                                $this->customTrailerWrappers();
-                            }
-                        } else {
-                            if ($passno == 2) {
-                                break;
-                            }
-                        }
-
-                        // Column Trailers
-                        if ($this->query->target_format == "PDF" || $this->query->target_format == "HTML2PDF") {
-                            foreach ($group->trailers_by_column as $kk => $trailer) {
-                                foreach ($trailer as $kk2 => $colgrp) {
-                                    if ($colgrp["ShowInPDF"] == "yes") {
-                                        $this->formatCustomTrailer($w, $colgrp);
-                                    }
-
+                    // Generate custom trailers
+                    if ($this->query->target_format == "PDF" || $this->query->target_format == "HTML2PDF") {
+                        foreach ($group->trailers_by_column as $kk => $trailer) {
+                            foreach ($trailer as $kk2 => $colgrp) {
+                                if ($colgrp["ShowInPDF"] == "yes") {
+                                    $this->formatCustomTrailer($w, $colgrp);
                                 }
-                            } // foreach
-                        }
-                        if ($this->query->target_format == "HTML") {
-                            foreach ($group->trailers_by_column as $kk => $trailer) {
-                                foreach ($trailer as $kk2 => $colgrp) {
-                                    if ($colgrp["ShowInHTML"] == "yes") {
-                                        $this->formatCustomTrailer($w, $colgrp);
-                                    }
 
-                                }
-                            } // foreach
-                        }
+                            }
+                        } // foreach
                     }
-                    $this->formatGroupCustomTrailerEnd();
-                }
-            } while (prev($this->query->groups));
+                    if ($this->query->target_format == "HTML") {
+                        foreach ($group->trailers_by_column as $kk => $trailer) {
+                            foreach ($trailer as $kk2 => $colgrp) {
+                                if ($colgrp["ShowInHTML"] == "yes") {
+                                    $this->formatCustomTrailer($w, $colgrp);
+                                }
 
-            // Plot After Group Graphs
-            $graph_ct = 0;
-            end($this->query->groups);
-            do {
-                $group = current($this->query->groups);
+                            }
+                        } // foreach
+                    }
 
-                if ($this->query->changed($group->group_name) || $this->last_line) {
+                    // Create Charts
                     if (!function_exists("imagecreatefromstring")) {
                         trigger_error("Function imagecreatefromstring does not exist - ensure PHP is installed with GD option", E_USER_NOTICE);
                     }
@@ -868,8 +827,18 @@ class Report extends ReporticoObject
                         }
                     }
 
+
                 }
+
             } while (prev($this->query->groups));
+
+            if ($group_changed && preg_match("/ReportHtml/", get_class($this))) {
+                $this->formatGroupTrailerEnd();
+            }
+
+            if ($group_changed && $this->query->target_format == "PDF") {
+                $this->endOfPageBlock();
+            }
         }
     }
 
@@ -879,6 +848,7 @@ class Report extends ReporticoObject
 
     public function applyFormat($item, $format)
     {
+        //echo "APPLY FORMAT $format<BR>";
         $formatval = $item->getFormat($format);
         $this->formatFormat($formatval, $format);
     }
@@ -932,7 +902,9 @@ class Report extends ReporticoObject
             do {
                 $group = current($this->query->groups);
                 $group->change_triggered = false;
+                //echo "NAME $group->group_name <BR>";
                 if ($uppergroupchanged || $this->query->changed($group->group_name) || $this->last_line) {
+                    //echo "CHANGED $group->group_name <BR>";
                     $group->change_triggered = true;
                     $uppergroupchanged = true;
                 }
@@ -942,13 +914,17 @@ class Report extends ReporticoObject
         $changect = 0;
         reset($this->query->groups);
         foreach ($this->query->groups as $name => $group) {
+            //echo "TRIGGER $group->change_triggered <BR>";
             if (count($group->headers) > 0 && (($group->group_name == "REPORT_BODY" && $this->line_count == 0) || $group->change_triggered)) {
                 if ($changect == 0 && $this->page_line_count > 0) {
                     $changect++;
-                    $this->applyFormat($group, "before_header");
                     $this->formatGroupHeaderStart($group->getFormat("before_header") == "newpage");
+                    $this->applyFormat($group, "before_header");
+                    //echo "1 BEFH <BR>";
                 } else if ($changect == 0 || 1) {
                     $this->formatGroupHeaderStart($this->page_line_count > 0 && $group->getFormat("before_header") == "newpage");
+                    //echo "2 BEFH <BR>";
+                    $this->applyFormat($group, "before_header");
                 }
 
                 if ((ReporticoSession())::getReporticoSessionParam("target_show_group_headers")) {
