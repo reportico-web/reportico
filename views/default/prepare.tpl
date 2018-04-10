@@ -15,7 +15,7 @@
 <script type="text/javascript">var reportico_pdf_delivery_mode = "{{ PDF_DELIVERY_MODE }}";</script>
 {% endif %}
 
-<FORM class="swPrpForm" id="criteriaform" name="topmenu" method="POST" action="{{ SCRIPT_SELF }}">
+<FORM class="swPrpForm non-printable" id="criteriaform" name="topmenu" method="POST" action="{{ SCRIPT_SELF }}">
 <input type="hidden" name="reportico_session_name" value="{{ SESSION_ID }}" />
 
 <!-- Menu Bar -->
@@ -59,12 +59,26 @@
     </div>
   </div>
 </div>
+
+
 {% endif %}
 
 </FORM>
 {% include 'prepare-modals.inc.tpl' %}
+
+<div class="reportico-show-criteria" >
+    <a href="#"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></a>
+</div>
+<div class="reportico-hide-criteria" >
+    <a href="#"><span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span></a>
+</div>
+
+<div id="reportico-report-output">
+</div>
+
 {% include 'reportico-banner.inc.tpl' %}
 </div>
+
 {% include 'footer.inc.tpl' %}
 
 {% endautoescape %}

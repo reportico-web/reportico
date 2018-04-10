@@ -90,7 +90,7 @@
 <br>
 {% if LANGUAGES|length > 0  %}
 				<span style="text-align:right;width: 230px; display: inline-block">{{ T_CHOOSE_LANGUAGE }}</span>
-				<select class="{{ BOOTSTRAP_STYLE_DROPDOWN }}swPrpDropSelectRegular" name="jump_to_language">
+				<select class="{{ BOOTSTRAP_STYLE_DROPDOWN }}reportico-drop-select-regular" name="jump_to_language">
 {% for menuitem in LANGUAGES %}
 
 {% if menuitem.active  %}
@@ -115,7 +115,7 @@
 {% if LANGUAGES|length > 0  %}
 		<TR> 
 			<TD class="swMenuItem" style="width: 30%"><span style="text-align:right;width: 230px; display: inline-block">{{ T_CHOOSE_LANGUAGE }}</span>
-				<select class="{{ BOOTSTRAP_STYLE_DROPDOWN }}swPrpDropSelectRegular" name="jump_to_language">
+				<select class="{{ BOOTSTRAP_STYLE_DROPDOWN }}reportico-drop-select-regular" name="jump_to_language">
 {% for menuitem in LANGUAGES %}
 {{ menuitem }}
 
@@ -127,7 +127,7 @@
 {% endif %}
 {% endfor %}
 				</select>
-				<input class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}swMntButton reporticoSubmit" type="submit" name="submit_language" value="{{ T_GO }}">
+				<input class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}reportico-maintain-button reporticoSubmit" type="submit" name="submit_language" value="{{ T_GO }}">
 			</TD>
 		</TR>
 {% endif %}
@@ -135,12 +135,12 @@
 {% if PROJECT_ITEMS|length > 0  %}
 		<TR> 
 			<TD class="swMenuItem" style="width: 30%"><span style="text-align:right;width: 230px; display: inline-block">{{ T_RUN_SUITE }}</span>
-				<select class="{{ BOOTSTRAP_STYLE_DROPDOWN }}swPrpDropSelectRegular" name="jump_to_menu_project">
+				<select class="{{ BOOTSTRAP_STYLE_DROPDOWN }}reportico-drop-select-regular" name="jump_to_menu_project">
 {% for menuitem in PROJECT_ITEMS %}
 				<OPTION label="{{ menuitem.label }}" value="{{ menuitem.label }}">{{ menuitem.label }}</OPTION>
 {% endfor %}
 				</select>
-				<input class="{{ BOOTSTRAP_STYLE_GO_BUTTON }}swMntButton reporticoSubmit" type="submit" name="submit_menu_project" value="{{ T_GO }}">
+				<input class="{{ BOOTSTRAP_STYLE_GO_BUTTON }}reportico-maintain-button reporticoSubmit" type="submit" name="submit_menu_project" value="{{ T_GO }}">
 			</TD>
 		</TR>
 {% endif %}
@@ -149,32 +149,32 @@
 {% if PROJECT_ITEMS|length > 0  %}
 		<TR> 
 			<TD class="swMenuItem" style="width: 30%"><span style="text-align:right;width: 230px; display: inline-block">{{ T_CREATE_REPORT }}</span>
-				<select class="{{ BOOTSTRAP_STYLE_DROPDOWN }}swPrpDropSelectRegular" name="jump_to_design_project">
+				<select class="{{ BOOTSTRAP_STYLE_DROPDOWN }}reportico-drop-select-regular" name="jump_to_design_project">
 {% for menuitem in PROJECT_ITEMS %}
 				<OPTION label="{{ menuitem.label }}" value="{{ menuitem.label }}">{{ menuitem.label }}</OPTION>
 {% endfor %}
 				</select>
-				<input class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}swMntButton reporticoSubmit" type="submit" name="submit_design_project" value="{{ T_GO }}">
+				<input class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}reportico-maintain-button reporticoSubmit" type="submit" name="submit_design_project" value="{{ T_GO }}">
 			</TD>
 		</TR>
 		<TR> 
 			<TD class="swMenuItem" style="width: 30%"><span style="text-align:right;width: 230px; display: inline-block">{{ T_CONFIG_PARAM }}</span>
-				<select class="{{ BOOTSTRAP_STYLE_DROPDOWN }}swPrpDropSelectRegular" name="jump_to_configure_project">
+				<select class="{{ BOOTSTRAP_STYLE_DROPDOWN }}reportico-drop-select-regular" name="jump_to_configure_project">
 					{% for menuitem in PROJECT_ITEMS %}
 							<OPTION label="{{ menuitem.label }}" value="{{ menuitem.label }}">{{ menuitem.label }}</OPTION>
 					{% endfor %}
 				</select>
-				<input class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}swMntButton reporticoSubmit" type="submit" name="submit_configure_project" value="{{ T_GO }}">
+				<input class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}reportico-maintain-button reporticoSubmit" type="submit" name="submit_configure_project" value="{{ T_GO }}">
 			</TD>
 		</TR>
 		<TR> 
 			<TD class="swMenuItem" style="width: 30%"><span style="text-align:right;width: 230px; display: inline-block">{{ T_DELETE_PROJECT }}</span>
-				<select class="{{ BOOTSTRAP_STYLE_DROPDOWN }}swPrpDropSelectRegular" name="jump_to_delete_project">
+				<select class="{{ BOOTSTRAP_STYLE_DROPDOWN }}reportico-drop-select-regular" name="jump_to_delete_project">
 					{% for menuitem in PROJECT_ITEMS %}
 							<OPTION label="{{ menuitem.label }}" value="{{ menuitem.label }}">{{ menuitem.label }}</OPTION>
 					{% endfor %}
 				</select>
-				<input class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}swMntButton reporticoSubmit" type="submit" name="submit_delete_project" value="{{ T_GO }}">
+				<input class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}reportico-maintain-button reporticoSubmit" type="submit" name="submit_delete_project" value="{{ T_GO }}">
 			</TD>
 		</TR>
 {% endif %}
@@ -207,7 +207,7 @@
 {% if LANGUAGES|length > 1  %}
 		<TR> 
 			<TD class="swMenuItem" style="width: 30%"><span style="text-align:right;width: 230px; display: inline-block">{{ T_CHOOSE_LANGUAGE }}</span>
-				<select class="{{ BOOTSTRAP_STYLE_DROPDOWN }}swPrpDropSelectRegular" name="jump_to_language">
+				<select class="{{ BOOTSTRAP_STYLE_DROPDOWN }}reportico-drop-select-regular" name="jump_to_language">
 {% for menuitem in LANGUAGES %}
 
 	{% if menuitem.active  %}
@@ -217,19 +217,19 @@
 	{% endif %}
 {% endfor %}
 				</select>
-				<input class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}swMntButton reporticoSubmit" type="submit" name="submit_language" value="{{ T_GO }}">
+				<input class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}reportico-maintain-button reporticoSubmit" type="submit" name="submit_language" value="{{ T_GO }}">
 			</TD>
 		</TR>
 {% endif %}
 {% if PROJECT_ITEMS|length > 0  %}
 		<TR> 
 			<TD class="swMenuItem" style="width: 30%"><span style="text-align:right;width: 230px; display: inline-block">{{ T_RUN_SUITE }}</span>
-				<select class="{{ BOOTSTRAP_STYLE_DROPDOWN }}swPrpDropSelectRegular" name="jump_to_menu_project">
+				<select class="{{ BOOTSTRAP_STYLE_DROPDOWN }}reportico-drop-select-regular" name="jump_to_menu_project">
 {% for menuitem in PROJECT_ITEMS %}
 				<OPTION label="{{ menuitem.label }}" value="{{ menuitem.label }}">{{ menuitem.label }}</OPTION>
 {% endfor %}
 				</select>
-				<input class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}swMntButton reporticoSubmit" type="submit" name="submit_menu_project" value="{{ T_GO }}">
+				<input class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}reportico-maintain-button reporticoSubmit" type="submit" name="submit_menu_project" value="{{ T_GO }}">
 			</TD>
 		</TR>
 {% endif %}

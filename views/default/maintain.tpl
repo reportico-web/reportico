@@ -165,12 +165,12 @@ Logged On As {{ DBUSER }}
 {% endif %}
 				&nbsp;<a class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}reportico-ajax-link" href="{{ RUN_REPORT_URL }}">{{ T_RUN_REPORT }}</a>
 				&nbsp;<input class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}reportico-ajax-link" type="submit" name="submit_prepare_mode" style="display:none" onclick="return(false);" value="Do nothing on enter">
-                <input class="swMntButton reporticoSubmit swNoSubmit" style="width: 0px; color: transparent; background-color: transparent; border-color: transparent; cursor: default;" type="submit" name="submit_dummy_SET" value="Ok">
+                <input class="reportico-maintain-button reporticoSubmit swNoSubmit" style="width: 0px; color: transparent; background-color: transparent; border-color: transparent; cursor: default;" type="submit" name="submit_dummy_SET" value="Ok">
 			</TD>
 {% endif %}
 {% if SHOW_MODE_MAINTAIN_BOX and 0 %}
 			<TD style="text-align: left;">
-				<input class="swMntButton" type="submit" name="submit_genws_mode" value="{{ T_GEN_WEB_SERVICE }}">
+				<input class="reportico-maintain-button" type="submit" name="submit_genws_mode" value="{{ T_GEN_WEB_SERVICE }}">
 			</TD>
 			<TD style="text-align: right;">
 			</TD>
@@ -195,7 +195,7 @@ Logged On As {{ DBUSER }}
 		</TR>
 	</TABLE>
 {% endif %}
-	<TABLE class="swMntMainBox" cellspacing="0" cellpadding="0">
+	<TABLE class="reportico-maintain-main-box" cellspacing="0" cellpadding="0">
 		<TR>
 			<TD>
 {{ CONTENT }}

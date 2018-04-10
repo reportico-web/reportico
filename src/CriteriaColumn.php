@@ -875,7 +875,7 @@ class CriteriaColumn extends QueryColumn
                 break;
 
             default:
-                $text .= '<SELECT class="' . $this->lookup_query->getBootstrapStyle('design_dropdown') . 'swPrpDropSelectRegular" name="' . $tag_pref . $this->query_name . '">';
+                $text .= '<SELECT class="' . $this->lookup_query->getBootstrapStyle('design_dropdown') . 'reportico-drop-select-regular" name="' . $tag_pref . $this->query_name . '">';
                 break;
         }
 
@@ -1139,7 +1139,7 @@ class CriteriaColumn extends QueryColumn
                 break;
 
             default:
-                $text .= '<SELECT class="' . $this->lookup_query->getBootstrapStyle('design_dropdown') . 'swPrpDropSelectRegular" name="' . $tag_pref . $this->query_name . '">';
+                $text .= '<SELECT class="' . $this->lookup_query->getBootstrapStyle('design_dropdown') . 'reportico-drop-select-regular" name="' . $tag_pref . $this->query_name . '">';
                 break;
         }
 
@@ -1436,7 +1436,7 @@ class CriteriaColumn extends QueryColumn
                 break;
 
             default:
-                $text .= '<SELECT class="' . $this->lookup_query->getBootstrapStyle('design_dropdown') . 'swPrpDropSelectRegular" name="' . $tag_pref . $this->query_name . '">';
+                $text .= '<SELECT class="' . $this->lookup_query->getBootstrapStyle('design_dropdown') . 'reportico-drop-select-regular" name="' . $tag_pref . $this->query_name . '">';
                 break;
         }
 

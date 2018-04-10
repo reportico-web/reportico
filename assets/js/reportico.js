@@ -58,9 +58,9 @@ function getFilterGroupState()
     var closedfilters = "";
     
     var arr = [];
-    reportico_jquery(".swToggleCriteriaDiv").each(function(){
+    reportico_jquery(".reportico-toggleCriteriaDiv").each(function(){
         filterid = reportico_jquery(this).prop("id");
-        filterid = filterid.replace("swToggleCriteriaDiv","");
+        filterid = filterid.replace("reportico-toggleCriteriaDiv","");
         filterno = filterid;
         filterid = ".displayGroup" + filterid;
         
@@ -324,18 +324,18 @@ function splitPage() {
         }
 
         // Clone page headers
-        if ( reportico_jquery(child).hasClass("swPageHeaderBlock") ) {
+        if ( reportico_jquery(child).hasClass("reportico-page-header-block") ) {
             putbackheaders = reportico_jquery(child).clone();
         }
 
         // Extract first footer and remove all others. Then apply this one to all pages
-        firstfooter = reportico_jquery(thispage).find(".swPageFooterBlock:first");
+        firstfooter = reportico_jquery(thispage).find(".reportico-page-footer-block:first");
         if ( firstfooter.length > 0 ) {
             putbackfooters = firstfooter.clone();
         }
 
         // Remove this pages footers as they have been stored in previous statement
-        if ( reportico_jquery(child).hasClass("swPageFooterBlock") ) {
+        if ( reportico_jquery(child).hasClass("reportico-page-footer-block") ) {
             reportico_jquery(child).remove();
         }
 
@@ -347,7 +347,7 @@ function splitPage() {
             //console.log("ALERT " + childclass + " " + nextlong + " > " + pageheight + "!" );
 
             var newtable = false;
-            //if ( reportico_jquery(child).hasClass("swPageHeaderBlock") ) {
+            //if ( reportico_jquery(child).hasClass("reportico-page-header-block") ) {
                 //pageheaders = reportico_jquery(child).clone();
             //}
             if ( reportico_jquery(child).hasClass("reportico-page") ) {
@@ -452,7 +452,7 @@ function splitPage() {
         nonbody=0;
         for(j = 0; j < removed.length; j++){
             x = removed[j];
-            if ( reportico_jquery(x).hasClass("swPageHeaderBlock") || reportico_jquery(x).hasClass("swPageFooterBlock") ) 
+            if ( reportico_jquery(x).hasClass("reportico-page-header-block") || reportico_jquery(x).hasClass("reportico-page-footer-block") ) 
                 nonbody++;
         }
 
@@ -473,10 +473,10 @@ function splitPage() {
 function resizeHeaders()
 {
   // Size page header blocks to fit page headers
-  reportico_jquery(".swPageHeaderBlock").each(function() {
+  reportico_jquery(".reportico-page-header-block").each(function() {
     var parenty = reportico_jquery(this).position().top;
     var maxheight = 0;
-    reportico_jquery(this).find(".swPageHeader").each(function() {
+    reportico_jquery(this).find(".reportico-page-header").each(function() {
         var headerheight  = reportico_jquery(this).outerHeight();
         reportico_jquery(this).find("img").each(function() {
             var imgheight = reportico_jquery(this).prop("height");
@@ -547,6 +547,24 @@ function resizeTables()
  });
 }
 
+
+reportico_jquery(document).on('click', '.reportico-show-criteria', function(event) 
+{
+    // On manual paginate add class to trigger pagination
+    reportico_jquery(".reportico-show-criteria").hide();
+    reportico_jquery(".reportico-hide-criteria").show();
+    reportico_jquery("#criteriabody").show();
+    return false;
+});
+
+reportico_jquery(document).on('click', '.reportico-hide-criteria', function(event) 
+{
+    // On manual paginate add class to trigger pagination
+    reportico_jquery(".reportico-hide-criteria").hide();
+    reportico_jquery(".reportico-show-criteria").show();
+    reportico_jquery("#criteriabody").hide();
+    return false;
+});
 
 reportico_jquery(document).on('click', '.reportico-paginate-button-link', function(event) 
 {
@@ -633,13 +651,25 @@ reportico_jquery(document).on('click', '.swMiniMaintainSubmit,.reportico-bootstr
             reportico_jquery('#reporticoModal').modal('hide');
             reportico_jquery('.modal-backdrop').remove();
             reportico_jquery('#reportico_container').closest('body').removeClass('modal-open');
+
+            // Weird behaviour after moda open causes right padding to be added to body - remove it
+            reportico_jquery('#reportico_container').closest('body').css('padding-right', "0px");
           }
           else
             reportico_jquery('#reporticoModal').hide();
+
           reportico_jquery("#swMiniMaintain").html("");
+
+          criteriabodyshowing = reportico_jquery("#criteriabody").is(":visible");
 
           //reportico_jquery(reportico_container).removeClass("loading");
           fillDialog(data, cont);
+
+          if ( !criteriabodyshowing ) {
+            reportico_jquery("#criteriabody").hide();
+            reportico_jquery(".reportico-show-criteria").show();
+            reportico_jquery(".reportico-hide-criteria").hide();
+          }
         },
         error: function(xhr, desc, err) {
           reportico_jquery("#swMiniMaintain").html("");
@@ -696,7 +726,7 @@ reportico_jquery(document).on('click', '.swMiniMaintain', function(event)
           else
             reportico_jquery("#reporticoModal").show();
           reportico_jquery("#swMiniMaintain").html(data);
-          x = reportico_jquery(".swMntButton").prop("name");
+          x = reportico_jquery(".reportico-maintain-button").prop("name");
           reportico_jquery(".swMiniMaintainSubmit").prop("id", x);
         },
         error: function(xhr, desc, err) {
@@ -803,7 +833,7 @@ reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenu
               if ( reportico_bootstrap_modal )
                 setupModals();
               reportico_jquery("#swMiniMaintain").html(data);
-              x = reportico_jquery(".swMntButton").prop("name");
+              x = reportico_jquery(".reportico-maintain-button").prop("name");
               reportico_jquery(".swMiniMaintainSubmit").prop("id", x);
             },
             error: function(xhr, desc, err) {
@@ -1223,7 +1253,7 @@ reportico_jquery(document).on('click', '.swPrintBox,.prepareAjaxExecute,#prepare
             html_print(reportico_report_title, data);
         }
         else
-            fillDialog(data, cont);
+            fillReportOutputArea(data);
        },
        error: function(xhr, desc, err) {
          reportico_jquery(expandpanel).removeClass("loading");
@@ -1298,7 +1328,19 @@ function runreport(url, container)
     });
 }
 
+function fillReportOutputArea(results) {
+
+  reportico_jquery(".reportico-show-criteria").show();
+  reportico_jquery(".reportico-hide-criteria").hide();
+  reportico_jquery("#criteriabody").hide();
+  reportico_jquery("#reportico-report-output").html(results);
+  reportico_jquery(".reportico-back-button").hide();
+  resizeTables();
+  paginate();
+}
+
 function fillDialog(results, cont) {
+
   x = reportico_jquery(cont).closest("#reportico_container");
   reportico_jquery(cont).closest("#reportico_container").replaceWith(results);
   setupDatePickers();
@@ -1322,11 +1364,11 @@ function toggleCriteria(id) {
     if ( reportico_jquery(".displayGroup" + id ).css("display") == "none" )
     {
         reportico_jquery(".displayGroup" + id ).show();
-        reportico_jquery("#swToggleCriteria" + id ).html("-");
+        reportico_jquery("#reportico-toggleCriteria" + id ).html("-");
     }
     else
     {
-        reportico_jquery("#swToggleCriteria" + id ).html("+");
+        reportico_jquery("#reportico-toggleCriteria" + id ).html("+");
         reportico_jquery(".displayGroup" + id ).hide();
     }
 } 

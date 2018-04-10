@@ -269,7 +269,7 @@ a:visited
     color: #7070CC !important;
 }
 
-.swToggle, .swToggle:link, .swToggle:visited
+.reportico-toggle, .reportico-toggle:link, .reportico-toggle:visited
 { 
     padding-right: 5px;
     padding-left: 5px;
@@ -283,12 +283,12 @@ a:visited
     text-decoration: none;
 }
 
-.swToggleCriteriaDiv td
+.reportico-toggleCriteriaDiv td
 { 
     font-weight: bold;
 }
 
-.swToggleCriteria, .swToggleCriteria:link, .swToggleCriteria:visited
+.reportico-toggleCriteria, .reportico-toggleCriteria:link, .reportico-toggleCriteria:visited
 { 
     padding-right: 5px;
     padding-left: 5px;
@@ -491,7 +491,7 @@ input.swAdminButton2
     font-size: 10pt;
 }
 
-.swPrpDropSelectRegular
+.reportico-drop-select-regular
 {
     text-align: left;
     background-color: #FFFFFF;
@@ -823,7 +823,7 @@ input.swAdminButton2
 }
 
 /* ------------------ 2nd Menu with Report Name, Project Name etc  --------------*/
-.swMntMainBox
+.reportico-maintain-main-box
 {
     width: 100%;
     border: solid;
@@ -849,7 +849,7 @@ input.swAdminButton2
     color: #000000;
 }
 
-.swMntButton
+.reportico-maintain-button
 { 
     background-color: #EFEFEF;
     border-style: ridge;
@@ -862,7 +862,7 @@ input.swAdminButton2
     margin-left: 2px;
 }
 
-.swMntButton:hover
+.reportico-maintain-button:hover
 {
     border: solid thin #000000;	
 }
@@ -1039,7 +1039,7 @@ input.swAdminButton2
     text-align: center;
 }
 
-.swMntRowBlock
+.reportico-maintain-row-block
 {
     border-bottom: solid 1px #ccc;
     vertical-align: text-top;
@@ -1048,7 +1048,7 @@ input.swAdminButton2
     margin-left: 2%
 }
 
-.swMntSetField
+.reportico-maintain-set-field
 {
     /*background-color : #f4f4f4;*/
     border-color : #BBCCFF;
@@ -1056,7 +1056,7 @@ input.swAdminButton2
     font-size: 10pt;
 }
 
-.swMntSetField textarea
+.reportico-maintain-set-field textarea
 {
     font-size: 10pt;
     /*width: auto !important;
@@ -1120,13 +1120,25 @@ input.swAdminButton2
 /* -------------------------- Printed Output Styles ----------------------------------*/
 .reportico-custom-trailer-block { display: block; width: 100%; position: relative; }
 .swNewPageHeaderBlock { display: none; }
-.swPageHeaderBlock { display: block; width: 100%; left: 0px; position: relative; top: 0;}
-.swPageFooterBlock { display: block; width: 100%; left: 0px; position: absolute; bottom: 0 !important;}
-.swPageHeaderBody { position: relative; }
-.swPageFooterBody { position: relative; }
-.swPageFooter { position: absolute; }
-.swPageHeader { position: absolute; }
+.reportico-page-header-block { display: block; width: 100%; left: 0px; position: relative; top: 0;}
+.reportico-page-footer-block { display: block; width: 100%; left: 0px; position: absolute; bottom: 0 !important;}
+.reportico-page-headerBody { position: relative; }
+.reportico-page-footerBody { position: relative; }
+.reportico-page-footer { position: absolute; }
+.reportico-page-header { position: absolute; }
 .reportico-custom-trailer { position: absolute; }
+
+.reportico-hide-criteria,
+.reportico-show-criteria {
+    width: 100%;
+    display: block;
+    text-align: center;
+    width: 100%;
+}
+
+#reportico-report-output {
+    width: 100%;
+}
 
 @page {
     size: A4;
@@ -1139,7 +1151,7 @@ input.swAdminButton2
 
 
 /*@media screen {
-    .swPageHeaderBlock { display: none; }
+    .reportico-page-header-block { display: none; }
 }*/
 
 .reportico-paginated.autopaginate {
@@ -1165,13 +1177,16 @@ input.swAdminButton2
 .page-size-A5.page-orientation-portrait.autopaginate { width: 21cm; height: 29.7cm; }
 .page-size-A5.page-orientation-landscape.autopaginate { width: 29.7cm; height: 21cm; }
 
+
+
 @media print {
 
     .reportico-paginated {
         overflow:hidden !important;
     }
 
-    .swPageHeader { display: block; }
+    .non-printable { display: none; }
+    .reportico-page-header { display: block; }
     .reportico-ajax-link { display: none; }
     .reportico-back-button { display: none; }
     

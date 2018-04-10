@@ -16,9 +16,9 @@
     <button type="submit" class="btn btn-default" title="{{ T_EDIT }} {{ T_EDITGRAPHS }}" id="submit_mainqueroutpgrph" name="mainqueroutpgrph_ANY">
         <span class="glyphicon glyphicon-pencil"></span>{{ T_EDITGRAPHS }}
     </button>
-    <button type="submit" class="btn btn-default" title="{{ T_EDIT }} {{ T_EDITPAGESETUP }}" id="submit_mainquerform_SHOW" name="mainquerform_Page.*|.*Margin">
+    <!--button type="submit" class="btn btn-default" title="{{ T_EDIT }} {{ T_EDITPAGESETUP }}" id="submit_mainquerform_SHOW" name="mainquerform_Page.*|.*Margin">
         <span class="glyphicon glyphicon-pencil"></span>{{ T_EDITPAGESETUP }}
-    </button>
+    </button-->
 
 {% else %}
 
@@ -32,9 +32,9 @@
 {{ T_REPORT_FILE }} <input type="text" name="xmlout" id="swPrpSaveFile" value="{{ XMLFILE }}"> <input type="submit" class="{{ BOOTSTRAP_STYLE_PRIMARY_BUTTON }} swPrpSaveButton" type="submit" name="submit_xxx_SAVE" value="{{ T_SAVE }}">
                         </li>
     				   <div class="btn-group" role="group">
-                            <button type="submit" class="btn btn-default prepareMiniMaintain swMiniMaintain" title="{{ T_EDIT }} {{ T_EDITPAGESETUP }}" id="submit_mainquerform_SHOW" name="mainquerform_Page|Margin|Zoom|Paginate">
+                            <!--button type="submit" class="btn btn-default prepareMiniMaintain swMiniMaintain" title="{{ T_EDIT }} {{ T_EDITPAGESETUP }}" id="submit_mainquerform_SHOW" name="mainquerform_Page|Margin|Zoom|Paginate">
                                 <span class="glyphicon glyphicon-pencil"></span>{{ T_EDITPAGESETUP }}
-                            </button>
+                            </button-->
     				       <button type="submit" class="btn btn-default prepareMiniMaintain swMiniMaintain" title="{{ T_EDIT }} {{ T_EDITSQL }}" id="submit_mainquerqury_SHOW" name="mainquerqurysqlt_QuerySql">
                                 <span class="glyphicon glyphicon-pencil"></span>{{ T_EDITSQL }}
                             </button>

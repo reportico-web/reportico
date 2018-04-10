@@ -1062,7 +1062,7 @@ class ReportHtml extends Report
         // In printable html mode dont show back box
         if (!ReporticoUtility::getRequestItem("printable_html")) {
 
-            // Show Go Back Button ( if user is not in "SINGLE REPORT RUN " )
+            // Show Go Back Button ( if user is not in "SINGLE REPORT RUN " )- TEMPORARILY DISABLED
             if (!$this->query->access_mode || ($this->query->access_mode != "REPORTOUTPUT")) {
                 $this->jar["buttons"]["back"] = [ 
                     "href" => $this->query->getActionUrl() . $url_join_char . 

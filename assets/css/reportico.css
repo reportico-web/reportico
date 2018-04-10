@@ -254,7 +254,7 @@ a:visited
     color: #7070CC !important;
 }
 
-.swToggle, .swToggleCriteria, .swToggleCriteria.link, .swToggle:link, .swToggle:visited
+.reportico-toggle, .reportico-toggleCriteria, .reportico-toggleCriteria.link, .reportico-toggle:link, .reportico-toggle:visited
 { 
     padding-right: 5px;
     padding-left: 5px;
@@ -457,7 +457,7 @@ a:visited
     font-size: 10pt;
 }
 
-.swPrpDropSelectRegular
+.reportico-drop-select-regular
 {
     text-align: left;
     background-color: #FFFFFF;
@@ -787,7 +787,7 @@ a:visited
 }
 
 /* ------------------ 2nd Menu with Report Name, Project Name etc  --------------*/
-.swMntMainBox
+.reportico-maintain-main-box
 {
     width: 100%;
     border: solid;
@@ -816,7 +816,7 @@ a:visited
     display: table;
 }
 
-.swMntButton
+.reportico-maintain-button
 { 
     background-color: #EFEFEF;
     border-style: ridge;
@@ -828,7 +828,7 @@ a:visited
     text-align: center;
 }
 
-.swMntButton:hover
+.reportico-maintain-button:hover
 {
     border: solid thin #000000;	
 }
@@ -1006,7 +1006,7 @@ a:visited
     text-align: center;
 }
 
-.swMntRowBlock
+.reportico-maintain-row-block
 {
     border: groove thin;
     border-width: 2px;
@@ -1017,7 +1017,7 @@ a:visited
     margin-left: 2%
 }
 
-.swMntSetField
+.reportico-maintain-set-field
 {
     background-color : #f4f4f4;
     border-color : #BBCCFF;
@@ -1025,7 +1025,7 @@ a:visited
     font-size: 10pt;
 }
 
-.swMntSetField textarea
+.reportico-maintain-set-field textarea
 {
     font-size: 10pt;
     width: auto;
@@ -1086,8 +1086,8 @@ a:visited
 
 /* -------------------------- Printed Output Styles ----------------------------------*/
 /* -------------------------- Printed Output Styles ----------------------------------*/
-.swPageHeaderBlock { display: block; width: 100%; position: relative; }
-.swPageHeader { position: absolute; }
+.reportico-page-header-block { display: block; width: 100%; position: relative; }
+.reportico-page-header { position: absolute; }
 
 
 @media print {

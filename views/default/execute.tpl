@@ -9,13 +9,13 @@
 </HEAD>
 {% if REPORT_PAGE_STYLE %}
 {% if REPORTICO_STANDALONE_WINDOW %}
-<BODY class="reportico-body swRepBodyStandalone" {{ REPORT_PAGE_STYLE }};">
+<BODY class="reportico-body reportico-bodyStandalone" {{ REPORT_PAGE_STYLE }};">
 {% else %}
 <BODY class="reportico-body">
 {% endif %}
 {% else %}
 {% if REPORTICO_STANDALONE_WINDOW %}
-<BODY class="reportico-body swRepBodyStandalone">
+<BODY class="reportico-body reportico-bodyStandalone">
 {% else %}
 <BODY class="reportico-body">
 {% endif %}
@@ -114,8 +114,9 @@
 
 <script type="text/javascript" src="{{ ASSETS_PATH }}/js/reportico.js"></script>
 
-{% endif %}
 <div id="reportico_container">
+
+{% endif %}
 
 <div id="reportico-top-margin" style="z-index: 1; display: none;left: 80px;float: left; border: solid; height: {{ PAGE_TOP_MARGIN }}; width: {{ PAGE_LEFT_MARGIN }};">t</div>
 <div id="reportico-bottom-margin" style="z-index: 1; display: none;left: 160;float: right; border: solid; height: {{ PAGE_BOTTOM_MARGIN }}; width: {{ PAGE_RIGHT_MARGIN }};">b</div>
@@ -202,7 +203,9 @@
 
 {% include 'execute-content.inc.tpl' %}
 
+{% if PRINTABLE_HTML %}
 </div>
+{% endif %}
 </div>
 {% if not REPORTICO_AJAX_CALLED %}
 {% if not EMBEDDED_REPORT %}

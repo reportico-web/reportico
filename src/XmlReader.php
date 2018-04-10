@@ -2269,7 +2269,7 @@ class XmlReader
     {
         $text = "";
         $text .= '<TD>';
-        $text .= '<input class="' . $this->query->getBootstrapStyle('design_ok') . 'swMntButton reporticoSubmit" type="submit" name="submit_' . $in_tag . '_ADD" value="' . ReporticoLang::templateXlate("ADD") . '">';
+        $text .= '<input class="' . $this->query->getBootstrapStyle('design_ok') . 'reportico-maintain-button reporticoSubmit" type="submit" name="submit_' . $in_tag . '_ADD" value="' . ReporticoLang::templateXlate("ADD") . '">';
         $text .= '</TD>';
 
         // Show Import/Link options
@@ -2310,7 +2310,7 @@ class XmlReader
     // and subsequent elements from that report
     public function &draw_report_link_panel($link_or_import, $tag, $label, $preselectedvalue = false)
     {
-        $text = '<TD class="swMntSetField" style="text-align: right; color: #eeeeee; background-color: #000000;" colspan="1">';
+        $text = '<TD class="reportico-maintain-set-field" style="text-align: right; color: #eeeeee; background-color: #000000;" colspan="1">';
         $type = "TEXTFIELD";
         $translateoptions = false;
 
@@ -2379,7 +2379,7 @@ class XmlReader
 
         // Draw report names we can link to
         $text .= $this->drawSelectFileList($this->query->reports_path, "/.*\.xml/", false, $preselectedvalue, true, false, "reportlink");
-        $text .= '<input class="' . $this->query->getBootstrapStyle('design_ok') . 'swMntButton reporticoSubmit" style="margin-right: 20px" type="submit" name="submit_' . $this->id . '_REPORTLINK" value="' . ReporticoLang::templateXlate("OK") . '">';
+        $text .= '<input class="' . $this->query->getBootstrapStyle('design_ok') . 'reportico-maintain-button reporticoSubmit" style="margin-right: 20px" type="submit" name="submit_' . $this->id . '_REPORTLINK" value="' . ReporticoLang::templateXlate("OK") . '">';
 
         if ($this->query->reportlink_report) {
             // Draw report criteria items we can link to
@@ -2437,7 +2437,7 @@ class XmlReader
                 }
 
                 $text .= $this->drawArrayDropdown("reportlinkitem_" . $this->id, $listarr, false, false, false, true);
-                $text .= '<input class="' . $this->query->getBootstrapStyle('design_ok') . 'swMntButton reporticoSubmit" style="margin-right: 20px" type="submit" name="submit_' . $this->id . '_REPORTLINKITEM" value="' . ReporticoLang::templateXlate("OK") . '">';
+                $text .= '<input class="' . $this->query->getBootstrapStyle('design_ok') . 'reportico-maintain-button reporticoSubmit" style="margin-right: 20px" type="submit" name="submit_' . $this->id . '_REPORTLINKITEM" value="' . ReporticoLang::templateXlate("OK") . '">';
             }
         }
 
@@ -2753,7 +2753,7 @@ class XmlReader
                     case "Report":
                     case "CogModule":
                         $this->id = "main";
-                        $text .= '<TABLE class="swMntMainBox">';
+                        $text .= '<TABLE class="reportico-maintain-main-box">';
                         if (ReporticoUtility::getRequestItem("partialMaintain", false)) {
                             break;
                         }
@@ -2780,7 +2780,7 @@ class XmlReader
                         $this->id .= "quer";
                         //$text .= '</TR>';
                         $text .= '</TABLE>';
-                        $text .= '<UL style="width:100%" class="' . $this->query->getBootstrapStyle('htabs') . 'swMntMainBox">';
+                        $text .= '<UL style="width:100%" class="' . $this->query->getBootstrapStyle('htabs') . 'reportico-maintain-main-box">';
 
                         // Force format Screen if none chosen
                         $match = "/quer$/";
@@ -2815,7 +2815,7 @@ class XmlReader
                     case 'Groups':
                         $this->id .= "grps";
                         if ($this->isShowing($this->id)) {
-                            $text .= '<TR class="swMntRowBlock">';
+                            $text .= '<TR class="reportico-maintain-row-block">';
                             $text .= $this->draw_add_button($this->id, "Groups");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
@@ -2835,7 +2835,7 @@ class XmlReader
                     case 'GroupTrailers':
                         $this->id .= "gtrl";
                         if ($this->isShowing($this->id)) {
-                            $text .= '<TR class="swMntRowBlock">';
+                            $text .= '<TR class="reportico-maintain-row-block">';
                             $text .= $this->draw_add_button($this->id, "Group Trailers");
                             $text .= '</TR>';
                             $text .= '<TR>';
@@ -2852,7 +2852,7 @@ class XmlReader
                     case 'GroupHeaders':
                         $this->id .= "ghdr";
                         if ($this->isShowing($this->id)) {
-                            $text .= '<TR class="swMntRowBlock">';
+                            $text .= '<TR class="reportico-maintain-row-block">';
                             $text .= $this->draw_add_button($this->id, "Group Headers");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
@@ -2871,7 +2871,7 @@ class XmlReader
                     case 'PreSQLS':
                         $this->id .= "psql";
                         if ($this->isShowing($this->id)) {
-                            $text .= '<TR class="swMntRowBlock">';
+                            $text .= '<TR class="reportico-maintain-row-block">';
                             $text .= $this->draw_add_button($this->id, "PreSQLS");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
@@ -2908,7 +2908,7 @@ class XmlReader
                     case 'Plots':
                         $this->id .= "plot";
                         if ($this->isShowing($this->id)) {
-                            $text .= '<TR class="swMntRowBlock">';
+                            $text .= '<TR class="reportico-maintain-row-block">';
                             $text .= $this->draw_add_button($this->id, "Plots");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
@@ -2927,7 +2927,7 @@ class XmlReader
                     case 'Graphs':
                         $this->id .= "grph";
                         if ($this->isShowing($this->id)) {
-                            $text .= '<TR class="swMntRowBlock">';
+                            $text .= '<TR class="reportico-maintain-row-block">';
                             $text .= $this->draw_add_button($this->id, "Graphs");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
@@ -2946,7 +2946,7 @@ class XmlReader
                     case 'PageHeaders':
                         $this->id .= "pghd";
                         if ($this->isShowing($this->id)) {
-                            $text .= '<TR class="swMntRowBlock">';
+                            $text .= '<TR class="reportico-maintain-row-block">';
                             $text .= $this->draw_add_button($this->id, "Page Headers");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
@@ -2965,7 +2965,7 @@ class XmlReader
                     case 'PageFooters':
                         $this->id .= "pgft";
                         if ($this->isShowing($this->id)) {
-                            $text .= '<TR class="swMntRowBlock">';
+                            $text .= '<TR class="reportico-maintain-row-block">';
                             $text .= $this->draw_add_button($this->id, "Page Footers");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
@@ -2985,7 +2985,7 @@ class XmlReader
                         $this->id .= "qcol";
                         if ($this->isShowing($this->id)) {
                             $text .= "\n<!--Debug Qcol-->";
-                            $text .= '<TR class="swMntRowBlock">';
+                            $text .= '<TR class="reportico-maintain-row-block">';
                             $text .= $this->draw_add_button($this->id, "Query Columns");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
@@ -3007,7 +3007,7 @@ class XmlReader
                         $this->id .= "outp";
                         $ct = count($val);
                         if ($this->id != "mainqueroutp") {
-                            $text .= '<TR class="swMntRowBlock">';
+                            $text .= '<TR class="reportico-maintain-row-block">';
                             $text .= $this->draw_show_hide_button($this->id, "Output");
                             if ($this->isShowing($this->id)) {
                                 $text .= '<TD colspan="3"><TABLE><TR>';
@@ -3020,9 +3020,9 @@ class XmlReader
                                 $this->show_area .= "pghd";
                             }
 
-                            $text .= '<TR class="swMntRowBlock">';
+                            $text .= '<TR class="reportico-maintain-row-block">';
                             $text .= '<TD style="width: 100%;">';
-                            $text .= '<UL style="width:100%" class="' . $this->query->getBootstrapStyle('htabs') . 'swMntMainBox">';
+                            $text .= '<UL style="width:100%" class="' . $this->query->getBootstrapStyle('htabs') . 'reportico-maintain-main-box">';
                             $text .= $this->draw_show_hide_tab_button($this->id . "pghd", "PAGE_HEADERS");
                             $text .= $this->draw_show_hide_tab_button($this->id . "pgft", "PAGE_FOOTERS");
                             $text .= $this->draw_show_hide_tab_button($this->id . "dord", "DISPLAY_ORDER");
@@ -3031,7 +3031,7 @@ class XmlReader
                             $text .= '</UL>';
                             $text .= '</TD>';
                             $text .= '</TR>';
-                            $text .= '<TR class="swMntRowBlock">';
+                            $text .= '<TR class="reportico-maintain-row-block">';
                             $text .= '<TD style="width: 100%;">';
                             $text .= '<TABLE class="swMntInnerBox">';
                         }
@@ -3041,7 +3041,7 @@ class XmlReader
                         $this->id .= "data";
                         $ct = count($val);
                         if ($this->id != "mainquerdata") {
-                            $text .= '<TR class="swMntRowBlock">';
+                            $text .= '<TR class="reportico-maintain-row-block">';
                             $text .= $this->draw_show_hide_button($this->id, "Data Source");
                             if ($this->isShowing($this->id)) {
                                 $text .= '<TD colspan="3"><TABLE><TR>';
@@ -3052,7 +3052,7 @@ class XmlReader
                     case 'SourceConnection':
                         $this->id .= "conn";
                         $ct = count($val);
-                        $text .= '<TR class="swMntRowBlock">';
+                        $text .= '<TR class="reportico-maintain-row-block">';
                         $text .= '<TD colspan="3"><TABLE><TR>';
                         $text .= $this->draw_show_hide_button($this->id, "Connection");
                         $text .= '</TR>';
@@ -3072,9 +3072,9 @@ class XmlReader
                                 $this->show_area .= "sqlt";
                             }
 
-                            $text .= '<TR class="swMntRowBlock">';
+                            $text .= '<TR class="reportico-maintain-row-block">';
                             $text .= '<TD style="width: 100%;">';
-                            $text .= '<UL style="width:100%" class="' . $this->query->getBootstrapStyle('htabs') . 'swMntMainBox">';
+                            $text .= '<UL style="width:100%" class="' . $this->query->getBootstrapStyle('htabs') . 'reportico-maintain-main-box">';
                             $text .= $this->draw_show_hide_tab_button($this->id . "sqlt", "SQL");
                             $text .= $this->draw_show_hide_tab_button($this->id . "qcol", "QUERY_COLUMNS");
                             //$text .= $this->draw_show_hide_tab_button ($this->id."ords", "ORDER_BY") ;
@@ -3088,14 +3088,14 @@ class XmlReader
                     case 'Criteria':
                         $this->id .= "crit";
                         if ($this->id != "mainquercrit") {
-                            $text .= '<TR class="swMntRowBlock">';
+                            $text .= '<TR class="reportico-maintain-row-block">';
                             $text .= $this->draw_show_hide_button($this->id, "Criteria");
                             $text .= '</TR>';
                         }
 
                         $text .= "\n<!--StartCrit" . $this->id . "-->";
                         if ($this->isShowing($this->id)) {
-                            $text .= '<TR class="swMntRowBlock">';
+                            $text .= '<TR class="reportico-maintain-row-block">';
                             $text .= $this->draw_add_button($this->id, "Criteria");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
@@ -3114,7 +3114,7 @@ class XmlReader
                     case 'CriteriaLinks':
                         $this->id .= "clnk";
                         if ($this->isShowing($this->id)) {
-                            $text .= '<TR class="swMntRowBlock">';
+                            $text .= '<TR class="reportico-maintain-row-block">';
                             $text .= $this->draw_add_button($this->id, "Link");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
@@ -3134,7 +3134,7 @@ class XmlReader
                     case 'Assignments':
                         $this->id .= "assg";
                         if ($this->isShowing($this->id)) {
-                            $text .= '<TR class="swMntRowBlock">';
+                            $text .= '<TR class="reportico-maintain-row-block">';
                             $text .= $this->draw_add_button($this->id, "ASSIGNMENT");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
@@ -3200,7 +3200,7 @@ class XmlReader
                                 $ct++;
                             }
                             if ($from_key == "OrderColumns") {
-                                $text .= '<TR class="swMntRowBlock">';
+                                $text .= '<TR class="reportico-maintain-row-block">';
                                 $text .= $this->draw_show_hide_button($this->id, "Order Column " . $k);
                                 $text .= $this->draw_delete_button($this->id);
                                 $text .= '</TR>';
@@ -3426,9 +3426,9 @@ class XmlReader
                         $this->show_area .= "detl";
                     }
 
-                    $text .= "\n" . '<TR class="swMntRowBlock">' . "\n";
+                    $text .= "\n" . '<TR class="reportico-maintain-row-block">' . "\n";
                     $text .= '	<TD style="width: 100%;" colspan="4">' . "\n";
-                    $text .= '<UL style="width:100%" class="' . $this->query->getBootstrapStyle('htabs') . 'swMntMainBox">';
+                    $text .= '<UL style="width:100%" class="' . $this->query->getBootstrapStyle('htabs') . 'reportico-maintain-main-box">';
                     $text .= $this->draw_show_hide_tab_button($this->id . "detl", "DETAILS");
                     $text .= $this->draw_show_hide_tab_button($this->id . "plot", "PLOTS");
                     $text .= '		</UL>' . "\n";
@@ -3444,9 +3444,9 @@ class XmlReader
                         $this->show_area .= "detl";
                     }
 
-                    $text .= "\n" . '<TR class="swMntRowBlock">' . "\n";
+                    $text .= "\n" . '<TR class="reportico-maintain-row-block">' . "\n";
                     $text .= '	<TD style="width: 100%;" colspan="4">' . "\n";
-                    $text .= '<UL style="width:100%" class="' . $this->query->getBootstrapStyle('htabs') . 'swMntMainBox">';
+                    $text .= '<UL style="width:100%" class="' . $this->query->getBootstrapStyle('htabs') . 'reportico-maintain-main-box">';
                     $text .= $this->draw_show_hide_tab_button($this->id . "detl", "DETAILS");
                     $text .= $this->draw_show_hide_tab_button($this->id . "ghdr", "HEADERS");
                     $text .= $this->draw_show_hide_tab_button($this->id . "gtrl", "TRAILERS");
@@ -3464,9 +3464,9 @@ class XmlReader
                     }
 
                     $text .= "\n<!--startcrit bit " . $this->id . "-->";
-                    $text .= '<TR class="swMntRowBlock">' . "\n";
+                    $text .= '<TR class="reportico-maintain-row-block">' . "\n";
                     $text .= '	<TD style="width: 100%;" colspan="4">' . "\n";
-                    $text .= '<UL style="width:100%" class="' . $this->query->getBootstrapStyle('htabs') . 'swMntMainBox">';
+                    $text .= '<UL style="width:100%" class="' . $this->query->getBootstrapStyle('htabs') . 'reportico-maintain-main-box">';
                     $text .= $this->draw_show_hide_tab_button($this->id . "detl", "DETAILS");
                     if (!isset($ar["LinkToReport"]) || !$ar["LinkToReport"]) {
                         $text .= $this->draw_show_hide_tab_button($this->id . "qurysqlt", "SQL");
@@ -3528,7 +3528,7 @@ class XmlReader
         $tmpid = $parent->id;
         $parent->id = $in_parent;
         $blocktype = "assignTypeStyle";
-        $text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="' . $blocktype .
+        $text .= '<TR><TD class="reportico-maintain-set-field"><a class="reportico-toggle" id="' . $blocktype .
         '" href="javascript:toggleLine(\'' . $blocktype . '\')">+</a><b>' . ReporticoLang::templateXlate("OUTPUTSTYLESWIZARD") . '</b></TD></TR>';
         $val = false;
 
@@ -3864,7 +3864,7 @@ class XmlReader
 
         $helppage = $this->getHelpLink($this->id);
 
-        $text .= '<TD class="swMntSetField">';
+        $text .= '<TD class="reportico-maintain-set-field">';
         if ($helppage) {
             if ($this->query->url_path_to_assets) {
                 $helpimg = $this->query->url_path_to_assets . "/images/help.png";
@@ -3902,7 +3902,7 @@ class XmlReader
         }
 
         // Display Field Entry
-        $text .= '<TD class="swMntSetField" colspan="1">';
+        $text .= '<TD class="reportico-maintain-set-field" colspan="1">';
         switch ($type) {
             case "PASSWORD":
                 $text .= '<input class="' . $this->query->getBootstrapStyle('textfield') . '" type="password" size="40%" name="set_' . $this->id . "_" . $showtag . $shadow . '" value="' . htmlspecialchars($val) . '"><br>';
@@ -4197,7 +4197,7 @@ class XmlReader
                 break;
         }
 
-        $text .= '<TD class="swMntSetField" colspan="1">';
+        $text .= '<TD class="reportico-maintain-set-field" colspan="1">';
         if ($default) {
             if ( $translateoptions ) 
                 $text .= '&nbsp;(' . ReporticoLang::templateXlate($default) . ')';
@@ -4223,7 +4223,7 @@ class XmlReader
             $text .= "\n<!-- TAG 1-->";
             $text .= '<TD colspan="1">';
             if ($type != "TEXTFIELDNOOK") {
-                $text .= '<input class="' . $this->query->getBootstrapStyle('design_ok') . 'swMntButton reporticoSubmit" type="submit" name="submit_' . $this->id . '_SET" value="' . ReporticoLang::templateXlate("OK") . '">';
+                $text .= '<input class="' . $this->query->getBootstrapStyle('design_ok') . 'reportico-maintain-button reporticoSubmit" type="submit" name="submit_' . $this->id . '_SET" value="' . ReporticoLang::templateXlate("OK") . '">';
             } else {
                 $text .= "&nbsp;";
             }
@@ -4244,7 +4244,7 @@ class XmlReader
             return;
         }
 
-        $text .= '<SELECT class="' . $this->query->getBootstrapStyle('design_dropdown') . 'swPrpDropSelectRegular" name="' . $name . '">';
+        $text .= '<SELECT class="' . $this->query->getBootstrapStyle('design_dropdown') . 'reportico-drop-select-regular" name="' . $name . '">';
 
         if ($addblank) {
             if (!$val) {
@@ -4406,7 +4406,7 @@ $tagct = 1;
 $tmpid = $this->id;
 $this->id = $in_parent;
 $blocktype = "assignTypeStyle";
-$text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="'.$blocktype.'" href="javascript:toggleLine(\''.$blocktype.'\')">+</a><b>'.ReporticoLang::templateXlate("OUTPUTSTYLESWIZARD").'</b></TD></TR>';
+$text .= '<TR><TD class="reportico-maintain-set-field"><a class="reportico-toggle" id="'.$blocktype.'" href="javascript:toggleLine(\''.$blocktype.'\')">+</a><b>'.ReporticoLang::templateXlate("OUTPUTSTYLESWIZARD").'</b></TD></TR>';
 $val = false;
 
 // Extract existing styles into wizard elements
@@ -4474,7 +4474,7 @@ $text .= $this->display_maintain_field("${type}StyleBackgroundImage", $styles["b
 
 //$tagct = 1;
 //$blocktype = "assignTypeDbg";
-//$text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="'.$blocktype.'" href="javascript:toggleLine(\''.$blocktype.'\')">+</a><b>'.ReporticoLang::templateXlate("DATABASEGRAPHICWIZARD").'</b></TD></TR>';
+//$text .= '<TR><TD class="reportico-maintain-set-field"><a class="reportico-toggle" id="'.$blocktype.'" href="javascript:toggleLine(\''.$blocktype.'\')">+</a><b>'.ReporticoLang::templateXlate("DATABASEGRAPHICWIZARD").'</b></TD></TR>';
 //$text .= $this->display_maintain_field("AssignGraphicBlobCol", false, $tagct, true, false, $blocktype); $tagct++;
 //$text .= $this->display_maintain_field("AssignGraphicBlobTab", false, $tagct, true, false, $blocktype); $tagct++;
 //$text .= $this->display_maintain_field("AssignGraphicBlobMatch", false, $tagct, true, false, $blocktype); $tagct++;
@@ -4495,7 +4495,7 @@ return $text;
         $this->id = $in_parent;
         $text .= '<TR><TD>&nbsp;</TD></TD>';
         $blocktype = "assignTypeImageUrl";
-        $text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="' . $blocktype . '" href="javascript:toggleLine(\'' . $blocktype . '\')">+</a><b>' . ReporticoLang::templateXlate("OUTPUTIMAGE") . '</b></TD></TR>';
+        $text .= '<TR><TD class="reportico-maintain-set-field"><a class="reportico-toggle" id="' . $blocktype . '" href="javascript:toggleLine(\'' . $blocktype . '\')">+</a><b>' . ReporticoLang::templateXlate("OUTPUTIMAGE") . '</b></TD></TR>';
         $text .= $this->display_maintain_field("AssignImageUrl", false, $tagct, true, false, $blocktype);
         $tagct++;
 
@@ -4503,7 +4503,7 @@ return $text;
         $tmpid = $this->id;
         $this->id = $in_parent;
         $blocktype = "assignTypeHyper";
-        $text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="' . $blocktype . '" href="javascript:toggleLine(\'' . $blocktype . '\')">+</a><b>' . ReporticoLang::templateXlate("OUTPUTHYPERLINK") . '</b></TD></TR>';
+        $text .= '<TR><TD class="reportico-maintain-set-field"><a class="reportico-toggle" id="' . $blocktype . '" href="javascript:toggleLine(\'' . $blocktype . '\')">+</a><b>' . ReporticoLang::templateXlate("OUTPUTHYPERLINK") . '</b></TD></TR>';
         $text .= $this->display_maintain_field("AssignHyperlinkLabel", false, $tagct, true, false, $blocktype);
         $tagct++;
         $text .= $this->display_maintain_field("AssignHyperlinkUrl", false, $tagct, true, false, $blocktype);
@@ -4513,7 +4513,7 @@ return $text;
         $tmpid = $this->id;
         $this->id = $in_parent;
         $blocktype = "assignTypeStyle";
-        $text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="' . $blocktype . '" href="javascript:toggleLine(\'' . $blocktype . '\')">+</a><b>' . ReporticoLang::templateXlate("OUTPUTSTYLESWIZARD") . '</b></TD></TR>';
+        $text .= '<TR><TD class="reportico-maintain-set-field"><a class="reportico-toggle" id="' . $blocktype . '" href="javascript:toggleLine(\'' . $blocktype . '\')">+</a><b>' . ReporticoLang::templateXlate("OUTPUTSTYLESWIZARD") . '</b></TD></TR>';
         $text .= $this->display_maintain_field("AssignStyleLocType", false, $tagct, true, false, $blocktype);
         $tagct++;
         $text .= $this->display_maintain_field("AssignStyleFgColor", false, $tagct, true, false, $blocktype);
@@ -4543,7 +4543,7 @@ return $text;
         $tmpid = $this->id;
         $this->id = $in_parent;
         $blocktype = "assignTypeAgg";
-        $text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="' . $blocktype . '" href="javascript:toggleLine(\'' . $blocktype . '\')">+</a><b>' . ReporticoLang::templateXlate("AGGREGATESWIZARD") . '</b></TD></TR>';
+        $text .= '<TR><TD class="reportico-maintain-set-field"><a class="reportico-toggle" id="' . $blocktype . '" href="javascript:toggleLine(\'' . $blocktype . '\')">+</a><b>' . ReporticoLang::templateXlate("AGGREGATESWIZARD") . '</b></TD></TR>';
         $text .= $this->display_maintain_field("AssignAggType", false, $tagct, true, false, $blocktype);
         $tagct++;
         $text .= $this->display_maintain_field("AssignAggCol", false, $tagct, true, false, $blocktype);
@@ -4553,7 +4553,7 @@ return $text;
 
         $tagct = 1;
         $blocktype = "assignTypeDbg";
-        $text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="' . $blocktype . '" href="javascript:toggleLine(\'' . $blocktype . '\')">+</a><b>' . ReporticoLang::templateXlate("DATABASEGRAPHICWIZARD") . '</b></TD></TR>';
+        $text .= '<TR><TD class="reportico-maintain-set-field"><a class="reportico-toggle" id="' . $blocktype . '" href="javascript:toggleLine(\'' . $blocktype . '\')">+</a><b>' . ReporticoLang::templateXlate("DATABASEGRAPHICWIZARD") . '</b></TD></TR>';
         $text .= $this->display_maintain_field("AssignGraphicBlobCol", false, $tagct, true, false, $blocktype);
         $tagct++;
         $text .= $this->display_maintain_field("AssignGraphicBlobTab", false, $tagct, true, false, $blocktype);
@@ -4568,7 +4568,7 @@ return $text;
         $tagct = 1;
         $blocktype = "assignTypeDrill";
         $text .= '<TR><TD>&nbsp;</TD></TD>';
-        $text .= '<TR><TD class="swMntSetField"><a class="swToggle" id="' . $blocktype . '" href="javascript:toggleLine(\'' . $blocktype . '\')">-</a><b>' . ReporticoLang::templateXlate("DRILLDOWNWIZARD") . '</b></TD></TR>';
+        $text .= '<TR><TD class="reportico-maintain-set-field"><a class="reportico-toggle" id="' . $blocktype . '" href="javascript:toggleLine(\'' . $blocktype . '\')">-</a><b>' . ReporticoLang::templateXlate("DRILLDOWNWIZARD") . '</b></TD></TR>';
         $text .= $this->display_maintain_field("DrilldownReport", $this->query->drilldown_report, $tagct, true, false, $blocktype, true);
 
         $tagct++;

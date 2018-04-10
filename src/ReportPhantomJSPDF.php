@@ -134,9 +134,9 @@ class ReportPhantomJSPDF extends Report
                         $img = "<img src='" . $matches[1] . "'/>";
                     }
                 }
-                $headertext .= "<DIV class=\"swPageHeader\" style=\"$styles\">";
+                $headertext .= "<DIV class=\"reportico-page-header\" style=\"$styles\">";
             } else {
-                $headertext .= "<DIV class=\"swPageHeader\" >";
+                $headertext .= "<DIV class=\"reportico-page-header\" >";
             }
 
             $headertext .= "$img$text";
@@ -180,16 +180,16 @@ class ReportPhantomJSPDF extends Report
                         $img = "<img src='" . $matches[1] . "'/>";
                     }
                 }
-                $footertext .= "<DIV class=\"swPageFooter\" style=\"$styles\">";
+                $footertext .= "<DIV class=\"reportico-page-footer\" style=\"$styles\">";
             } else {
-                $footertext .= "<DIV class=\"swPageFooter\" >";
+                $footertext .= "<DIV class=\"reportico-page-footer\" >";
             }
 
             $footertext .= "$img$text";
             $footertext .= "</DIV>";
         }
         $request->setRepeatingHeader('<div style="position:relative; zoom: 0.68;">'.$headertext.'</div>', $engine->getAttribute("TopMargin"));
-        $request->setRepeatingFooter('<div class="swPageFooterBlock" style="margin-top: 5px;border-top: solid 1px">'.$footertext.'</div>', $engine->getAttribute("BottomMargin"));
+        $request->setRepeatingFooter('<div class="reportico-page-footer-block" style="margin-top: 5px;border-top: solid 1px">'.$footertext.'</div>', $engine->getAttribute("BottomMargin"));
         */
 
         // Get Response

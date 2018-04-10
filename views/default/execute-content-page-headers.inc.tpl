@@ -1,10 +1,10 @@
 {% autoescape false %}
-<div class="swPageHeaderBlock {{ PRINT_FORMAT }}" style="min-height: {{ PAGE_TOP_MARGIN }}" >
+<div class="reportico-page-header-block {{ PRINT_FORMAT }}" style="min-height: {{ PAGE_TOP_MARGIN }}" >
 
-    <div class="swPageHeaderBody" >
+    <div class="reportico-page-headerBody" >
 
         {% for header in CONTENT.pageheaderstop %}
-        <div class="swPageHeader" style="{{ header.styles }}">
+        <div class="reportico-page-header" style="{{ header.styles }}">
         {% if ( header.image ) %}
             <img src='{{ header.image}}' style="{{ header.imagestyles }}">
         {% endif %}

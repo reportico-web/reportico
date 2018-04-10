@@ -2,12 +2,12 @@
 {% if CRITERIA_ITEMS is defined %}
 {% for critno in CRITERIA_ITEMS %}
 {% if critno.display_group and ( critno.display_group != critno.last_display_group )  %}
-<tr class="swToggleCriteriaDiv" id="swToggleCriteriaDiv{{ critno.display_group_class }}">
+<tr class="reportico-toggleCriteriaDiv" id="reportico-toggleCriteriaDiv{{ critno.display_group_class }}">
 <td colspan="3">
 {% if critno.visible  %}
-<a class="swToggleCriteria" id="swToggleCriteria{{ critno.display_group_class }}" href="javascript:toggleCriteria('{{ critno.display_group_class }}')">-</a>
+<a class="reportico-toggleCriteria" id="reportico-toggleCriteria{{ critno.display_group_class }}" href="javascript:toggleCriteria('{{ critno.display_group_class }}')">-</a>
 {% else %}
-<a class="swToggleCriteria" id="swToggleCriteria{{ critno.display_group_class }}" href="javascript:toggleCriteria('{{ critno.display_group_class }}')">+</a>
+<a class="reportico-toggleCriteria" id="reportico-toggleCriteria{{ critno.display_group_class }}" href="javascript:toggleCriteria('{{ critno.display_group_class }}')">+</a>
 {% endif %}
 {{ critno.display_group }}
 </td>
