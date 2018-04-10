@@ -35,6 +35,17 @@ class ReporticoTemplateTwig
         if ( $theme ) 
             $this->viewDir .= DIRECTORY_SEPARATOR. $theme;
 
+        $rp = realpath($this->cacheDir);
+        if ( !is_dir($this->cacheDir) ) {
+            echo "Error: Please make sure the cache folder '{$this->cacheDir}' exists<BR>";
+            die;
+        }
+
+        if ( !is_writeable($this->cacheDir) ) {
+            echo "Error: Please make sure the cache folder '{$rp}' has write permissions<BR>";
+            die;
+        }
+
         $loader = new \Twig_Loader_Filesystem($this->viewDir);
         $this->twig = new \Twig_Environment($loader, array(
             'cache' => $this->cacheDir
