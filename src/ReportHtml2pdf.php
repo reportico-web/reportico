@@ -441,7 +441,7 @@ class ReportHtml2pdf extends Report
         }
 
 
-        if ($value_col) {
+        if ($value_col && !$value_col["GroupTrailerCustom"]) {
             $group_label = $value_col["GroupTrailerValueColumn"]->getAttribute("group_trailer_label");
             if (!$group_label) {
                 $group_label = $value_col["GroupTrailerValueColumn"]->getAttribute("column_title");
