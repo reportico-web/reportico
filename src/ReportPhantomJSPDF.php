@@ -50,7 +50,7 @@ class ReportPhantomJSPDF extends Report
 
         // Instantiate PhantomJS
         $this->client = Client::getInstance();
-        //$this->client->isLazy();
+        $this->client->isLazy();
         $this->client->getProcedureCompiler()->disableCache();
         if ( $engine->pdf_phantomjs_path )
             $this->client->getEngine()->setPath($engine->pdf_phantomjs_path);

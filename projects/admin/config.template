@@ -281,7 +281,7 @@ ReporticoApp::setConfig('output_sections', array (
                         'styles' => 'border-width: 1 0 0 0; top: 0px; font-size: 8pt; margin: 2px 0px 0px 0px; font-style: italic; margin-top: 30px;' 
                       ),
                 array ( 
-                        'content' => 'Time: date("Y-m-d H:i:s")', 
+                        'content' => 'Time: date('Y-m-d H:i:s')', 
                         'styles' => 'font-size: 8pt; text-align: right; font-style: italic; width: 100%; margin-top: 30px;' 
                       ),
                 ),
@@ -293,7 +293,7 @@ ReporticoApp::setConfig('output_sections', array (
                         'template' => '<h1>' 
                       ),
                 array ( 
-                        'content' => 'Time: date("Y-m-d H:i:s")', 
+                        'content' => 'Time: date('Y-m-d H:i:s')', 
                         'styles' => 'STYLE font-size: 8pt; text-align: right; font-style: italic;text-align:right;' 
                       ),
                 ),
