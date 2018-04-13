@@ -5,13 +5,13 @@
 <HTML>
 <HEAD>
 <TITLE>{{ TITLE }}</TITLE>
-<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{{ THEME_DIR }}/css/reportico_bootstrap.css">
+<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{{ THEME_DIR }}/css/reportico.css">
 <LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{{ ASSETS_PATH }}/js/bootstrap3/css/bootstrap.min.css">
 {{ OUTPUT_ENCODING }}
 </HEAD>
 <BODY class="swMntBody">
 {% else %}
-<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{{ THEME_DIR }}/css/reportico_bootstrap.css">
+<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{{ THEME_DIR }}/css/reportico.css">
 {% if BOOTSTRAP_STYLES %}
 {% if not REPORTICO_BOOTSTRAP_PRELOADED %}
 {% if BOOTSTRAP_STYLES == "2" %}

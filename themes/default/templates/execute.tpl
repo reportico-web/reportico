@@ -23,12 +23,12 @@
 
     <LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{{ ASSETS_PATH }}/js/bootstrap3/css/bootstrap.min.css">
 
-<LINK id="PRP_StyleSheet" REL="stylesheet" TYPE="text/css" HREF="{{ THEME_DIR }}/css/reportico_bootstrap.css">
+<LINK id="PRP_StyleSheet" REL="stylesheet" TYPE="text/css" HREF="{{ THEME_DIR }}/css/reportico.css">
 {% else %}
     {% if not REPORTICO_BOOTSTRAP_PRELOADED %}
         <LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{{ ASSETS_PATH }}/js/bootstrap3/css/bootstrap.min.css">
     {% endif %}
-    <LINK id="PRP_StyleSheet" REL="stylesheet" TYPE="text/css" HREF="{{ THEME_DIR }}/css/reportico_bootstrap.css">
+    <LINK id="PRP_StyleSheet" REL="stylesheet" TYPE="text/css" HREF="{{ THEME_DIR }}/css/reportico.css">
 {% endif %}
 {% if AJAX_ENABLED %}
 {% if not REPORTICO_AJAX_PRELOADED %}
@@ -84,7 +84,7 @@
 
 <script type="text/javascript">var reportico_ajax_mode = "{{ REPORTICO_AJAX_MODE }}";</script>
 <script type="text/javascript">var reportico_report_title = "{{ TITLE }}";</script>
-<script type="text/javascript">var reportico_css_path = "{{ THEME_DIR }}/css/reportico_bootstrap.css";</script>
+<script type="text/javascript">var reportico_css_path = "{{ THEME_DIR }}/css/reportico.css";</script>
 
 {% endif %}
 {% if REPORTICO_CHARTING_ENGINE == "FLOT"  %}

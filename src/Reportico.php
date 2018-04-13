@@ -66,7 +66,7 @@ class Reportico extends ReporticoObject
     public $delete_project_url;
     public $create_report_url;
 
-    public $version = "4.6";
+    public $version = "6.0.0";
 
     public $name;
     public $rowselection = "all";
@@ -2982,9 +2982,9 @@ class Reportico extends ReporticoObject
 
         } else {
             if ($this->url_path_to_assets) {
-                $csspath = $this->url_path_to_assets . "/css/reportico_bootstrap.css";
+                $csspath = $this->url_path_to_assets . "/css/reportico.css";
             } else {
-                $csspath = $this->reportico_url_path . "/" . ReporticoUtility::findBestUrlInIncludePath("css/reportico_bootstrap.css");
+                $csspath = $this->reportico_url_path . "/" . ReporticoUtility::findBestUrlInIncludePath("css/reportico.css");
             }
 
         }
