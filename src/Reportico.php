@@ -2968,7 +2968,7 @@ class Reportico extends ReporticoObject
         // if not already provided
         $theme_dir = $this->url_path_to_templates;
         if ( !$this->url_path_to_templates )
-            $theme_dir = ReporticoUtility::findBestUrlInIncludePath('views');
+            $theme_dir = ReporticoUtility::findBestUrlInIncludePath('themes');
         $template->assign('THEME_DIR', "$theme_dir/".$this->getTheme());
 
         /*@todo Must be in the theme and not in the code*/

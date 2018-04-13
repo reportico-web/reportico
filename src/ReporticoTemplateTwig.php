@@ -29,8 +29,8 @@ class ReporticoTemplateTwig
 
     public function __construct($viewDir = false, $cacheDir = false, $theme = false) {
         
-        $this->viewDir = $viewDir ? $viewDir : ReporticoUtility::findBestLocationInIncludePath("views");
-        $this->cacheDir = $cacheDir ? $cacheDir : __DIR__ . "/../views/cache";
+        $this->viewDir = $viewDir ? $viewDir : ReporticoUtility::findBestLocationInIncludePath("themes");
+        $this->cacheDir = $cacheDir ? $cacheDir : __DIR__ . "/../themes/cache";
 
         if ( $theme ) 
             $this->viewDir .= DIRECTORY_SEPARATOR. $theme;

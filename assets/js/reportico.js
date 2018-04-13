@@ -41,7 +41,15 @@ function setupDatePickers()
                         todate = id.replace(/_FROMDATE/, "_TODATE");
                         reportico_jquery("#" + todate).prop("value", this.value);
                     }
-             }});
+            },
+            beforeShow: function()
+            {
+                setTimeout(function()
+                {
+                    reportico_jquery(".ui-datepicker").css("z-index", 999999);
+                }, 10); 
+            }
+            });
         });
 }
 
@@ -108,9 +116,16 @@ function setupCriteriaItems()
             }
         });
         
+        if (typeof reportico_csrf_token == 'undefined')
+            headers = false;
+        else {
+            headers = { 'X-CSRF-TOKEN': reportico_csrf_token };
+        }
+        
         reportico_jquery("#select2_dropdown_" + j + ",#select2_dropdown_expanded_" + j).select2({
           ajax: {
             url: reportico_ajax_script + "?execute_mode=CRITERIA&reportico_criteria=" + j,
+            headers: headers,
             type: 'POST',
             error: function(data, status) {
                 return {
@@ -607,6 +622,17 @@ reportico_jquery(document).ready(function()
     paginate();
 });
 
+function reportico_initialise_page()
+{
+    setupDatePickers();
+    setupTooltips();
+    setupDropMenu();
+    resizeHeaders();
+    resizeTables();
+    setupDynamicGrids();
+    setupCriteriaItems();
+};
+
 reportico_jquery(document).on('click', '.reportico-notice-modal-close,.reportico-notice-modal-button', function(event) 
 {
     reportico_jquery("#swMiniMaintain").html("");
@@ -633,14 +659,23 @@ reportico_jquery(document).on('click', '.swMiniMaintainSubmit,.reportico-bootstr
     {
         ajaxaction = reportico_ajax_script;
     }
+
 	params = forms.serialize();
     params += "&" + reportico_jquery(this).prop("name") + "=1";
     params += "&reportico_ajax_called=1";
     params += "&execute_mode=PREPARE";
 
+    if (typeof reportico_csrf_token != 'undefined') {
+        params += "&CSRF=" + reportico_csrf_token;
+        headers =  { 'X-CSRF-TOKEN': reportico_csrf_token };
+    }
+    else
+        headers = false;
+
     var cont = this;
     reportico_jquery.ajax({
         type: 'POST',
+        headers: headers,
         url: ajaxaction,
         data: params,
         dataType: 'html',
@@ -714,8 +749,17 @@ reportico_jquery(document).on('click', '.swMiniMaintain', function(event)
     params += "&execute_mode=MAINTAIN&partialMaintain=" + maintainButton + "&partial_template=mini&submit_" + bits[0] + "_SHOW=1";
     params += "&reportico_ajax_called=1";
     
+
+    if (typeof reportico_csrf_token != 'undefined') {
+        params += "&CSRF=" + reportico_csrf_token;
+        headers =  { 'X-CSRF-TOKEN': reportico_csrf_token };
+    }
+    else
+        headers = false;
+
     reportico_jquery.ajax({
         type: 'POST',
+        headers: headers,
         url: ajaxaction,
         data: params,
         dataType: 'html',
@@ -762,8 +806,16 @@ reportico_jquery(document).on('click', '.swPrpSaveButton', function(event)
     params += "&execute_mode=MAINTAIN&submit_xxx_PREPARESAVE=1&xmlout=" + filename;
     params += "&reportico_ajax_called=1";
 
+    if (typeof reportico_csrf_token != 'undefined') {
+        params += "&CSRF=" + reportico_csrf_token;
+        headers =  { 'X-CSRF-TOKEN': reportico_csrf_token };
+    }
+    else
+        headers = false;
+
     reportico_jquery.ajax({
         type: 'POST',
+        headers: headers,
         url: ajaxaction,
         data: params,
         dataType: 'html',
@@ -825,8 +877,16 @@ reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenu
         params += "&" + reportico_jquery(this).prop("name") + "=1";
         params += "&reportico_ajax_called=1";
 
+        if (typeof reportico_csrf_token != 'undefined') {
+            params += "&CSRF=" + reportico_csrf_token;
+            headers =  { 'X-CSRF-TOKEN': reportico_csrf_token };
+        }
+        else
+            headers = false;
+
         reportico_jquery.ajax({
             type: 'POST',
+            headers: headers,
             url: ajaxaction,
             data: params,
             dataType: 'html',
@@ -885,6 +945,13 @@ reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenu
             params += "&" + reportico_jquery(this).prop("name") + "=1";
             params += "&reportico_ajax_called=1";
 
+            if (typeof reportico_csrf_token != 'undefined') {
+                params += "&CSRF=" + reportico_csrf_token;
+                headers =  { 'X-CSRF-TOKEN': reportico_csrf_token };
+            }
+            else
+                headers = false;
+
             csvpdfoutput = false;
 
             if (  reportico_jquery(this).prop("name") != "submit_design_mode" )
@@ -935,6 +1002,7 @@ reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenu
             var cont = this;
             reportico_jquery.ajax({
                 type: 'POST',
+                headers: headers,
                 url: ajaxaction,
                 data: params,
                 dataType: 'html',
@@ -955,7 +1023,6 @@ reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenu
     else
     {
         url = reportico_jquery(this).prop("href");
-        params = false;
         runreport(url, this);
     }
     return false;
@@ -967,8 +1034,16 @@ reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenu
  */
 function ajaxFileDownload(url, data, expandpanel, reportico_container) {
 
+    if (typeof reportico_csrf_token == 'undefined')
+        headers = false;
+    else {
+        headers = { 'X-CSRF-TOKEN': reportico_csrf_token };
+        //params = "&CSRF=" + reportico_csrf_token;
+    }
+
     reportico_jquery.ajax({
       type: 'POST',
+      headers: headers,
       url: url,
       data: data,
       dataType: 'html',
@@ -1061,6 +1136,13 @@ reportico_jquery(document).on('click', '#returnFromExpand', function() {
     params += "&" + reportico_jquery(this).prop("name") + "=1";
     params += getFilterGroupState();
 
+    if (typeof reportico_csrf_token == 'undefined')
+        headers = false;
+    else {
+        headers = { 'X-CSRF-TOKEN': reportico_csrf_token };
+        params += "&CSRF=" + reportico_csrf_token;
+    }
+
 	forms = reportico_jquery(this).closest('.swMntForm,.swPrpForm,form');
     ajaxaction = reportico_ajax_script;
 
@@ -1068,6 +1150,7 @@ reportico_jquery(document).on('click', '#returnFromExpand', function() {
 		
     reportico_jquery.ajax({
       type: 'POST',
+      headers: headers,
       url: ajaxaction,
       data: params,
       dataType: 'html',
@@ -1104,8 +1187,16 @@ reportico_jquery(document).on('click', '#reporticoPerformExpand', function() {
 	var fillPoint = reportico_jquery(this).closest('#criteriaform').find('#swPrpExpandCell');
     reportico_jquery(fillPoint).addClass("loading");
 
+    if (typeof reportico_csrf_token == 'undefined')
+        headers = false;
+    else {
+        headers = { 'X-CSRF-TOKEN': reportico_csrf_token };
+        params += "&CSRF=" + reportico_csrf_token;
+    }
+
     reportico_jquery.ajax({
         type: 'POST',
+        headers: headers,
         url: ajaxaction,
         data: params,
         dataType: 'html',
@@ -1245,10 +1336,17 @@ reportico_jquery(document).on('click', '.swPrintBox,.prepareAjaxExecute,#prepare
         params += "&printable_html=1&new_reportico_window=1";
 
     params += getFilterGroupState();
+    if (typeof reportico_csrf_token == 'undefined')
+        headers = false;
+    else {
+        headers = { 'X-CSRF-TOKEN': reportico_csrf_token };
+        params += "&CSRF=" + reportico_csrf_token;
+    }
 
     var cont = this;
     reportico_jquery.ajax({
         type: 'POST',
+        headers: headers,
         url: ajaxaction,
         data: params,
         dataType: 'html',
@@ -1316,12 +1414,23 @@ function showParentNoticeModal(content)
 */
 function runreport(url, container) 
 {
+    if (typeof reportico_csrf_token == 'undefined') {
+        headers = false;
+        params = false;
+    }
+    else {
+        headers = { 'X-CSRF-TOKEN': reportico_csrf_token };
+        params = "CSRF=" + reportico_csrf_token;
+    }
+
     url += "&reportico_template=";
     url += "&reportico_ajax_called=1";
     reportico_jquery(container).closest("#reportico_container").addClass("loading");
     reportico_jquery.ajax({
         type: "POST",
         contentType: "application/json; charset=utf-8",
+        headers: headers,
+        data: params,
         url: url,
         dataType: "html",
         error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -1347,7 +1456,6 @@ function fillReportOutputArea(results) {
 }
 
 function fillDialog(results, cont) {
-
   x = reportico_jquery(cont).closest("#reportico_container");
   reportico_jquery(cont).closest("#reportico_container").replaceWith(results);
   setupDatePickers();

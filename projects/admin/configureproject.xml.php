@@ -143,7 +143,7 @@ else
 
 if ( !is_writeable ( $proj_dir ) )
 {
-   if ( ! chmod ( $proj_dir, "u+rwx") )
+   if ( ! chmod ( $proj_dir, "0755") )
    {
         trigger_error ("Failed to make project directory $proj_dir writeable ", E_USER_NOTICE);
    }

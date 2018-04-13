@@ -234,7 +234,7 @@
 
     // Set a theme
     // ======================
-    // Use the specified folder under the views folder to identify which templates, stylesheets and js to use for the instance
+    // Use the specified folder under the themes folder to identify which templates, stylesheets and js to use for the instance
     $q->setTheme('default');
 
     // Label for criteria section if required
