@@ -33,7 +33,7 @@ class ReporticoTemplateTwig
         $this->cacheDir = $cacheDir ? $cacheDir : __DIR__ . "/../themes/cache";
 
         if ( $theme ) 
-            $this->viewDir .= DIRECTORY_SEPARATOR. $theme;
+            $this->viewDir .= DIRECTORY_SEPARATOR. $theme. DIRECTORY_SEPARATOR. "templates";
 
         $rp = realpath($this->cacheDir);
         if ( !is_dir($this->cacheDir) ) {
