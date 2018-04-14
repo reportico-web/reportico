@@ -116,15 +116,31 @@ function setupCriteriaItems()
             }
         });
         
-        if (typeof reportico_csrf_token == 'undefined')
-            headers = false;
-        else {
-            headers = { 'X-CSRF-TOKEN': reportico_csrf_token };
+        headers =  getCSRFHeaders();
+        
+        if ( jQuery.type(reportico_ajax_script) === 'undefined' || !reportico_ajax_script )
+        {
+            var ajaxaction = reportico_jquery(forms).prop("action");
         }
+        else
+        {
+            ajaxaction = reportico_ajax_script;
+        }
+
+        ajaxextra = getYiiAjaxURL();
+        if ( ajaxextra != "" ) {
+            ajaxaction += ajaxextra
+            ajaxaction += "&" + "reportico_criteria=" + j;
+        }
+        else
+            ajaxaction += "?" + "reportico_criteria=" + j;
+
+        ajaxaction +=  getCSRFURLParams();
+        headers =  getCSRFHeaders();
         
         reportico_jquery("#select2_dropdown_" + j + ",#select2_dropdown_expanded_" + j).select2({
           ajax: {
-            url: reportico_ajax_script + "?execute_mode=CRITERIA&reportico_criteria=" + j,
+            url: ajaxaction,
             headers: headers,
             type: 'POST',
             error: function(data, status) {
@@ -665,12 +681,9 @@ reportico_jquery(document).on('click', '.swMiniMaintainSubmit,.reportico-bootstr
     params += "&reportico_ajax_called=1";
     params += "&execute_mode=PREPARE";
 
-    if (typeof reportico_csrf_token != 'undefined') {
-        params += "&CSRF=" + reportico_csrf_token;
-        headers =  { 'X-CSRF-TOKEN': reportico_csrf_token };
-    }
-    else
-        headers = false;
+    ajaxaction += getYiiAjaxURL();
+    params +=  getCSRFURLParams();
+    headers =  getCSRFHeaders();
 
     var cont = this;
     reportico_jquery.ajax({
@@ -750,12 +763,9 @@ reportico_jquery(document).on('click', '.swMiniMaintain', function(event)
     params += "&reportico_ajax_called=1";
     
 
-    if (typeof reportico_csrf_token != 'undefined') {
-        params += "&CSRF=" + reportico_csrf_token;
-        headers =  { 'X-CSRF-TOKEN': reportico_csrf_token };
-    }
-    else
-        headers = false;
+    ajaxaction += getYiiAjaxURL();
+    params +=  getCSRFURLParams();
+    headers =  getCSRFHeaders();
 
     reportico_jquery.ajax({
         type: 'POST',
@@ -803,15 +813,12 @@ reportico_jquery(document).on('click', '.swPrpSaveButton', function(event)
 
     filename = reportico_jquery("#swPrpSaveFile").prop("value");
 	params = "";
-    params += "&execute_mode=MAINTAIN&submit_xxx_PREPARESAVE=1&xmlout=" + filename;
+    params += "&execute_mode=MAINTAIN&submit_xxx_PREPARESAVE=1&errorsInModal=1&xmlout=" + filename;
     params += "&reportico_ajax_called=1";
 
-    if (typeof reportico_csrf_token != 'undefined') {
-        params += "&CSRF=" + reportico_csrf_token;
-        headers =  { 'X-CSRF-TOKEN': reportico_csrf_token };
-    }
-    else
-        headers = false;
+    ajaxaction += getYiiAjaxURL();
+    params +=  getCSRFURLParams();
+    headers =  getCSRFHeaders();
 
     reportico_jquery.ajax({
         type: 'POST',
@@ -877,12 +884,9 @@ reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenu
         params += "&" + reportico_jquery(this).prop("name") + "=1";
         params += "&reportico_ajax_called=1";
 
-        if (typeof reportico_csrf_token != 'undefined') {
-            params += "&CSRF=" + reportico_csrf_token;
-            headers =  { 'X-CSRF-TOKEN': reportico_csrf_token };
-        }
-        else
-            headers = false;
+        ajaxaction += getYiiAjaxURL();
+        params +=  getCSRFURLParams();
+        headers =  getCSRFHeaders();
 
         reportico_jquery.ajax({
             type: 'POST',
@@ -945,12 +949,9 @@ reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenu
             params += "&" + reportico_jquery(this).prop("name") + "=1";
             params += "&reportico_ajax_called=1";
 
-            if (typeof reportico_csrf_token != 'undefined') {
-                params += "&CSRF=" + reportico_csrf_token;
-                headers =  { 'X-CSRF-TOKEN': reportico_csrf_token };
-            }
-            else
-                headers = false;
+            ajaxaction += getYiiAjaxURL();
+            params +=  getCSRFURLParams();
+            headers =  getCSRFHeaders();
 
             csvpdfoutput = false;
 
@@ -1034,12 +1035,9 @@ reportico_jquery(document).on('click', '.swAdminButton, .swAdminButton2, .swMenu
  */
 function ajaxFileDownload(url, data, expandpanel, reportico_container) {
 
-    if (typeof reportico_csrf_token == 'undefined')
-        headers = false;
-    else {
-        headers = { 'X-CSRF-TOKEN': reportico_csrf_token };
-        //params = "&CSRF=" + reportico_csrf_token;
-    }
+    url += getYiiAjaxURL();
+    url +=  getCSRFURLParams();
+    headers =  getCSRFHeaders();
 
     reportico_jquery.ajax({
       type: 'POST',
@@ -1136,12 +1134,9 @@ reportico_jquery(document).on('click', '#returnFromExpand', function() {
     params += "&" + reportico_jquery(this).prop("name") + "=1";
     params += getFilterGroupState();
 
-    if (typeof reportico_csrf_token == 'undefined')
-        headers = false;
-    else {
-        headers = { 'X-CSRF-TOKEN': reportico_csrf_token };
-        params += "&CSRF=" + reportico_csrf_token;
-    }
+    ajaxaction += getYiiAjaxURL();
+    params +=  getCSRFURLParams();
+    headers =  getCSRFHeaders();
 
 	forms = reportico_jquery(this).closest('.swMntForm,.swPrpForm,form');
     ajaxaction = reportico_ajax_script;
@@ -1187,12 +1182,10 @@ reportico_jquery(document).on('click', '#reporticoPerformExpand', function() {
 	var fillPoint = reportico_jquery(this).closest('#criteriaform').find('#swPrpExpandCell');
     reportico_jquery(fillPoint).addClass("loading");
 
-    if (typeof reportico_csrf_token == 'undefined')
-        headers = false;
-    else {
-        headers = { 'X-CSRF-TOKEN': reportico_csrf_token };
-        params += "&CSRF=" + reportico_csrf_token;
-    }
+    ajaxaction += getYiiAjaxURL();
+    params +=  getCSRFURLParams();
+    headers =  getCSRFHeaders();
+
 
     reportico_jquery.ajax({
         type: 'POST',
@@ -1335,13 +1328,10 @@ reportico_jquery(document).on('click', '.swPrintBox,.prepareAjaxExecute,#prepare
     if (  reportico_jquery(this).hasClass("swPrintBox") )
         params += "&printable_html=1&new_reportico_window=1";
 
-    params += getFilterGroupState();
-    if (typeof reportico_csrf_token == 'undefined')
-        headers = false;
-    else {
-        headers = { 'X-CSRF-TOKEN': reportico_csrf_token };
-        params += "&CSRF=" + reportico_csrf_token;
-    }
+    ajaxaction += getYiiAjaxURL();
+    params +=  getCSRFURLParams();
+    headers =  getCSRFHeaders();
+
 
     var cont = this;
     reportico_jquery.ajax({
@@ -1414,14 +1404,8 @@ function showParentNoticeModal(content)
 */
 function runreport(url, container) 
 {
-    if (typeof reportico_csrf_token == 'undefined') {
-        headers = false;
-        params = false;
-    }
-    else {
-        headers = { 'X-CSRF-TOKEN': reportico_csrf_token };
-        params = "CSRF=" + reportico_csrf_token;
-    }
+    params +=  getCSRFURLParams();
+    headers =  getCSRFHeaders();
 
     url += "&reportico_template=";
     url += "&reportico_ajax_called=1";
@@ -1580,4 +1564,40 @@ function html_print_fix()
     { 
         reporticohtmlwindow.resizeOutputTables(reporticohtmlwindow); 
     }
+}
+
+
+// For laravel HTTP headers need to include a X-CSRF-TOKEN field to place the CSRF-TOKEN
+function getCSRFHeaders() {
+
+    headers = false;
+    if (typeof reportico_csrf_token != 'undefined' && reportico_ajax_mode == "laravel" ) {
+        headers =  { 'X-CSRF-TOKEN': reportico_csrf_token };
+    }
+
+    return headers;
+}
+
+// For Yii with nonclean URLs add the reportico ajax call as a separate URP Param
+// For Yii with clean URLS the ajax call is implied in the main url
+function getCSRFURLParams() {
+
+    params = "";
+    if (typeof reportico_csrf_token != 'undefined' 
+        && ( reportico_ajax_mode == "yii-ugly-url" || reportico_ajax_mode == "yii-pretty-url" ) ) {
+        params = "&YII_CSRF_TOKEN=" + reportico_csrf_token;
+    }
+
+    return params;
+}
+
+// For Yii with nonclean URLs add the reportico ajax call as a separate URP Param
+// For Yii with clean URLS the ajax call is implied in the main url
+function getYiiAjaxURL() {
+
+    ajaxaction = "";
+    if ( reportico_ajax_mode == "yii-ugly-url" )
+        ajaxaction = "?r=reportico/reportico/ajax";
+
+    return ajaxaction;
 }

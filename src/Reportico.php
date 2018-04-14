@@ -2795,7 +2795,7 @@ class Reportico extends ReporticoObject
 
         $this->reportico_ajax_script_url = (ReporticoSession())::getReporticoSessionParam("reportico_ajax_script_url");
         if ($this->reportico_ajax_script_url && !$this->reportico_ajax_mode) {
-            $this->reportico_ajax_mode = true;
+            $this->reportico_ajax_mode = "standalone";
         }
 
         if (!$this->reportico_ajax_script_url) {
@@ -2803,12 +2803,12 @@ class Reportico extends ReporticoObject
         }
 
         if ($this->reportico_ajax_called && !$this->reportico_ajax_mode) {
-            $this->reportico_ajax_mode = true;
+            $this->reportico_ajax_mode = "standalone";
         }
 
         $this->reportico_ajax_preloaded = ReporticoUtility::getRequestItem("reportico_ajax_called", $this->reportico_ajax_preloaded);
         if ((ReporticoSession())::getReporticoSessionParam("reportico_ajax_called")) {
-            $this->reportico_ajax_mode = true;
+            $this->reportico_ajax_mode = "standalone";
         }
 
         //if ( $this->reportico_ajax_mode )
@@ -2838,7 +2838,6 @@ class Reportico extends ReporticoObject
         $template->assign('REPORTICO_SITE', $this->url_site);
         $template->assign('REPORTICO_CSRF_TOKEN', $this->csrfToken);
         $template->assign('REPORTICO_AJAX_HANDLER', $this->ajaxHandler);
-
 
         // Assign user parameters to template
         if ($this->user_parameters && is_array($this->user_parameters)) {
@@ -3227,17 +3226,22 @@ class Reportico extends ReporticoObject
                     $template->assign('SHOW_LOGOUT', false);
                 }
 
+
                 if ($mode == "PREPARE" && ($this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml")) {
+
                     // Dont show database errors if displaying Configure Project prepare page as database connectivity could be wrong
                     // and user will correct it
-                } else
-                if ($this->datasource->connect() || $mode != "MAINTAIN") {
+                } else {
+
+                if ( is_object($this->datasource) && ( get_class($this->datasource) == "stdClass" ||  $this->datasource->connect() || $mode != "MAINTAIN" ) ) {
                     // Store connection session details
-                    (ReporticoSession())::setReporticoSessionParam("database", $this->datasource->database);
-                    (ReporticoSession())::setReporticoSessionParam("hostname", $this->datasource->host_name);
-                    (ReporticoSession())::setReporticoSessionParam("driver", $this->datasource->driver);
-                    (ReporticoSession())::setReporticoSessionParam("server", $this->datasource->server);
-                    (ReporticoSession())::setReporticoSessionParam("protocol", $this->datasource->protocol);
+                    if( get_class($this->datasource) != "stdClass" ){
+                        (ReporticoSession())::setReporticoSessionParam("database", $this->datasource->database);
+                        (ReporticoSession())::setReporticoSessionParam("hostname", $this->datasource->host_name);
+                        (ReporticoSession())::setReporticoSessionParam("driver", $this->datasource->driver);
+                        (ReporticoSession())::setReporticoSessionParam("server", $this->datasource->server);
+                        (ReporticoSession())::setReporticoSessionParam("protocol", $this->datasource->protocol);
+                    }
                 } else {
                     //echo "not connected okay<br>";
                     $this->panels["LOGIN"]->setVisibility(true);
@@ -3250,8 +3254,10 @@ class Reportico extends ReporticoObject
                     $this->panels["STATUS"]->setVisibility(true);
                     $this->panels["ERROR"]->setVisibility(true);
                 }
+                }
                 //echo "done connecting";
             } else {
+
                 // If not logged in then set first criteria entry to true
                 // So when we do get into criteria it will work
                 (ReporticoSession())::setReporticoSessionParam("firstTimeIn", true);
@@ -4742,6 +4748,9 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function fetchColumnAttributes()
     {
+        if ( !is_object($this->datasource) )
+            return false;
+
         $conn = $this->datasource->ado_connection;
         //$a = new Reportico($this->datasource);
         //$old_database = $a->database;
@@ -5391,7 +5400,7 @@ class Reportico extends ReporticoObject
         $imagegetpath = dirname($this->url_path_to_reportico_runner) . "/" . ReporticoUtility::findBestUrlInIncludePath("imageget.php");
         if ($this->framework_parent) {
             $imagegetpath = "";
-            if ($this->reportico_ajax_mode == "2") {
+            if ($this->reportico_ajax_mode != "standalone") {
                 $imagegetpath = preg_replace("/ajax/", "dbimage", $this->reportico_ajax_script_url);
             }
 

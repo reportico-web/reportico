@@ -734,7 +734,7 @@ input.swAdminButton2
 
 .swMiniMaintain
 {
-    height: 30px !important;
+    /*height: 30px !important;*/
     text-align: left;
     margin: 4px;
     padding: 0px 8px 0px 8px;
@@ -746,7 +746,39 @@ input.swAdminButton2
     background-position: 0px 0px !important;
     background-repeat: no-repeat !important;
 }
-//.swMiniMaintain { background-image: url(../images/icons/pencil-2x.png) !important; }
+
+/* Design Button in a button group no left right margin */
+.swMiniMaintainDropDown
+{
+    /*height: 30px !important;*/
+    width:100%;
+}
+
+.swMiniMaintainGroup
+{
+    /*height: 30px !important;*/
+    margin: 4px 0px 4px 0px !important;
+}
+
+.swMiniMaintainGroupWithDropDown
+{
+    /*height: 30px !important;*/
+    padding: 0px !important;
+    margin: 4px 0px 4px 0px !important;
+}
+
+.swMiniMaintainGroupDropDown {
+
+    border: none !important;
+    padding: 12px;
+    width: 100%;
+    text-decoration: none;
+}
+
+.swMiniMaintainGroupDropDown:hover {
+    text-decoration: none;
+}
+
 
 .swRepButtons
 {

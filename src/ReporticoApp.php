@@ -368,7 +368,19 @@ class ReporticoApp
                 $errtype = ReporticoLang::translate("Fatal Error");
 
         }
+        
+        
+        // If request parameter errorsInModal is set then popup first user error
+        // back to client and exit. This is to popup errors when probles in saving reports
+        if ( ReporticoUtility::getRequestItem("errorsInModal") && $errno == E_USER_ERROR ) {
 
+
+            header("HTTP/1.0 404 Not Found", true);
+            echo $errstr;
+            die;
+
+
+        }
         // Avoid adding duplicate errors
         $errors = &self::getSystemErrors();
         $ct = 0;

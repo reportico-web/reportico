@@ -65,7 +65,7 @@
 
     // Reportico Ajax mode. If set to true will run all reportico requests from buttons and links
     // through AJAX, meaning reportico will refresh in its own window and not refresh the whole page
-    //$q->reportico_ajax_mode = true;
+    //$q->reportico_ajax_mode = "standalone";
 
     /*
     ** Initial execution states .. allows you to start user and limit user to specfic

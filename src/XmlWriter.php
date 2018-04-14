@@ -484,11 +484,16 @@ class XmlWriter
         }
 
         if ($projdir && is_dir($projdir)) {
+
             $fn = $projdir . "/" . $filename;
-            if (!($fd = fopen($fn, "w"))) {
+            if (!($fd = @fopen($fn, "w"))) {
+
+                trigger_error("Unable to open project file " . $this->query->reports_path . " for writing. Check folder and file permissions " , E_USER_ERROR);
                 return false;
             }
         } else {
+
+
             trigger_error("Unable to open project area " . ReporticoApp::getConfig("project") . " to save file $filename " .
                 $this->query->reports_path . "/" . $filename . " Not Found", E_USER_ERROR);
         }
