@@ -275,7 +275,7 @@ class Reportico extends ReporticoObject
     public $show_print_button = true;
 
     // Session namespace to use
-    public $session_namespace = false;
+    public $session_namespace = "default";
 
     // Whether to perform drill downs in their own namespace (normally from embedding in frameworks
     // where reportico namespaces are used within the framework session

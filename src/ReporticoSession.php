@@ -17,7 +17,7 @@ class ReporticoSession
 
     // Ensure that sessions from different browser windows on same devide
     // target separate SESSION_ID
-    static function setUpReporticoSession()
+    static function setUpReporticoSession($namespace)
     {
         // Get current session
         $session_name = session_id();
@@ -83,6 +83,8 @@ class ReporticoSession
             $session_name = session_id();
             
             if (isset($_REQUEST['clear_session'])) {
+                ReporticoApp::set("session_namespace", $namespace);
+                ReporticoApp::set("session_namespace_key", "reportico_" . ReporticoApp::get("session_namespace"));
                 self::initializeReporticoNamespace(self::reporticoNamespace());
             }
         } else {
