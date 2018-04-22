@@ -340,13 +340,13 @@ class Assignment extends ReporticoObject
         if (preg_match('/embed_image\(.*\)/', $out_string)) {
             $this->non_assignment_operation = true;
             $out_string = preg_replace('/embed_image\(/',
-                '$this->embed_image("' . $this->query_name . "\",", $out_string);
+                '$this->embedImage("' . $this->query_name . "\",", $out_string);
         }
 
         if (preg_match('/embed_hyperlink\(.*\)/', $out_string)) {
             $this->non_assignment_operation = true;
             $out_string = preg_replace('/embed_hyperlink\(/',
-                '$this->embed_hyperlink("' . $this->query_name . "\",", $out_string);
+                '$this->embedHyperlink("' . $this->query_name . "\",", $out_string);
         }
 
         $out_string = preg_replace('/lineno\(\)/',
