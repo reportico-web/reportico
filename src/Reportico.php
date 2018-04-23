@@ -275,7 +275,7 @@ class Reportico extends ReporticoObject
     public $show_print_button = true;
 
     // Session namespace to use
-    public $session_namespace = "default";
+    public $session_namespace = false;
 
     // Whether to perform drill downs in their own namespace (normally from embedding in frameworks
     // where reportico namespaces are used within the framework session
@@ -4226,9 +4226,9 @@ class Reportico extends ReporticoObject
                 if ($this->top_level_query) {
 
                     // Allow read-only access to MAINTAIN is an in-criteria screen edit button was called
-                    if ( ReporticoUtility::getRequestItem("partialMaintain", false)) {
-                        $this->allow_maintain = "DEMO";
-                    }
+                    //if ( ReporticoUtility::getRequestItem("partialMaintain", false)) {
+                        //$this->allow_maintain = "DEMO";
+                    //}
 
                     $this->initializePanels($mode);
                     if (!($this->login_type == "DESIGN" || $this->access_mode == "DEMO")) {

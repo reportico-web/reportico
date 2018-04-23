@@ -39,7 +39,7 @@ class ReporticoSession
                 }
 
             }
-        }
+        } 
 
         // If the session_name starts with NS_ then it is a namespace for reportico
         // embedded in a framework or for multiple concurrent reportico instances
@@ -63,12 +63,14 @@ class ReporticoSession
             if (isset($_REQUEST['clear_session']) && isset($_SESSION)) {
                 self::initializeReporticoNamespace(self::reporticoNamespace());
             }
+            //echo "<PRE>";var_dump($_SESSION);echo "</PRE>";
             return;
         }
 
-        // If no current session start one, or if request to clear session (it really means clear namespace)
+        // If no current or specified session start one, or if request to clear session (it really means clear namespace)
         // then clear this out
         if (!$session_name || isset($_REQUEST['clear_session'])) {
+
             // If no session current then create a new one
             if (!$session_name || !isset($_SESSION)) {
                 session_start();
@@ -81,7 +83,13 @@ class ReporticoSession
             //unsetReporticoSessionParam("template");
             //session_regenerate_id(false);
             $session_name = session_id();
+
             
+            // If no session set ( a new session ) set the namespace to be called default
+            if ( !$namespace ) {
+                $namespace = "default";
+            }
+
             if (isset($_REQUEST['clear_session'])) {
                 ReporticoApp::set("session_namespace", $namespace);
                 ReporticoApp::set("session_namespace_key", "reportico_" . ReporticoApp::get("session_namespace"));
@@ -196,7 +204,7 @@ class ReporticoSession
     {
         if (!$namespace)
             $namespace = ReporticoApp::get("session_namespace_key");
-        
+
         if (!$array) {
             $_SESSION[$namespace][$param] = $value;
         } else {
