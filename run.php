@@ -51,8 +51,7 @@
     // Only turn on output buffering if necessary, normally leave this uncommented
 	//ob_start();
 	
-    // Setup SESSION
-    Reportico\Engine\ReporticoSession::setUpReporticoSession();
+    // Instantiate Reportico
 	$q = new Reportico\Engine\Reportico();
 
     // In design mode, allow sql debugging
@@ -161,7 +160,7 @@
     // The session namespace to use. Only relevant when showing more than one report in a single page. Specify a name
     // to store all session variables for this instance and then when running another report instance later in the script 
     // use another name
-    //$q->session_namespace = "namespace";
+    //$q->session_namespace = "reportico";
 
     // Current user - when embedding reportico, you may wish to run queries by user. In this case
     // set the current user here. Then you can use the construct {FRAMEWORK_USER} within your queries
@@ -301,6 +300,9 @@
     //                    ),
     //            );
 
+
+    // Setup SESSION
+    Reportico\Engine\ReporticoSession::setUpReporticoSession($q->session_namespace);
 
     // Run the report
 	$q->execute();

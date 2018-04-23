@@ -488,7 +488,7 @@ class XmlWriter
             $fn = $projdir . "/" . $filename;
             if (!($fd = @fopen($fn, "w"))) {
 
-                trigger_error("Unable to open project file " . $this->query->reports_path . " for writing. Check folder and file permissions " , E_USER_ERROR);
+                trigger_error("Unable to open project file " . $fn . " for writing. Check folder and file permissions " , E_USER_ERROR);
                 return false;
             }
         } else {
