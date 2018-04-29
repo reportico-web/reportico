@@ -1,3 +1,4 @@
+
 # Reportico
 Reportico Open Source PHP report Designer
 
@@ -19,9 +20,17 @@ design reports, create report menus, configure criteria, graphs, grouping, drill
 
 ## Install
 
-Clone the Reportico bundle into a web folder and point your browser at it ...
+The only way to install this beta version of Reportico is via composer.
 
-For more information see the quickstart guide :-
+To install this beta version use the following composer command under a web folder
+
+composer create-project reportico-web/reportico dev-develop
+
+This will create a reportico folder with the latest release.
+
+To run your existing report projects against this release, you will need to generate new projects and move the xml files in from the old projects. 
+
+to get started see the quickstart guide :-
 http://www.reportico.org/yii2/web/index.php/quickstart
 
 or visit the Reportico Web Site
