@@ -4,7 +4,7 @@
     "description": "Reportico Open Source PHP Report Designer",
     "type": "project",
     "keywords": [ "report", "reporting" ],
-    "license": "GPL-3.0-or-later",
+    "license": "MIT",
     "authors": [
         {
             "name": "Reportico",
