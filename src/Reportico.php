@@ -3334,7 +3334,7 @@ class Reportico extends ReporticoObject
                         $this->http_response_code = 500;
                         $this->return_to_caller = true;
                         ReporticoApp::handleError(ReporticoLang::templateXlate("REQUIRED_CRITERIA") . " - " . ReporticoLang::translate($this->lookup_queries[$col->query_name]->deriveAttribute("column_title", "")));
-                        //echo '<div class="swError">'.ReporticoLang::templateXlate("REQUIRED_CRITERIA")." - ".ReporticoLang::translate($this->lookup_queries[$col->query_name]->deriveAttribute("column_title", ""))."</div>";
+                        //echo '<div class="reportico-error-box">'.ReporticoLang::templateXlate("REQUIRED_CRITERIA")." - ".ReporticoLang::translate($this->lookup_queries[$col->query_name]->deriveAttribute("column_title", ""))."</div>";
                         return;
                     } else {
                         ReporticoApp::handleError(ReporticoLang::templateXlate("REQUIRED_CRITERIA") . " - " . ReporticoLang::translate($this->lookup_queries[$col->query_name]->deriveAttribute("column_title", ""))

@@ -1,4 +1,4 @@
-<FORM class="swMiniMntForm" name="topmenu" method="POST" action="{{ SCRIPT_SELF }}">
+<FORM class="reportico-edit-link-form" name="topmenu" method="POST" action="{{ SCRIPT_SELF }}">
 	{% if (PARTIALMAINTAIN) %} 
 	    <input type="hidden" name="partialMaintain" value="{{ PARTIALMAINTAIN }}" />
 	{% endif %}

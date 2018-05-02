@@ -9,7 +9,7 @@
 <LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{{ ASSETS_PATH }}/js/bootstrap3/css/bootstrap.min.css">
 {{ OUTPUT_ENCODING|raw }}
 </HEAD>
-<BODY class="swMenuBody">
+<BODY class="reportico-menuBody">
 {% else %}
 <LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{{ THEME_DIR }}/css/reportico.css">
 {% if not REPORTICO_BOOTSTRAP_PRELOADED %}

@@ -295,7 +295,7 @@ class reportico_graph
         }
 
         $dr = ReporticoUtility::getReporticoUrlPath();
-        $result = '<img class="swRepGraph" src=\'' . $dr . $dyngraph . '?' . $url . '\'>';
+        $result = '<img class="reportico-output-graph" src=\'' . $dr . $dyngraph . '?' . $url . '\'>';
 
         return $result;
     }

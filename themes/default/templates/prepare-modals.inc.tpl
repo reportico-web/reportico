@@ -17,11 +17,11 @@
             <button type="button" class="close reportico-bootstrap-modal-close" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h4 class="modal-title reportico-modal-title" id="reporticoModalLabel">Set Parameter</h4>
             </div>
-            <div class="modal-body" style="padding: 0px; overflow-y: auto" id="swMiniMaintain">
+            <div class="modal-body" style="padding: 0px; overflow-y: auto" id="reportico-edit-link">
                 <h3>Modal Body</h3>
             </div>
             <div class="modal-footer">
-                <button type="button" data-dismiss="modal" class="btn btn-primary swMiniMaintainSubmit" >Close</button>
+                <button type="button" data-dismiss="modal" class="btn btn-primary reportico-edit-linkSubmit" >Close</button>
         </div>
     </div>
   </div>
@@ -51,12 +51,12 @@
             <button type="button" class="reportico-modal-close">&times;</button>
             <h4 class="reportico-modal-title" id="reporticoModalLabel">{{ T_NOTICE }}</h4>
             </div>
-            <div class="reportico-modal-body" style="padding: 0px" id="swMiniMaintain">
+            <div class="reportico-modal-body" style="padding: 0px" id="reportico-edit-link">
                 <h3>Modal Body</h3>
             </div>
             <div class="reportico-modal-footer">
                 <!--button type="button" class="btn btn-default" data-dismiss="modal">Close</button-->
-                <button type="button" class="swMiniMaintainSubmit" >Close</button>
+                <button type="button" class="reportico-edit-linkSubmit" >Close</button>
         </div>
     </div>
   </div>

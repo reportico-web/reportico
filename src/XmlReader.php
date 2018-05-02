@@ -2128,7 +2128,7 @@ class XmlReader
 
                     if (!$xmlsavefile) {
                         header("HTTP/1.0 404 Not Found", true);
-                        echo '<div class="swError">' . ReporticoLang::templateXlate("UNABLE_TO_SAVE") . ReporticoLang::templateXlate("SPECIFYXML") . "</div>";
+                        echo '<div class="reportico-error-box">' . ReporticoLang::templateXlate("UNABLE_TO_SAVE") . ReporticoLang::templateXlate("SPECIFYXML") . "</div>";
                         die;
                     }
 
@@ -2269,7 +2269,7 @@ class XmlReader
     {
         $text = "";
         $text .= '<TD>';
-        $text .= '<input class="' . $this->query->getBootstrapStyle('design_ok') . 'reportico-maintain-button reporticoSubmit" type="submit" name="submit_' . $in_tag . '_ADD" value="' . ReporticoLang::templateXlate("ADD") . '">';
+        $text .= '<input class="' . $this->query->getBootstrapStyle('design_ok') . 'reportico-maintain-button reportico-submit" type="submit" name="submit_' . $in_tag . '_ADD" value="' . ReporticoLang::templateXlate("ADD") . '">';
         $text .= '</TD>';
 
         // Show Import/Link options
@@ -2300,8 +2300,8 @@ class XmlReader
     public function &draw_movedown_button($in_tag, $in_value = false)
     {
         $text = "";
-        //$text .= '<TD class="swMntUpDownButtonCell">';
-        $text .= '<input class="swMntMoveDownButton reporticoSubmit" type="submit" name="submit_' . $in_tag . '_MOVEDOWN" value="">';
+        //$text .= '<TD class="reportico-maintain-up-down-button-cell">';
+        $text .= '<input class="reportico-maintain-move-down-button reportico-submit" type="submit" name="submit_' . $in_tag . '_MOVEDOWN" value="">';
         //$text .= '</TD>';
         return $text;
     }
@@ -2352,13 +2352,13 @@ class XmlReader
             if ($this->query->url_path_to_assets) {
                 $helpimg = $this->query->url_path_to_assets . "/images/help.png";
                 $text .= '<a target="_blank" href="' . $this->helpPath($helppage, $striptag) . '">';
-                $text .= '<img class="swMntHelpImage" alt="tab" src="' . $helpimg . '">';
+                $text .= '<img class="reportico-maintain-help-image" alt="tab" src="' . $helpimg . '">';
                 $text .= '</a>&nbsp;';
             } else {
                 $helpimg = ReporticoUtility::findBestUrlInIncludePath("images/help.png");
                 $dr = ReporticoUtility::getReporticoUrlPath();
                 $text .= '<a target="_blank" href="' . $this->helpPath($helppage, $striptag) . '">';
-                $text .= '<img class="swMntHelpImage" alt="tab" src="' . $dr . $helpimg . '">';
+                $text .= '<img class="reportico-maintain-help-image" alt="tab" src="' . $dr . $helpimg . '">';
                 $text .= '</a>&nbsp;';
             }
         }
@@ -2379,7 +2379,7 @@ class XmlReader
 
         // Draw report names we can link to
         $text .= $this->drawSelectFileList($this->query->reports_path, "/.*\.xml/", false, $preselectedvalue, true, false, "reportlink");
-        $text .= '<input class="' . $this->query->getBootstrapStyle('design_ok') . 'reportico-maintain-button reporticoSubmit" style="margin-right: 20px" type="submit" name="submit_' . $this->id . '_REPORTLINK" value="' . ReporticoLang::templateXlate("OK") . '">';
+        $text .= '<input class="' . $this->query->getBootstrapStyle('design_ok') . 'reportico-maintain-button reportico-submit" style="margin-right: 20px" type="submit" name="submit_' . $this->id . '_REPORTLINK" value="' . ReporticoLang::templateXlate("OK") . '">';
 
         if ($this->query->reportlink_report) {
             // Draw report criteria items we can link to
@@ -2437,7 +2437,7 @@ class XmlReader
                 }
 
                 $text .= $this->drawArrayDropdown("reportlinkitem_" . $this->id, $listarr, false, false, false, true);
-                $text .= '<input class="' . $this->query->getBootstrapStyle('design_ok') . 'reportico-maintain-button reporticoSubmit" style="margin-right: 20px" type="submit" name="submit_' . $this->id . '_REPORTLINKITEM" value="' . ReporticoLang::templateXlate("OK") . '">';
+                $text .= '<input class="' . $this->query->getBootstrapStyle('design_ok') . 'reportico-maintain-button reportico-submit" style="margin-right: 20px" type="submit" name="submit_' . $this->id . '_REPORTLINKITEM" value="' . ReporticoLang::templateXlate("OK") . '">';
             }
         }
 
@@ -2509,8 +2509,8 @@ class XmlReader
     public function &draw_moveup_button($in_tag, $in_value = false)
     {
         $text = "";
-        //$text .= '<TD class="swMntUpDownButtonCell">';
-        $text .= '<input class="swMntMoveUpButton reporticoSubmit" type="submit" name="submit_' . $in_tag . '_MOVEUP" value="">';
+        //$text .= '<TD class="reportico-maintain-up-down-button-cell">';
+        $text .= '<input class="reportico-maintain-move-up-button reportico-submit" type="submit" name="submit_' . $in_tag . '_MOVEUP" value="">';
         //$text .= '</TD>';
         return $text;
     }
@@ -2520,8 +2520,8 @@ class XmlReader
     public function &draw_delete_button($in_tag, $in_value = false)
     {
         $text = "";
-        //$text .= '<TD class="swMntUpDownButtonCell">';
-        $text .= '<input class="swMntDeleteButton reporticoSubmit" type="submit" name="submit_' . $in_tag . '_DELETE" value="">';
+        //$text .= '<TD class="reportico-maintain-up-down-button-cell">';
+        $text .= '<input class="reportico-maintain-delete-button reportico-submit" type="submit" name="submit_' . $in_tag . '_DELETE" value="">';
         //$text .= '</TD>';
         return $text;
     }
@@ -2531,7 +2531,7 @@ class XmlReader
     public function &draw_select_box($in_tag, $in_array, $in_value = false)
     {
         $text = "";
-        $text .= '<select class="' . $this->query->getBootstrapStyle('design_dropdown') . 'swPrpDropSelect" name="execute_mode">';
+        $text .= '<select class="' . $this->query->getBootstrapStyle('design_dropdown') . 'reportico-prepare-drop-select" name="execute_mode">';
         $text .= '<OPTION selected label="MAINTAIN" value="MAINTAIN">Maintain</OPTION>';
         $text .= '<OPTION label="PREPARE" value="PREPARE">Prepare</OPTION>';
         $text .= '</SELECT>';
@@ -2543,9 +2543,9 @@ class XmlReader
         $in_moveup = false, $in_movedown = false, $in_delete = true) {
         $text = "";
         if (!$this->isShowing($in_tag)) {
-            $text .= '<LI  class="swMntVertTabMenuCellUnsel">';
+            $text .= '<LI  class="reportico-maintain-verttab-menu-cell-unsel">';
             $text .= '<a class="" name="submit_' . $in_tag . "_SHOW" . '" >';
-            $text .= '<input class="swMntVertTabMenuButUnsel reporticoSubmit" type="submit" name="submit_' . $in_tag . "_SHOW" . '" value="' . $in_value . '">';
+            $text .= '<input class="reportico-maintain-verttab-menu-but-unsel reportico-submit" type="submit" name="submit_' . $in_tag . "_SHOW" . '" value="' . $in_value . '">';
             if ($in_delete) {
                 $text .= $this->draw_delete_button($in_tag);
             }
@@ -2561,9 +2561,9 @@ class XmlReader
             $text .= '</a>';
             $text .= '</LI>';
         } else {
-            $text .= '<LI  class="active swMntVertTabMenuCellSel">';
+            $text .= '<LI  class="active reportico-maintain-verttab-menu-cell-sel">';
             $text .= '<a class="" name="submit_' . $in_tag . "_SHOW" . '" >';
-            $text .= '<input class="swMntVertTabMenuButSel reporticoSubmit" type="submit" name="submit_' . $in_tag . "_SHOW" . '" value="' . $in_value . '">';
+            $text .= '<input class="reportico-maintain-verttab-menu-but-sel reportico-submit" type="submit" name="submit_' . $in_tag . "_SHOW" . '" value="' . $in_value . '">';
             if ($in_delete) {
                 $text .= $this->draw_delete_button($in_tag);
             }
@@ -2606,15 +2606,15 @@ class XmlReader
         }
 
         if (!$this->isShowing($in_tag)) {
-            $text .= '<LI class="swMntTabMenuCellUnsel">';
-            $text .= '<a class="swMntTabMenuBu1tUnsel reporticoSubmit" name="submit_' . $in_tag . "_SHOW" . '" >';
-            $text .= '<input class="swMntTabMenuButUnsel reporticoSubmit" type="submit" name="submit_' . $in_tag . "_SHOW" . '" value="' . $in_value . '">';
+            $text .= '<LI class="reportico-maintain-tab-menu-cell-unsel">';
+            $text .= '<a class="reportico-maintain-tab-menu-bu1t-unsel reportico-submit" name="submit_' . $in_tag . "_SHOW" . '" >';
+            $text .= '<input class="reportico-maintain-tab-menu-but-unsel reportico-submit" type="submit" name="submit_' . $in_tag . "_SHOW" . '" value="' . $in_value . '">';
             $text .= '</a>';
             $text .= '</LI>';
         } else {
-            $text .= '<LI  class="active swMntTabMenuCellSel">';
-            $text .= '<a class="swMntTabMenuBu1tUnsel reporticoSubmit" name="submit_' . $in_tag . "_SHOW" . '" >';
-            $text .= '<input class="swMntTabMenuButSel reporticoSubmit" type="submit" name="submit_' . $in_tag . "_SHOW" . '" value="' . $in_value . '">';
+            $text .= '<LI  class="active reportico-maintain-tab-menu-cell-sel">';
+            $text .= '<a class="reportico-maintain-tab-menu-bu1t-unsel reportico-submit" name="submit_' . $in_tag . "_SHOW" . '" >';
+            $text .= '<input class="reportico-maintain-tab-menu-but-sel reportico-submit" type="submit" name="submit_' . $in_tag . "_SHOW" . '" value="' . $in_value . '">';
             $text .= '</a>';
             $text .= '</LI>';
         }
@@ -2630,13 +2630,13 @@ class XmlReader
 
         if (!$this->isShowing($in_tag)) {
             $text .= '<TD>';
-            //$text .= '<input class="swMntTabMenuButUnsel reporticoSubmit" type="submit" name="submit_'.$in_tag."_SHOW".'" value="'.$in_value.'">';
-            $text .= '<input size="1" style="visibility:hidden" class"reporticoSubmit" type="submit" name="unshown_' . $in_tag . '" value="">';
+            //$text .= '<input class="reportico-maintain-tab-menu-but-unsel reportico-submit" type="submit" name="submit_'.$in_tag."_SHOW".'" value="'.$in_value.'">';
+            $text .= '<input size="1" style="visibility:hidden" class"reportico-submit" type="submit" name="unshown_' . $in_tag . '" value="">';
             $text .= '</TD>';
         } else {
             $text .= '<TD>';
-            //$text .= '<input class="swMntTabMenuButSel" type="submit" name="submit_'.$in_tag."_SHOW".'" value="'.$in_value.'">';
-            $text .= '<input size="1" style="visibility:hidden" class"reporticoSubmit" type="submit" name="shown_' . $in_tag . '" value="">';
+            //$text .= '<input class="reportico-maintain-tab-menu-but-sel" type="submit" name="submit_'.$in_tag."_SHOW".'" value="'.$in_value.'">';
+            $text .= '<input size="1" style="visibility:hidden" class"reportico-submit" type="submit" name="shown_' . $in_tag . '" value="">';
             $text .= '</TD>';
         }
         return $text;
@@ -2767,9 +2767,9 @@ class XmlReader
                             $text .= ReporticoLang::templateXlate('REPORT_FILE') . ' <input type="text" style="display: inline" name="xmlout" value="' . $this->query->xmloutfile . '">';
                         }
 
-                        $text .= '&nbsp;&nbsp;<input class="' . $this->query->getBootstrapStyle('button_admin') . 'reportico-ajax-link reporticoSubmit" type="submit" name="submit_xxx_SAVE" value="' . ReporticoLang::templateXlate("SAVE") . '">';
-                        $text .= '&nbsp;&nbsp;<input class="' . $this->query->getBootstrapStyle('button_admin') . 'reportico-ajax-link reporticoSubmit" type="submit" name="submit_maintain_NEW" value="' . ReporticoLang::templateXlate("NEW_REPORT") . '">';
-                        $text .= '<input class="' . $this->query->getBootstrapStyle('button_delete') . 'reportico-ajax-link reporticoSubmit" style="margin-left: 80px" type="submit" name="submit_xxx_DELETEREPORT" value="' . ReporticoLang::templateXlate("DELETE_REPORT") . '">';
+                        $text .= '&nbsp;&nbsp;<input class="' . $this->query->getBootstrapStyle('button_admin') . 'reportico-ajax-link reportico-submit" type="submit" name="submit_xxx_SAVE" value="' . ReporticoLang::templateXlate("SAVE") . '">';
+                        $text .= '&nbsp;&nbsp;<input class="' . $this->query->getBootstrapStyle('button_admin') . 'reportico-ajax-link reportico-submit" type="submit" name="submit_maintain_NEW" value="' . ReporticoLang::templateXlate("NEW_REPORT") . '">';
+                        $text .= '<input class="' . $this->query->getBootstrapStyle('button_delete') . 'reportico-ajax-link reportico-submit" style="margin-left: 80px" type="submit" name="submit_xxx_DELETEREPORT" value="' . ReporticoLang::templateXlate("DELETE_REPORT") . '">';
                         $text .= '</TD>';
                         $text .= '</TR>';
                         //$text .= '<TR>';
@@ -2794,7 +2794,7 @@ class XmlReader
                         $text .= $this->draw_show_hide_tab_button($this->id . "crit", "CRITERIA");
                         $text .= $this->draw_show_hide_tab_button($this->id . "outp", "OUTPUT");
                         $text .= '</UL>';
-                        $text .= '<TABLE class="swMntInnerBox">';
+                        $text .= '<TABLE class="reportico-maintain-inner-box">';
                         break;
 
                     case "SQL":
@@ -2819,13 +2819,13 @@ class XmlReader
                             $text .= $this->draw_add_button($this->id, "Groups");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
-                            $text .= '<TABLE class="swMntInnerBox">';
+                            $text .= '<TABLE class="reportico-maintain-inner-box">';
                             $text .= '<TR>';
                             $text .= $this->panel_key_to_html($this->id, $val, "GROUP", "_key", true);
                             $text .= '<TD valign="top">';
                             $element_counts[$k] = count($val);
                             if (count($val) > 0) {
-                                $text .= '<TABLE class="swMntInnerRightBox">';
+                                $text .= '<TABLE class="reportico-maintain-inner-right-box">';
                             }
 
                         }
@@ -2843,7 +2843,7 @@ class XmlReader
                             $text .= '<TD valign="top">';
                             $element_counts[$k] = count($val);
                             if (count($val) > 0) {
-                                $text .= '<TABLE class="swMntInnerRightBox">';
+                                $text .= '<TABLE class="reportico-maintain-inner-right-box">';
                             }
 
                         }
@@ -2856,13 +2856,13 @@ class XmlReader
                             $text .= $this->draw_add_button($this->id, "Group Headers");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
-                            $text .= '<TABLE class="swMntInnerBox">';
+                            $text .= '<TABLE class="reportico-maintain-inner-box">';
                             $text .= '<TR>';
                             $text .= $this->panel_key_to_html($this->id, $val, "HEADER", "_key", true);
                             $text .= '<TD valign="top">';
                             $element_counts[$k] = count($val);
                             if (count($val) > 0) {
-                                $text .= '<TABLE class="swMntInnerRightBox">';
+                                $text .= '<TABLE class="reportico-maintain-inner-right-box">';
                             }
 
                         }
@@ -2875,13 +2875,13 @@ class XmlReader
                             $text .= $this->draw_add_button($this->id, "PreSQLS");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
-                            $text .= '<TABLE class="swMntInnerBox">';
+                            $text .= '<TABLE class="reportico-maintain-inner-box">';
                             $text .= '<TR>';
                             $text .= $this->panel_key_to_html($this->id, $val, "PRESQL", "_key", true);
                             $text .= '<TD valign="top">';
                             $element_counts[$k] = count($val);
                             if (count($val) > 0) {
-                                $text .= '<TABLE class="swMntInnerRightBox">';
+                                $text .= '<TABLE class="reportico-maintain-inner-right-box">';
                             }
 
                         }
@@ -2899,7 +2899,7 @@ class XmlReader
                             $text .= '<TD valign="top">';
                             $element_counts[$k] = count($val);
                             if (count($val) > 0) {
-                                $text .= '<TABLE class="swMntInnerRightBox">';
+                                $text .= '<TABLE class="reportico-maintain-inner-right-box">';
                             }
 
                         }
@@ -2912,13 +2912,13 @@ class XmlReader
                             $text .= $this->draw_add_button($this->id, "Plots");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
-                            $text .= '<TABLE class="swMntInnerBox">';
+                            $text .= '<TABLE class="reportico-maintain-inner-box">';
                             $text .= '<TR>';
                             $text .= $this->panel_key_to_html($this->id, $val, "PLOT", "_key");
                             $text .= '<TD valign="top">';
                             $element_counts[$k] = count($val);
                             if (count($val) > 0) {
-                                $text .= '<TABLE class="swMntInnerRightBox">';
+                                $text .= '<TABLE class="reportico-maintain-inner-right-box">';
                             }
 
                         }
@@ -2931,13 +2931,13 @@ class XmlReader
                             $text .= $this->draw_add_button($this->id, "Graphs");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
-                            $text .= '<TABLE class="swMntInnerBox">';
+                            $text .= '<TABLE class="reportico-maintain-inner-box">';
                             $text .= '<TR>';
                             $text .= $this->panel_key_to_html($this->id, $val, "GRAPH", "_key");
                             $text .= '<TD valign="top">';
                             $element_counts[$k] = count($val);
                             if (count($val) > 0) {
-                                $text .= '<TABLE class="swMntInnerRightBox">';
+                                $text .= '<TABLE class="reportico-maintain-inner-right-box">';
                             }
 
                         }
@@ -2950,13 +2950,13 @@ class XmlReader
                             $text .= $this->draw_add_button($this->id, "Page Headers");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
-                            $text .= '<TABLE class="swMntInnerBox">';
+                            $text .= '<TABLE class="reportico-maintain-inner-box">';
                             $text .= '<TR>';
                             $text .= $this->panel_key_to_html($this->id, $val, "PAGE_HEADER", "_key");
                             $text .= '<TD valign="top">';
                             $element_counts[$k] = count($val);
                             if (count($val) > 0) {
-                                $text .= '<TABLE class="swMntInnerRightBox">';
+                                $text .= '<TABLE class="reportico-maintain-inner-right-box">';
                             }
 
                         }
@@ -2969,13 +2969,13 @@ class XmlReader
                             $text .= $this->draw_add_button($this->id, "Page Footers");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
-                            $text .= '<TABLE class="swMntInnerBox">';
+                            $text .= '<TABLE class="reportico-maintain-inner-box">';
                             $text .= '<TR>';
                             $text .= $this->panel_key_to_html($this->id, $val, "PAGE_FOOTER", "_key");
                             $text .= '<TD valign="top">';
                             $element_counts[$k] = count($val);
                             if (count($val) > 0) {
-                                $text .= '<TABLE class="swMntInnerRightBox">';
+                                $text .= '<TABLE class="reportico-maintain-inner-right-box">';
                             }
 
                         }
@@ -2989,13 +2989,13 @@ class XmlReader
                             $text .= $this->draw_add_button($this->id, "Query Columns");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
-                            $text .= '<TABLE class="swMntInnerBox">';
+                            $text .= '<TABLE class="reportico-maintain-inner-box">';
                             $text .= '<TR>';
                             $text .= $this->panel_key_to_html($this->id, $val, "", "Name");
                             $text .= '<TD valign="top">';
                             $element_counts[$k] = count($val);
                             if (count($val) > 0) {
-                                $text .= '<TABLE class="swMntInnerRightBox">';
+                                $text .= '<TABLE class="reportico-maintain-inner-right-box">';
                             }
 
                             $text .= "\n<!--Debug Qcol-->";
@@ -3033,7 +3033,7 @@ class XmlReader
                             $text .= '</TR>';
                             $text .= '<TR class="reportico-maintain-row-block">';
                             $text .= '<TD style="width: 100%;">';
-                            $text .= '<TABLE class="swMntInnerBox">';
+                            $text .= '<TABLE class="reportico-maintain-inner-box">';
                         }
                         break;
 
@@ -3080,7 +3080,7 @@ class XmlReader
                             //$text .= $this->draw_show_hide_tab_button ($this->id."ords", "ORDER_BY") ;
                             $text .= $this->draw_show_hide_tab_button($this->id . "psql", "PRESQLS");
                             $text .= '</UL>';
-                            $text .= '<TABLE class="swMntInnerBox">';
+                            $text .= '<TABLE class="reportico-maintain-inner-box">';
                         }
                         $text .= '<!--End Query-->';
                         break;
@@ -3099,13 +3099,13 @@ class XmlReader
                             $text .= $this->draw_add_button($this->id, "Criteria");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
-                            $text .= '<TABLE class="swMntInnerBox">';
+                            $text .= '<TABLE class="reportico-maintain-inner-box">';
                             $text .= '<TR>';
                             $text .= $this->panel_key_to_html($this->id, $val, "CRITERIAITEM", "Name", true);
                             $text .= '<TD valign="top">';
                             $element_counts[$k] = count($val);
                             if (count($val) > 0) {
-                                $text .= '<TABLE class="swMntInnerRightBox">';
+                                $text .= '<TABLE class="reportico-maintain-inner-right-box">';
                             }
 
                         }
@@ -3118,13 +3118,13 @@ class XmlReader
                             $text .= $this->draw_add_button($this->id, "Link");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
-                            $text .= '<TABLE class="swMntInnerBox">';
+                            $text .= '<TABLE class="reportico-maintain-inner-box">';
                             $text .= '<TR>';
                             $text .= $this->panel_key_to_html($this->id, $val, "LINKS", "_key");
                             $text .= '<TD valign="top">';
                             $element_counts[$k] = count($val);
                             if (count($val) > 0) {
-                                $text .= '<TABLE class="swMntInnerRightBox">';
+                                $text .= '<TABLE class="reportico-maintain-inner-right-box">';
                             }
 
                         }
@@ -3138,13 +3138,13 @@ class XmlReader
                             $text .= $this->draw_add_button($this->id, "ASSIGNMENT");
                             $text .= '</TR>';
                             $text .= '</TABLE>';
-                            $text .= '<TABLE class="swMntInnerBox">';
+                            $text .= '<TABLE class="reportico-maintain-inner-box">';
                             $text .= '<TR>';
                             $text .= $this->panel_key_to_html($this->id, $val, "ASSIGNMENT", "AssignName", true);
                             $text .= '<TD valign="top">';
                             $element_counts[$k] = count($val);
                             if (count($val) > 0) {
-                                $text .= '<TABLE class="swMntInnerRightBox">';
+                                $text .= '<TABLE class="reportico-maintain-inner-right-box">';
                             }
 
                         }
@@ -3432,7 +3432,7 @@ class XmlReader
                     $text .= $this->draw_show_hide_tab_button($this->id . "detl", "DETAILS");
                     $text .= $this->draw_show_hide_tab_button($this->id . "plot", "PLOTS");
                     $text .= '		</UL>' . "\n";
-                    $text .= '		<TABLE class="swMntInnerBox">' . "\n";
+                    $text .= '		<TABLE class="reportico-maintain-inner-box">' . "\n";
                 }
 
                 // Force Group Header Trailer menu after group entry fields
@@ -3451,7 +3451,7 @@ class XmlReader
                     $text .= $this->draw_show_hide_tab_button($this->id . "ghdr", "HEADERS");
                     $text .= $this->draw_show_hide_tab_button($this->id . "gtrl", "TRAILERS");
                     $text .= '		</UL>' . "\n";
-                    $text .= '		<TABLE class="swMntInnerBox">' . "\n";
+                    $text .= '		<TABLE class="reportico-maintain-inner-box">' . "\n";
                 }
 
                 // Force Criteria menu after group entry fields
@@ -3476,7 +3476,7 @@ class XmlReader
                     }
 
                     $text .= '		</UL>' . "\n";
-                    $text .= '		<TABLE class="swMntInnerBox">' . "\n";
+                    $text .= '		<TABLE class="reportico-maintain-inner-box">' . "\n";
                 }
 
                 if ($this->isShowingFull($this->id)) {
@@ -3869,13 +3869,13 @@ class XmlReader
             if ($this->query->url_path_to_assets) {
                 $helpimg = $this->query->url_path_to_assets . "/images/help.png";
                 $text .= '<a target="_blank" href="' . $this->helpPath($this->id, $striptag) . '">';
-                $text .= '<img class="swMntHelpImage" alt="tab" src="' . $helpimg . '">';
+                $text .= '<img class="reportico-maintain-help-image" alt="tab" src="' . $helpimg . '">';
                 $text .= '</a>&nbsp;';
             } else {
                 $helpimg = ReporticoUtility::findBestUrlInIncludePath("images/help.png");
                 $dr = ReporticoUtility::getReporticoUrlPath();
                 $text .= '<a target="_blank" href="' . $this->helpPath($this->id, $striptag) . '">';
-                $text .= '<img class="swMntHelpImage" alt="tab" src="' . $dr . $helpimg . '">';
+                $text .= '<img class="reportico-maintain-help-image" alt="tab" src="' . $dr . $helpimg . '">';
                 $text .= '</a>&nbsp;';
             }
         }
@@ -3941,7 +3941,7 @@ class XmlReader
                     $readonly = "readonly";
                 }
 
-                $text .= '<textarea class="' . $this->query->getBootstrapStyle('textfield') . ' swMntTextBoxNarrow" ' . $readonly . ' cols="70" rows="20" name="set_' . $this->id . "_" . $showtag . $shadow . '" >';
+                $text .= '<textarea class="' . $this->query->getBootstrapStyle('textfield') . ' reportico-maintain-text-box-narrow" ' . $readonly . ' cols="70" rows="20" name="set_' . $this->id . "_" . $showtag . $shadow . '" >';
                 $text .= htmlspecialchars($val);
                 $text .= '</textarea>';
                 break;
@@ -4224,7 +4224,7 @@ class XmlReader
             $text .= "\n<!-- TAG 1-->";
             $text .= '<TD colspan="1">';
             if ($type != "TEXTFIELDNOOK") {
-                $text .= '<input class="' . $this->query->getBootstrapStyle('design_ok') . 'reportico-maintain-button reporticoSubmit" type="submit" name="submit_' . $this->id . '_SET" value="' . ReporticoLang::templateXlate("OK") . '">';
+                $text .= '<input class="' . $this->query->getBootstrapStyle('design_ok') . 'reportico-maintain-button reportico-submit" type="submit" name="submit_' . $this->id . '_SET" value="' . ReporticoLang::templateXlate("OK") . '">';
             } else {
                 $text .= "&nbsp;";
             }
@@ -4630,9 +4630,9 @@ return $text;
     public function &panel_key_to_html($id, &$ar, $paneltype, $labindex,
         $draw_move_buttons = false, $draw_delete_button = true) {
         $text = "";
-        $text .= '<TD valign="top" class="swMntMidSection">';
+        $text .= '<TD valign="top" class="reportico-maintain-mid-section">';
         $text .= '<DIV class="side-nav-container affix-top">';
-        $text .= '<UL class="' . $this->query->getBootstrapStyle('vtabs') . 'swMntMidSectionTable">';
+        $text .= '<UL class="' . $this->query->getBootstrapStyle('vtabs') . 'reportico-maintain-mid-sectionTable">';
 
         $defaulttext = ReporticoLang::templateXlate($paneltype);
         $ct = 0;

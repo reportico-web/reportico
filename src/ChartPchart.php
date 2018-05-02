@@ -310,7 +310,7 @@ class ChartPchart
 
         $url .= "&reportico_call_mode=graph_pchart";
         $url .= "&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
-        $result = '<img class="swRepGraph" src=\'' . $dyngraph . '?' . $url . '\'>';
+        $result = '<img class="reportico-output-graph" src=\'' . $dyngraph . '?' . $url . '\'>';
 
         return $result;
     }

@@ -8,13 +8,13 @@
 }*/
 
 
-#reportico_container
+#reportico-container
 {
     background-color: #ffffff;
     position: relative;
 }
 
-.swPrpToolbarPane input
+.reportico-prepare-toolbar-pane input
 {
     float: right;
     font-weight: 700;
@@ -26,14 +26,14 @@
     cursor: pointer;
 }
 
-.swDisplayGroupLine td
+.reportico-display-group-line td
 {
     background-color: #eeeeff;
     padding-left: 20px;
     font-weight: normal;
 }
 
-#swPrpSaveFile
+#reportico-prepare-save-file
 {
     display: inline !important;
 }
@@ -43,7 +43,7 @@
     margin:0px 0px 0px 5px !important;
 }
 
-#swPrpSubmitPane input
+#reportico-prepare-submitPane input
 {
     float: right;
     margin: 5px 5px 5px 0px;
@@ -54,7 +54,7 @@
     background: url('../images/icon-reportico-48.png') no-repeat left;
 }
 
-.swPrpCritSel select
+.reportico-prepare-crit-sel select
 {
     margin: 0px;
     padding: 2px 2px 2px 2px;
@@ -66,7 +66,7 @@
     cursor: pointer;
 }
 
-.swPrpCritExpandSel input
+.reportico-prepare-crit-expand-sel input
 {
     float: left;
     margin: 3px 2px 0px 20px !important;
@@ -82,13 +82,13 @@
     width: 22px !important;
 }
 
-.swPrpTopMenuCell input {
+.reportico-prepare-top-menuCell input {
     width: auto;
 }
 
-.swDateField { width: 100px; }
+.reportico-date-field { width: 100px; }
 
-.swPrpCritSel input[type=text]
+.reportico-prepare-crit-sel input[type=text]
 {
     font-weight: normal;
     height: 30px;
@@ -103,10 +103,10 @@
     background-color: #ffffff;
     cursor: pointer;
 }
-.swDateField { width: 100px !important; }
+.reportico-date-field { width: 100px !important; }
 
 /* Why double {} ? */
-.swPrpTextField { width: 100%; }
+.reportico-prepare-text-field { width: 100%; }
 {
     margin: 0px 0px 0px 0px;
     padding: 2px 2px 2px 2px;
@@ -118,7 +118,7 @@
     width: 20px;
 }
 
-.swPrpCritSel input[type=radio]
+.reportico-prepare-crit-sel input[type=radio]
 {
     margin: 0px 0px 0px 0px;
     padding: 2px 2px 2px 2px;
@@ -127,7 +127,7 @@
 }
 
 
-.swPrpCritSel input[type=hidden]
+.reportico-prepare-crit-sel input[type=hidden]
 {
     display: none;
 }
@@ -138,7 +138,7 @@
     height: 20px !important;
 }
 
-.swPrpCritSel input[type=checkbox]
+.reportico-prepare-crit-sel input[type=checkbox]
 {
     margin: 0px 0px 0px 0px;
     padding: 2px 2px 2px 2px;
@@ -183,24 +183,24 @@ div.modal-loading {
 }
 
 
-.swAdminBanner
+.reportico-admin-banner
 {
 }
 
 /* Table Container for Menu Selections */
-.swMenuBody 
+.reportico-menuBody 
 { 
     background-color: #ffffff;
 }
 
-.swMenuForm
+.reportico-menuForm
 {
 /*	background-color: #e6f4ca; */
     background-color: #ffffff;
     border: solid 1px #AAAAAA;
 }
 
-.swMenu
+.reportico-menu
 {
     width: 80% !important;
     text-align: center;
@@ -215,7 +215,7 @@ div.modal-loading {
     margin-left: 10%;
 }
 
-.swMenu td
+.reportico-menu td
 {
     border: none !important;
     padding: 2px !important;
@@ -232,7 +232,7 @@ a:visited
 }
 
 /* Style for Menu Header */
-.swMenuItemHeader
+.reportico-menuItemHeader
 {
     border: solid 1px;
     background-color: #DDEEFF;
@@ -244,7 +244,7 @@ a:visited
 }
 
 /* Style for Menu Items Header */
-.swMenuItem
+.reportico-menuItem
 {
     text-align: center;
     padding-top: 1px;
@@ -253,7 +253,7 @@ a:visited
 }
 
 /* Style for Menu Header */
-.swMenuItemLink
+.reportico-menu-item-link
 {
     color: #000000 !important;
     color: inherit;
@@ -263,7 +263,7 @@ a:visited
     text-decoration: none;
 }
 
-.swMenuItemLink:hover 
+.reportico-menu-item-link:hover 
 {
     background-color: inherit !important;
     color: #7070CC !important;
@@ -302,20 +302,20 @@ a:visited
     text-decoration: none;
 }
 
-.swAdminButton2
+.reportico-admin-button2
 { 
     line-height: inherit !important;
     border: none;
 }
 
-input.swAdminButton2
+input.reportico-admin-button2
 { 
     margin-top: 8px;
     margin-left: 2px;
     margin-right: 2px;
 }
 
-.swAdminButton 
+.reportico-admin-button 
 { 
     padding-right: 10px;
     padding-left: 10px;
@@ -344,7 +344,7 @@ input.swAdminButton2
 }
 
 /* ------------------ Main Screen Form Box --------------*/
-.swPrpForm 
+.reportico-prepare-form 
 { 
     width: 90% !important;
     margin-left: 5% !important;
@@ -355,13 +355,13 @@ input.swAdminButton2
     border: solid 1px #AAAAAA;
 }
 
-.swPrpTopMenu
+.reportico-prepare-top-menu
 {
     width: 100%;
     margin-bottom: 5px;
 }
 
-.swPrpTopMenuCell
+.reportico-prepare-top-menuCell
 {
 }
 
@@ -376,7 +376,7 @@ input.swAdminButton2
     padding-left: 0px;
 }
 
-.swTitle 
+.reportico-title-bar 
 { 
     font-size: 18pt;
     text-align: center;
@@ -387,8 +387,8 @@ input.swAdminButton2
     padding-left: 20px;
 }
 
-.swPrpCritOutputOptions,
-.swPrpCritBox
+.reportico-prepare-crit-output-options,
+.reportico-prepare-crit-box
 {
     width: 100%;
     border: none;
@@ -396,7 +396,7 @@ input.swAdminButton2
     border-color : #FFFFDD;
 }
 
-.swPrpCritEntry
+.reportico-prepare-crit-entry
 {
     width: 50%;
     vertical-align: top;
@@ -406,19 +406,19 @@ input.swAdminButton2
     border-color: #d0ccc9;
 }
 
-.swPrpCritEntryBox
+.reportico-prepare-crit-entryBox
 {
     width: 100%;
 }
 
-.swPrpCritLine
+.reportico-prepare-crit-line
 {
     width: 100%;
     margin: 0;
     padding: 0;
 }
 
-.swPrpCritTitle
+.reportico-prepare-crit-title
 {
     border: none;
     font-weight: bold;
@@ -428,13 +428,13 @@ input.swAdminButton2
     width: 25%;
 }
 
-.swPrpCritSel
+.reportico-prepare-crit-sel
 {
     font-weight: bold;
     padding: 3px 0px;
 }
 
-.swPrpCritExpandSel
+.reportico-prepare-crit-expand-sel
 {
     border: none;
     border-color : #DDFFDD;
@@ -444,11 +444,11 @@ input.swAdminButton2
     width: 10%;
 }
 
-.swPrpCritExpandButton
+.reportico-prepare-crit-expand-button
 {
 }
 
-.swPrpExpand
+.reportico-prepare-expand
 {
     width: 50%;
     vertical-align: top;
@@ -459,16 +459,16 @@ input.swAdminButton2
 
 }
 
-.swPrpExpandBox
+.reportico-prepare-expandBox
 {
     width:          100%;
 }
 
-.swPrpExpandRow
+.reportico-prepare-expandRow
 {
 }
 
-.swPrpExpandCell
+.reportico-prepare-expandCell
 {
     border: none;
     border-color : #DDFFDD;
@@ -484,7 +484,7 @@ input.swAdminButton2
     width: 50%;
 }
 
-.swPrpDropSelect
+.reportico-prepare-drop-select
 { 
     width: 100%;
     text-align: left;
@@ -502,7 +502,7 @@ input.swAdminButton2
 }
 
 /* Style for Criteria Entry Screen Buttons */
-.swPrpSubmit
+.reportico-prepare-submit
 { 
     background-color: #EFEFEF;
     border: 1px solid #d0ccc9;
@@ -547,7 +547,7 @@ input.swAdminButton2
 }
 
 /* ------------------ Report Output Main Box --------------*/
-.swRepForm
+.reportico-report-form
 {
     /*border: solid 1px #AAAAAA;*/
     background-color: #999;
@@ -570,7 +570,7 @@ input.swAdminButton2
 .reportico-pageFormBlank { margin-bottom: 20px; }
 
 /* No Rows Information Message */
-.swRepNoRows
+.reportico-output-no-rows
 {
     width:          96%;
     border: groove thin;
@@ -581,13 +581,13 @@ input.swAdminButton2
 }
 
 /* Row of Column Header Labels  */
-.swRepColHdrRow
+.reportico-output-col-hdr-row
 {
 }
 
 /* Column Header Label  */
-.swRepColHdrRow td, .swRepColHdrRow div,
-.swRepColHdrRow th
+.reportico-output-col-hdr-row td, .reportico-output-col-hdr-row div,
+.reportico-output-col-hdr-row th
 {
     border-bottom: dotted;
     border-width: 1px;
@@ -638,7 +638,7 @@ input.swAdminButton2
 }
 
 /* Line for Group Header Data  */
-.swRepGraph
+.reportico-output-graph
 {
     display: block;
     max-width: 100%;
@@ -675,12 +675,12 @@ input.swAdminButton2
 
 
 /* Style for First Line of Group Trailer/Summary Values  */
-.swRepGrpTlrRow1st
+.reportico-output-group-tlr-row1st
 {
 }
 
 /* Style for Subsequent Lines of Group Trailer/Summary Values  */
-.swRepGrpTlrRow
+.reportico-output-group-tlr-row
 {
 }
 
@@ -693,7 +693,7 @@ input.swAdminButton2
 }
 
 /* Style for Group Summary Values on First Line of Group Trailer/Summary  */
-.swRepGrpTlrDat1st
+.reportico-output-group-tlr-dat1st
 {
     border-top: dotted;
     border-width: 1px;
@@ -701,11 +701,11 @@ input.swAdminButton2
 }
 
 /* Style for Group Summary Values on subsequent Lines of Group Trailer/Summary  */
-.swRepGrpTlrDat
+.reportico-output-group-tlr-dat
 {
 }
 
-.swCSVBox, .swHTMLBox, .swPDFBox, .swPrintBox, .swXMLBox, .swJSONBox
+.reportico-csv-box, .reportico-html-box, .reportico-pdf-box, .reportico-print-box, .reportico-xml-box, .reportico-json-box
 {
     width: 42px !important;
     height: 42px !important;
@@ -717,14 +717,14 @@ input.swAdminButton2
     float: left;
 }
 
-.swHTMLBox { background-image: url(../images/printhtml.png) !important; }
-.swCSVBox { background-image: url(../images/printcsv.png) !important; }
-.swPDFBox { background-image: url(../images/printpdf.png) !important; }
-.swJSONBox { background-image: url(../images/printjson.png) !important; }
-.swXMLBox { background-image: url(../images/printxml.png) !important; }
-.swPrintBox { background-image: url(../images/printablehtml.png) !important; }
+.reportico-html-box { background-image: url(../images/printhtml.png) !important; }
+.reportico-csv-box { background-image: url(../images/printcsv.png) !important; }
+.reportico-pdf-box { background-image: url(../images/printpdf.png) !important; }
+.reportico-json-box { background-image: url(../images/printjson.png) !important; }
+.reportico-xml-box { background-image: url(../images/printxml.png) !important; }
+.reportico-print-box { background-image: url(../images/printablehtml.png) !important; }
 
-.swMiniMntForm
+.reportico-edit-link-form
 {
     background-color : #f4f4f4;
     border-color : #BBCCFF;
@@ -732,7 +732,7 @@ input.swAdminButton2
     font-size: 10pt;
 }
 
-.swMiniMaintain
+.reportico-edit-link
 {
     /*height: 30px !important;*/
     text-align: left;
@@ -748,26 +748,26 @@ input.swAdminButton2
 }
 
 /* Design Button in a button group no left right margin */
-.swMiniMaintainDropDown
+.reportico-edit-linkDropDown
 {
     /*height: 30px !important;*/
     width:100%;
 }
 
-.swMiniMaintainGroup
+.reportico-edit-linkGroup
 {
     /*height: 30px !important;*/
     margin: 4px 0px 4px 0px !important;
 }
 
-.swMiniMaintainGroupWithDropDown
+.reportico-edit-linkGroupWithDropDown
 {
     /*height: 30px !important;*/
     padding: 0px !important;
     margin: 4px 0px 4px 0px !important;
 }
 
-.swMiniMaintainGroupDropDown {
+.reportico-edit-linkGroupDropDown {
 
     border: none !important;
     padding: 12px;
@@ -775,12 +775,12 @@ input.swAdminButton2
     text-decoration: none;
 }
 
-.swMiniMaintainGroupDropDown:hover {
+.reportico-edit-linkGroupDropDown:hover {
     text-decoration: none;
 }
 
 
-.swRepButtons
+.reportico-output-buttons
 {
     width: 100%;
     height: 38px;
@@ -794,7 +794,7 @@ input.swAdminButton2
 
 .reportico-paginate-button a,
 .reportico-print-button .reportico-ajax-link,
-.swRepRefreshBox .reportico-ajax-link,
+.reportico-output-refresh-box .reportico-ajax-link,
 .reportico-back-button .reportico-ajax-link
 {
     width: 32px;
@@ -808,7 +808,7 @@ input.swAdminButton2
 
 .reportico-paginate-button a { height: 32px !important; border: none; background-image: url(../images/paginate.png); background-color: #ffffff;}
 .reportico-print-button .reportico-ajax-link { height: 32px !important; border: none; background-image: url(../images/printer.png); background-color: #ffffff;}
-.swRepRefreshBox .reportico-ajax-link { height: 32px !important; border: none; background-image: url(../images/refreshbutton.png); }
+.reportico-output-refresh-box .reportico-ajax-link { height: 32px !important; border: none; background-image: url(../images/refreshbutton.png); }
 .reportico-back-button .reportico-ajax-link { height: 32px !important; border: none; background-image: url(../images/backbutton.png); }
 
 .reportico-back-button:hover 
@@ -821,14 +821,14 @@ input.swAdminButton2
 {
 }
 
-.swRepDatVal
+.reportico-output-dat-val
 {
 }
 
 /* ------------------------------------------------------------------------------------*/
 /* -----------------------------Styles for MAINTAIN Execute Mode ----------------------*/
 /* ----------------------------- i.e for the HTML Report Output -----------------------*/
-.swMntBody 
+.reportico-maintain-body 
 { 
     /*background-color: #efefef;*/
     /*width: 100%;*/
@@ -836,7 +836,7 @@ input.swAdminButton2
 }
 
 /* ------------------ Main Screen Form Box --------------*/
-.swMntForm 
+.reportico-maintain-form 
 { 
     text-align: left;
     margin-left: 0%;
@@ -846,7 +846,7 @@ input.swAdminButton2
 }
 
 /* ------------------ Top Menu Box with Main Menu, Admin Menu options  --------------*/
-.swMntTopMenu
+.reportico-maintain-top-menu
 {
     width: 100%;
     margin-top: 2px;
@@ -866,7 +866,7 @@ input.swAdminButton2
     color: #121212;
 }
 
-.swMntInnerRightBox
+.reportico-maintain-inner-right-box
 {
     width: 100%;
 }
@@ -899,19 +899,19 @@ input.swAdminButton2
     border: solid thin #000000;	
 }
 
-.swMntMidSection
+.reportico-maintain-mid-section
 {
    width: 216px;
    padding-right: 10px;
 }
 
-.swMntUpDownButtonCell
+.reportico-maintain-up-down-button-cell
 { 
     padding: 0px;
     margin: 0px;
 }
 
-.swMntMoveUpButton
+.reportico-maintain-move-up-button
 { 
     background-image: url(../images/moveup.gif);
     background-repeat: no-repeat;
@@ -927,7 +927,7 @@ input.swAdminButton2
     float: right;
 }
 
-.swMntMoveDownButton
+.reportico-maintain-move-down-button
 { 
     background-image: url(../images/movedown.gif);
     background-repeat: no-repeat;
@@ -943,7 +943,7 @@ input.swAdminButton2
     float: right;
 }
 
-.swMntDeleteButton
+.reportico-maintain-delete-button
 { 
     background-image: url(../images/delete.gif);
     background-repeat: no-repeat;
@@ -960,7 +960,7 @@ input.swAdminButton2
 }
 
 /* ----------------------------- Horizontal Menu Box ---------------*/
-.swMntInnerBox
+.reportico-maintain-inner-box
 {
     width: 100%;
     /*border: 2px solid #CCCCFF;*/
@@ -970,7 +970,7 @@ input.swAdminButton2
 }
 
 /* -------------- Horizontal Menu Buttons ---------------------- */
-.swMntTabMenuButSel
+.reportico-maintain-tab-menu-but-sel
 { 
     border-style: none;
     padding: 5px;
@@ -979,7 +979,7 @@ input.swAdminButton2
     width: 100% !important;
 }
 
-.swMntTabMenuButUnsel
+.reportico-maintain-tab-menu-but-unsel
 { 
     border-style: none;
     padding: 5px;
@@ -988,11 +988,11 @@ input.swAdminButton2
     width: 100% !important;
 }
 
-.swMntTabMenuCellSel
+.reportico-maintain-tab-menu-cell-sel
 { 
 }
 
-.swMntTabMenuCellUnsel
+.reportico-maintain-tab-menu-cell-unsel
 { 
     background-color: #e0e0ff;
     border: 1px solid #bbb;
@@ -1000,7 +1000,7 @@ input.swAdminButton2
 /* -------------- End Horizontal Menu Buttons ---------------------- */
 
 /* -------------- Verical Menu Buttons ---------------------- */
-.swMntVertTabMenuButSel
+.reportico-maintain-verttab-menu-but-sel
 { 
     border-style: none;
     padding: 5px;
@@ -1011,7 +1011,7 @@ input.swAdminButton2
     
 }
 
-.swMntVertTabMenuButUnsel
+.reportico-maintain-verttab-menu-but-unsel
 { 
     background-color: #F5F5F5;
     border-style: none;
@@ -1022,22 +1022,22 @@ input.swAdminButton2
     text-align: left;
 }
 
-.swMntVertTabMenuCellSel
+.reportico-maintain-verttab-menu-cell-sel
 { 
     width: 215px !important;
 }
 
-.swMntVertTabMenuCellUnsel
+.reportico-maintain-verttab-menu-cell-unsel
 { 
     border: 1px solid #bbb;
     width: 215px !important;
 }
 
-.swMntVertTabMenuCellSel a
+.reportico-maintain-verttab-menu-cell-sel a
 {
     padding: 0px !important;
 }
-.swMntVertTabMenuCellUnsel a
+.reportico-maintain-verttab-menu-cell-unsel a
 {
     padding: 0px !important;
 }
@@ -1103,7 +1103,7 @@ input.swAdminButton2
     padding: 0px 0px 0px 0px;
 }
 
-.swMntHelpImage
+.reportico-maintain-help-image
 { 
     border-style: none;
     display: inline !important;
@@ -1124,7 +1124,7 @@ input.swAdminButton2
 }
 
 /* ----------------------------- Other Styles -----------------------------------------*/
-.swStatus
+.reportico-status-block
 {
     width:          98%;
     border: none;
@@ -1133,7 +1133,7 @@ input.swAdminButton2
     margin-left: 1%;
 }
 
-.swError
+.reportico-error-box
 {
     width:          100%;
     background-color : inherit;
@@ -1151,7 +1151,7 @@ input.swAdminButton2
 
 /* -------------------------- Printed Output Styles ----------------------------------*/
 .reportico-custom-trailer-block { display: block; width: 100%; position: relative; }
-.swNewPageHeaderBlock { display: none; }
+.reportico-new-pageHeaderBlock { display: none; }
 .reportico-page-header-block { display: block; width: 100%; left: 0px; position: relative; top: 0;}
 .reportico-page-footer-block { display: block; width: 100%; left: 0px; position: absolute; bottom: 0 !important;}
 .reportico-page-headerBody { position: relative; }
@@ -1223,12 +1223,12 @@ input.swAdminButton2
     .reportico-back-button { display: none; }
     
     .reportico-output-button-block { display: none; }
-    .swRepButtons { display: none; }
+    .reportico-output-buttons { display: none; }
     .prepareAjaxExecuteIgnore { display: none; }
-    .swRepForm { border: none; }
+    .reportico-report-form { border: none; }
     .reportico-body { width: 100%; margin: 0px; border: none; }
 
-    .swNewPageHeaderBlock { display: block; } 
+    .reportico-new-pageHeaderBlock { display: block; } 
 
     .reportico-row td a
     {
@@ -1279,12 +1279,12 @@ input.swAdminButton2
     line-height: 1.2em;
 }
 
-/*#reportico_container form .navbar .container
+/*#reportico-container form .navbar .container
 {
     width: 100%;
 }*/
 
-#criteriaform .navbar, .swMenuForm .navbar
+#criteriaform .navbar, .reportico-menuForm .navbar
 {
     margin-bottom: 0px;
 }

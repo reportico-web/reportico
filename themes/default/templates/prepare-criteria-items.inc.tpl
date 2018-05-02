@@ -1,4 +1,4 @@
-                <TABLE class="swPrpCritEntryBox">
+                <TABLE class="reportico-prepare-crit-entryBox">
 {% if CRITERIA_ITEMS is defined %}
 {% for critno in CRITERIA_ITEMS %}
 {% if critno.display_group and ( critno.display_group != critno.last_display_group )  %}
@@ -16,17 +16,17 @@
 {% if critno.hidden or critno.display_group %}
 {% if critno.display_group %}
 {% if critno.visible  %}
-                    <tr class="swPrpCritLine  swDisplayGroupLine displayGroup{{ critno.display_group_class }}" id="criteria_{{ critno.name }}" >
+                    <tr class="reportico-prepare-crit-line  reportico-display-group-line displayGroup{{ critno.display_group_class }}" id="criteria_{{ critno.name }}" >
 {% else %}
-                    <tr class="swPrpCritLine  swDisplayGroupLine displayGroup{{ critno.display_group_class }}" id="criteria_{{ critno.name }}" style="display:none">
+                    <tr class="reportico-prepare-crit-line  reportico-display-group-line displayGroup{{ critno.display_group_class }}" id="criteria_{{ critno.name }}" style="display:none">
 {% endif %}
 {% else %}
-                    <tr class="swPrpCritLine" id="criteria_{{ critno.name }}" style="display:none">
+                    <tr class="reportico-prepare-crit-line" id="criteria_{{ critno.name }}" style="display:none">
 {% endif %}
 {% else %}
-                    <tr class="swPrpCritLine" id="criteria_{{ critno.name }}">
+                    <tr class="reportico-prepare-crit-line" id="criteria_{{ critno.name }}">
 {% endif %}
-                        <td class='swPrpCritTitle'>
+                        <td class='reportico-prepare-crit-title'>
 {% if critno.tooltip %}
                             <a class='reportico_tooltip' data-toggle="tooltip" data-placement="right" title="{{ critno.tooltip }}">
                                     <span class="glyphicon glyphicon-question-sign"></span>
@@ -34,15 +34,15 @@
 {% endif %}
                             {{ critno.title|raw }}
                         </td>
-                        <td class="swPrpCritSel">
+                        <td class="reportico-prepare-crit-sel">
                             {{ critno.entry|raw }}
                         </td>
-                        <td class="swPrpCritExpandSel">
+                        <td class="reportico-prepare-crit-expand-sel">
 {% if critno.expand %}
 {% if AJAX_ENABLED %} 
-                            <input class="swPrpCritExpandButton" id="reporticoPerformExpand" type="button" name="EXPAND_{{ critno.name }}" value="{{ T_EXPAND }}">
+                            <input class="reportico-prepare-crit-expand-button" id="reporticoPerformExpand" type="button" name="EXPAND_{{ critno.name }}" value="{{ T_EXPAND }}">
 {% else %}
-                            <input class="swPrpCritExpandButton" type="submit" name="EXPAND_{{ critno.name }}" value="{{ T_EXPAND }}">
+                            <input class="reportico-prepare-crit-expand-button" type="submit" name="EXPAND_{{ critno.name }}" value="{{ T_EXPAND }}">
 {% endif %}
 {% endif %}
                         </td>

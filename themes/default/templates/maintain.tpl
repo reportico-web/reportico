@@ -9,7 +9,7 @@
 <LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{{ ASSETS_PATH }}/js/bootstrap3/css/bootstrap.min.css">
 {{ OUTPUT_ENCODING }}
 </HEAD>
-<BODY class="swMntBody">
+<BODY class="reportico-maintain-body">
 {% else %}
 <LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{{ THEME_DIR }}/css/reportico.css">
 {% if BOOTSTRAP_STYLES %}
@@ -119,7 +119,7 @@
 
 {% endif %}
 {% endif %}
-<div id="reportico_container">
+<div id="reportico-container">
     <script>
         reportico_criteria_items = [];
 {% if CRITERIA_ITEMS is defined %}
@@ -128,17 +128,17 @@
 {% endfor %}
 {% endif %}
     </script>
-<FORM class="swMntForm" name="topmenu" method="POST" action="{{ SCRIPT_SELF }}">
-<H1 class="swTitle">{{ TITLE }}</H1>
+<FORM class="reportico-maintain-form" name="topmenu" method="POST" action="{{ SCRIPT_SELF }}">
+<H1 class="reportico-title-bar">{{ TITLE }}</H1>
 {% if STATUSMSG|length>0 %} 
-			<TABLE class="swStatus">
+			<TABLE class="reportico-status-block">
 				<TR>
 					<TD>{{ STATUSMSG|raw }}</TD>
 				</TR>
 			</TABLE>
 {% endif %}
 {% if ERRORMSG|length>0 %} 
-			<TABLE class="swError">
+			<TABLE class="reportico-error-box">
 				<TR>
 					<TD>{{ ERRORMSG|raw }}</TD>
 				</TR>
@@ -146,10 +146,10 @@
 {% endif %}
 <input type="hidden" name="reportico_session_name" value="{{ SESSION_ID }}" />
 {% if SHOW_TOPMENU %}
-	<TABLE class="swMntTopMenu">
+	<TABLE class="reportico-maintain-top-menu">
 		<TR>
 {% if (DB_LOGGEDON) %} 
-			<TD class="swPrpTopMenuCell">
+			<TD class="reportico-prepare-top-menuCell">
 {% if (DBUSER) %}
 Logged On As {{ DBUSER }}
 {% else %}
@@ -165,7 +165,7 @@ Logged On As {{ DBUSER }}
 {% endif %}
 				&nbsp;<a class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}reportico-ajax-link" href="{{ RUN_REPORT_URL }}">{{ T_RUN_REPORT }}</a>
 				&nbsp;<input class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}reportico-ajax-link" type="submit" name="submit_prepare_mode" style="display:none" onclick="return(false);" value="Do nothing on enter">
-                <input class="reportico-maintain-button reporticoSubmit swNoSubmit" style="width: 0px; color: transparent; background-color: transparent; border-color: transparent; cursor: default;" type="submit" name="submit_dummy_SET" value="Ok">
+                <input class="reportico-maintain-button reportico-submit reportico-no-submit" style="width: 0px; color: transparent; background-color: transparent; border-color: transparent; cursor: default;" type="submit" name="submit_dummy_SET" value="Ok">
 			</TD>
 {% endif %}
 {% if SHOW_MODE_MAINTAIN_BOX and 0 %}
@@ -176,20 +176,20 @@ Logged On As {{ DBUSER }}
 			</TD>
 {% endif %}
 {% if SHOW_LOGOUT %}
-			<TD style="width:15%; text-align: right; padding-right: 10px;" align="right" class="swPrpTopMenuCell">
+			<TD style="width:15%; text-align: right; padding-right: 10px;" align="right" class="reportico-prepare-top-menuCell">
 				<input class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}reportico-ajax-link" type="submit" name="logout" value="{{ T_LOGOFF }}">
 			</TD>
 {% endif %}
 {% if SHOW_LOGIN %}
 			<TD style="width: 50%"></TD>
-			<TD style="width: 35%" align="right" class="swPrpTopMenuCell">
+			<TD style="width: 35%" align="right" class="reportico-prepare-top-menuCell">
 {% if PROJ_PASSWORD_ERROR|length > 0 %}
                                 <div style="color: #ff0000;">{{ PASSWORD_ERROR }}</div>
 {% endif %}
 				{{ T_DESIGN_PASSWORD_PROMPT }} <input type="password" name="project_password" value="">
 			</TD>
-			<TD style="width: 15%" align="right" class="swPrpTopMenuCell">
-				<input class="btn btn-sm btn-default swPrpSubmit" type="submit" name="login" value="{{ T_LOGIN }}">
+			<TD style="width: 15%" align="right" class="reportico-prepare-top-menuCell">
+				<input class="btn btn-sm btn-default reportico-prepare-submit" type="submit" name="login" value="{{ T_LOGIN }}">
 			</TD>
 {% endif %}
 		</TR>

@@ -199,7 +199,7 @@ class ReporticoUtility
     }
 
     // Is path executable and writeable?
-    static function swPathExecutable($in_path)
+    static function PathExecutable($in_path)
     {
         $perms = fileperms($in_path);
 

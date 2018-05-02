@@ -656,7 +656,7 @@ class CriteriaColumn extends QueryColumn
                 $tag .= "";
             }
 
-            $tag .= '<input  class="' . $this->lookup_query->getBootstrapStyle('textfield') . 'swDateField" id="swDateField_' . $in_tag . '" style="z-index: 1000" type="text" name="MANUAL_' . $in_tag . '"';
+            $tag .= '<input  class="' . $this->lookup_query->getBootstrapStyle('textfield') . 'reportico-date-field" id="reportico-date-field_' . $in_tag . '" style="z-index: 1000" type="text" name="MANUAL_' . $in_tag . '"';
             $tag .= ' size="20"';
             $tag .= ' maxlength="20"';
             $tag .= ' value="' . $in_value . '">';
@@ -843,7 +843,7 @@ class CriteriaColumn extends QueryColumn
                     }
                 }
 
-                $text .= '<SELECT class="' . $this->lookup_query->getBootstrapStyle('design_dropdown') . 'swPrpDropSelect" name="' . $tag_pref . $this->query_name . '[]" size="' . $multisize . '" multiple>';
+                $text .= '<SELECT class="' . $this->lookup_query->getBootstrapStyle('design_dropdown') . 'reportico-prepare-drop-select" name="' . $tag_pref . $this->query_name . '[]" size="' . $multisize . '" multiple>';
                 break;
 
             case "SELECT2MULTIPLE":
@@ -862,9 +862,9 @@ class CriteriaColumn extends QueryColumn
                 }
 
                 if ($type == "SELECT2MULTIPLE") {
-                    $text .= '<SELECT class="' . $this->lookup_query->getBootstrapStyle('design_dropdown') . 'swPrpDropSelect2" name="' . $tag_pref . $this->query_name . '[]" size="' . $multisize . '" multiple>';
+                    $text .= '<SELECT class="' . $this->lookup_query->getBootstrapStyle('design_dropdown') . 'reportico-prepare-drop-select2" name="' . $tag_pref . $this->query_name . '[]" size="' . $multisize . '" multiple>';
                 } else {
-                    $text .= '<SELECT class="' . $this->lookup_query->getBootstrapStyle('design_dropdown') . 'swPrpDropSelect2" name="' . $tag_pref . $this->query_name . '[]" size="' . $multisize . '" >';
+                    $text .= '<SELECT class="' . $this->lookup_query->getBootstrapStyle('design_dropdown') . 'reportico-prepare-drop-select2" name="' . $tag_pref . $this->query_name . '[]" size="' . $multisize . '" >';
                 }
 
                 $text .= '<OPTION></OPTION>';
@@ -1008,14 +1008,14 @@ class CriteriaColumn extends QueryColumn
                 $text .= '<br>' . $tag;
             } else if ($this->criteria_display == "ANYCHAR" || $this->criteria_display == "TEXTFIELD") {
                 $tag = "";
-                $tag .= '<br><input  class="' . $this->lookup_query->getBootstrapStyle('textfield') . 'swPrpTextField" type="text" name="MANUAL_' . $this->query_name . '"';
+                $tag .= '<br><input  class="' . $this->lookup_query->getBootstrapStyle('textfield') . 'reportico-prepare-text-field" type="text" name="MANUAL_' . $this->query_name . '"';
                 $tag .= ' size="50%"';
                 $tag .= ' value="' . $value_string . '">';
                 $tag .= '<br>';
                 $text .= $tag;
             } else if ($this->criteria_display == "SQLCOMMAND") {
                 $tag = "";
-                $tag .= '<br><textarea  cols="70" rows="20" class="' . $this->lookup_query->getBootstrapStyle('textfield') . 'swPrpTextField" type="text" name="MANUAL_' . $this->query_name . '">';
+                $tag .= '<br><textarea  cols="70" rows="20" class="' . $this->lookup_query->getBootstrapStyle('textfield') . 'reportico-prepare-text-field" type="text" name="MANUAL_' . $this->query_name . '">';
                 $tag .= $value_string;
                 $tag .= "</textarea>";
             }
@@ -1131,7 +1131,7 @@ class CriteriaColumn extends QueryColumn
                     $multisize = 12;
                 }
 
-                $text .= '<SELECT class="' . $this->lookup_query->getBootstrapStyle('design_dropdown') . 'swPrpDropSelect" name="' . $tag_pref . $this->query_name . '[]" size="' . $multisize . '" multiple>';
+                $text .= '<SELECT class="' . $this->lookup_query->getBootstrapStyle('design_dropdown') . 'reportico-prepare-drop-select" name="' . $tag_pref . $this->query_name . '[]" size="' . $multisize . '" multiple>';
                 break;
 
             case "CHECKBOX":
@@ -1300,7 +1300,7 @@ class CriteriaColumn extends QueryColumn
                 }
 
                 $tag = "";
-                $tag .= '<input  type="text" class="' . $this->lookup_query->getBootstrapStyle('textfield') . 'swPrpTextField" name="MANUAL_' . $this->query_name . '"';
+                $tag .= '<input  type="text" class="' . $this->lookup_query->getBootstrapStyle('textfield') . 'reportico-prepare-text-field" name="MANUAL_' . $this->query_name . '"';
                 $tag .= ' value="' . $value_string . '">';
                 $text .= $tag;
             }
@@ -1401,9 +1401,9 @@ class CriteriaColumn extends QueryColumn
                 }
 
                 if ($type == "SELECT2SINGLE") {
-                    $text .= '<SELECT id="' . $widget_id . $this->query_name . '" class="' . $this->lookup_query->getBootstrapStyle('design_dropdown') . 'swPrpDropSelect" name="' . $tag_pref . $this->query_name . '[]" >';
+                    $text .= '<SELECT id="' . $widget_id . $this->query_name . '" class="' . $this->lookup_query->getBootstrapStyle('design_dropdown') . 'reportico-prepare-drop-select" name="' . $tag_pref . $this->query_name . '[]" >';
                 } else {
-                    $text .= '<SELECT id="' . $widget_id . $this->query_name . '" class="' . $this->lookup_query->getBootstrapStyle('design_dropdown') . 'swPrpDropSelect" name="' . $tag_pref . $this->query_name . '[]" multiple>';
+                    $text .= '<SELECT id="' . $widget_id . $this->query_name . '" class="' . $this->lookup_query->getBootstrapStyle('design_dropdown') . 'reportico-prepare-drop-select" name="' . $tag_pref . $this->query_name . '[]" multiple>';
                 }
 
                 $text .= '<OPTION></OPTION>';
@@ -1428,7 +1428,7 @@ class CriteriaColumn extends QueryColumn
                     $multisize = 12;
                 }
 
-                $text .= '<SELECT class="' . $this->lookup_query->getBootstrapStyle('design_dropdown') . 'swPrpDropSelect" name="' . $tag_pref . $this->query_name . '[]" size="' . $multisize . '" multiple>';
+                $text .= '<SELECT class="' . $this->lookup_query->getBootstrapStyle('design_dropdown') . 'reportico-prepare-drop-select" name="' . $tag_pref . $this->query_name . '[]" size="' . $multisize . '" multiple>';
                 break;
 
             case "CHECKBOX":
@@ -1595,7 +1595,7 @@ class CriteriaColumn extends QueryColumn
                 }
 
                 $tag = "";
-                $tag .= '<input  type="text" class="' . $this->lookup_query->getBootstrapStyle('textfield') . 'swPrpTextField" name="MANUAL_' . $this->query_name . '"';
+                $tag .= '<input  type="text" class="' . $this->lookup_query->getBootstrapStyle('textfield') . 'reportico-prepare-text-field" name="MANUAL_' . $this->query_name . '"';
                 $tag .= ' value="' . $value_string . '">';
                 $text .= $tag;
             }
@@ -2039,7 +2039,7 @@ class CriteriaColumn extends QueryColumn
 
         $tag .= ' value="' . $expval . '">';
         $text .= $tag;
-        $text .= '<input class="btn btn-sm btn-default swPrpSubmit" type="submit" name="EXPANDSEARCH_' . $this->query_name . '" value="' . ReporticoLang::templateXlate("Search") . '">';
+        $text .= '<input class="btn btn-sm btn-default reportico-prepare-submit" type="submit" name="EXPANDSEARCH_' . $this->query_name . '" value="' . ReporticoLang::templateXlate("Search") . '">';
         $text .= "<br>";
 
         $type = $this->criteria_type;
@@ -2087,9 +2087,9 @@ class CriteriaColumn extends QueryColumn
                 break;
         }
 
-        $text .= '<br><input class="btn btn-sm btn-default swPrpSubmit" type="submit" name="EXPANDCLEAR_' . $this->query_name . '" value="Clear">';
-        $text .= '<input class="btn btn-sm btn-default swPrpSubmit" type="submit" name="EXPANDSELECTALL_' . $this->query_name . '" value="Select All">';
-        $text .= '<input class="btn btn-sm btn-default swPrpSubmit" type="submit" name="EXPANDOK_' . $this->query_name . '" value="OK">';
+        $text .= '<br><input class="btn btn-sm btn-default reportico-prepare-submit" type="submit" name="EXPANDCLEAR_' . $this->query_name . '" value="Clear">';
+        $text .= '<input class="btn btn-sm btn-default reportico-prepare-submit" type="submit" name="EXPANDSELECTALL_' . $this->query_name . '" value="Select All">';
+        $text .= '<input class="btn btn-sm btn-default reportico-prepare-submit" type="submit" name="EXPANDOK_' . $this->query_name . '" value="OK">';
 
         return $text;
     }
@@ -2137,7 +2137,7 @@ class CriteriaColumn extends QueryColumn
                 //$text .= '<SELECT style="visibility:hidden" name="'."HIDDEN_".$this->query_name.'[]" size="1" multiple>';
                 //$text .= '<SELECT name="'."HIDDEN_".$this->query_name.'[]" size="1" multiple>';
                 $tag = "";
-                $tag .= '<input  type="text" class="' . $this->lookup_query->getBootstrapStyle('textfield') . 'swPrpTextField" name="MANUAL_' . $this->query_name . '"';
+                $tag .= '<input  type="text" class="' . $this->lookup_query->getBootstrapStyle('textfield') . 'reportico-prepare-text-field" name="MANUAL_' . $this->query_name . '"';
                 $tag .= ' size="50%"';
                 $tag .= ' value="' . $this->column_value . '">';
                 $text .= $tag;
@@ -2146,7 +2146,7 @@ class CriteriaColumn extends QueryColumn
 
             case "SQLCOMMAND":
                 $tag = "";
-                $tag .= '<br><textarea  cols="70" rows="20" class="' . $this->lookup_query->getBootstrapStyle('textfield') . 'swPrpTextField" type="text" name="MANUAL_' . $this->query_name . '">';
+                $tag .= '<br><textarea  cols="70" rows="20" class="' . $this->lookup_query->getBootstrapStyle('textfield') . 'reportico-prepare-text-field" type="text" name="MANUAL_' . $this->query_name . '">';
                 $tag .= $this->column_value;
                 $tag .= "</textarea>";
                 $text .= $tag;

@@ -118,7 +118,7 @@
 {% endif %}
 
 {% if not REPORTICO_AJAX_CALLED %}
-<div id="reportico_container">
+<div id="reportico-container">
 {% endif %}
 
 <div id="reportico-top-margin" style="z-index: 1; display: none;left: 80px;float: left; border: solid; height: {{ PAGE_TOP_MARGIN }}; width: {{ PAGE_LEFT_MARGIN }};">t</div>
@@ -134,7 +134,7 @@
 {% endfor %}
 {% endif %}
     </script>
-<div class="swRepForm">
+<div class="reportico-report-form">
 {% if ERRORMSG|length>0 %}
             <div id="reporticoEmbeddedError">
                 {{ ERRORMSG|raw }}
@@ -147,14 +147,14 @@
                 });
             </script>
 
-            <TABLE class="swError">
+            <TABLE class="reportico-error-box">
                 <TR>
                     <TD>{{ ERRORMSG|raw }}</TD>
                 </TR>
             </TABLE>
 {% endif %}
 {% if STATUSMSG|length>0 %} 
-			<TABLE class="swStatus">
+			<TABLE class="reportico-status-block">
 				<TR>
 					<TD>{{ STATUSMSG|raw }}</TD>
 				</TR>
@@ -162,7 +162,7 @@
 {% endif %}
 {% if SHOW_LOGIN %}
 			<TD width="10%"></TD>
-			<TD width="55%" align="left" class="swPrpTopMenuCell">
+			<TD width="55%" align="left" class="reportico-prepare-top-menuCell">
 {% if PROJ_PASSWORD_ERROR|length > 0 %}
                                 <div style="color: #ff0000;">{{ PASSWORD_ERROR }}</div>
 {% endif %}
@@ -248,12 +248,12 @@
             <button type="button" class="reportico-modal-close">&times;</button>
             <h4 class="reportico-modal-title" id="reporticoModalLabel">Set Parameter</h4>
             </div>
-            <div class="reportico-modal-body" style="padding: 0px" id="swMiniMaintain">
+            <div class="reportico-modal-body" style="padding: 0px" id="reportico-edit-link">
                 <h3>Modal Body</h3>
             </div>
             <div class="reportico-modal-footer">
                 <!--button type="button" class="btn btn-default" data-dismiss="modal">Close</button-->
-                <button type="button" class="swMiniMaintainSubmit" >Close</button>
+                <button type="button" class="reportico-edit-linkSubmit" >Close</button>
         </div>
     </div>
   </div>

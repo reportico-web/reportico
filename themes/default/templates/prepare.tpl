@@ -1,7 +1,7 @@
 {% autoescape false %}
 {% include 'header.inc.tpl' %}
 
-<div id="reportico_container">
+<div id="reportico-container">
 
     <script>
         reportico_criteria_items = [];
@@ -15,7 +15,7 @@
 <script type="text/javascript">var reportico_pdf_delivery_mode = "{{ PDF_DELIVERY_MODE }}";</script>
 {% endif %}
 
-<FORM class="swPrpForm non-printable" id="criteriaform" name="topmenu" method="POST" action="{{ SCRIPT_SELF }}">
+<FORM class="reportico-prepare-form non-printable" id="criteriaform" name="topmenu" method="POST" action="{{ SCRIPT_SELF }}">
 <input type="hidden" name="reportico_session_name" value="{{ SESSION_ID }}" />
 
 <!-- Menu Bar -->
@@ -28,7 +28,7 @@
 {% include 'prepare-title.inc.tpl' %}
 
 <!-- Report Output options -->
-<div class="swPrpCritOutputOptions" style="background-color: #ffffff" id="critbody">
+<div class="reportico-prepare-crit-output-options" style="background-color: #ffffff" id="critbody">
 {% if SHOW_OUTPUT and not IS_ADMIN_SCREEN %}
 {% include 'prepare-output-table-form.inc.tpl' %}
 {% include 'prepare-output-formats.inc.tpl' %}
@@ -40,17 +40,17 @@
 <!-- Criteria Items and Expand Box -->
 {% if SHOW_CRITERIA %}
 <div id="criteriabody">
-  <div class="swPrpCritBox" style="display: table">
-    <div id="swPrpCriteriaBody" style="display: table-row">
-      <div class="swPrpCritEntry" style="float:left;">
+  <div class="reportico-prepare-crit-box" style="display: table">
+    <div id="reportico-prepare-crit-body" style="display: table-row">
+      <div class="reportico-prepare-crit-entry" style="float:left;">
          {% include 'prepare-criteria-items-header.inc.tpl' %}
          {% include 'prepare-criteria-items.inc.tpl' %}
          {% include 'prepare-criteria-items-trailer.inc.tpl' %}
       </div>
-      <div class="swPrpExpand" style="float:left">
-        <div class="swPrpExpandBox">
-          <div class="swPrpExpandRow">
-            <div id="swPrpExpandCell" valign="top">
+      <div class="reportico-prepare-expand" style="float:left">
+        <div class="reportico-prepare-expandBox">
+          <div class="reportico-prepare-expandRow">
+            <div id="reportico-prepare-expandCell" valign="top">
                {% include 'prepare-expand-contents.inc.tpl' %}
             </div>
           </div>

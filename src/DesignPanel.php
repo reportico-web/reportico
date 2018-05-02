@@ -603,12 +603,12 @@ class DesignPanel
                     header("HTTP/1.0 500 Not Found", true);
                     $response_array = array();
                     $response_array["errno"] = 100;
-                    $response_array["errmsg"] = "<div class=\"swError\">$msg</div>$debugmsg";
+                    $response_array["errmsg"] = "<div class=\"reportico-error-box\">$msg</div>$debugmsg";
                     echo json_encode($response_array);
                     die;
                 } else {
                     if ($msg) {
-                        $msg = "</B><div class=\"swError\">$msg</div>$debugmsg";
+                        $msg = "</B><div class=\"reportico-error-box\">$msg</div>$debugmsg";
                     }
 
                 }

@@ -572,7 +572,7 @@ class ReportHtml2pdf extends Report
                 switch ($formpagethrow) {
                     case "newpage":
                         if ($this->page_line_count > 0) {
-                            $formpagethrow = "reportico-pageFormLine swNewPage";
+                            $formpagethrow = "reportico-pageFormLine reportico-new-page";
                         } else {
                             $formpagethrow = "reportico-pageFormLine";
                         }

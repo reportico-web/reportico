@@ -4,7 +4,7 @@
 {% endif %}
             <li>
 				<div style="inline-block; margin-top: 6px">{{ T_ENTER_PROJECT_PASSWORD }}<input type="password" name="project_password" value="">
-				<input class="span2 swAdminButton" type="submit" name="login" value="{{ T_LOGIN }}">
+				<input class="span2 reportico-admin-button" type="submit" name="login" value="{{ T_LOGIN }}">
                 </div>
 			</li>
 {% endif %}

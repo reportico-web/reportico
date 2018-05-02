@@ -1,7 +1,7 @@
 {% autoescape false %}
 {% include 'header.inc.tpl' %}
-<div id="reportico_container">
-<FORM class="swMenuForm" name="topmenu" method="POST" action="{{ SCRIPT_SELF }}">
+<div id="reportico-container">
+<FORM class="reportico-menuForm" name="topmenu" method="POST" action="{{ SCRIPT_SELF }}">
 <input type="hidden" name="reportico_session_name" value="{{ SESSION_ID }}" /> 
 
 <!--  BOOTSTRAP VERSION -->
@@ -36,12 +36,12 @@
         </div>
 </div>
 <!-- BOOTSTRAP VERSION -->
-<H1 class="swTitle">{{ TITLE }}</H1>
-	<TABLE class="swMenu">
+<H1 class="reportico-title-bar">{{ TITLE }}</H1>
+	<TABLE class="reportico-menu">
 		<TR> <TD>&nbsp;</TD> </TR>
 {% for menuitem in MENU_ITEMS %}
 		<TR> 
-			<TD class="swMenuItem">
+			<TD class="reportico-menuItem">
 {% if  menuitem.label == "TEXT" %}
 				{{ menuitem.url|raw }}
 {% else %}
@@ -51,7 +51,7 @@
 {% if  menuitem.label == "LINE" %}
 				<hr>
 {% else %}
-				<a class="swMenuItemLink" href="{{ menuitem.url }}">{{ menuitem.label }}</a>
+				<a class="reportico-menu-item-link" href="{{ menuitem.url }}">{{ menuitem.label }}</a>
 {% endif %}
 {% endif %}
 {% endif %}
@@ -63,7 +63,7 @@
 	</TABLE>
 
 {% if ERRORMSG|length>0 %} 
-			<TABLE class="swError">
+			<TABLE class="reportico-error-box">
 				<TR>
 					<TD>{{ ERRORMSG }}</TD>
 				</TR>

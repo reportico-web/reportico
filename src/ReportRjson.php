@@ -425,7 +425,7 @@ class ReportRjson extends Report
                 switch ($formpagethrow) {
                     case "newpage":
                         if ($this->page_line_count > 0) {
-                            $formpagethrow = "reportico-pageFormLine swNewPage";
+                            $formpagethrow = "reportico-pageFormLine reportico-new-page";
                         } else {
                             $formpagethrow = "reportico-pageFormLine";
                         }
@@ -463,7 +463,7 @@ class ReportRjson extends Report
         }
 
         if ($this->page_line_count == 1) {
-            //$this->jar[""] .="<tr class='swPrpCritLine'>";
+            //$this->jar[""] .="<tr class='reportico-prepare-crit-line'>";
             //foreach ( $this->columns as $col )
             //$this->formatColumnHeader($col);
             //$this->jar[""] .="</tr>";

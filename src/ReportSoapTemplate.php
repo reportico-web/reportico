@@ -76,7 +76,7 @@ class ReportSoapTemplate extends Report
         Report::eachLine($val);
 
         if ($this->page_line_count == 1) {
-            //$this->text .="<tr class='swPrpCritLine'>";
+            //$this->text .="<tr class='reportico-prepare-crit-line'>";
             //foreach ( $this->columns as $col )
             //$this->formatColumnHeader($col);
             //$this->text .="</tr>";
