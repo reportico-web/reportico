@@ -377,7 +377,7 @@ class DesignPanel
 
                     $this->query->projectitems[] = array(
                         "label" => $this->text,
-                        "url" => $this->query->getActionUrl() . $url_join_char . $forward . "execute_mode=MENU&project=" . $this->program . "&amp;reportico_session_name=" . (ReporticoSession())::reporticoSessionName(),
+                        "url" => $this->query->getActionUrl() . $url_join_char . $forward . "execute_mode=MENU&project=" . $this->program . "&reportico_session_name=" . (ReporticoSession())::reporticoSessionName(),
                     );
                 }
                 break;
@@ -402,7 +402,7 @@ class DesignPanel
                 } else {
                     $this->query->menuitems[] = array(
                         "label" => $this->text,
-                        "url" => $this->query->getActionUrl() . $url_join_char . $forward . "execute_mode=PREPARE&xmlin=" . $this->program . "&amp;reportico_session_name=" . (ReporticoSession())::reporticoSessionName(),
+                        "url" => $this->query->getActionUrl() . $url_join_char . $forward . "execute_mode=PREPARE&xmlin=" . $this->program . "&reportico_session_name=" . (ReporticoSession())::reporticoSessionName(),
                     );
                 }
 

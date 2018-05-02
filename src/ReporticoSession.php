@@ -100,6 +100,13 @@ class ReporticoSession
                 session_id($session_name);
                 session_start();
             }
+
+            if ( !$namespace ) {
+                $namespace = "default";
+            }
+                //ReporticoApp::set("session_namespace", $namespace);
+                ReporticoApp::set("session_namespace_key", "reportico_" . ReporticoApp::get("session_namespace"));
+            $namespace = ReporticoApp::get("session_namespace");
             $session_name = session_id();
         }
         

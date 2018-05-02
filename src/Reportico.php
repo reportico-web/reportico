@@ -3070,12 +3070,12 @@ class Reportico extends ReporticoObject
             $url_join_char = "?";
         }
 
-        $this->prepare_url = $calling_script . "{$url_join_char}execute_mode=PREPARE&amp;reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
-        $this->menu_url = $calling_script . "{$url_join_char}execute_mode=MENU&amp;reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
-        $this->admin_menu_url = $calling_script . "{$url_join_char}project=admin&amp;execute_mode=MENU&amp;reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
-        $this->configure_project_url = $calling_script . "{$url_join_char}execute_mode=PREPARE&amp;xmlin=configureproject.xml&amp;reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
-        $this->delete_project_url = $calling_script . "{$url_join_char}execute_mode=PREPARE&amp;xmlin=deleteproject.xml&amp;reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
-        $this->create_report_url = $calling_script . "{$url_join_char}execute_mode=PREPARE&amp;xmlin=&amp;reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
+        $this->prepare_url = $calling_script . "{$url_join_char}execute_mode=PREPARE&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
+        $this->menu_url = $calling_script . "{$url_join_char}execute_mode=MENU&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
+        $this->admin_menu_url = $calling_script . "{$url_join_char}project=admin&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
+        $this->configure_project_url = $calling_script . "{$url_join_char}execute_mode=PREPARE&reproject.xml&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
+        $this->delete_project_url = $calling_script . "{$url_join_char}execute_mode=PREPARE&roject.xml&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
+        $this->create_report_url = $calling_script . "{$url_join_char}execute_mode=PREPARE&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
 
         if ($forward_url_params) {
             $this->prepare_url .= "&" . $forward_url_params;
