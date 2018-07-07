@@ -813,7 +813,8 @@ reportico_jquery(document).on('click', '.reportico-prepare-save-button', functio
     }
 
     filename = reportico_jquery("#reportico-prepare-save-file").prop("value");
-	params = "";
+    var forms = reportico_jquery(this).closest('.reportico-maintain-form,.reportico-prepare-form,.reportico-prepare-save-form,form');
+    params = forms.serialize();
     params += "&execute_mode=MAINTAIN&submit_xxx_PREPARESAVE=1&errorsInModal=1&xmlout=" + filename;
     params += "&reportico_ajax_called=1";
 
