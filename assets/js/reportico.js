@@ -260,6 +260,7 @@ function paginate() {
 
     // Set pageno so we can do things just on first page
     pagination_page_no = 1;
+    page_count = 0;
 
     var paged = false;
     reportico_jquery('.autopaginate.original-page').each(function() {

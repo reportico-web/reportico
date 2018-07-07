@@ -29,11 +29,11 @@ class ReportPhantomJSPDF extends Report
     public function start($engine)
     {
         if ( !$engine->pdf_phantomjs_temp_path )
-            $engine->pdf_phantomjs_temp_path = __DIR__."/../tmp/";
+            $engine->pdf_phantomjs_temp_path = sys_get_temp_dir();
 
         // Instantiate PhantomJS
         $this->client = Client::getInstance();
-        $this->client->isLazy();
+        //$this->client->isLazy();
         $this->client->getProcedureCompiler()->disableCache();
         if ( $engine->pdf_phantomjs_path )
             $this->client->getEngine()->setPath($engine->pdf_phantomjs_path);
@@ -66,11 +66,13 @@ class ReportPhantomJSPDF extends Report
 
         // Generate temporary name for pdf file to generate on disk. Since phantomjs must write to a file with pdf extension use tempnam, to create a file
         // without PDF extensiona and then delete this and use the name with etension for phantom generation
-        $outputfile = tempnam($engine->pdf_phantomjs_temp_path, "pdf");
+	$outputfile = tempnam($engine->pdf_phantomjs_temp_path, "pdf");
         
         unlink($outputfile);
         $outputfile .= ".pdf";
-        $request->setOutputFile($outputfile);
+	$outputfile = preg_replace("/\\\/", "/", $outputfile);
+	$request->setOutputFile($outputfile);
+
 
         // Set other PhantomJS parameters
         $request->setFormat(strtoupper($engine->getAttribute("PageSize")));
@@ -79,101 +81,6 @@ class ReportPhantomJSPDF extends Report
         $request->setDelay(2);
 
         $headertext .= '';
-
-        /*
-        foreach ($engine->pageHeaders as $header) {
-
-            //break;
-            $styles = "";
-            $text = $header->text;
-            $attr = [];
-
-            //if ( $header->getAttribute("ShowInPDF") != "yes" ) {
-                //continue;
-            //}
-
-            if ( $text == "{NOMORE}" )
-                break;
-
-            $text = preg_replace("/{PAGE}/i", "%pageNum%", $text); 
-            $text = preg_replace("/{PAGETOTAL}/i", "%pageTotal%", $text); 
-
-            ReportHtml::extractStylesAndTextFromStringStandalone($text, $styles, $attr);
-            $text = Report::reporticoStringToPhpStandalone($text, $engine);
-            $text = Assignment::reporticoMetaSqlCriteria($engine, $text, false, true);
-            $just = strtolower($header->getAttribute("justify"));
-
-            $styles = "position:absolute;$styles";
-
-            if ( $just == "center" || $just == "centre") $styles .= "width: 98%; text-align: center;";
-            if ( $just == "right" ) $styles .= "width: 98%; text-align: right";
-
-            $img = "";
-            if ($styles) {
-                $matches = array();
-                if (preg_match("/background: url\('(.*)'\).*;/", $styles, $matches)) {
-                    $styles = preg_replace("/background: url\('(.*)'\).*;/", "", $styles);
-                    if (count($matches) > 1) {
-                        $img = "<img src='" . $matches[1] . "'/>";
-                    }
-                }
-                $headertext .= "<DIV class=\"reportico-page-header\" style=\"$styles\">";
-            } else {
-                $headertext .= "<DIV class=\"reportico-page-header\" >";
-            }
-
-            $headertext .= "$img$text";
-            $headertext .= "</DIV>";
-        }
-        
-        $footertext .= '';
-        foreach ($engine->pageFooters as $footer) {
-
-            $styles = "";
-            $text = $footer->text;
-            $attr = [];
-
-            if ( $footer->getAttribute("ShowInPDF") != "yes" ) {
-                continue;
-            }
-
-            if ( $text == "{NOMORE}" )
-                break;
-
-            $text = preg_replace("/{PAGE}/i", "%pageNum%", $text); 
-            $text = preg_replace("/{PAGETOTAL}/i", "%pageTotal%", $text); 
-
-            ReportHtml::extractStylesAndTextFromStringStandalone($text, $styles, $attr);
-            $text = Report::reporticoStringToPhpStandalone($text, $engine);
-
-            //$text = Assignment::reporticoMetaSqlCriteria($engine, $text);
-            $just = strtolower($footer->getAttribute("justify"));
-
-            $styles = "position:absolute;$styles";
-
-            if ( $just == "center" || $just == "centre") $styles .= "width: 98%; text-align: center;";
-            if ( $just == "right" ) $styles .= "width: 98%; text-align: right";
-
-            $img = "";
-            if ($styles) {
-                $matches = array();
-                if (preg_match("/background: url\('(.*)'\).*;/", $styles, $matches)) {
-                    $styles = preg_replace("/background: url\('(.*)'\).*;/", "", $styles);
-                    if (count($matches) > 1) {
-                        $img = "<img src='" . $matches[1] . "'/>";
-                    }
-                }
-                $footertext .= "<DIV class=\"reportico-page-footer\" style=\"$styles\">";
-            } else {
-                $footertext .= "<DIV class=\"reportico-page-footer\" >";
-            }
-
-            $footertext .= "$img$text";
-            $footertext .= "</DIV>";
-        }
-        $request->setRepeatingHeader('<div style="position:relative; zoom: 0.68;">'.$headertext.'</div>', $engine->getAttribute("TopMargin"));
-        $request->setRepeatingFooter('<div class="reportico-page-footer-block" style="margin-top: 5px;border-top: solid 1px">'.$footertext.'</div>', $engine->getAttribute("BottomMargin"));
-        */
 
         // Get Response
         $response = $this->client->getMessageFactory()->createResponse();

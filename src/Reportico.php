@@ -1376,7 +1376,7 @@ class Reportico extends ReporticoObject
             if (array_key_exists($crit_name, $_REQUEST)) {
                 // Since using Select2, we find unselected list boxes still send an empty array with a single character which we dont want to include
                 // as a criteria selection
-                if (!(is_array($_REQUEST[$col->query_name]) && count($col->query_name) == 1 && $_REQUEST[$col->query_name][0] == "")) {
+                if (!(is_array($_REQUEST[$crit_name]) && $_REQUEST[$col->query_name][0] == "")) {
                     $crit_value = $_REQUEST[$crit_name];
                 }
 
@@ -1478,7 +1478,7 @@ class Reportico extends ReporticoObject
             // Fetch the criteria value summary if required for displaying
             // the criteria entry summary at top of report
             if ($execute_mode && $execute_mode != "MAINTAIN" && $this->target_show_criteria &&
-                ((array_key_exists($col->query_name, $_REQUEST) && !(is_array($_REQUEST[$col->query_name]) && count($col->query_name) == 1 && $_REQUEST[$col->query_name][0] == ""))
+                ((array_key_exists($col->query_name, $_REQUEST) && !(is_array($_REQUEST[$col->query_name]) && $_REQUEST[$col->query_name][0] == ""))
                     || array_key_exists("MANUAL_" . $col->query_name, $_REQUEST)
                     || array_key_exists("HIDDEN_" . $col->query_name, $_REQUEST)
                 )) {
@@ -1494,7 +1494,7 @@ class Reportico extends ReporticoObject
             if (array_key_exists($col->query_name, $_REQUEST)) {
                 // Since using Select2, we find unselected list boxes still send an empty array with a single character which we dont want to include
                 // as a criteria selection
-                if (!(is_array($_REQUEST[$col->query_name]) && count($col->query_name) == 1 && $_REQUEST[$col->query_name][0] == "")) {
+                if (!(is_array($_REQUEST[$col->query_name]) && $_REQUEST[$col->query_name][0] == "")) {
                     $this->lookup_queries[$col->query_name]->column_value =
                     $_REQUEST[$col->query_name];
                 }
@@ -5113,6 +5113,8 @@ class Reportico extends ReporticoObject
         }
         $result = str_replace(",", "", $col->column_value);
 
+	if ( !is_numeric($col->old_column_value)  )
+		$col->old_column_value = 0;
         if ($col->old_column_value && !$col->reset_flag) {
             $result =
             $col->old_column_value +

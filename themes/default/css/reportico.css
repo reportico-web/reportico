@@ -1196,7 +1196,7 @@ input.reportico-admin-button2
   margin: 0 auto;
   padding: 0px 0px;
   box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
-  /*overflow-y: scroll;*/
+  overflow-y: hidden;
   box-sizing: border-box;
   font-size: 12pt;
   position: relative;
@@ -1204,10 +1204,12 @@ input.reportico-admin-button2
   /*height: 100vh !important;*/
 }
 
+.page-size-A3.page-orientation-portrait.autopaginate { width: 29.7; height: 42.0cm; }
+.page-size-A3.page-orientation-landscape.autopaginate { width: 42.0cm; height: 29.7cm; }
 .page-size-A4.page-orientation-portrait.autopaginate { width: 21cm; height: 29.7cm; }
 .page-size-A4.page-orientation-landscape.autopaginate { width: 29.7cm; height: 21cm; }
-.page-size-A5.page-orientation-portrait.autopaginate { width: 21cm; height: 29.7cm; }
-.page-size-A5.page-orientation-landscape.autopaginate { width: 29.7cm; height: 21cm; }
+.page-size-A5.page-orientation-portrait.autopaginate { width: 14.8cm; height: 15.0cm; }
+.page-size-A5.page-orientation-landscape.autopaginate { width: 21.0cm; height: 14.8cm; }
 
 
 
