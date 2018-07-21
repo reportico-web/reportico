@@ -353,12 +353,23 @@ class CriteriaColumn extends QueryColumn
     // Function : setCriteriaList
     //
     // Generates a criteria list item by taking a string of list labels and values
-    // seaprated by commas and each item separated by =
+    // separated by commas and each item separated by =
     // -----------------------------------------------------------------------------
     public function setCriteriaList($in_list)
     {
         if ($in_list) {
             $choices = array();
+            if ($in_list == "{connections}" && $this->parent_reportico->framework_parent == "october" ) {
+                $choices[] = "Existing October Connection=existingconnection";
+                if (isset($this->parent_reportico) && $this->parent_reportico->available_connections) {
+                    foreach ($this->parent_reportico->available_connections as $k => $v) {
+                        $choices[] = "Database '$k'=byname_$k";
+                    }
+
+                }
+
+                $this->criteria_list = $in_list;
+            } else
             if ($in_list == "{connections}" && $this->parent_reportico->framework_parent == "laravel" ) {
                 $choices[] = "Existing Laravel Connection=existingconnection";
                 if (isset($this->parent_reportico) && $this->parent_reportico->available_connections) {

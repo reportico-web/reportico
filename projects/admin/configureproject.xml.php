@@ -39,7 +39,7 @@ if ( $_configure_mode != "DELETE" )
     $test = new \Reportico\Engine\reporticoDatasource();
     $test->driver = $configparams["SW_DB_TYPE"];
 
-    if ( $test->driver != "framework" )
+    if ( $test->driver != "framework" && $test->driver != "existingconnection" )
     {
         if ( !$configparams["SW_DB_DATABASE"] ) { trigger_error ( "Specify Database Name", E_USER_NOTICE ); return; }
         if ( !$configparams["SW_DB_USER"]  && $configparams["SW_DB_TYPE"] != "pdo_sqlite3" ) { trigger_error ( "Specify Database User", E_USER_NOTICE ); return; }
@@ -53,16 +53,7 @@ if ( $_configure_mode != "DELETE" )
     $g_debug_mode = true;
     ReporticoApp::set("no_sql",true);
 
-
-
-    $test->user_name = $configparams["SW_DB_USER"];
-    $test->password = $configparams["SW_DB_PASSWORD"];
-    $test->host_name = $configparams["SW_DB_HOST"];
-    $test->database = $configparams["SW_DB_DATABASE"];
-    $test->server = $configparams["SW_DB_SERVER"];
-    $test->protocol = $configparams["SW_DB_PROTOCOL"];
-
-    if ( $test->driver == "framework" )
+    if ( $test->driver == "existingconnection" || preg_match("/^byname_/", $test->driver))
     {
         $configparams["SW_DB_USER"] = "N/A";
         $configparams["SW_DB_PASSWORD"] = "N/A";
@@ -70,10 +61,25 @@ if ( $_configure_mode != "DELETE" )
         $configparams["SW_DB_DATABASE"] = "N/A";
         $configparams["SW_DB_SERVER"] = "N/A";
         $configparams["SW_DB_PROTOCOL"] = "N/A";
-
+    }
+    else if ( $test->driver == "framework" )
+    {
+        $configparams["SW_DB_USER"] = "N/A";
+        $configparams["SW_DB_PASSWORD"] = "N/A";
+        $configparams["SW_DB_HOST"] = "N/A";
+        $configparams["SW_DB_DATABASE"] = "N/A";
+        $configparams["SW_DB_SERVER"] = "N/A";
+        $configparams["SW_DB_PROTOCOL"] = "N/A";
     }
     else
     {
+        $test->user_name = $configparams["SW_DB_USER"];
+        $test->password = $configparams["SW_DB_PASSWORD"];
+        $test->host_name = $configparams["SW_DB_HOST"];
+        $test->database = $configparams["SW_DB_DATABASE"];
+        $test->server = $configparams["SW_DB_SERVER"];
+        $test->protocol = $configparams["SW_DB_PROTOCOL"];
+
         $test->connect(true);
         if ( $test->connected )
         {
@@ -89,20 +95,26 @@ if ( $_configure_mode != "DELETE" )
 }
 else
 {
-    $configparams["SW_PROJECT"] = SW_PROJECT;
-    $configparams["SW_PROJECT_TITLE"] = SW_PROJECT_TITLE;
+    $configparams["SW_PROJECT"] = $_criteria["project"]->getCriteriaValue("VALUE", false);
+    $configparams["SW_PROJECT_TITLE"] = $_criteria["projtitle"]->getCriteriaValue("VALUE", false);
 }
 
 $proj_parent = $this->projects_folder;
+if (  !is_dir($proj_parent) )
+    $proj_parent = find_best_location_in_include_path( $this->projects_folder );
+
+$admin_folder = $this->admin_projects_folder;
+if (  !is_dir($admin_folder) )
+    $admin_folder = find_best_location_in_include_path( $this->admin_projects_folder );
 
 $proj_dir = $proj_parent."/".$configparams["SW_PROJECT"];
 $proj_conf = $proj_dir."/config.php";
 $proj_menu = $proj_dir."/menu.php";
 $proj_lang = $proj_dir."/lang.php";
 
-$proj_template = $proj_parent."/admin/config.template";
-$menu_template = $proj_parent."/admin/menu.template";
-$lang_template = $proj_parent."/admin/lang.template";
+$proj_template = $admin_folder."/admin/config.template";
+$menu_template = $admin_folder."/admin/menu.template";
+$lang_template = $admin_folder."/admin/lang.template";
 
 
 if ( !file_exists ( $proj_parent ) )
@@ -118,6 +130,45 @@ if ( !is_writeable ( $proj_parent  ) )
     else
         trigger_error ("Projects area $proj_parent is not writeable - cannot write project", E_USER_NOTICE);
     return;
+}
+
+// In framework systems, creating the tutorials involves copying the existing project over
+if ( $_configure_mode == "CREATETUTORIALS" )
+{
+    $source_dir = "$admin_folder/tutorials";
+    if ( file_exists($proj_dir) && file_exists($proj_conf) )
+    {
+        //trigger_error("Tutorials folder $source_dir already exists which means the tutorials are already there", E_USER_NOTICE);
+        //return;
+        unlink($proj_conf);
+    }
+    $source_config = "$admin_folder/tutorials/config.php";
+    if ( file_exists($proj_dir) && !file_exists($proj_conf) )
+    {
+        copy($source_config, $proj_conf);
+        trigger_error ("Tutorials created successfully", E_USER_NOTICE);
+        return;
+    }
+
+    if ( !is_writeable ( $proj_parent  ) )
+    {
+        trigger_error ("Projects area $proj_parent is not writeable - cannot create tutorials there", E_USER_NOTICE);
+        return;
+    }
+
+    // Copy whole project recursively
+    $dir = opendir($source_dir); 
+    $dst = $proj_dir;
+    mkdir($dst); 
+    while(false !== ( $file = readdir($dir)) ) { 
+        if (( $file != '.' ) && ( $file != '..' )) { 
+            copy($source_dir . '/' . $file,$dst . '/' . $file);
+        } 
+    } 
+    closedir($dir); 
+    trigger_error ("Tutorials created successfully", E_USER_NOTICE);
+    return;
+    
 }
 
 if ( file_exists ( $proj_dir ) )
@@ -223,7 +274,6 @@ $matches = array();
 $installation_type = "OLD";
 foreach ( $configparams as $paramkey => $paramval )
 {
-
 	if ( $paramkey == "SW_PROJECT" ) 
 		continue;
 
@@ -283,7 +333,6 @@ foreach ( $configparams as $paramkey => $paramval )
 }
 
 $retval = file_put_contents($proj_conf, $txt);
-
 
 if ( $_configure_mode == "CREATE" )
 {

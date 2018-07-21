@@ -54,13 +54,17 @@ class ReportPhantomJSPDF extends Report
         // And retain any cookies too
         if ( $engine->csrfToken ) {
 
-            // Its Laravel 
+            // Its Laravel or October
             $oldHeaders = getallheaders();
 
             if ( isset($oldHeaders["Cookie"]) )
                 $newHeaders["Cookie"]= $oldHeaders["Cookie"];
             $newHeaders["X-CSRF-TOKEN"]= $engine->csrfToken;
 
+            if ( isset($oldHeaders["OCTOBER-REQUEST-PARTIALS"]) )
+                $newHeaders["OCTOBER-REQUEST-PARTIALS"]= $oldHeaders["OCTOBER-REQUEST-PARTIALS"];
+            if ( isset($oldHeaders["X-OCTOBER-REQUEST-HANDLER"]) )
+                $newHeaders["OCTOBER-REQUEST-HANDLER"]= $oldHeaders["X-OCTOBER-REQUEST-HANDLER"];
             $request->setHeaders($newHeaders);
         }
 

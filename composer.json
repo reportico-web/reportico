@@ -14,7 +14,7 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "adodb/adodb-php": "^5.20",
+        "reportico/adodb-php": "^5.20",
         "monolog/monolog": "^1.23",
         "twig/twig": "~1.16",
         "jonnyw/php-phantomjs": "4.6"

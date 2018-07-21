@@ -1752,7 +1752,7 @@ class Reportico extends ReporticoObject
 
         if (ReporticoApp::getConfig("project") == "admin") {
             // Allow access to Admin Page if already logged as admin user, or configuration does not contain
-            // an Admin Password (older version of reportico) or Password is blank implying site congired with
+            // an Admin Password (older version of reportico) or Password is blank implying site configured with
             // No Admin Password security or user has just reset password to blank (ie open access )
             if ((ReporticoSession())::issetReporticoSessionParam('admin_password') || !ReporticoApp::isSetConfig('admin_password') || (ReporticoApp::isSetConfig('admin_password_reset') && ReporticoApp::getConfig("admin_password_reset") == '')) {
                 $loggedon = "ADMIN";
@@ -2808,7 +2808,7 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function initializePanels($mode)
     {
-        $template = new ReporticoTemplateTwig($this->templateViewPath, $this->templateCachePath, $this->theme);
+        $template = new ReporticoTemplateTwig($this->templateViewPath, $this->templateCachePath, $this->getTheme());
 
         $dummy = "";
         $version = $this->version;
@@ -2951,6 +2951,7 @@ class Reportico extends ReporticoObject
         $theme_dir = $this->url_path_to_templates;
         if ( !$this->url_path_to_templates )
             $theme_dir = ReporticoUtility::findBestUrlInIncludePath('themes');
+
         $template->assign('THEME_DIR', "$theme_dir/".$this->getTheme());
 
         /*@todo Must be in the theme and not in the code*/
@@ -3072,9 +3073,9 @@ class Reportico extends ReporticoObject
 
         $this->prepare_url = $calling_script . "{$url_join_char}execute_mode=PREPARE&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
         $this->menu_url = $calling_script . "{$url_join_char}execute_mode=MENU&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
-        $this->admin_menu_url = $calling_script . "{$url_join_char}project=admin&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
-        $this->configure_project_url = $calling_script . "{$url_join_char}execute_mode=PREPARE&reproject.xml&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
-        $this->delete_project_url = $calling_script . "{$url_join_char}execute_mode=PREPARE&roject.xml&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
+        $this->admin_menu_url = $calling_script . "{$url_join_char}execute_mode=MENU&project=admin&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
+        $this->configure_project_url = $calling_script . "{$url_join_char}execute_mode=PREPARE&xmlin=configureproject.xml&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
+        $this->delete_project_url = $calling_script . "{$url_join_char}execute_mode=PREPARE&xmlin=deleteproject.xml&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
         $this->create_report_url = $calling_script . "{$url_join_char}execute_mode=PREPARE&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
 
         if ($forward_url_params) {
@@ -3681,8 +3682,8 @@ class Reportico extends ReporticoObject
             $mode = $this->getExecuteMode();
         }
 
-        // If the project is the ADMIN project then the MAin Menu will be the Admin Page
-        if (ReporticoApp::getConfig("project") == "admin" && $mode == "MENU") {
+        // If the project is the ADMIN project then the Main Menu will be the Admin Page
+        if (ReporticoApp::getConfig("project") == "admin" &&  $mode == "MENU"  ) {
             $mode = "ADMIN";
         }
 
@@ -3781,7 +3782,9 @@ class Reportico extends ReporticoObject
             {
                 $_REQUEST = (ReporticoSession())::getReporticoSessionParam('latestRequest');
                 $_REQUEST["target_format"] = $this->target_format;
+                $_REQUEST["new_reportico_window"] = 1;
                 $_REQUEST["reportico_ajax_called"] = false;
+                $this->embedded_report = false;
             }
 
             else if (!ReporticoUtility::getRequestItem("printable_html") && 
@@ -4209,9 +4212,9 @@ class Reportico extends ReporticoObject
                 if ($this->top_level_query) {
 
                     // Allow read-only access to MAINTAIN is an in-criteria screen edit button was called
-                    //if ( ReporticoUtility::getRequestItem("partialMaintain", false)) {
-                        //$this->allow_maintain = "DEMO";
-                    //}
+                    if ( ReporticoUtility::getRequestItem("partialMaintain", false)) {
+                        $this->allow_maintain = "DEMO";
+                    }
 
                     $this->initializePanels($mode);
                     if (!($this->login_type == "DESIGN" || $this->access_mode == "DEMO")) {
@@ -5468,7 +5471,8 @@ class Reportico extends ReporticoObject
 /**
  * Function save_admin_password
  *
- * Writes new admin password to the admin config.php
+ * Writes new admin password to the admin project config.php. If the projects area is in a different location
+ * than the admin area, then place the config.php in the projects area
  */
     public function saveAdminPassword($password1, $password2, $language)
     {
@@ -5484,42 +5488,61 @@ class Reportico extends ReporticoObject
             return ReporticoLang::translate("The password may not be blank");
         }
 
-        $proj_parent = ReporticoUtility::findBestLocationInIncludePath($this->admin_projects_folder);
-        $proj_dir = $proj_parent . "/admin";
-        $proj_conf = $proj_dir . "/config.php";
-        $proj_template = $proj_dir . "/adminconfig.template";
+        $source_parent = ReporticoUtility::findBestLocationInIncludePath($this->admin_projects_folder);
+        $source_dir = $source_parent . "/admin";
+        $source_conf = $source_dir . "/config.php";
+        $source_template = $source_dir . "/adminconfig.template";
 
         $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler", 0);
-        if (!@file_exists($proj_parent)) {
+        if (!@file_exists($source_parent)) {
             $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
-            return "Projects area $proj_parent does not exist - cannot write project";
+            return "Projects area $source_parent does not exist - cannot write project";
         }
 
-        if (@file_exists($proj_conf)) {
-            if (!is_writeable($proj_conf)) {
-                $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
-                return "Projects config file $proj_conf is not writeable - cannot write config file - change permissions to continue";
+        $target_parent = $source_parent;
+        $target_dir = $source_dir;
+        $target_conf = $source_conf;
+
+        // If projects area different to source admin, create admin project in projects folder to store config.php
+        if ( $this->admin_projects_folder != $this->projects_folder ) {
+            $target_parent = ReporticoUtility::findBestLocationInIncludePath($this->projects_folder);
+            $target_dir = $target_parent . "/admin";
+            $target_conf = $target_dir . "/config.php";
+        }
+
+        if (!@is_dir($target_dir)) {
+            @mkdir($target_dir, 0755, true);
+            if (!is_dir($target_dir)) {
+            $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
+                return "Could not create admin config folder $target_conf - check permissions and continue";
             }
         }
 
-        if (!is_writeable($proj_dir)) {
-            $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
-            return "Projects area $proj_dir is not writeable - cannot write project password in config.php - change permissions to continue";
+        if (@file_exists($target_conf)) {
+            if (!is_writeable($target_conf)) {
+                $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
+                return "Admin config file $target_conf is not writeable - cannot write config file - change permissions to continue";
+            }
         }
 
-        if (!@file_exists($proj_conf)) {
-            if (!@file_exists($proj_template)) {
+        if (!is_writeable($target_dir)) {
+            $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
+            return "Projects area $target_dir is not writeable - cannot write project password in config.php - change permissions to continue";
+        }
+
+        if (!@file_exists($source_conf)) {
+            if (!@file_exists($source_template)) {
                 $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
-                return "Projects config template file $proj_template does not exist - please contact reportico.org";
+                return "Projects config template file $source_template does not exist - please contact reportico.org";
             }
         }
 
         $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
 
-        if (@file_exists($proj_conf)) {
-            $txt = file_get_contents($proj_conf);
+        if (@file_exists($target_conf)) {
+            $txt = file_get_contents($target_conf);
         } else {
-            $txt = file_get_contents($proj_template);
+            $txt = file_get_contents($source_template);
         }
 
         $proj_language = ReporticoUtility::findBestLocationInIncludePath("language");
@@ -5533,7 +5556,7 @@ class Reportico extends ReporticoObject
         $txt = preg_replace ( "/(ReporticoApp::setConfig\(.language.,).*/", "$1'$language');", $txt);
 
         (ReporticoSession())::unsetReporticoSessionParam('admin_password');
-        $retval = file_put_contents($proj_conf, $txt);
+        $retval = file_put_contents($target_conf, $txt);
 
         // Password is saved so use it so user can login
         if (!ReporticoApp::isSetConfig('admin_password')) {
@@ -5606,15 +5629,12 @@ class Reportico extends ReporticoObject
         $menu = false;
         $menu_title = "Set Menu Title";
 
-        if ($project == "admin") {
-            $project_folder = $admin_project_folder;
-        }
-
         // Now we now the project include the relevant config.php
         $projpath = $project_folder . "/" . $project;
+        $admin_projpath = $admin_project_folder . "/" . $project;
 
         $configfile = $projpath . "/config.php";
-        $configtemplatefile = $projpath . "/adminconfig.template";
+        $configtemplatefile = $admin_projpath . "/adminconfig.template";
 
         $menufile = $projpath . "/menu.php";
         if ($target_menu != "") {
@@ -5662,7 +5682,7 @@ class Reportico extends ReporticoObject
 
         if ($configfile) {
             if (!is_file($configfile)) {
-                ReporticoApp::handleError("Config file $menufile not found in project $project", E_USER_WARNING);
+                ReporticoApp::handleError("Config file $configfile not found in project $project", E_USER_WARNING);
             }
 
             if (ReporticoApp::get("included_config") && ReporticoApp::get("included_config") != $configfile) {
@@ -5689,6 +5709,7 @@ class Reportico extends ReporticoObject
                     ReporticoApp::set("included_config", $configfile);
                 }
             }
+
             ReporticoApp::set('project', false);
             ReporticoApp::set("static_menu", false);
             ReporticoApp::set("admin_menu", false);
@@ -5751,17 +5772,19 @@ class Reportico extends ReporticoObject
         }
         ReporticoApp::setConfig("language", $language);
 
-        if (isset($menu)) {
+        if (isset($menu) && !ReporticoApp::get("static_menu")) {
             ReporticoApp::set("static_menu", $menu);
         }
 
-        if (isset($admin_menu)) {
+        if (isset($menu) && !ReporticoApp::get("admin_menu")) {
             ReporticoApp::set("admin_menu", $menu);
 
         }
 
+        if (isset($menu_title) && !ReporticoApp::get("menu_title")) 
         ReporticoApp::set('menu_title', $menu_title);
-        if (isset($dropdown_menu)) {
+
+        if (isset($dropdown_menu) && !ReporticoApp::get("dropdown_menu") ) {
             ReporticoApp::set("dropdown_menu", $dropdown_menu);
         }
 
@@ -5833,7 +5856,7 @@ class Reportico extends ReporticoObject
 
     private function getTheme()
     {
-        $theme = $this->theme;
+        $theme = (ReporticoSession())::sessionRequestItem("theme", $this->theme);
 
         if ($theme == '') {
             $theme = 'default';
