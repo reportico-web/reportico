@@ -56,6 +56,7 @@ function setupDatePickers()
 function setupTooltips()
 {
     reportico_jquery(".reportico_tooltip").each(function(){
+        if ( typeof(reportico_jquery(this).tooltip) != "undefined" )
         reportico_jquery(this).tooltip();
     });
 }
@@ -210,16 +211,17 @@ function select2FormatSelection(data)
 
 function formatState (state) {
   if (!state.id) { return state.text; }
-  var $state = reportico_jquery(
+  var state = reportico_jquery(
     '<span><img src="vendor/images/flags/' + state.element.value.toLowerCase() + '.png" class="img-flag" /> ' + state.text + '</span>'
   );
-  return $state;
+  return state;
 };
 
 
 function setupModals()
 {
     var options = { } 
+    if ( typeof(reportico_jquery('#reporticoModal').modal) != "undefined" )
     reportico_jquery('#reporticoModal').modal(options);
 }
 
@@ -232,6 +234,10 @@ function setupNoticeModals()
 
 function setupDropMenu()
 {
+    // In October, dropdown menu item selection causes overlay to appear which remains
+    // after ajax call preventing anything being clicked. Until we sort this out, force removal of the overlay
+    reportico_jquery('div.dropdown-overlay').remove();
+
     if ( reportico_jquery('ul.jd_menu').length != 0  )
     {
         reportico_jquery('ul.jd_menu').jdMenu();
@@ -696,7 +702,7 @@ reportico_jquery(document).on('click', '.reportico-edit-linkSubmit,.reportico-bo
         success: function(data, status) 
         {
           reportico_jquery(loadpanel).removeClass("modal-loading");
-          if ( reportico_bootstrap_modal )
+          if ( reportico_bootstrap_modal && typeof(reportico_jquery('#reporticoModal').modal) != "undefined" )
           {
             reportico_jquery('#reporticoModal').modal('hide');
             reportico_jquery('.modal-backdrop').remove();
@@ -778,7 +784,7 @@ reportico_jquery(document).on('click', '.reportico-edit-link', function(event)
         {
           reportico_jquery(expandpanel).removeClass("loading");
           reportico_jquery(reportico_container).removeClass("loading");
-          if ( reportico_bootstrap_modal )
+          if ( reportico_bootstrap_modal && typeof(reportico_jquery('#reporticoModal').modal) != "undefined" )
             setupModals();
           else
             reportico_jquery("#reporticoModal").show();
@@ -1406,6 +1412,7 @@ function showParentNoticeModal(content)
 */
 function runreport(url, container) 
 {
+    params = "";
     params +=  getCSRFURLParams();
     headers =  getCSRFHeaders();
 
@@ -1575,6 +1582,10 @@ function getCSRFHeaders() {
     headers = false;
     if (typeof reportico_csrf_token != 'undefined' && reportico_ajax_mode == "laravel" ) {
         headers =  { 'X-CSRF-TOKEN': reportico_csrf_token };
+    }
+
+    if (typeof reportico_csrf_token != 'undefined' && reportico_ajax_mode == "october" ) {
+        headers = { 'X-CSRF-TOKEN': reportico_csrf_token, 'X-OCTOBER-REQUEST-HANDLER': ajax_event_handler, 'X-OCTOBER-REQUEST-PARTIALS':'' };
     }
 
     return headers;
