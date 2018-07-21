@@ -133,7 +133,7 @@ if ( !is_writeable ( $proj_parent  ) )
 }
 
 // In framework systems, creating the tutorials involves copying the existing project over
-if ( $_configure_mode == "CREATETUTORIALS" )
+if ( $admin_folder != $proj_parent && $_configure_mode == "CREATETUTORIALS" )
 {
     $source_dir = "$admin_folder/tutorials";
     if ( file_exists($proj_dir) && file_exists($proj_conf) )
