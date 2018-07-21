@@ -2,11 +2,11 @@
 
 {% if not REPORTICO_BOOTSTRAP_MODAL %}
                     <button type="submit" class="prepareMiniMaintain reportico-edit-link" style="margin-right: 30px" title="{{ T_EDIT }} {{ T_EDITDESCRIPTION }}" id="submit_mainquerform_SHOW" value="" name="mainquerform_ReportDescription">
-                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="glyphicon glyphicon-pencil icon-pencil"></span>
                             </button>
 {% else %}
                     <button type="submit" class="btn btn-default prepareMiniMaintain reportico-edit-link" style="margin-right: 30px" title="{{ T_EDIT }} {{ T_EDITDESCRIPTION }}" id="submit_mainquerform_SHOW" value="" name="mainquerform_ReportDescription">
-                            <span class="glyphicon glyphicon-pencil"></span>
+                            <span class="glyphicon glyphicon-pencil icon-pencil"></span>
                      </button>
 {% endif %}
 

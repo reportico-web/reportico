@@ -2,22 +2,22 @@
 {% if not REPORTICO_BOOTSTRAP_MODAL %}
 
     <button type="submit" class="btn btn-default" title="{{ T_EDIT }} {{ T_EDITSQL }}" id="submit_mainquerqury_SHOW" name="mainquerqurysqlt_QuerySql">
-        <span class="glyphicon glyphicon-pencil"></span>{{ T_EDITSQL }}
+        <span class="glyphicon glyphicon-pencil icon-pencil"></span>{{ T_EDITSQL }}
     </button>
     <button type="submit" class="btn btn-default" title="{{ T_EDIT }} {{ T_EDITCOLUMNS }}" id="submit_mainquerquryqcol_SHOW" name="mainquerquryqcol_ANY">
-        <span class="glyphicon glyphicon-pencil"></span>{{ T_EDITCOLUMNS }}
+        <span class="glyphicon glyphicon-pencil icon-pencil"></span>{{ T_EDITCOLUMNS }}
     </button>
     <button type="submit" class="btn btn-default" title="{{ T_EDIT }} {{ T_EDITASSIGNMENT }}" id="submit_mainquerassg" name="mainquerassg_ANY">
-        <span class="glyphicon glyphicon-pencil"></span>{{ T_EDITASSIGNMENT }}
+        <span class="glyphicon glyphicon-pencil icon-pencil"></span>{{ T_EDITASSIGNMENT }}
     </button>
     <button type="submit" class="btn btn-default" title="{{ T_EDIT }} {{ T_EDITGROUPS }}" id="submit_mainqueroutpgrps" name="mainqueroutpgrps_ANY">
-        <span class="glyphicon glyphicon-pencil"></span>{{ T_EDITGROUPS }}
+        <span class="glyphicon glyphicon-pencil icon-pencil"></span>{{ T_EDITGROUPS }}
     </button>
     <button type="submit" class="btn btn-default" title="{{ T_EDIT }} {{ T_EDITGRAPHS }}" id="submit_mainqueroutpgrph" name="mainqueroutpgrph_ANY">
-        <span class="glyphicon glyphicon-pencil"></span>{{ T_EDITGRAPHS }}
+        <span class="glyphicon glyphicon-pencil icon-pencil"></span>{{ T_EDITGRAPHS }}
     </button>
     <!--button type="submit" class="btn btn-default" title="{{ T_EDIT }} {{ T_EDITPAGESETUP }}" id="submit_mainquerform_SHOW" name="mainquerform_Page.*|.*Margin">
-        <span class="glyphicon glyphicon-pencil"></span>{{ T_EDITPAGESETUP }}
+        <span class="glyphicon glyphicon-pencil icon-pencil"></span>{{ T_EDITPAGESETUP }}
     </button-->
 
 {% else %}
@@ -33,22 +33,22 @@
                         </li>
     				   <div class="btn-group" role="group">
                             <!--button type="submit" class="btn btn-default prepareMiniMaintain reportico-edit-link" title="{{ T_EDIT }} {{ T_EDITPAGESETUP }}" id="submit_mainquerform_SHOW" name="mainquerform_Page|Margin|Zoom|Paginate">
-                                <span class="glyphicon glyphicon-pencil"></span>{{ T_EDITPAGESETUP }}
+                                <span class="glyphicon glyphicon-pencil icon-pencil"></span>{{ T_EDITPAGESETUP }}
                             </button-->
     				       <button type="submit" class="btn btn-default prepareMiniMaintain reportico-edit-link reportico-edit-linkGroup" title="{{ T_EDIT }} {{ T_EDITSQL }}" id="submit_mainquerqury_SHOW" name="mainquerqurysqlt_QuerySql">
-                                <span class="glyphicon glyphicon-pencil"></span>{{ T_EDITSQL }}
+                                <span class="glyphicon glyphicon-pencil icon-pencil"></span>{{ T_EDITSQL }}
                             </button>
                             <button type="submit" class="btn btn-default prepareMiniMaintain reportico-edit-link reportico-edit-linkGroup" title="{{ T_EDIT }} {{ T_EDITCOLUMNS }}" id="submit_mainquerquryqcol_SHOW" name="mainquerquryqcol_ANY">
-                                <span class="glyphicon glyphicon-pencil"></span>{{ T_EDITCOLUMNS }}
+                                <span class="glyphicon glyphicon-pencil icon-pencil"></span>{{ T_EDITCOLUMNS }}
                             </button>
                             <button type="submit" class="btn btn-default prepareMiniMaintain reportico-edit-link reportico-edit-linkGroup" title="{{ T_EDIT }} {{ T_EDITASSIGNMENT }}" id="submit_mainquerassg" name="mainquerassg_ANY">
-                                <span class="glyphicon glyphicon-pencil"></span>{{ T_EDITASSIGNMENT }}
+                                <span class="glyphicon glyphicon-pencil icon-pencil"></span>{{ T_EDITASSIGNMENT }}
                             </button>
                             <button type="submit" class="btn btn-default prepareMiniMaintain reportico-edit-link reportico-edit-linkGroup" title="{{ T_EDIT }} {{ T_EDITGROUPS }}" id="submit_mainqueroutpgrps" name="mainqueroutpgrps_ANY">
-                                <span class="glyphicon glyphicon-pencil"></span>{{ T_EDITGROUPS }}
+                                <span class="glyphicon glyphicon-pencil icon-pencil"></span>{{ T_EDITGROUPS }}
                             </button>
                             <button type="submit" class="btn btn-default prepareMiniMaintain reportico-edit-link reportico-edit-linkGroup" title="{{ T_EDIT }} {{ T_EDITGRAPHS }}" id="submit_mainqueroutpgrph" name="mainqueroutpgrph_ANY">
-                                <span class="glyphicon glyphicon-pencil"></span>{{ T_EDITGRAPHS }}
+                                <span class="glyphicon glyphicon-pencil icon-pencil"></span>{{ T_EDITGRAPHS }}
                             </button>
                             <div class="btn btn-default reportico-edit-linkGroupWithDropDown" role="group">
                         <li class="dropdown"><a class="btn dropdown-toggle reportico-edit-linkGroupDropDown" data-toggle="dropdown" href="#">{{ T_MORE }}<span class="caret"></span></a>

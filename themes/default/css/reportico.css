@@ -1210,6 +1210,12 @@ input.reportico-admin-button2
 .page-size-A4.page-orientation-landscape.autopaginate { width: 29.7cm; height: 21cm; }
 .page-size-A5.page-orientation-portrait.autopaginate { width: 14.8cm; height: 15.0cm; }
 .page-size-A5.page-orientation-landscape.autopaginate { width: 21.0cm; height: 14.8cm; }
+.page-size-US-Letter.page-orientation-portrait.autopaginate { width: 216mm; height: 279mm; }
+.page-size-US-Letter.page-orientation-landscape.autopaginate { width: 279mm; height: 216mm; }
+.page-size-US-Legal.page-orientation-portrait.autopaginate { width: 216mm; height: 356mm; }
+.page-size-US-Legal.page-orientation-landscape.autopaginate { width: 356mm; height: 216mm; }
+.page-size-US-Ledger.page-orientation-portrait.autopaginate { width: 279mm; height: 432mm; }
+.page-size-US-Ledger.page-orientation-landscape.autopaginate { width: 432mm; height: 279mm; }
 
 
 

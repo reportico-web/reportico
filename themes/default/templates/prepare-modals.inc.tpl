@@ -9,7 +9,6 @@
 </style>
 
 {% endif %}
-<a id="a_reporticoModal" href="#reporticoModal" role="button" class="btn" data-target="#reporticoModal" data-toggle="modal" style="display:none">BB2</a>
 <div class="modal fade" id="reporticoModal" tabindex="-1" role="dialog" aria-labelledby="reporticoModal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
