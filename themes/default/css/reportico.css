@@ -346,9 +346,9 @@ input.reportico-admin-button2
 /* ------------------ Main Screen Form Box --------------*/
 .reportico-prepare-form 
 { 
-    width: 90% !important;
+    /*width: 90% !important;
     margin-left: 5% !important;
-    margin-right: 5% !important;
+    margin-right: 5% !important;*/
     text-align: left;
     margin-left: 0%;
     width: 100%;
