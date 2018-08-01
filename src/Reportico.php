@@ -4213,7 +4213,8 @@ class Reportico extends ReporticoObject
 
                     // Allow read-only access to MAINTAIN is an in-criteria screen edit button was called
                     if ( ReporticoUtility::getRequestItem("partialMaintain", false)) {
-                        $this->allow_maintain = "DEMO";
+                        if ( $this->allow_maintain != "FULL" )
+                            $this->allow_maintain = "DEMO";
                     }
 
                     $this->initializePanels($mode);
