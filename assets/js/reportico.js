@@ -349,6 +349,7 @@ function splitPage() {
       var pagefooters = false;
       var putbackheaders = false;
       var putbackfooters = false;
+      var putbacktitle = false;
 
       while (long > 0 && children.length > 0) {
 
