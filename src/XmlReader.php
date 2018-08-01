@@ -3917,7 +3917,6 @@ class XmlReader
             case "TEXTFIELDNOOK":
                 $readonly = "";
                 if ($edit_mode == "SAFE" && ($this->query->allow_maintain == "SAFE" || $this->query->allow_maintain == "DEMO" || ReporticoApp::getConfig('safe_design_mode'))) {
-                echo "$edit_mode == \"SAFE\" && ({$this->query->allow_maintain} == \"SAFE\" || {$this->query->allow_maintain} == \"DEMO\" || ".ReporticoApp::getConfig('safe_design_mode')."<BR>";
                     $readonly = "readonly";
                 }
 
