@@ -3641,7 +3641,7 @@ class XmlReader
             $styletxt .= "background-color:" . $updates["${type}StyleBgColor"] . ";";
         }
 
-        if ($updates["${type}StyleFontName"]) {
+        if (isset($updates["${type}StyleFontName"]) && $updates["${type}StyleFontName"]) {
             $styletxt .= "font-family:" . $updates["${type}StyleFontName"] . ";";
         }
 
