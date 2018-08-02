@@ -107,7 +107,7 @@ class ReportCsv extends Report
 
         // Handle double quotes by changing " to ""
         $output = str_replace("\"", "\"\"", $output);
-        $this->text .= "\"" . $output . "\",";
+        $this->text .= "=\"" . $output . "\",";
 
     }
 

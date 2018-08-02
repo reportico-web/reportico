@@ -858,7 +858,7 @@ reportico_jquery(document).on('click', '.reportico-prepare-save-button', functio
 ** AJAX mode is in place when reportico session ("reportico_ajax_script") is set
 ** will generate full reportico output to replace the reportico-container tag
 */
-reportico_jquery(document).on('click', '.reportico-admin-button, .reportico-admin-button2, .reportico-menu-item-link, .reportico-prepare-submit, .reportico-ajax-link, .reportico-link-menu2, .reportico-submit', function(event) 
+reportico_jquery(document).on('click', '.reportico-admin-button, .reportico-admin-button2, .reportico-menu-item-link, .reportico-prepare-submit, .reportico-ajax-link, .reportico-ajax-link2, .reportico-link-menu2, .reportico-submit', function(event) 
 {
     if ( reportico_jquery(this).hasClass("reportico-no-submit" )  )
     {
