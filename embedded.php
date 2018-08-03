@@ -8,7 +8,7 @@ require_once('vendor/autoload.php');
 $q = new Reportico\Engine\Reportico();
 $q->pdf_delivery_mode = "DOWNLOAD_SAME_WINDOW";
 $q->setTheme('default');
-$q->access_mode = "ONEPROJECT";
+$q->access_mode = "ONEREPORT";
 $q->initial_execute_mode = "PREPARE";
 $q->initial_project = "tutorials";
 $q->initial_report = "stock";
