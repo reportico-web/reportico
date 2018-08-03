@@ -3271,7 +3271,7 @@ class Reportico extends ReporticoObject
         }
 
         // Turn off design mode if login type anything except design
-        if ($this->login_type != "DESIGN") {
+        if ($this->login_type != "DESIGN" && !ReporticoUtility::getRequestItem("partialMaintain", false)) {
             $this->panels["MAINTAIN"]->setVisibility(false);
         }
 
@@ -4213,8 +4213,9 @@ class Reportico extends ReporticoObject
 
                     // Allow read-only access to MAINTAIN is an in-criteria screen edit button was called
                     if ( ReporticoUtility::getRequestItem("partialMaintain", false)) {
-                        if ( $this->allow_maintain != "FULL" )
-                            $this->allow_maintain = "DEMO";
+                        if ( $this->login_type != "DESIGN" ) {
+                            $this->access_mode = "DEMO";
+                        }
                     }
 
                     $this->initializePanels($mode);
