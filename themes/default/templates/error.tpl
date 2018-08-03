@@ -5,13 +5,13 @@
         </div>
         
             <script>
-                if ( typeof(reportico_jquery) not = "undefined" )
+                if ( typeof(reportico_jquery) != "undefined" )
                     reportico_jquery(document).ready(function()
                     {
                         showParentNoticeModal(reportico_jquery("#reporticoEmbeddedError").html());
                     });
                 else
-                    if ( typeof(parent.reportico_jquery) not = "undefined" ) 
+                    if ( typeof(parent.reportico_jquery) != "undefined" ) 
                         parent.reportico_jquery(document).ready(function()
                         {   
                             parent.showNoticeModal(document.getElementById("reporticoEmbeddedError").innerHTML);
