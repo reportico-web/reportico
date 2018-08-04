@@ -328,7 +328,6 @@ function splitPage() {
       var bottomMargin = reportico_jquery("#reportico-bottom-margin").outerHeight();
 
 
-      //alert("margin " + topMargin +" " + bottomMargin );
       var long = reportico_jquery(this)[0].scrollHeight - Math.ceil(reportico_jquery(this).innerHeight());
 
       // Start pag size off as total of margin we dont want to exceed this
@@ -465,10 +464,14 @@ function splitPage() {
             // Prepend the snipped page before the current but only if there are chidren that were snipped
             // else weve snipped everything form the main page so delete current, this wil be then the
             // last iteration through
-            if ( children.length > 0 )
+            if ( children.length > 0 ) {
                 reportico_jquery(thispage).before(newpage);
-            else
+            }
+            else {
+                if ( removed.length > 0 ) 
+                    reportico_jquery(thispage).before(newpage);
                 reportico_jquery(thispage).remove();
+            }
             children.unshift(child); 
 
             break;
