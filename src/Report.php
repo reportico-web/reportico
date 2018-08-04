@@ -164,11 +164,16 @@ class Report extends ReporticoObject
         $out_string = preg_replace('/page\(\)/', "$this->page_count",
             $out_string);
 
-        $out_string = preg_replace('/{page}/i', "<span class='reportico-page-number'>$this->page_count</span>",
-            $out_string);
+        if ( preg_match("/TCPDF/", get_class($this))) {
+            $out_string = preg_replace('/{page}/i', "$this->page_count", $out_string);
+            $out_string = preg_replace('/{pagetotal}/i', "$this->page_count", $out_string);
+        } else {
+            $out_string = preg_replace('/{page}/i', "<span class='reportico-page-number'>$this->page_count</span>",
+                $out_string);
 
-        $out_string = preg_replace('/{pagetotal}/i', "<span class='reportico-page-count'>$this->page_count</span>",
-            $out_string);
+            $out_string = preg_replace('/{pagetotal}/i', "<span class='reportico-page-count'>$this->page_count</span>",
+                $out_string);
+        }
 
         $out_string = preg_replace('/{#page}/i', "$this->page_count",
             $out_string);

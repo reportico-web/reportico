@@ -3527,7 +3527,14 @@ class Reportico extends ReporticoObject
     function applyOutputOptionsFromConfig() {
 
         $keyct = 1;
-        if ( $output_config = ReporticoApp::getConfig("output_sections"))  {
+        $output_config = array();
+
+        if ($this->pdf_engine == "tcpdf" && $this->target_format == "PDF" )
+            $output_config = ReporticoApp::getConfig("output_sections_tcpdf");
+        else
+            $output_config = ReporticoApp::getConfig("output_sections");
+
+        if ( $output_config )  {
             
             foreach ( $output_config as $k => $v ) {
 
@@ -3561,6 +3568,14 @@ class Reportico extends ReporticoObject
                         $this->setPageFooterAttribute($key, "ShowInPDF", "yes" );
                         $keyct++;
                         
+                    }
+
+                }
+
+                if ( $k == "styles" ) {
+                    
+                    foreach ( $v as $type => $styleset ) {
+                       $this->applyStyleset(strtoupper($type), $styleset["style"]); 
                     }
 
                 }

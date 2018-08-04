@@ -1237,8 +1237,8 @@ class ReportTCPDF extends Report
             $bottommargin = $this->absMetric($margin[2]);
             $leftmargin = $this->absMetric($margin[3]);
         }
-$this->debugFile(print_r($this->stylestack["margin"], true));
-$this->debugFile("here we go $leftmargin");
+//$this->debugFile(print_r($this->stylestack["margin"], true));
+//$this->debugFile("here we go T:$this->abs_top_margin, L:$this->abs_left_margin R:$this->abs_right_margin $this->page_type $this->abs_page_width/$this->abs_page_height $w $leftmargin");
 
         // Add padding
         $toppad = 0;
@@ -3637,9 +3637,9 @@ $this->debugFile("here we go $leftmargin");
         $y = $this->abs_top_margin + ($this->vsize * ($header->line - 1));
         $this->setPosition($tw, $y);
         $tx = $header->text;
-$this->debugFile("got $tw, $y, $tx");
+//$this->debugFile("got $tw, $y, $tx");
         $styles = $this->fetchCellStyles($tx);
-$this->debugFile("got $tw, $y, $tx go for ".print_r($styles, true));
+//$this->debugFile("got $tw, $y, $tx go for ".print_r($styles, true));
         $this->applyStyleTags("PAGEHEADER", $styles);
         $this->drawCell($wd, $this->vsize, $tx, "PBF", 0, $just);
         $this->unapplyStyleTags("PAGEHEADER", $styles);
