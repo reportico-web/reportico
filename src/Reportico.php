@@ -3076,7 +3076,7 @@ class Reportico extends ReporticoObject
         $this->admin_menu_url = $calling_script . "{$url_join_char}execute_mode=MENU&project=admin&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
         $this->configure_project_url = $calling_script . "{$url_join_char}execute_mode=PREPARE&xmlin=configureproject.xml&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
         $this->delete_project_url = $calling_script . "{$url_join_char}execute_mode=PREPARE&xmlin=deleteproject.xml&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
-        $this->create_report_url = $calling_script . "{$url_join_char}execute_mode=PREPARE&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
+        $this->create_report_url = $calling_script . "{$url_join_char}execute_mode=PREPARE&xmlin=&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
 
         if ($forward_url_params) {
             $this->prepare_url .= "&" . $forward_url_params;
