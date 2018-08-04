@@ -100,7 +100,7 @@ ReporticoApp::setConfig('pdf_pdfFont','Helvetica');
 ReporticoApp::setConfig('pdf_pdfFontSize','10');
 
 // Pagination and Zoom default
-ReporticoApp::setConfig('AutoPaginate','None');
+ReporticoApp::setConfig('AutoPaginate','HTML+PDF');
 if (stripos(PHP_OS, "WIN") !== false) 
 	ReporticoApp::setConfig('PdfZoomFactor','0.98');
 else
