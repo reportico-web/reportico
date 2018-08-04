@@ -17,6 +17,9 @@ $q->force_reportico_mini_maintains = false;
 $q->bootstrap_preloaded = false;
 $q->clear_reportico_session = true;
 $q->reportico_ajax_mode = true;
+
+Reportico\Engine\ReporticoSession::setUpReporticoSession($q->session_namespace);
+
 $q->execute();
 ?>
 
