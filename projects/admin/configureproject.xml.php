@@ -234,9 +234,18 @@ else
     {
 		$txt = file_get_contents($proj_conf);
 
+	    if ( !preg_match("/ReporticoApp/", $txt)) {
+            ReporticoApp::handleError ("Warning - This project was created with an older version of reportico. The configuration file has been replaced with a new version compatible with $this->version. Your original config file was backed up in the project folder to config.php.orig.", E_USER_WARNING);
+$proj_menu = $proj_dir."/menu.php";
+            $retval = file_put_contents($proj_conf.".orig", $txt);
+
+            // We dont need a menu.php file in the new version
+            if ( file_exists($proj_menu) )
+                rename($proj_menu, $proj_menu.".orig");
+        }
         // If the config file does not have a SW_DB_TYPE entry then we are running a pre-2.8
         // report with a post 2.8 reportico ... so generate a new one from the admin template
-        if ( preg_match ( "/SW_DB_TYPE/", $txt ))
+        else if ( preg_match ( "/SW_DB_TYPE/", $txt ))
         {
             $conffound = true;
         }
