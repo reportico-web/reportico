@@ -17,6 +17,9 @@
  */
 namespace Reportico\Engine;
 
+use CpChart\Data;
+use CpChart\Image;
+
 error_reporting(E_ALL);
 
 if (function_exists("imagecreatefromstring")) {
@@ -534,113 +537,41 @@ class ChartPchart
     public function generateGraphImage($outputfile)
     {
         // Create Graph Dataset and set axis attributes
-        $graphData = new \pData();
-        $graphData->setYAxisName($this->ytitle);
-        $graphData->AddPoint($this->xlabels, "xaxis");
-//$graphData->SetSerieName("xaxis","xaxis");
-        $graphData->SetAbsciseLabelSerie("xaxis");
-        $graphData->setXAxisName($this->xtitle);
+        $data = new Data();
+        $data->addPoints($this->xlabels, "xaxis");
+        $data->setSerieDescription("xaxis", $this->xtitle);
+        $data->setAbscissa("xaxis");
 
-// Add each series of plot values to dataset, but Reportico will
+
+        $data = new Data();
+
         // duplicate series were the same data are displayed in different forms
         // so only add each unique series once
         $seriesadded = array();
         foreach ($this->plot as $k => $v) {
             $series = $v["name"] . $k;
-            $graphData->AddPoint($v["data"], $series);
-            $graphData->SetSerieName($v["legend"], $series);
-            $graphData->AddSerie($series);
+            $data->addPoints($v["data"], $series);
+            $data->setSerieDescription($series, $v["legend"]);
         }
 
-/*
-switch ( $this->xgriddisplay )
-{
-case "all":
-$graph->xgrid->Show(true,true);
-break;
-case "major":
-$graph->xgrid->Show(true,false);
-break;
-case "minor":
-$graph->xgrid->Show(false,true);
-break;
-case "none":
-default:
-$graph->xgrid->Show(false,false);
-break;
-}
+        //$data->addPoints([-7, -8, -15, -20, -18, -12, 8, -19, 9, 16, -20, 8, 10, -10, -14, -20, 8, -9, -19], "Probe 3");
+        //$data->addPoints([19, 0, -8, 8, -8, 12, -19, -10, 5, 12, -20, -8, 10, -11, -12, 8, -17, -14, 0], "Probe 4");
 
-switch ( $this->ygriddisplay )
-{
-case "all":
-$graph->ygrid->Show(true,true);
-break;
-case "major":
-$graph->ygrid->Show(true,false);
-break;
-case "minor":
-$graph->ygrid->Show(false,true);
-break;
-case "none":
-default:
-$graph->ygrid->Show(false,false);
-break;
-}
- */
-
-/*
-$graph->xaxis->SetFont($fontfamilies[$xaxisfont],$fontstyles[$xaxisfontstyle], $xaxisfontsize);
-$graph->xaxis->SetColor($xaxiscolor,$xaxisfontcolor);
-$graph->yaxis->SetFont($fontfamilies[$yaxisfont],$fontstyles[$yaxisfontstyle], $yaxisfontsize);
-$graph->yaxis->SetColor($yaxiscolor,$yaxisfontcolor);
-$graph->xaxis->title->SetFont($fontfamilies[$xtitlefont],$fontstyles[$xtitlefontstyle], $xtitlefontsize);
-$graph->xaxis->title->SetColor($xtitlecolor);
-$graph->yaxis->title->SetFont($fontfamilies[$ytitlefont],$fontstyles[$ytitlefontstyle], $ytitlefontsize);
-$graph->yaxis->title->SetColor($ytitlecolor);
-$graph->xaxis->SetLabelAngle(90);
-$graph->xaxis->SetLabelMargin(15);
-$graph->yaxis->SetLabelMargin(15);
-$graph->xaxis->SetTickLabels($this->xlabels);
-$graph->xaxis->SetTextLabelInterval($xticklabint);
-$graph->yaxis->SetTextLabelInterval($yticklabint);
-$graph->xaxis->SetTextTickInterval($xtickinterval);
-$graph->yaxis->SetTextTickInterval($ytickinterval);
- */
-
-/*
-if ( $gridpos == "front" )
-$graph->SetGridDepth(DEPTH_FRONT);
- */
-
-// Display the graph
-        /*?$graph->Stroke();*/
+        $data->setAxisName(0, $this->ytitle);
+        $data->addPoints($this->xlabels, "xaxis");
+        $data->setAbscissa("xaxis");
 
         $this->applyDefaultsInternal();
 
-//echo $this->width_pdf_actual.",".$this->height_pdf_actual."<BR>";
-        $graphImage = new \pChart($this->width_pdf_actual, $this->height_pdf_actual);
+        // Create the chart image
+        $image = new Image($this->width_pdf_actual, $this->height_pdf_actual, $data);
 
-/* Turn of Antialiasing */
-        $graphImage->Antialias = true;
+        // Set the font to Verdana (available fonts are ..
+        // advent_light.ttf  Bedizen.ttf  calibri.ttf  Forgotte.ttf  GeosansLight.ttf  
+        // MankSans.ttf  pf_arma_five.ttf  Silkscreen.ttf  verdana.ttf
+        $image->setFontProperties(["FontName" => "verdana.ttf", "FontSize" => 8]);
 
-// Add gradient fill from chosen background color to white
-        $startgradient = ReporticoUtility::htmltorgb("#ffffff");
-//$graphImage->drawGradientArea(0,0,$width,$height,DIRECTION_VERTICAL,array(
-        //"StartR"=>$startgradient[0], "StartG"=>$startgradient[1], "StartB"=>$startgradient[2],
-        //"EndR"=>$color[0], "EndG"=>$color[1], "EndB"=>$color[2],"Alpha"=>100));
 
-        /* Add a border to the picture */
-        //$graphImage->drawRectangle(0,0,$width - 1,$height - 1,200,200,200);
-
-        $graphImage->setFontProperties(PCHARTFONTS_DIR . $this->xaxisfont, $this->xaxisfontsize);
-
-/* Define the chart area */
-        $graphImage->setGraphArea($this->marginleft_actual, $this->margintop_actual, $this->width_pdf_actual - $this->marginright_actual, $this->height_pdf_actual - $this->marginbottom_actual);
-
-        $graphImage->drawFilledRoundedRectangle(3, 3, $this->width_pdf_actual - 3, $this->height_pdf_actual - 3, 5, 240, 240, 240);
-        $graphImage->drawRoundedRectangle(1, 1, $this->width_pdf_actual - 1, $this->height_pdf_actual - 1, 5, 230, 230, 230);
-
-// Before plotting a series ensure they are all not drawable.
         /// Plot the chart data
         $stackeddrawn = false;
         $linedrawn = false;
@@ -649,7 +580,9 @@ $graph->SetGridDepth(DEPTH_FRONT);
         $stackedexists = false;
         $overlayexists = false;
         $barexists = false;
+
         foreach ($this->plot as $k => $v) {
+
             if ($v["type"] == "OVERLAYBAR") {
                 $overlayexists = true;
             }
@@ -664,18 +597,18 @@ $graph->SetGridDepth(DEPTH_FRONT);
 
             // Set plot colors
             if ($v["linecolor"]) {
-                $graphImage->Palette[$k] = ReporticoUtility::htmltorgbPchart($v["linecolor"]);
+                $image->Palette[$k] = ReporticoUtility::htmltorgbPchart($v["linecolor"]);
             }
 
             $url .= "&plotlinecolor$k=" . $v["linecolor"];
         }
 
-        $scale_drawing_mode = SCALE_NORMAL;
-        $scale_drawing_mode = SCALE_START0;
+        $scale_drawing_mode = SCALE_ADDALL_START0;
 
-// For stacked charts fix up the Max and Min values;
+        // For stacked charts fix up the Max and Min values;
         if ($stackedexists) {
             $scale_drawing_mode = SCALE_ADDALL;
+            $scale_drawing_mode = SCALE_ADDALL_START0;
             $scaleMin = "Unknown";
             $scaleMax = 0;
             $min = false;
@@ -736,10 +669,6 @@ $graph->SetGridDepth(DEPTH_FRONT);
             $AxisBoundaries = array(0 => array("Min" => $scaleMin, "Max" => $scaleMax));
         }
 
-//echo "<PRE>";
-        //var_dump($graphData->GetDataDescription());
-        //die;
-        // Find out if a scale is required, will be except for pie charts
         $scalerequired = false;
         foreach ($this->plot as $k => $v) {
             switch ($v["type"]) {
@@ -756,11 +685,10 @@ $graph->SetGridDepth(DEPTH_FRONT);
             }
         }
 
-        $graphImage->setFontProperties(PCHARTFONTS_DIR . $this->xtitlefont, $this->xtitlefontsize);
+        $image->setFontProperties(PCHARTFONTS_DIR . $this->xtitlefont, $this->xtitlefontsize);
 
         if ($scalerequired) {
-            $graphImage->setGraphArea($this->marginleft_actual, $this->margintop_actual, $this->width_pdf_actual - $this->marginright, $this->height_pdf_actual - $this->marginbottom_actual);
-            //$graphImage->drawGraphAreaGradient(240,240,240,-20);
+            $image->setGraphArea($this->marginleft_actual, $this->margintop_actual, $this->width_pdf_actual - $this->marginright, $this->height_pdf_actual - $this->marginbottom_actual);
 
             // Automatic generation of x tick interval based on number of ticks
             if ($this->xticklabelinterval_actual == "AUTO") {
@@ -769,19 +697,21 @@ $graph->SetGridDepth(DEPTH_FRONT);
             }
 
             if ($scalerequired == "NORMAL") {
-                $graphImage->drawScale($graphData->GetData(),
-                    $graphData->GetDataDescription(),
-                    $scale_drawing_mode,
-                    0, 0, 0, // color
-                    true, // draw ticks?
-                    40, // label angle
-                    false, // decimals ?
-                    true, // with margin
-                    $this->xticklabelinterval_actual, // skip labels
-                    false// Right scale
-                );
+
+                $settings = [
+                    //"CycleBackground" => true,
+                    "DrawSubTicks" => true,
+                    "GridR" => 255,
+                    "GridG" => 255,
+                    "GridB" => 255,
+                    //"GridAlpha" => 10,
+                    "LabelRotation" => "40",
+                    //"Mode" => $scale_drawing_mode
+                    "Mode" => SCALE_MODE_ADDALL_START0
+                ];
+
+                $image->drawScale($settings);
             }
-            $graphImage->drawGrid(2, true, 230, 230, 230, 45);
         } else {
             $this->marginright = 5;
             $this->marginbottom = 5;
@@ -789,28 +719,30 @@ $graph->SetGridDepth(DEPTH_FRONT);
             $this->marginright_actual = 5;
             $this->marginbottom_actual = 5;
             $this->marginleft_actual = 5;
-            //$this->margintop_actual = 5;
-            $graphImage->setGraphArea($this->marginleft, $this->margintop_actual, $this->width_pdf_actual - $this->marginright, $this->height_pdf_actual - $this->marginbottom);
-            $graphImage->drawGraphAreaGradient(240, 240, 240, -10);
+            $image->setGraphArea($this->marginleft, $this->margintop_actual, $this->width_pdf_actual - $this->marginright, $this->height_pdf_actual - $this->marginbottom);
+            $image->drawGraphAreaGradient(240, 240, 240, -10);
 
         }
 
-// If there's a Pie chart we want to draw different legends
+        // If there's a Pie chart we want to draw different legends
         $piechart = false;
-        foreach ($this->plot as $k => $v) {
-            disableAllSeries($this->plot, $graphData);
-            $series = $v["name"] . $k;
 
-            setSerieDrawable($this->plot, $graphData, $series, true);
+        foreach ($this->plot as $k => $v) {
+
+            // Pass through each plot, and hide all other plots from drawing
+            // so we can plot each series individuallay
+            disableAllSeries($this->plot, $data);
+            setSerieDrawable($this->plot, $data, $v["name"] . $k, true);
+            $series = $v["name"] . $k;
 
             switch ($v["type"]) {
                 case "PIE":
                     $piedrawn = true;
                     $piechart = true;
-                    $graphImage->drawFilledCircle(($this->width_pdf_actual / 2) + 2, $this->margintop_actual + 2 + (($this->height_pdf_actual - $this->margintop_actual - $this->marginbottom_actual) / 2),
+                    $image->drawFilledCircle(($this->width_pdf_actual / 2) + 2, $this->margintop_actual + 2 + (($this->height_pdf_actual - $this->margintop_actual - $this->marginbottom_actual) / 2),
                         ($this->height_pdf_actual - $this->marginbottom_actual - $this->margintop_actual - 20) * 0.45 + 1,
                         200, 200, 200);
-                    $graphImage->drawBasicPieGraph($graphData->GetData(), $graphData->GetDataDescription(),
+                    $image->drawBasicPieGraph($data->GetData(), $data->GetDataDescription(),
                         $this->width_pdf_actual / 2,
                         $this->margintop_actual + (($this->height_pdf_actual - $this->margintop_actual - $this->marginbottom_actual) / 2),
                         ($this->height_pdf_actual - $this->marginbottom_actual - $this->margintop_actual - 20) * 0.45,
@@ -821,7 +753,7 @@ $graph->SetGridDepth(DEPTH_FRONT);
                 case "PIE3D":
                     $piedrawn = true;
                     $piechart = true;
-                    $graphImage->drawPieGraph($graphData->GetData(), $graphData->GetDataDescription(),
+                    $image->drawPieGraph($data->GetData(), $data->GetDataDescription(),
                         $this->width_pdf_actual / 2,
                         $this->margintop_actual + (($this->height_pdf_actual - $this->margintop_actual - $this->marginbottom_actual) / 2),
                         ($this->height_pdf_actual - $this->marginbottom_actual - $this->margintop_actual - 20) * 0.50,
@@ -840,20 +772,23 @@ $graph->SetGridDepth(DEPTH_FRONT);
                         break;
                     }
 
-                    if ($barexists || $overlayexists) {
-                        foreach ($this->plot as $k1 => $v1) {
-                            if ($v1["type"] == "BAR" || $v1["type"] == "STACKEDBAR" || $v1["type"] == "OVERLAYBAR") {
-                                setSerieDrawable($this->plot, $graphData, $v1["name"] . $k1, true);
-                            }
-                        }
-                    }
                     $stackeddrawn = true;
+                    $settings = [
+                        //"Rounded" => true,
+                        "DisplayValues" => false,
+                        "DisplayColor" => DISPLAY_AUTO,
+                        "DisplaySize" => 6,
+                        "BorderR" => 255,
+                        "BorderG" => 255,
+                        "BorderB" => 255
+                        ];
+
                     if ($stackedexists) {
-                        $graphImage->drawStackedBarGraph($graphData->GetData(), $graphData->GetDataDescription(), 90);
+                        $image->drawStackedBarChart($settings);
                     } else if ($overlayexists) {
-                        $graphImage->drawOverlayBarGraph($graphData->GetData(), $graphData->GetDataDescription(), 90);
+                        $image->drawOverlayBarChart($settings);
                     } else {
-                        $graphImage->drawBarGraph($graphData->GetData(), $graphData->GetDataDescription());
+                        $image->drawBarChart($settings);
                     }
 
                     break;
@@ -865,7 +800,7 @@ $graph->SetGridDepth(DEPTH_FRONT);
                     $scatterdrawn = true;
                     $series1 = false;
                     $series2 = false;
-                    $graphImage->reportWarnings("GD");
+                    $image->reportWarnings("GD");
                     $ct = 0;
                     foreach ($this->plot as $k1 => $v1) {
                         if ($v1["type"] == "SCATTER") {
@@ -878,17 +813,16 @@ $graph->SetGridDepth(DEPTH_FRONT);
                             }
 
                             $ct++;
-                            setSerieDrawable($this->plot, $graphData, $v1["name"] . $k1, true);
+                            setSerieDrawable($this->plot, $data, $v1["name"] . $k1, true);
                         }
                     }
                     if (count($v["data"]) == 1) {
                         $v["data"][] = 0;
                     }
 
-                    $graphImage->drawXYScale($graphData->GetData(), $graphData->GetDataDescription(), $series1, $series2, 0, 0, 0);
-                    //$graphImage->drawXYGraph($graphData->GetData(), $graphData->GetDataDescription(), $series1, $series2);
-                    $graphImage->drawXYPlotGraph($graphData->GetData(), $graphData->GetDataDescription(), $series1, $series2);
-                    $graphImage->writeValues($graphData->GetData(), $graphData->GetDataDescription(), $series2);
+                    $image->drawXYScale($data->GetData(), $data->GetDataDescription(), $series1, $series2, 0, 0, 0);
+                    $image->drawXYPlotChart($data->GetData(), $data->GetDataDescription(), $series1, $series2);
+                    $image->writeValues($data->GetData(), $data->GetDataDescription(), $series2);
                     break;
                 case "LINE":
                 default;
@@ -897,48 +831,33 @@ $graph->SetGridDepth(DEPTH_FRONT);
                     }
 
                     $linedrawn = true;
-                    foreach ($this->plot as $k1 => $v1) {
-                        if ($v1["type"] == "LINE") {
-                            setSerieDrawable($this->plot, $graphData, $v1["name"] . $k1, true);
-                        }
-                    }
                     if (count($v["data"]) == 1) {
                         $v["data"][] = 0;
                     }
 
-                    $graphImage->LineWidth = 1;
-                    $graphImage->drawLineGraph($graphData->GetData(), $graphData->GetDataDescription());
-                    $graphImage->drawPlotGraph($graphData->GetData(), $graphData->GetDataDescription());
-                    $graphImage->LineWidth = 1;
+                    $image->LineWidth = 1;
+                    $image->drawLineChart(["DisplayValues" => false, "DisplayColor" => DISPLAY_AUTO]);
+                    $image->LineWidth = 1;
                     break;
             }
         }
-        foreach ($this->plot as $k1 => $v1) {
-            setSerieDrawable($this->plot, $graphData, $v1["name"] . $k1, true);
-        }
+        setSerieDrawable($this->plot, $data, "__ALL__", true);
+
+        $image->setShadow(true, ["X" => 1, "Y" => 1, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 10]);
 
         // Draw Legend if legend value has been set
         $drawlegend = false;
         foreach ($this->plot as $k => $v) {
             if (isset($v["legend"]) && $v["legend"]) {
-                // Temporarily Dont draw legend for Pie
-                //if ( $piechart )
-                //$graphImage->drawPieLegend($this->width_pdf_actual - 180,30,$graphData->GetData(), $graphData->GetDataDescription(), 250, 250, 250);
                 if (!$piechart) {
-                    $graphImage->drawLegend($this->width_pdf_actual - 120, 30, $graphData->GetDataDescription(), 254, 254, 254, 0, 0, 0);
+                    $image->drawLegend($this->width_pdf_actual - 180, 30, ["Style" => LEGEND_NOBORDER, "Mode" => LEGEND_HORIZONTAL]);
                 }
 
                 break;
             }
         }
 
-        $graphImage->setFontProperties(PCHARTFONTS_DIR . $this->xtitlefont, $this->titlefontsize);
-        $graphImage->drawTitle(0, 24, $this->title_actual, 50, 50, 50, $this->width_pdf_actual);
-        //$graphImage->setShadow(TRUE,array("X"=>0,"Y"=>0,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>10));
-        //$graphImage->Render("example.png");
-        //$graphImage->Stroke();
-
-        $graphImage->render($outputfile);
+        $image->render($outputfile);
         return true;
     }
 }
@@ -960,24 +879,28 @@ function minmaxValueOfSeries($data, &$min, &$max)
     }
 }
 
-function disableAllSeries($plot, &$graphData)
+function disableAllSeries($plot, &$data)
 {
     foreach ($plot as $k => $v) {
         $series = $v["name"] . $k;
-        $graphData->RemoveSerie($series);
+        //$data->RemoveSerie($series);
+        $data->setSerieDrawable($series, false);
     }
 }
 
-function setSerieDrawable($plot, $graphData, $inseries, $flag)
+function setSerieDrawable($plot, $data, $inseries, $flag)
 {
     foreach ($plot as $k => $v) {
         $series = $v["name"] . $k;
-        if ($inseries == $series) {
+        if ($inseries == $series || $inseries == "__ALL__" ) {
             if ($flag) {
-                $graphData->AddSerie($series);
-                $graphData->SetSerieName($v["legend"], $series);
+                //$data->AddSerie($series);
+                //$data->addPoints($v["data"], $series);
+                //$data->SetSerieName($v["legend"], $series);
+                $data->setSerieDrawable($series, true);
             } else {
-                $graphData->RemoveSerie($series);
+                //$data->RemoveSerie($series);
+                $data->setSerieDrawable($series, false);
             }
 
         }
