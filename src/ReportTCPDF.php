@@ -3513,15 +3513,15 @@ class ReportTCPDF extends Report
             return;
         }
 
-        if ($x && $y) {
+        if ($x !== false && $y !== false ) {
             $this->document->SetXY($x, $y);
             $this->current_line_start_y = ($y);
         } else
-        if ($y) {
+        if ($y !== false) {
             $this->document->SetXY($this->document->GetX(), $y);
             $this->current_line_start_y = ($y);
         }
-        if ($x) {
+        if ($x !== false) {
             $this->document->SetX($x, $this->document->GetY());
         }
     }
@@ -3539,7 +3539,7 @@ class ReportTCPDF extends Report
         $font = $this->document->SetFont($this->fontName);
         $font = $this->document->SetFontSize($this->vsize);
 
-        $this->setPosition($this->abs_left_margin, $this->abs_top_margin);
+        $this->setPosition($this->abs_left_margin, 0);
         $this->current_line_start_y = $this->document->GetY();
 
         // Page Headers
@@ -3550,6 +3550,9 @@ class ReportTCPDF extends Report
         $this->endLine();
         $this->endLine();
         $this->unapplyStyleTags("EACHHEADMID", $this->mid_cell_reportbody_styles);
+
+        // Page headers appear above the top margin
+        $this->setPosition($this->abs_left_margin, $this->abs_top_margin);
 
         // Page Footers
         $this->applyStyleTags("EACHHEADMID", $this->mid_cell_reportbody_styles);
@@ -3580,6 +3583,9 @@ class ReportTCPDF extends Report
             $this->column_header_required = true;
         }
 
+        // Move top margin down if headers too high
+        if ( $this->document->GetY() && $this->abs_top_margin > $this->document->GetY() ) 
+            $this->setPosition(false, $this->abs_top_margin);
     }
 
     public function finishPage()
@@ -3634,7 +3640,11 @@ class ReportTCPDF extends Report
 
         $just = $this->justifys[$header->deriveAttribute("justify", "left")];
 
-        $y = $this->abs_top_margin + ($this->vsize * ($header->line - 1));
+        //$y = $this->abs_top_margin + ($this->vsize * ($header->line - 1));
+
+        // Start drawing page header relative to top
+        $y = ($this->vsize * ($header->line - 1));
+
         $this->setPosition($tw, $y);
         $tx = $header->text;
 //$this->debugFile("got $tw, $y, $tx");
