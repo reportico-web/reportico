@@ -248,7 +248,7 @@
     //$q->static_menu = array ();
 
     // Required PDF Engine set -- to phantomjs or tcpdf
-    $q->pdf_engine = "phantomjs";
+    $q->pdf_engine = "tcpdf";
 
     // How CSV, PDF out is delivered to the browser ( TCPDF output only )
     // either as
@@ -256,6 +256,7 @@
     // "INLINE" - shown inside a new  browser window making use of any existing browser PDF plugin (if not will download)
     // "DOWNLOAD_NEW_WINDOW" - downloaded as attachment from winthin the current browser window
     $q->pdf_delivery_mode = "DOWNLOAD_SAME_WINDOW";
+    //$q->pdf_delivery_mode = "DOWNLOAD_NEW_WINDOW";
 
     // Dropdown Menu definition
     // ========================

@@ -101,6 +101,9 @@ function getFilterGroupState()
 function setupCriteriaItems()
 {
 
+    if (typeof reportico_criteria_items === 'undefined') 
+        return; 
+
     for ( i in reportico_criteria_items )
     {
         j = reportico_criteria_items[i];
@@ -1048,6 +1051,7 @@ reportico_jquery(document).on('click', '.reportico-admin-button, .reportico-admi
 function ajaxFileDownload(url, data, expandpanel, reportico_container) {
 
     url += getYiiAjaxURL();
+    url +=  "?reportico_padding=1";
     url +=  getCSRFURLParams();
     headers =  getCSRFHeaders();
 
@@ -1603,6 +1607,12 @@ function getCSRFURLParams() {
     if (typeof reportico_csrf_token != 'undefined' 
         && ( reportico_ajax_mode == "yii-ugly-url" || reportico_ajax_mode == "yii-pretty-url" ) ) {
         params = "&YII_CSRF_TOKEN=" + reportico_csrf_token;
+    }
+
+    if ( reportico_ajax_mode == "joomla" ) {
+        params += '&option=com_reportico';
+        params += '&format=raw';
+
     }
 
     return params;
