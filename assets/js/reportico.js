@@ -1271,6 +1271,9 @@ reportico_jquery(document).on('click', '.reportico-print-box,.prepareAjaxExecute
     params = reportico_jquery(critform).serialize();
     params += "&execute_mode=EXECUTE";
     params += "&" + reportico_jquery(this).prop("name") + "=1";
+    params +=  getCSRFURLParams();
+    headers =  getCSRFHeaders();
+
 
     forms = reportico_jquery(this).closest('.reportico-maintain-form,.reportico-prepare-form,form');
     if ( jQuery.type(reportico_ajax_script) === 'undefined' || !reportico_ajax_script )
