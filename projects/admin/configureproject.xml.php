@@ -336,7 +336,7 @@ foreach ( $configparams as $paramkey => $paramval )
         }
         else {
             $paramval = $paramval;
-            $txt = preg_replace ( "/(ReporticoApp::setConfig\(.$modkey.,).*/", "$1\"$paramval\");", $txt);
+            $txt = preg_replace ( "/(ReporticoApp::setConfig\(.$modkey.,) *[\"'].*/", "$1\"$paramval\");", $txt);
         }
     }
 }
