@@ -1615,6 +1615,7 @@ function getCSRFURLParams() {
     if ( reportico_ajax_mode == "joomla" ) {
         params += '&option=com_reportico';
         params += '&format=raw';
+        params += '&' + reportico_csrf_token + "=1";
 
     }
 
