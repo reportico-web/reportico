@@ -556,6 +556,7 @@ input.reportico-admin-button2
 {
     /*border: solid 1px #AAAAAA;*/
     background-color: #999;
+    overflow: scroll;
     /*min-width: 100vw;*/
 }
 
@@ -1310,6 +1311,7 @@ input.reportico-admin-button2
     display: block;
 }
 
+.reportico-notice-modal-close,
 .reportico-modal-close
 {
 padding: 0;
