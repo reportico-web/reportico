@@ -560,6 +560,11 @@ input.reportico-admin-button2
     /*min-width: 100vw;*/
 }
 
+#reportico-bootstrap-collapse {
+    height: auto;
+}
+
+
 /* Table container for each Page of Output */
 .reportico-page
 {

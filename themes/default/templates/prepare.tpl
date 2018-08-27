@@ -67,10 +67,10 @@
 {% include 'prepare-modals.inc.tpl' %}
 
 <div class="reportico-show-criteria" style="display:none">
-    <a href="#"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></a>
+    <a href="#"><span class="glyphicon glyphicon-chevron-down icon-chevron-down" aria-hidden="true"></span></a>
 </div>
 <div class="reportico-hide-criteria" style="display:none">
-    <a href="#"><span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span></a>
+    <a href="#"><span class="glyphicon glyphicon-chevron-up icon-chevron-up" aria-hidden="true"></span></a>
 </div>
 
 <div id="reportico-report-output">
