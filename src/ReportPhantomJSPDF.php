@@ -40,8 +40,13 @@ class ReportPhantomJSPDF extends Report
 
         // Build URL - dont include scheme and port if already provided
         $url = "{$engine->reportico_ajax_script_url}?execute_mode=EXECUTE&target_format=HTML2PDF&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
-        if ( !preg_match("/:\/\//", $url) ) 
-        $url = "${_SERVER["REQUEST_SCHEME"]}://${_SERVER["HTTP_HOST"]}:${_SERVER["SERVER_PORT"]}{$engine->reportico_ajax_script_url}?execute_mode=EXECUTE&target_format=HTML2PDF&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
+        $script_url = $engine->reportico_ajax_script_url;
+        if ( !preg_match("/:\/\//", $url) ) {
+            if ( substr($script_url, 0, 1) != "/" )
+                $script_url = "/$script_url";
+
+            $url = "${_SERVER["REQUEST_SCHEME"]}://${_SERVER["HTTP_HOST"]}:${_SERVER["SERVER_PORT"]}{$script_url}?execute_mode=EXECUTE&target_format=HTML2PDF&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
+        }
 
         // Add in any extra forwarded URL parameters
         if ($engine->forward_url_get_parameters) 
