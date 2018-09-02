@@ -874,7 +874,7 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function reportProgress($in_text, $in_status)
     {
-	$sessionClass = ReporticoSession();
+        $sessionClass = ReporticoSession();
 
         $this->progress_text = $in_text;
         $this->progress_status = $in_status;
@@ -1021,7 +1021,7 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function getExecuteMode()
     {
-	$sessionClass = ReporticoSession();
+        $sessionClass = ReporticoSession();
 
         // User clicked Report Dropdown + Go Button
         if (array_key_exists('submit_execute_mode', $_REQUEST)) {
@@ -1148,7 +1148,7 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function setRequestColumns()
     {
-	$sessionClass = ReporticoSession();
+        $sessionClass = ReporticoSession();
 
         if (array_key_exists("clearform", $_REQUEST)) {
             $this->clearform = true;
@@ -1750,7 +1750,7 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function loginCheck($template)
     {
-	$sessionClass = ReporticoSession();
+        $sessionClass = ReporticoSession();
 
         if (!$this->datasource) {
             $this->datasource = new ReporticoDataSource($this->external_connection, $this->available_connections);
@@ -2775,7 +2775,7 @@ class Reportico extends ReporticoObject
     // url request parameter
     public function deriveAjaxOperation()
     {
-	$sessionClass = ReporticoSession();
+        $sessionClass = ReporticoSession();
 
         // Fetch URL path to reportico and set URL path to the runner
         $this->reportico_url_path = ReporticoUtility::getReporticoUrlPath();
@@ -2818,7 +2818,7 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function initializePanels($mode)
     {
-	$sessionClass = ReporticoSession();
+        $sessionClass = ReporticoSession();
 
         $template = new ReporticoTemplateTwig($this->templateViewPath, $this->templateCachePath, $this->getTheme());
 
@@ -3295,7 +3295,7 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function handleInitialSettings()
     {
-	$sessionClass = ReporticoSession();
+        $sessionClass = ReporticoSession();
 
         if (!$this->framework_parent && !$sessionClass::getReporticoSessionParam("awaiting_initial_defaults")) {
             $this->initial_project = false;
@@ -3322,7 +3322,7 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function handledInitialSettings()
     {
-	$sessionClass = ReporticoSession();
+        $sessionClass = ReporticoSession();
 
         if ($sessionClass::getReporticoSessionParam("awaiting_initial_defaults")) {
             $sessionClass::setReporticoSessionParam("awaiting_initial_defaults", false);
@@ -3368,7 +3368,7 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function handleXmlQueryInput($mode = false)
     {
-	$sessionClass = ReporticoSession();
+        $sessionClass = ReporticoSession();
 
         if (!$this->top_level_query) {
             return;
@@ -3639,7 +3639,7 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function execute($mode = false, $draw = true)
     {
-	$sessionClass = ReporticoSession();
+        $sessionClass = ReporticoSession();
 
         if ($this->session_namespace) {
             ReporticoApp::set("session_namespace", $this->session_namespace);
@@ -5156,8 +5156,8 @@ class Reportico extends ReporticoObject
         }
         $result = str_replace(",", "", $col->column_value);
 
-	if ( !is_numeric($col->old_column_value)  )
-		$col->old_column_value = 0;
+        if ( !is_numeric($col->old_column_value)  )
+            $col->old_column_value = 0;
         if ($col->old_column_value && !$col->reset_flag) {
             $result =
             $col->old_column_value +
@@ -5623,7 +5623,7 @@ class Reportico extends ReporticoObject
  */
     public function setProjectEnvironment($initial_project = false, $project_folder = "projects", $admin_project_folder = "projects")
     {
-	$sessionClass = ReporticoSession();
+        $sessionClass = ReporticoSession();
 
         $target_menu = "";
         $project = "";
@@ -5901,7 +5901,7 @@ class Reportico extends ReporticoObject
 
     private function getTheme()
     {
-	$sessionClass = ReporticoSession();
+        $sessionClass = ReporticoSession();
 
         $theme = $sessionClass::sessionRequestItem("theme", $this->theme);
 
