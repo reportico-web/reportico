@@ -28,6 +28,8 @@ class ReportPhantomJSPDF extends Report
 
     public function start($engine)
     {
+        $sessionClass = ReporticoSession();
+
         if ( !$engine->pdf_phantomjs_temp_path )
             $engine->pdf_phantomjs_temp_path = sys_get_temp_dir();
 
@@ -39,13 +41,13 @@ class ReportPhantomJSPDF extends Report
             $this->client->getEngine()->setPath($engine->pdf_phantomjs_path);
 
         // Build URL - dont include scheme and port if already provided
-        $url = "{$engine->reportico_ajax_script_url}?execute_mode=EXECUTE&target_format=HTML2PDF&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
+        $url = "{$engine->reportico_ajax_script_url}?execute_mode=EXECUTE&target_format=HTML2PDF&reportico_session_name=" . $sessionClass::reporticoSessionName();
         $script_url = $engine->reportico_ajax_script_url;
         if ( !preg_match("/:\/\//", $url) ) {
             if ( substr($script_url, 0, 1) != "/" )
                 $script_url = "/$script_url";
 
-            $url = "${_SERVER["REQUEST_SCHEME"]}://${_SERVER["HTTP_HOST"]}:${_SERVER["SERVER_PORT"]}{$script_url}?execute_mode=EXECUTE&target_format=HTML2PDF&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
+            $url = "${_SERVER["REQUEST_SCHEME"]}://${_SERVER["HTTP_HOST"]}:${_SERVER["SERVER_PORT"]}{$script_url}?execute_mode=EXECUTE&target_format=HTML2PDF&reportico_session_name=" . $sessionClass::reporticoSessionName();
         }
 
         // Add in any extra forwarded URL parameters
@@ -96,7 +98,7 @@ class ReportPhantomJSPDF extends Report
 
         // Since we are going to spawn web call to fetch HTML version of report for conversion to PDF, 
         // we must close current sessions so they can be subsequently opened within the web call
-        (ReporticoSession())::closeReporticoSession();
+        $sessionClass::closeReporticoSession();
 
         // Send the request
         $this->client->send($request, $response);

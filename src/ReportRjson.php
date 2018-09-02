@@ -92,13 +92,15 @@ class ReportRjson extends Report
 
     public function setupReportAttributes()
     {
+        $sessionClass = ReporticoSession();
+
         $title = $this->query->deriveAttribute("ReportTitle", "Unknown");
         $this->jar["title"] .= ReporticoLang::translate($title);
         if ($this->query->output_template_parameters["show_hide_report_output_title"] == "hide") {
             $this->jar["attributes"]["hide_title"] = true;
         }
 
-        $forward = (ReporticoSession())::sessionRequestItem('forward_url_get_parameters', '');
+        $forward = $sessionClass::sessionRequestItem('forward_url_get_parameters', '');
         if ($forward) {
             $forward .= "&";
         }
@@ -107,19 +109,19 @@ class ReportRjson extends Report
         if (!ReporticoUtility::getRequestItem("printable_rjson")) {
             // Show Go Back Button ( if user is not in "SINGLE REPORT RUN " )
             if (!$this->query->access_mode || ($this->query->access_mode != "REPORTOUTPUT")) {
-                $this->jar["attributes"]["show_prepare_button"] .= $this->query->getActionUrl() . '?' . $forward . 'execute_mode=PREPARE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName();
+                $this->jar["attributes"]["show_prepare_button"] .= $this->query->getActionUrl() . '?' . $forward . 'execute_mode=PREPARE&reportico_session_name=' . $sessionClass::reporticoSessionName();
             }
-            if ((ReporticoSession())::getReporticoSessionParam("show_refresh_button")) {
-                $this->jar["attributes"]["show_refresh_button"] .= $this->query->getActionUrl() . '?' . $forward . 'refreshReport=1&execute_mode=EXECUTE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName();
+            if ($sessionName::getReporticoSessionParam("show_refresh_button")) {
+                $this->jar["attributes"]["show_refresh_button"] .= $this->query->getActionUrl() . '?' . $forward . 'refreshReport=1&execute_mode=EXECUTE&reportico_session_name=' . $sessionClass::reporticoSessionName();
             }
 
         } else {
-            $this->jar["attributes"]["show_print_button"] .= $this->query->getActionUrl() . '?' . $forward . 'printReport=1&execute_mode=EXECUTE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName();
+            $this->jar["attributes"]["show_print_button"] .= $this->query->getActionUrl() . '?' . $forward . 'printReport=1&execute_mode=EXECUTE&reportico_session_name=' . $sessionClass::reporticoSessionName();
         }
 
         $this->jar["attributes"]["column_header_styles"] = $this->query->output_header_styles;
         $this->jar["attributes"]["column_page_styles"] = $this->query->output_page_styles;
-        $this->jar["attributes"]["page_style"] = (ReporticoSession())::sessionRequestItem("target_style", "TABLE");
+        $this->jar["attributes"]["page_style"] = $sessionClass::sessionRequestItem("target_style", "TABLE");
         $this->setupColumns();
     }
 
@@ -341,6 +343,8 @@ class ReportRjson extends Report
     public function formatColumnTrailer(&$trailer_col, &$value_col, $trailer_first = false) // HTML
 
     {
+        $sessionClass = ReporticoSession();
+
         $just = $trailer_col->deriveAttribute("justify", false);
         if ($just && $just != "left") {
             $this->query->output_group_trailer_styles["text-align"] = $just;
@@ -348,7 +352,7 @@ class ReportRjson extends Report
             $this->query->output_group_trailer_styles["text-align"] = "left";
         }
 
-        if (!(ReporticoSession())::getReporticoSessionParam("target_show_group_trailers")) {
+        if (!$sessionClass::getReporticoSessionParam("target_show_group_trailers")) {
             return;
         }
 
@@ -417,9 +421,11 @@ class ReportRjson extends Report
     public function eachLine($val) // HTML
 
     {
+        $sessionClass = ReporticoSession();
+
         Report::eachLine($val);
 
-        if ((ReporticoSession())::sessionRequestItem("target_style", "TABLE") == "FORM") {
+        if ($sessionClass::sessionRequestItem("target_style", "TABLE") == "FORM") {
             if (!$this->page_started) {
                 $formpagethrow = $this->query->getAttribute("formBetweenRows");
                 switch ($formpagethrow) {
@@ -470,7 +476,7 @@ class ReportRjson extends Report
         }
 
         //foreach ( $this->columns as $col )
-        if ($this->body_display == "show" && (ReporticoSession())::getReporticoSessionParam("target_show_detail")) {
+        if ($this->body_display == "show" && $sessionClass::getReporticoSessionParam("target_show_detail")) {
             $this->beginLine();
             if (!$this->page_started) {
                 //$this->jar[""] .= '<TABLE class="'.$this->query->getBootstrapStyle("page").'reportico-page" '.$this->getStyleTags($this->query->output_page_styles).'>';

@@ -1236,6 +1236,15 @@ input.reportico-admin-button2
         overflow:hidden !important;
     }
 
+    .reportico-report-form
+    {
+        /*border: solid 1px #AAAAAA;*/
+        background-color: #999;
+        overflow: visible;
+        /*min-width: 100vw;*/
+    }
+
+
     .non-printable { display: none; }
     .reportico-page-header { display: block; }
     .reportico-ajax-link { display: none; }

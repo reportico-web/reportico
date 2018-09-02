@@ -208,6 +208,8 @@ class reportico_graph
 
     public function generateUrlParams($target_format, $sessionPlaceholder = false)
     {
+        $sessionClass = ReporticoSession();
+
         $this->applyDefaults();
 
         $result = "";
@@ -279,7 +281,7 @@ class reportico_graph
 
         if ($sessionPlaceholder) {
             $ses = "graph_" . $sessionPlaceholder;
-            (ReporticoSession())::setReporticoSessionParam($ses, $url);
+            $sessionClass::setReporticoSessionParam($ses, $url);
             $url = "graphid=" . $ses . "&time=" . time();
         }
 

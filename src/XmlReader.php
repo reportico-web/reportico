@@ -2046,6 +2046,8 @@ class XmlReader
     // Processes the HTML get/post paramters passed through on the maintain screen
     public function handleUserEntry()
     {
+        $sessionClass = ReporticoSession();
+
         // First look for a parameter beginning "submit_". This will identify
         // What the user wanted to do.
 
@@ -2124,7 +2126,7 @@ class XmlReader
 
                 case "PREPARESAVE":
                     $xmlsavefile = $this->query->xmloutfile;
-                    (ReporticoSession())::setReporticoSessionParam("execute_mode", "PREPARE");
+                    $sessionClass::setReporticoSessionParam("execute_mode", "PREPARE");
 
                     if (!$xmlsavefile) {
                         header("HTTP/1.0 404 Not Found", true);
@@ -2231,8 +2233,8 @@ class XmlReader
         if ($xmlsavefile) {
             if ($this->query->allow_maintain != "SAFE" && $this->query->allow_maintain != "DEMO" && ReporticoApp::getConfig('allow_maintain')) {
                 $xmlout->writeFile($xmlsavefile);
-                (ReporticoSession())::setReporticoSessionParam("xmlin", $xmlsavefile);
-                (ReporticoSession())::unsetReporticoSessionParam("xmlintext");
+                $sessionClass::setReporticoSessionParam("xmlin", $xmlsavefile);
+                $sessionClass::unsetReporticoSessionParam("xmlintext");
             } else {
                 trigger_error(ReporticoLang::templateXlate("SAFENOSAVE"), E_USER_ERROR);
             }
@@ -2244,8 +2246,8 @@ class XmlReader
         if ($xmldeletefile) {
             if ($this->query->allow_maintain != "SAFE" && $this->query->allow_maintain != "DEMO" && ReporticoApp::getConfig('allow_maintain')) {
                 $xmlout->removeFile($xmldeletefile);
-                (ReporticoSession())::setReporticoSessionParam("xmlin", false);
-                (ReporticoSession())::unsetReporticoSessionParam("xmlintext");
+                $sessionClass::setReporticoSessionParam("xmlin", false);
+                $sessionClass::unsetReporticoSessionParam("xmlintext");
             } else {
                 trigger_error(ReporticoLang::templateXlate("SAFENODEL"), E_USER_ERROR);
             }

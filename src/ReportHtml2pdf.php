@@ -129,12 +129,14 @@ class ReportHtml2pdf extends Report
      */
     public function formatColumnHeader(&$column_item) //HTML
     {
+        $sessionClass = ReporticoSession();
+
 
         if ($this->body_display != "show") {
             return;
         }
 
-        if (!(ReporticoSession())::getReporticoSessionParam("target_show_detail")) {
+        if (!$sessionClass::getReporticoSessionParam("target_show_detail")) {
             return;
         }
 
@@ -257,11 +259,13 @@ class ReportHtml2pdf extends Report
 
     public function formatHeaders()
     {
+        $sessionClass = ReporticoSession();
+
         if (!$this->page_started) {
             $this->page_started = true;
         }
 
-        if ((ReporticoSession())::sessionRequestItem("target_style", "TABLE") == "FORM") {
+        if ($sessionClass::sessionRequestItem("target_style", "TABLE") == "FORM") {
             return;
         }
 
@@ -412,7 +416,9 @@ class ReportHtml2pdf extends Report
 
     public function formatColumnTrailer(&$trailer_col, &$value_col, $trailer_first = false) // HTML
     {
-        if (!(ReporticoSession())::getReporticoSessionParam("target_show_group_trailers")) {
+        $sessionClass = ReporticoSession();
+
+        if (!$sessionClass::getReporticoSessionParam("target_show_group_trailers")) {
             return;
         }
 
@@ -487,8 +493,10 @@ class ReportHtml2pdf extends Report
 
     public function formatCustomHeader(&$col, $custom) // HTML
     {
+        $sessionClass = ReporticoSession();
+
         // If this is the first custom header break a little
-        if (!(ReporticoSession())::getReporticoSessionParam("target_show_group_headers")) {
+        if (!$sessionClass::getReporticoSessionParam("target_show_group_headers")) {
             return;
         }
 
@@ -517,8 +525,10 @@ class ReportHtml2pdf extends Report
 
     public function formatCustomTrailer(&$trailer_col, &$value_col) // PDF
     {
+        $sessionClass = ReporticoSession();
+
         // If this is the first custom trailer break a little
-        if (!(ReporticoSession())::getReporticoSessionParam("target_show_group_trailers")) {
+        if (!$sessionClass::getReporticoSessionParam("target_show_group_trailers")) {
             return;
         }
 
@@ -550,6 +560,8 @@ class ReportHtml2pdf extends Report
 
     public function eachLine($val) // HTML
     {
+        $sessionClass = ReporticoSession();
+
         //if ($this->line_count > 3) return;
 //echo $this->line_count;
         //echo "<PRE>"; var_dump($this->jar); echo "</PRE>";
@@ -566,7 +578,7 @@ class ReportHtml2pdf extends Report
 
         $this->jar["pages"][$this->page_count]["rows"][$this->line_count]["line"] = $this->line_count;
 
-        if ((ReporticoSession())::sessionRequestItem("target_style", "TABLE") == "FORM") {
+        if ($sessionClass::sessionRequestItem("target_style", "TABLE") == "FORM") {
             if (!$this->page_started) {
                 $formpagethrow = $this->query->getAttribute("formBetweenRows");
                 switch ($formpagethrow) {
@@ -618,7 +630,7 @@ class ReportHtml2pdf extends Report
         }
 
         //foreach ( $this->columns as $col )
-        if ($this->body_display == "show" && (ReporticoSession())::getReporticoSessionParam("target_show_detail")) {
+        if ($this->body_display == "show" && $sessionClass::getReporticoSessionParam("target_show_detail")) {
             $this->beginLine();
             if (!$this->page_started) {
                 $this->page_started = true;
@@ -809,6 +821,8 @@ class ReportHtml2pdf extends Report
 
     public function formatHyperlinks($hyperlinks, $padstring)
     {
+        $sessionClass = ReporticoSession();
+
         $open = "";
         if ($hyperlinks["open_in_new"]) {
             $open = " target=\"_blank\"";
@@ -819,12 +833,12 @@ class ReportHtml2pdf extends Report
 
         // Add any application specific url params
         if ($hyperlinks["is_drilldown"]) {
-            if ((ReporticoSession())::sessionRequestItem('forward_url_get_parameters', '')) {
-                $url .= "&" . (ReporticoSession())::sessionRequestItem('forward_url_get_parameters', '');
+            if ($sessionClass::sessionRequestItem('forward_url_get_parameters', '')) {
+                $url .= "&" . $sessionClass::sessionRequestItem('forward_url_get_parameters', '');
             }
 
             // Add drilldown namespace normally specified in frameworks
-            $url .= '&clear_session=1&reportico_session_name=NS_drilldown' . (ReporticoSession())::reporticoNamespace();
+            $url .= '&clear_session=1&reportico_session_name=NS_drilldown' . $sessionClass::reporticoNamespace();
         }
 
         if ($hyperlinks["label"] == "<SELF>") {
@@ -1036,7 +1050,9 @@ class ReportHtml2pdf extends Report
     */
     function setPageWidgets()
     {
-        $forward = (ReporticoSession())::sessionRequestItem('forward_url_get_parameters', '');
+        $sessionClass = ReporticoSession();
+
+        $forward = $sessionClass::sessionRequestItem('forward_url_get_parameters', '');
         if ($forward) {
             $forward .= "&";
         }
@@ -1059,23 +1075,23 @@ class ReportHtml2pdf extends Report
             if (!$this->query->access_mode || ($this->query->access_mode != "REPORTOUTPUT")) {
                 $this->jar["buttons"]["back"] = [ 
                     "href" => $this->query->getActionUrl() . $url_join_char . 
-                        $forward . 'execute_mode=PREPARE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName(),
+                        $forward . 'execute_mode=PREPARE&reportico_session_name=' . $sessionClass::reporticoSessionName(),
                     "class" => "reportico-back-button",
                     "title" => ReporticoLang::templateXlate("GO_BACK")
                 ];
             }
 
-            if ((ReporticoSession())::getReporticoSessionParam("show_refresh_button")) {
+            if ($sessionClass::getReporticoSessionParam("show_refresh_button")) {
                 $this->jar["buttons"]["refresh"] = [ 
                 "href" => $this->query->getActionUrl() . $url_join_char . 
-                    $forward . 'refreshReport=1&execute_mode=EXECUTE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName(),
+                    $forward . 'refreshReport=1&execute_mode=EXECUTE&reportico_session_name=' . $sessionClass::reporticoSessionName(),
                     "class" => "reportico-refresh-button",
                     "title" => ReporticoLang::templateXlate("GO_REFRESH")
                 ];
             }
                 $this->jar["buttons"]["print"] = [ 
                         "href" => $this->query->getActionUrl() . $url_join_char . 
-                                $forward . 'printReport=1&execute_mode=EXECUTE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName(),
+                                $forward . 'printReport=1&execute_mode=EXECUTE&reportico_session_name=' . $sessionClass::reporticoSessionName(),
                         "class" => "reportico-print-button",
                         "title" => ReporticoLang::templateXlate("GO_PRINT")
                     ];
@@ -1083,7 +1099,7 @@ class ReportHtml2pdf extends Report
         } else {
                 $this->jar["buttons"]["print"] = [ 
                         "href" => $this->query->getActionUrl() . $url_join_char . 
-                                $forward . 'printReport=1&execute_mode=EXECUTE&reportico_session_name=' . (ReporticoSession())::reporticoSessionName(),
+                                $forward . 'printReport=1&execute_mode=EXECUTE&reportico_session_name=' . $sessionClass::reporticoSessionName(),
                         "class" => "reportico-print-button",
                         "title" => ReporticoLang::templateXlate("GO_PRINT")
                     ];
