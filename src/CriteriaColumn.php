@@ -758,6 +758,8 @@ class CriteriaColumn extends QueryColumn
     // -----------------------------------------------------------------------------
     public function &list_display($in_is_expanding)
     {
+        $sessionClass = ReporticoSession();
+
         $text = "";
         if ($in_is_expanding) {
             $tag_pref = "EXPANDED_";
@@ -813,7 +815,7 @@ class CriteriaColumn extends QueryColumn
 
             // If this is first time into screen and we have defaults then
             // use these instead
-            if (!$params && !$hidden_params && (ReporticoSession())::getReporticoSessionParam("firstTimeIn")) {
+            if (!$params && !$hidden_params && $sessionClass::getReporticoSessionParam("firstTimeIn")) {
                 $hidden_params = $this->defaults;
                 $manual_params = $this->defaults;
             }
@@ -1040,6 +1042,8 @@ class CriteriaColumn extends QueryColumn
     public function &lookup_ajax($in_is_expanding)
     {
 
+        $sessionClass = ReporticoSession();
+
         $text = "";
         if ($in_is_expanding) {
             $tag_pref = "EXPANDED_";
@@ -1092,7 +1096,7 @@ class CriteriaColumn extends QueryColumn
 
             // If this is first time into screen and we have defaults then
             // use these instead
-            if (!$hidden_params && (ReporticoSession())::getReporticoSessionParam("firstTimeIn")) {
+            if (!$hidden_params && $sessionClass::getReporticoSessionParam("firstTimeIn")) {
                 $hidden_params = $this->defaults;
                 $manual_params = $this->defaults;
             }
@@ -1325,6 +1329,8 @@ class CriteriaColumn extends QueryColumn
     public function &lookup_display($in_is_expanding)
     {
 
+        $sessionClass = ReporticoSession();
+
         $text = "";
         if ($in_is_expanding) {
             $tag_pref = "EXPANDED_";
@@ -1377,7 +1383,7 @@ class CriteriaColumn extends QueryColumn
 
             // If this is first time into screen and we have defaults then
             // use these instead
-            if (!$hidden_params && (ReporticoSession())::getReporticoSessionParam("firstTimeIn")) {
+            if (!$hidden_params && $sessionClass::getReporticoSessionParam("firstTimeIn")) {
                 $hidden_params = $this->defaults;
                 $manual_params = $this->defaults;
             }

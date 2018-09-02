@@ -219,6 +219,8 @@ class ChartFLOT
 
 	function generateUrlParams($target_format, $sessionPlaceholder=false)
 	{
+                $sessionClass = ReporticoSession();
+
 		$this->applyDefaults();
 
 
@@ -280,7 +282,7 @@ class ChartFLOT
 		if ( $sessionPlaceholder)
 		{
 			$ses = "graph_".$sessionPlaceholder;
-            (ReporticoSession())::setReporticoSessionParam($ses, $url);
+                        $sessionClass::setReporticoSessionParam($ses, $url);
 			$url = "graphid=".$ses."&time=".time();
 		}
 

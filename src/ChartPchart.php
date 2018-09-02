@@ -211,6 +211,8 @@ class ChartPchart
 
     public function generateUrlParams($target_format, $sessionPlaceholder = false)
     {
+        $sessionClass = ReporticoSession();
+
         $this->applyDefaults();
 
         $result = "";
@@ -282,7 +284,7 @@ class ChartPchart
 
         if ($sessionPlaceholder) {
             $ses = "graph_" . $sessionPlaceholder;
-            (ReporticoSession())::setReporticoSessionParam($ses, $url);
+            $sessionClass::setReporticoSessionParam($ses, $url);
             $url = "graphid=" . $ses . "&time=" . time();
         }
 
@@ -302,9 +304,9 @@ class ChartPchart
             }
 
         }
-        $forward_url_params = (ReporticoSession())::sessionRequestItem('forward_url_get_parameters_graph');
+        $forward_url_params = $sessionClass::sessionRequestItem('forward_url_get_parameters_graph');
         if (!$forward_url_params) {
-            $forward_url_params = (ReporticoSession())::sessionRequestItem('forward_url_get_parameters', $this->reportico->forward_url_get_parameters);
+            $forward_url_params = $sessionClass::sessionRequestItem('forward_url_get_parameters', $this->reportico->forward_url_get_parameters);
         }
 
         if ($forward_url_params) {
@@ -312,7 +314,7 @@ class ChartPchart
         }
 
         $url .= "&reportico_call_mode=graph_pchart";
-        $url .= "&reportico_session_name=" . (ReporticoSession())::reporticoSessionName();
+        $url .= "&reportico_session_name=" . $sessionClass::reporticoSessionName();
         $result = '<img class="reportico-output-graph" src=\'' . $dyngraph . '?' . $url . '\'>';
 
         return $result;
