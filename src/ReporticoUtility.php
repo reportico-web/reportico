@@ -240,7 +240,7 @@ class ReporticoUtility
     {
         $newpath = $path;
         $reltoinclude;
-        if (substr($newpath, 0, 1) == "/" || substr($newpath, 0, 1) == "\\") {
+        if (substr($newpath, 0, 1) == "/" || substr($newpath, 0, 1) == "\\" || preg_match("/^[A-Za-z]:/", $newpath)) {
             if (is_file($newpath) || is_dir($newpath)) {
                 return $newpath;
             } else {
