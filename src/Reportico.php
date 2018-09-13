@@ -4590,7 +4590,7 @@ class Reportico extends ReporticoObject
                     $code = "\$_pdo =& \$_connection->_connectionID;" . $code;
                     $code = "if ( \$_connection )" . $code;
                     $code = "\$_pdo = false;" . $code;
-                    $code = "set_include_path(get_include_path().':".__DIR__."/..:".$this->admin_projects_folder."/admin/');" . $code;
+                    $code = "set_include_path(get_include_path().'".PATH_SEPARATOR.__DIR__."/..".PATH_SEPARATOR.$this->admin_projects_folder."/admin/');" . $code;
                     $code = "\$_connection =& \$this->datasource->ado_connection;" . $code;
                     $code = "namespace Reportico\Engine;" . $code;
 
