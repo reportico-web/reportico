@@ -992,6 +992,7 @@ class Report extends ReporticoObject
 
                 $this->applyFormat($group, "after_header");
             } else if (($group->group_name == "REPORT_BODY" && $this->line_count == 0) || $this->query->changed($group->group_name)) {
+                $this->formatGroupHeaderStart($group->getFormat("before_header") == "newpage");
                 if ($graphs = &$this->query->getGraphByName($group->group_name)) {
                     foreach ($graphs as $graph) {
                         $graph->clearData();
