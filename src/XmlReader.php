@@ -4028,6 +4028,7 @@ class XmlReader
                     $fontdir = false;
                 } else {
                     $fontdir = "src/tcpdf/fonts";
+                    $fontdir = __DIR__."/../vendor/tecnickcom/tcpdf/fonts";
                 }
 
                 if ( $fontdir )
