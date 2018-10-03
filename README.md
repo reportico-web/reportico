@@ -24,7 +24,7 @@ The only way to install this beta version of Reportico is via composer.
 
 To install this beta version use the following composer command under a web folder
 
-composer create-project reportico-web/reportico dev-develop
+composer create-project reportico-web/reportico ^6.0
 
 This will create a reportico folder with the latest release.
 
