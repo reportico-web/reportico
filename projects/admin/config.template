@@ -276,9 +276,10 @@ ReporticoApp::setConfig('output_sections', array (
                         'content' => '{REPORT_TITLE}', 
                         'styles' => 'border-width: 0px 0px 1px 0px; margin: 25px 0px 0px 0px; border-color: #000000; font-size: 18; border-style: solid;padding:0px 0px 0px 0px; width: 100%; background-color: inherit; color: #000; margin-left: 0%;margin-bottom: 20px;text-align:center' 
                       ),
+                // Set an HTML logo
                 array ( 
-                        'content' => '', 
-                        'styles' => 'width: 100; height: 50; margin: 5px 0 0 0; background-image:assets/images/reportico100.png' 
+                        //'content' => '<img src="http://reportico.org/site2/themes/reportico-site/assets/images/logo.png" style="height:50px;width: 50px">', 
+                        //'styles' => 'width: 50px; height: 50px; margin: 5px 0 0 0; background-image:http://reportico.org/site2/themes/reportico-site/assets/images/logo.png' 
                       ),
                 ),
 
@@ -304,6 +305,60 @@ ReporticoApp::setConfig('output_sections', array (
                         'styles' => 'STYLE font-size: 8pt; text-align: right; font-style: italic;text-align:right;' 
                       ),
                 ),
+
+        'styles' => array ( 
+
+            'body' => array(
+                'style' => array(
+                    "border-width" => "1px 1px 1px 1px",
+                    "border-style" => "none",
+                    "border-color" => "#333333",
+                    "font-size" => "14pt",
+                    "padding" => "20px 20px 20px 20px"
+                )
+             ),
+
+            'page' => array(
+                'style' => array(
+                    "border-width" => "1px 1px 1px 1px",
+                    "border-style" => "solid",
+                    "border-color" => "#333333",
+                    //"font-size" => "10pt",
+                    "padding" => "20px 20px 20px 20px"
+                )
+             ),
+
+            'criteria' => array(
+                'style' => array(
+                    "font-size" => "10pt",
+                    "background-color" => "#eeeeee",
+                    "border-style" => "solid",
+                    "border-width" => "1px 1px 1px 1px",
+                    "border-color" => "#888888",
+                    "margin" => "0px 0px 10px 0px",
+                    "padding" => "0px 5px 0px 5px",
+                )
+             ),
+
+            'columnheaders' => array(
+                'style' => array(
+                    "background-color" => "#555",
+                    "color" => "#fff",
+                    "border-style" => "solid",
+                    "border-width" => "1px 1px 1px 1px",
+                    "border-color" => "#888888",
+                    //"margin" => "0px 5px 10px 5px",
+                    //"padding" => "0px 5px 0px 5px",
+                    //"display" => "none",
+                )
+             ),
+
+            //'row' => array(
+                //'style' => array()
+             //),
+
+
+        )
 
         ));
 
@@ -346,8 +401,8 @@ ReporticoApp::setConfig('output_sections_tcpdf', array (
                     "border-width" => "1px 1px 1px 1px",
                     "border-style" => "none",
                     "border-color" => "#333333",
-                    "font-size" => "8pt",
-                    "font-family" => "freesans",
+                    //"font-size" => "8pt",
+                    //"font-family" => "freesans",
                     "padding" => "20px 20px 20px 20px"
                 )
              ),
@@ -364,7 +419,21 @@ ReporticoApp::setConfig('output_sections_tcpdf', array (
                     "display" => "none",
                 )
              ),
+            'columnheaders' => array(
+                'style' => array(
+                    "background-color" => "#444444",
+                    "color" => "#ffffff",
+                    "border-style" => "none",
+                    "border-width" => "1px 1px 1px 1px",
+                    "border-color" => "#888888",
+                    //"margin" => "0px 5px 10px 5px",
+                    //"padding" => "0px 5px 0px 5px",
+                    //"display" => "none",
+                )
+             ),
 
-        )));
+
+        )
+        ));
 
 ?>
