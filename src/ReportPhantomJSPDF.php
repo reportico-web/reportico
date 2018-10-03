@@ -37,8 +37,25 @@ class ReportPhantomJSPDF extends Report
         $this->client = Client::getInstance();
         //$this->client->isLazy();
         $this->client->getProcedureCompiler()->disableCache();
+
+
+        // Workout whether Phantom Engine is a windows exe or not based on PHP_OS
+        if ( strpos(PHP_OS, "WIN") !== false ) {
+            $path = $engine->pdf_phantomjs_path;
+            $path = preg_replace("+/+", "\\", $path);
+            if ( !preg_match("/.exe$/i", $path ))
+                $path .= ".exe";
+            $this->client->getEngine()->setPath("$path");
+            if ( !file_exists($this->client->getEngine()->getPath() ) ) {
+                    http_response_code(500);
+                header("HTTP/1.0 500 Not Found", true);
+                echo "Failed to produce PDF file error 500 Cannot find phantomjs - <BR>Content:<b><BR>{$response->getContent()}</b> - <BR>";
+                die;
+            }
+        } else {        
         if ( $engine->pdf_phantomjs_path )
             $this->client->getEngine()->setPath($engine->pdf_phantomjs_path);
+        }
 
         // Build URL - dont include scheme and port if already provided
         $url = "{$engine->reportico_ajax_script_url}?execute_mode=EXECUTE&target_format=HTML2PDF&reportico_session_name=" . $sessionClass::reporticoSessionName();
