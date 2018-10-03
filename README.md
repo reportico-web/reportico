@@ -36,6 +36,12 @@ http://www.reportico.org/yii2/web/index.php/quickstart
 or visit the Reportico Web Site
 http://www.reportico.org
 
+## Upgrading from 4.x to 6.x
+
+See instructions here ..
+
+http://reportico.org/site2/release-6.0.0-beta
+
 ## Screenshots
 
 ![Criteria Page](/images/reportico_prepare.png?raw=true "Criteria Page")
