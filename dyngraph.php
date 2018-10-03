@@ -1,22 +1,5 @@
 <?php
 /*
- Reportico - PHP Reporting Tool
- Copyright (C) 2010-2014 Peter Deed
-
- This program is free software; you can redistribute it and/or
- modify it under the terms of the GNU General Public License
- as published by the Free Software Foundation; either version 2
- of the License, or (at your option) any later version.
- 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
  * File:        dyngraph.php
  *
  * Generates a chart image from axes, data parameters
@@ -25,7 +8,6 @@
  * @copyright 2010-2014 Peter Deed
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
- * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  * @version $Id: dyngraph.php,v 1.14 2014/05/17 15:12:31 peter Exp $
  */
 
@@ -51,11 +33,11 @@ function & derive_request_item ( $attrib_name, $default )
 }
 
 /**
- * Function convert_special_chars
+ * Function convertSpecialChars
  *
  * Converts special strings encoded back to original text
  */
-function convert_special_chars($intext)
+function convertSpecialChars($intext)
 {
     $outtext = preg_replace("/<AMPERSAND>/", "&", $intext);
     return $outtext;
@@ -63,12 +45,10 @@ function convert_special_chars($intext)
 
 
 include ("swutil.php");
-set_up_reportico_session();		
+setUpReporticoSession();		
 
-global $g_session_namespace;
-global $g_session_namespace_key;
-if ( $g_session_namespace )
-    $g_session_namespace_key = "reportico_".$g_session_namespace;
+if ( ReporticoApp::get("session_namespace") )
+    ReporticoApp::set("session_namespace_key",  "reportico_".ReporticoApp::get("session_namespace") );
 
 		
 include ("jpgraph/src/jpgraph.php");
@@ -124,7 +104,7 @@ $graphid = derive_request_item("graphid", "");
 
 if ( $graphid )
 {
-    $params=get_reportico_session_param($graphid);
+    $params=getReporticoSessionParam($graphid);
 	$a = explode('&', $params);
 	$i = 0;
 	while ($i < count($a)) 
@@ -145,9 +125,9 @@ $ygriddisplay = derive_request_item("ygriddisplay", "none");
 $gridpos = derive_request_item("gridposition", "back");
 $xgridcolor = derive_request_item("xgridcolor", "purple");
 $ygridcolor = derive_request_item("ygridcolor", "darkgreen");
-$title = convert_special_chars(derive_request_item("title", ""));
-$xtitle = convert_special_chars(derive_request_item("xtitle", ""));
-$ytitle = convert_special_chars(derive_request_item("ytitle", ""));
+$title = convertSpecialChars(derive_request_item("title", ""));
+$xtitle = convertSpecialChars(derive_request_item("xtitle", ""));
+$ytitle = convertSpecialChars(derive_request_item("ytitle", ""));
 $titlefont = derive_request_item("titlefont", "Arial");
 $titlefontstyle = derive_request_item("titlefontstyle", "Normal");
 $titlefontsize = derive_request_item("titlefontsize", 12);

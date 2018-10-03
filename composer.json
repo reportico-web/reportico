@@ -1,30 +1,41 @@
 {
     "name": "reportico-web/reportico",
-    "description": "Reportico Open Source PHP report Designer",
+    "homepage": "http://www.reportico.org/",
+    "description": "Reportico Open Source PHP Report Designer",
     "type": "project",
-    "keywords": [
-        "report",
-        "reporting"
-    ],
+    "keywords": [ "report", "reporting" ],
+    "license": "MIT",
     "authors": [
         {
             "name": "Reportico",
-            "email": "info@reportico.org"
+            "email": "info@reportico.org",
+            "homepage": "http://www.reportico.org/"
         }
     ],
-    "homepage": "http://www.reportico.org/",
-    "license": "GPL-3.0",
     "require": {
-        "php": ">=5.4.0"
+        "php": ">=5.4.0",
+        "adodb/adodb-php": "^5.20",
+        "monolog/monolog": "^1.23",
+        "twig/twig": "~1.16",
+        "jonnyw/php-phantomjs": "4.6",
+        "tecnickcom/tcpdf": "^6.2",
+        "szymach/c-pchart": "^3.0"
     },
-    "autoload": {
-        "classmap": [
-          "reportico.php"
-        ],
-        "psr-0": {
-          "Reportico\\Reportico": "src/"
+     "autoload": {
+        "psr-4": {
+            "Reportico\\Engine\\": "src",
+            "pChart\\": "pChart/"
         }
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    "config": {
+        "bin-dir": "bin"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "PhantomInstaller\\Installer::installPhantomJS"
+        ],
+        "post-update-cmd": [
+            "PhantomInstaller\\Installer::installPhantomJS"
+        ]
+    }
 }

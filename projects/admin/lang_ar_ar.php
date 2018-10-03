@@ -1,6 +1,6 @@
-<?php namespace reportico\reportico\components;
+<?php namespace Reportico\Engine;
 
-$g_translations = array (
+$translations = array (
         "ar_ar" => array (
             "Project Name" => "اسم المشروع",
             "Project Title" => "عنوان المشروع",
@@ -41,7 +41,7 @@ $g_translations = array (
             );
 
 
-$g_report_desc = array(
+$report_desc = array(
     "ar_ar" => array(
         "createproject" =>
         "
@@ -56,7 +56,7 @@ $g_report_desc = array(
 "),
         );
 
-$g_report_desc ["ar_ar"] ["configureproject"] =
+$report_desc ["ar_ar"] ["configureproject"] =
 "
 تغيير عناصر التكوين لهذا المشروع.
 <BR>
@@ -65,4 +65,8 @@ $g_report_desc ["ar_ar"] ["configureproject"] =
 عندما كنت سعيدا اضغط على زر العودة.
 <P>
 ";
+
+ReporticoApp::set("translations", $translations);
+ReporticoApp::set("report_desc", $report_desc);
+
 ?>

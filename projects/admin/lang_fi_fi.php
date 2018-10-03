@@ -1,5 +1,6 @@
-<?php namespace reportico\reportico\components;
-$g_translations = array (
+<?php 
+namespace Reportico\Engine;
+$translations = array (
 "fi_fi" => array ( 
     "Specify Project Name" => "Valitse Projektin nimi",
     "Specify Project Title" => "Valitse Projektin otsikko",
@@ -21,7 +22,7 @@ $g_translations = array (
 );
 
 
-$g_report_desc = array ( 
+$report_desc = array ( 
 "fi_fi" => array (
     "createproject" =>
     "
@@ -36,7 +37,7 @@ $g_report_desc = array (
     "),
 );
 
-$g_report_desc["fi_fi"]["configureproject"] = 
+$report_desc["fi_fi"]["configureproject"] = 
     "
     Muokkaa tämän projektin asetuksia.
     <br>
@@ -45,4 +46,8 @@ $g_report_desc["fi_fi"]["configureproject"] =
     Kun olet valmis, klikkaa <font color=green><b>Suorita</b></font> painiketta.
     <P>
     ";
+
+ReporticoApp::set("translations", $translations);
+ReporticoApp::set("report_desc", $report_desc);
+
 ?>

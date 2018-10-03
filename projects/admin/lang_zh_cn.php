@@ -1,5 +1,6 @@
 <?php
-$g_translations = array (
+namespace Reportico\Engine;
+$translations = array (
 		"zh_cn" => array (
             "Project Name" => "项目名称",
             "Project Title" => "项目名称",
@@ -35,7 +36,7 @@ $g_translations = array (
 			)
 		);
 
-$g_report_desc = array ( 
+$report_desc = array ( 
     "zh_cn" => array (
 		"createproject" => "
 创建一个新的项目文件夹，您可以在其中创建一组报告。
@@ -48,7 +49,7 @@ $g_report_desc = array (
 " )
 		);
 
-$g_report_desc["zh_cn"]["configureproject"] =
+$report_desc["zh_cn"]["configureproject"] =
 "
 更改此项目的配置项。
 <br>
@@ -56,4 +57,8 @@ $g_report_desc["zh_cn"]["configureproject"] =
 <P>
 当你快乐点击Go按钮。
 ";
+
+ReporticoApp::set("translations", $translations);
+ReporticoApp::set("report_desc", $report_desc);
+
 ?>

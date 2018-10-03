@@ -1,5 +1,6 @@
 <?php
-$g_translations = array (
+namespace Reportico\Engine;
+$translations = array (
 		"fr_fr" => array (
 			"Source String" => "Translation"
 			),
@@ -8,10 +9,12 @@ $g_translations = array (
 			),
 		);
 
-$g_report_desc = array ( 
+$report_desc = array ( 
         "fr_fr" => array (
 		"reportdefinition.xml" => 
         "Translated description"
 			)
 		);
+ReporticoApp::set("translations", $translations);
+ReporticoApp::set("report_desc", $report_desc);
 ?>

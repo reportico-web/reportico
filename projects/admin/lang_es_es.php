@@ -1,5 +1,7 @@
 <?php
-$g_translations = array (
+namespace Reportico\Engine;
+
+$translations = array (
 		"es_es" => array (
             "Project Name" => "Nom del proyecto",
             "Project Title" => "Título del proyecto",
@@ -36,7 +38,7 @@ Desactive esta opción para permitir el acceso a estas funciones. ",
 			),
 		);
 
-$g_report_desc = array ( 
+$report_desc = array ( 
     "es_es" => array (
 		"createproject" => "
 Crear una carpeta de nuevos proyectos en los que se puede crear un conjunto de informes.
@@ -49,7 +51,7 @@ Cuando esté satisfecho pulsa el botón Ir.
 "),
 		);
 
-$g_report_desc["es_es"]["configureproject"] = 
+$report_desc["es_es"]["configureproject"] = 
 "
 Cambiar los elementos de configuración para este proyecto.
 <br>
@@ -57,4 +59,9 @@ Puede modificar el título, el idioma por defecto, establecer una contraseña de
 <P>
 Cuando esté satisfecho pulsa el botón Ir.
 ";
+
+ReporticoApp::set("translations", $translations);
+ReporticoApp::set("report_desc", $report_desc);
+
+
 ?>

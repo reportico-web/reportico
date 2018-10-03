@@ -1,21 +1,5 @@
 <?php
 /*
- Reportico - PHP Reporting Tool
- Copyright (C) 2010-2014 Peter Deed
-
- This program is free software; you can redistribute it and/or
- modify it under the terms of the GNU General Public License
- as published by the Free Software Foundation; either version 2
- of the License, or (at your option) any later version.
- 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
  * File:        run.php
  *
@@ -25,13 +9,15 @@
  * @copyright 2010-2014 Peter Deed
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
- * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  * @version $Id: run.php,v 1.25 2014/05/17 15:12:31 peter Exp $
  */
-
+    require_once(__DIR__ .'/vendor/autoload.php');
     // set error reporting level
 	error_reporting(E_ALL);
 
+    // Turn on logging ot browser console
+    //Reportico\Engine\ReporticoLog::activeDebugMode();
+    
     // Set the timezone according to system defaults
     date_default_timezone_set(@date_default_timezone_get());
 
@@ -44,12 +30,12 @@
     // Include Reportico - for embedding reportico in a script running from outside the Reportico directory, 
     // just include the full path to the file reportico.php
 	//require_once('<FULL_PATH_TO_REPORTICO>/reportico.php');
-	require_once('reportico.php');
 
     // Only turn on output buffering if necessary, normally leave this uncommented
 	//ob_start();
-
-	$q = new reportico();
+	
+    // Instantiate Reportico
+	$q = new Reportico\Engine\Reportico();
 
     // In design mode, allow sql debugging
 	//$q->allow_debug = true;
@@ -61,7 +47,7 @@
 
     // Reportico Ajax mode. If set to true will run all reportico requests from buttons and links
     // through AJAX, meaning reportico will refresh in its own window and not refresh the whole page
-    //$q->reportico_ajax_mode = true;
+    //$q->reportico_ajax_mode = "standalone";
 
     /*
     ** Initial execution states .. allows you to start user and limit user to specfic
@@ -93,7 +79,7 @@
     //$q->initial_show_graph = "show";
     //$q->initial_show_group_headers = "show";
     //$q->initial_show_group_trailers = "show";
-    //$q->initial_show_column_headers = "show";
+    //$q->initial_showColumnHeaders = "show";
     //$q->initial_show_criteria = "show";
 
     // Set default output style - TABLE = one row per record, FORM = one page per record
@@ -103,7 +89,7 @@
     //$q->initial_sql = "SELECT column1 AS columntitle1, column2 AS columntitle2 FROM table";
 
     // Set Report Title  when running reort from an SQL statement above
-    // $q->set_attribute("ReportTitle", "Report Title");
+    // $q->setAttribute("ReportTitle", "Report Title");
 
     // Specify access mode to limit what user can do, one of :-
     // FULL - the default, allows user to log in under admin/design mode and design reports
@@ -117,9 +103,9 @@
     // Also the full report definition can be built up programmatically
     // which requires further doicumentation
     //$q->importSQL("SELECT column1 AS columntitle1, column2 AS columntitle2 FROM table");
-    //$q->get_column("column1")->set_attribute("column_display","hide");
-    //$q->get_column("column1")->set_attribute("column_title","Custom Title");
-    //$q->set_attribute("ReportTitle","New Report Title");
+    //$q->get_column("column1")->setAttribute("column_display","hide");
+    //$q->get_column("column1")->setAttribute("column_title","Custom Title");
+    //$q->setAttribute("ReportTitle","New Report Title");
 
 
     // Default initial execute mode to single report output if REPORTOUTPUT mode specified
@@ -157,7 +143,7 @@
     // The session namespace to use. Only relevant when showing more than one report in a single page. Specify a name
     // to store all session variables for this instance and then when running another report instance later in the script 
     // use another name
-    //$q->session_namespace = "namespace";
+    //$q->session_namespace = "reportico";
 
     // Current user - when embedding reportico, you may wish to run queries by user. In this case
     // set the current user here. Then you can use the construct {FRAMEWORK_USER} within your queries
@@ -228,6 +214,11 @@
     //$q->output_template_parameters["show_hide_prepare_go_buttons"] = "hide";
     //$q->output_template_parameters["show_hide_prepare_reset_buttons"] = "hide";
 
+    // Set a theme
+    // ======================
+    // Use the specified folder under the themes folder to identify which templates, stylesheets and js to use for the instance
+    $q->setTheme('default');
+
     // Label for criteria section if required
     // $q->criteria_block_label = "Report Criteria:";
 
@@ -256,15 +247,15 @@
     // To hide the static report menu
     //$q->static_menu = array ();
 
-    // Required PDF Engine set -- to tcpdf ( default ) or fpdf 
-    //$q->pdf_engine = "fpdf";
+    // Required PDF Engine set -- to phantomjs or tcpdf
+    $q->pdf_engine = "phantomjs";
 
     // How CSV, PDF out is delivered to the browser ( TCPDF output only )
     // either as
     // "DOWNLOAD_SAME_WINDOW" - downloaded as attachment from within the current browser window ( default )
     // "INLINE" - shown inside a new  browser window making use of any existing browser PDF plugin (if not will download)
     // "DOWNLOAD_NEW_WINDOW" - downloaded as attachment from winthin the current browser window
-    //$q->pdf_delivery_mode = "DOWNLOAD_SAME_WINDOW";
+    $q->pdf_delivery_mode = "DOWNLOAD_SAME_WINDOW";
 
     // Dropdown Menu definition
     // ========================
@@ -292,6 +283,9 @@
     //                    ),
     //            );
 
+
+    // Setup SESSION
+    Reportico\Engine\ReporticoSession::setUpReporticoSession($q->session_namespace);
 
     // Run the report
 	$q->execute();

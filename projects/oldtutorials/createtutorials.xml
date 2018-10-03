@@ -35,16 +35,16 @@ This should be left as &quot;./&quot;. However this may need to be changed to a 
 &lt;b&gt;Server&lt;/b&gt; and &lt;b&gt;Protocol&lt;/b&gt;
 When reporting against Informix databases, specify the Informix server and the connection protocol e.g. olsoctcp.
 &lt;P&gt; </ReportDescription><PageSize>A4</PageSize><PageOrientation>Portrait</PageOrientation><TopMargin></TopMargin><BottomMargin></BottomMargin><RightMargin></RightMargin><LeftMargin></LeftMargin><pdfFont></pdfFont><pdfFontSize></pdfFontSize><PreExecuteCode>// Extract Criteria Options
-$type = $_criteria[&quot;dbtype&quot;]-&gt;get_criteria_value(&quot;VALUE&quot;, false);
-$name = $_criteria[&quot;database&quot;]-&gt;get_criteria_value(&quot;VALUE&quot;, false);
-$host = $_criteria[&quot;host&quot;]-&gt;get_criteria_value(&quot;VALUE&quot;, false);
-$server = $_criteria[&quot;server&quot;]-&gt;get_criteria_value(&quot;VALUE&quot;, false);
-$user = $_criteria[&quot;user&quot;]-&gt;get_criteria_value(&quot;VALUE&quot;, false);
-$password = $_criteria[&quot;password&quot;]-&gt;get_criteria_value(&quot;VALUE&quot;, false);
-$protocol = $_criteria[&quot;protocol&quot;]-&gt;get_criteria_value(&quot;VALUE&quot;, false);
-$baseurl = $_criteria[&quot;baseurl&quot;]-&gt;get_criteria_value(&quot;VALUE&quot;, false);
-$project = $_criteria[&quot;project&quot;]-&gt;get_criteria_value(&quot;VALUE&quot;, false);
-$title = $_criteria[&quot;projtitle&quot;]-&gt;get_criteria_value(&quot;VALUE&quot;, false);
+$type = $_criteria[&quot;dbtype&quot;]-&gt;getCriteriaValue(&quot;VALUE&quot;, false);
+$name = $_criteria[&quot;database&quot;]-&gt;getCriteriaValue(&quot;VALUE&quot;, false);
+$host = $_criteria[&quot;host&quot;]-&gt;getCriteriaValue(&quot;VALUE&quot;, false);
+$server = $_criteria[&quot;server&quot;]-&gt;getCriteriaValue(&quot;VALUE&quot;, false);
+$user = $_criteria[&quot;user&quot;]-&gt;getCriteriaValue(&quot;VALUE&quot;, false);
+$password = $_criteria[&quot;password&quot;]-&gt;getCriteriaValue(&quot;VALUE&quot;, false);
+$protocol = $_criteria[&quot;protocol&quot;]-&gt;getCriteriaValue(&quot;VALUE&quot;, false);
+$baseurl = $_criteria[&quot;baseurl&quot;]-&gt;getCriteriaValue(&quot;VALUE&quot;, false);
+$project = $_criteria[&quot;project&quot;]-&gt;getCriteriaValue(&quot;VALUE&quot;, false);
+$title = $_criteria[&quot;projtitle&quot;]-&gt;getCriteriaValue(&quot;VALUE&quot;, false);
 
 if ( !$title ) { trigger_error ( &quot;Specify Project Title&quot; ); return; }
 if ( !$type ) { trigger_error ( &quot;Specify Database Type&quot; ); return; }
@@ -58,7 +58,7 @@ global $g_debug_mode;
 $g_debug_mode = true;
 ;
 
-$test = new reportico_datasource();
+$test = new reporticoDatasource();
 
 $test-&gt;driver = $type;
 $test-&gt;user_name = $user;
@@ -75,7 +75,7 @@ var_dump($_connection);
 
 
 if ( $test-&gt;connected )
-    handle_debug(&quot;Connection to Database succeeded&quot;, 0);
+    handleDebug(&quot;Connection to Database succeeded&quot;, 0);
 else
    trigger_error(&quot;Connection to Database failed&quot;);
 
@@ -103,7 +103,7 @@ if ( !is_writeable ( &quot;projects&quot;  ) )
 
 if ( file_exists ( $proj_dir ) )
 {
-    //handle_debug (&quot;Project $project directory already exists&quot;, 0);
+    //handleDebug (&quot;Project $project directory already exists&quot;, 0);
 }
 else
 if ( !mkdir ( $proj_dir ) )
@@ -141,7 +141,7 @@ $retval = file_put_contents($proj_conf, $txt);
 
 
 // Work out whether to recreate tables
-$val = $_criteria[&quot;recreate_tables&quot;]-&gt;get_criteria_value(&quot;VALUE&quot;);
+$val = $_criteria[&quot;recreate_tables&quot;]-&gt;getCriteriaValue(&quot;VALUE&quot;);
 
 $stat = true;
 
@@ -1259,7 +1259,7 @@ if ( !$stat )
 }
 else
 {
-    handle_debug(&quot;Tutorial database was successfully created&quot;, SW_DEBUG_NONE);
+    handleDebug(&quot;Tutorial database was successfully created&quot;, SW_DEBUG_NONE);
 
 }
 

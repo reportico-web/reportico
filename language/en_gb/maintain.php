@@ -125,6 +125,10 @@ $locale_arr = array (
         "T_BOTTOMMARGIN" => "Bottom Margin (PDF)",
         "T_RIGHTMARGIN" => "Right Margin (PDF)",
         "T_LEFTMARGIN" => "Left Margin (PDF)",
+        "T_PDFZOOMFACTOR" => "PDF Zoom Factor",
+        "T_HTMLZOOMFACTOR" => "HTML Zoom Factor",
+        "T_PAGETITLEDISPLAY" => "Page Title Display",
+        "T_AUTOPAGINATE" => "Generate Page Breaks",
         "T_PDFFONT" => "Font (PDF)",
         "T_ORDERNUMBER" => "Order Number",
         "T_BEFOREGROUPHEADER" => "Before Group Header",
@@ -243,6 +247,9 @@ $locale_arr = array (
         "T_newpage" => "New Page",
         "T_SQLLIMITFIRST" => "Limit/First",
         "T_SQLSKIPOFFSET" => "Skip/Offset",
+        "T_Off" => "Off",
+        "T_TopOfFirstPage" => "Top Of First Page",
+        "T_TopOfAllPages" => "Top Of All Pages",
 
         // Vertical Tab Labels
         "T_PAGE_HEADER" => "Page Header",

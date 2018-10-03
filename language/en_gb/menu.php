@@ -8,6 +8,7 @@ $locale_arr = array (
         "T_LOGIN" => "Log In",
         "T_LOGOFF" => "Log Off",
         "T_ADMIN_HOME" => "Admin Home Page",
+        "T_ADMIN_MENU" => "Admin Home Page",
         "T_CONFIG_PROJECT" => "Configure Project",
         "T_CREATE_REPORT" => "Create Report",
         "T_ENTER_PROJECT_PASSWORD" => "Enter the project password.",

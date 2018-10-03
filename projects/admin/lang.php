@@ -1,5 +1,7 @@
 <?php
-$g_translations = array (
+namespace Reportico\Engine;
+
+$translations = array (
         "en_gb" => array ( 
             "Specify Project Name" => "Specify Project Name",
             "Specify Project Title" => "Specify Project Title",
@@ -22,7 +24,7 @@ Turn this off to enable access to these functions.",
         );
 
 
-$g_report_desc = array ( 
+$report_desc = array ( 
     "en_gb" => array (
 		"createproject" =>
 "
@@ -37,7 +39,7 @@ When you are happy hit the Go button.
 "),
 		);
 
-$g_report_desc["en_gb"]["configureproject"] = 
+$report_desc["en_gb"]["configureproject"] = 
 "
 Change configuration items for this project.
 <br>
@@ -46,4 +48,7 @@ You can alter the title, the default language, set a project password, the chara
 When you are happy hit the Go button.
 <P>
 ";
+
+ReporticoApp::set("translations", $translations);
+ReporticoApp::set("report_desc", $report_desc);
 ?>

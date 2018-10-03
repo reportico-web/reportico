@@ -1,3 +1,5 @@
+namespace Reportico\Engine;
+
 $sql = <<<SQL
 /*Table structure for table `northwind_categories` */
 
@@ -219,6 +221,6 @@ if ( !$stat )
 }
 else
 {
-    handle_debug("The Northwind database was successfully created. Now run the tutorials from the <i>Tutorials</i> dropdownmenu above.<br><br>", SW_DEBUG_NONE);
+    ReporticoApp::handleDebug("The Northwind database was successfully created. Now run the tutorials from the <i>Tutorials</i> dropdownmenu above.<br><br>", ReporticoApp::DEBUG_NONE);
 }
 

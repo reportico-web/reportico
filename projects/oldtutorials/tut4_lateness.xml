@@ -8,8 +8,8 @@ This tutorial demonstrates the following features :-
 
 
 </ReportDescription><PageSize>A4</PageSize><PageOrientation>Portrait</PageOrientation><TopMargin></TopMargin><BottomMargin></BottomMargin><RightMargin></RightMargin><LeftMargin></LeftMargin><pdfFont></pdfFont><pdfFontSize></pdfFontSize><PreExecuteCode>    // Extract Users Date Range
-    $fromdate = $_criteria[&quot;date_range&quot;]-&gt;get_criteria_value(&quot;RANGE1&quot;);
-    $todate = $_criteria[&quot;date_range&quot;]-&gt;get_criteria_value(&quot;RANGE2&quot;);
+    $fromdate = $_criteria[&quot;date_range&quot;]-&gt;getCriteriaValue(&quot;RANGE1&quot;);
+    $todate = $_criteria[&quot;date_range&quot;]-&gt;getCriteriaValue(&quot;RANGE2&quot;);
 
     // Create temporary table to hold number of days 
     // late a film was returned

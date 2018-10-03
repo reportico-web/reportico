@@ -3,7 +3,7 @@ $locale_arr = array (
     "language" => "English",
     "template" => array (
         "T_CHOOSE_LANGUAGE" => "Choose Language",
-        "T_ADMINTITLE" => "Reportico Administration Page",
+        "T_TITLE" => "Reportico Administration Page",
         "T_LOGGED_IN_AS" => "Logged in as",
         "T_LOGIN" => "Enter Design Mode",
         "T_OPEN_LOGIN" => "Enter Design Mode",
@@ -14,7 +14,7 @@ $locale_arr = array (
                 "Select a report suite from the dropdown below or enter the Reportico Administrator Password to start designing Reportico reports.",
         "T_SET_ADMIN_PASSWORD_INFO" =>
             "Administrator password not currently set.<br>You need to set a password to start using Reportico and <br>access Reportico's Administrative functions<br> Please enter your chosen password:",
-        "T_ADMIN_PASSWORD_NOT_SET" => "Administrator password not currently set.",
+        "T_SET_ADMIN_PASSWORD_NOT_SET" => "Administrator password not currently set.",
         "T_SET_ADMIN_PASSWORD_PROMPT" => "Administrative Password",
         "T_SET_ADMIN_PASSWORD_REENTER" => "Reenter<br>Administrative Password",
         "T_SET_ADMIN_PASSWORD" => "Set Admin Password",
