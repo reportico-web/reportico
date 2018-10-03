@@ -1456,6 +1456,7 @@ function fillReportOutputArea(results) {
   reportico_jquery(".reportico-back-button").hide();
   resizeTables();
   resizeHeaders();
+  setupDynamicGrids();
   paginate();
 }
 
