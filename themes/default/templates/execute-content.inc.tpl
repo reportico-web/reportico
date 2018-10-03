@@ -118,7 +118,7 @@
         {% endif %}
 
         {# Report Detail Row  ================================================ #}
-        <TR class="reportico-row" style="{{ row.styles }}">
+        <TR class="reportico-row" style="{{ CONTENT.styles.row }}">
         {% for column in row.data %}
             <TD style="{{column.styles}}">
             {{ column.content }}
