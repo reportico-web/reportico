@@ -50,6 +50,7 @@ class Reportico extends ReporticoObject
     public $create_report_url;
 
     public $version = "6.0.6";
+    public $doc_version = "6.0.0";
 
     public $name;
     public $rowselection = "all";
@@ -3883,7 +3884,7 @@ class Reportico extends ReporticoObject
                     echo "{ Success: false, Message: \"Criteria {$_REQUEST['reportico_criteria']} unknown in this report\" }";
                 } else {
                     echo $criteria->executeCriteriaLookup();
-                    echo $criteria->lookup_ajax();
+                    echo $criteria->lookup_ajax(false);
                 }
                 die;
 
