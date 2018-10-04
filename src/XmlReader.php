@@ -2457,7 +2457,7 @@ class XmlReader
             $fieldtag = $this->field_display["$field"]["DocId"];
         }
 
-        $path = $this->query->url_doc_site . "/" . $this->query->version . "/" . "doku.php?id=";
+        $path = $this->query->url_doc_site . "/" . $this->query->doc_version . "/" . "doku.php?id=";
 
         if (isset($this->field_display["$field"]) && isset($this->field_display["$field"]["DocSection"])) {
             $path .= $this->field_display["$field"]["DocSection"];
