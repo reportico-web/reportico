@@ -1050,8 +1050,14 @@ reportico_jquery(document).on('click', '.reportico-admin-button, .reportico-admi
  */
 function ajaxFileDownload(url, data, expandpanel, reportico_container) {
 
-    url += getYiiAjaxURL();
-    url +=  "?reportico_padding=1";
+    ajaxextra = getYiiAjaxURL();
+    if ( ajaxextra != "" ) {
+        url += ajaxextra
+        url +=  "&reportico_padding=1";
+    }
+    else
+        url +=  "?reportico_padding=1";
+
     url +=  getCSRFURLParams();
     headers =  getCSRFHeaders();
 
