@@ -72,7 +72,11 @@ class ReporticoObject
                 if (defined($parsed)) {
                     $parsed = constant($parsed);
                 } else {
-                    $parsed = "";
+                    $parsed = ReporticoApp::getConfig("SW_DB_TYPE");
+                    if ( $parsed && $parsed == "framework")
+                        $parsed = ReporticoApp::getConfig("SW_DB_TYPE");
+                    else
+                        $parsed = ReporticoApp::getConfig("SW_DB_DRIVER");
                 }
 
             }
@@ -85,6 +89,8 @@ class ReporticoObject
         ) {
             if (defined("SW_DB_TYPE") && SW_DB_TYPE == "framework") {
                 $parsed = "";
+            } else if ( ReporticoApp::getConfig("SW_DB_TYPE") == "framework") {
+                    $parsed = "";
             } else {
                 $parsed = preg_replace('/{constant,([^}]*)}/',
                     '\1',
