@@ -3,6 +3,7 @@
 
 <div id="reportico-container">
 
+    <script type="text/javascript">var reportico_datepicker_language = "{{ AJAX_DATEPICKER_FORMAT }}";</script>
     <script>
         reportico_criteria_items = [];
 {% if CRITERIA_ITEMS is defined %}
