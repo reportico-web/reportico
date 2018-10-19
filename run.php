@@ -250,6 +250,9 @@
     // Required PDF Engine set -- to phantomjs or tcpdf
     $q->pdf_engine = "phantomjs";
 
+    // Path to Phantom js executable relative to root
+    $q->pdf_phantomjs_path = "bin/phantomjs";
+
     // How CSV, PDF out is delivered to the browser ( TCPDF output only )
     // either as
     // "DOWNLOAD_SAME_WINDOW" - downloaded as attachment from within the current browser window ( default )
