@@ -361,7 +361,7 @@ class CriteriaColumn extends QueryColumn
         // Replace external parameters specified by {USER_PARAM,xxxxx}
         // With external values
         $matches = [];
-        if (preg_match_all("/{USER_PARAM,([^}]*)}/", $in_list, $matches)) {
+        if ($this->parent_reportico->execute_mode != "MAINTAIN"  && preg_match_all("/{USER_PARAM,([^}]*)}/", $in_list, $matches)) {
             foreach ($matches[0] as $k => $v) {
                 $param = $matches[1][$k];
                 if (isset($this->parent_reportico->user_parameters[$param]["function"]) ) {
@@ -371,7 +371,6 @@ class CriteriaColumn extends QueryColumn
                         return;
                     }
                     $result = ($this->parent_reportico->user_functions[$function])();
-                    var_dump($result);
                     $in_list = implode(',', array_map(
                         function ($v, $k) { return sprintf("%s=%s", $k, $v); },
                         $result,
