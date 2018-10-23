@@ -105,12 +105,13 @@ class CriteriaColumn extends QueryColumn
     {
         $label = "";
         $value = "";
+        $name = $this->query_name;
 
         if (isset($this->criteria_summary) && $this->criteria_summary) {
             $label = $this->deriveAttribute("column_title", $this->query_name);
             $value = $this->criteria_summary;
         } else {
-            if (ReporticoUtility::getRequestItem($name . "_FROMDATE_DAY", "")) {
+            if (ReporticoUtility::getRequestItem($this->query_name . "_FROMDATE_DAY", "")) {
                 $label = $this->deriveAttribute("column_title", $this->query_name);
                 $label = ReporticoLang::translate($label);
                 $mth = ReporticoUtility::getRequestItem($name . "_FROMDATE_MONTH", "") + 1;
@@ -357,6 +358,26 @@ class CriteriaColumn extends QueryColumn
     // -----------------------------------------------------------------------------
     public function setCriteriaList($in_list)
     {
+        // Replace external parameters specified by {USER_PARAM,xxxxx}
+        // With external values
+        $matches = [];
+        if (preg_match_all("/{USER_PARAM,([^}]*)}/", $in_list, $matches)) {
+            foreach ($matches[0] as $k => $v) {
+                $param = $matches[1][$k];
+                if (isset($this->parent_reportico->user_parameters[$param]["values"]) &&
+                    is_array($this->parent_reportico->user_parameters[$param]["values"])
+                ) {
+                    $in_list = implode(',', array_map(
+                        function ($v, $k) { return sprintf("%s=%s", $k, $v); },
+                        $this->parent_reportico->user_parameters[$param]["values"],
+                        array_keys($this->parent_reportico->user_parameters[$param]["values"])
+                    ));
+                } else {
+                    trigger_error("User parameter $param, specified but not provided to reportico in user_parameters array", E_USER_ERROR);
+                }
+            }
+        }
+
         if ($in_list) {
             $choices = array();
             if ($in_list == "{connections}" && $this->parent_reportico->framework_parent == "october" ) {
@@ -675,6 +696,9 @@ class CriteriaColumn extends QueryColumn
             return $text;
         }
 
+        $dy = "FIXTHIS";
+        $mn = "FIXTHIS";
+        $yr = "FIXTHIS";
         switch ($this->criteria_display) {
             case "YMDFIELD":
             case "MDYFIELD":
@@ -753,9 +777,13 @@ class CriteriaColumn extends QueryColumn
 
     }
 
-    // -----------------------------------------------------------------------------
-    // Function : list_display
-    // -----------------------------------------------------------------------------
+    /**
+     *
+     * Displays a custom list criteria item
+     *
+     * @param $in_is_expanding
+     * @return string
+     */
     public function &list_display($in_is_expanding)
     {
         $sessionClass = ReporticoSession();
@@ -839,7 +867,7 @@ class CriteriaColumn extends QueryColumn
             case "TEXTFIELD":
                 $text .= '<SELECT style="display:none" name="' . "HIDDEN_" . $this->query_name . '[]" size="1" multiple>';
                 $text .= '<OPTION selected label="ALL" value="(ALL)">ALL</OPTION>';
-            //break;
+                break;
 
             case "MULTI":
 
@@ -1328,6 +1356,8 @@ class CriteriaColumn extends QueryColumn
     // -----------------------------------------------------------------------------
     public function &lookup_display($in_is_expanding)
     {
+
+        $value_string = "";
 
         $sessionClass = ReporticoSession();
 
@@ -2068,7 +2098,7 @@ class CriteriaColumn extends QueryColumn
             $type = $this->expand_display;
         }
 
-        $text .= '<DIV id="hello" style="visibility:hide">';
+        $text .= '<DIV id="hello" style="display:none">';
         $text .= '</DIV>';
         switch ($type) {
             case "LIST":

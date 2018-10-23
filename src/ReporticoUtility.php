@@ -436,15 +436,20 @@ class ReporticoUtility
         return array($r, $g, $b);
     }
 
-    //
-    // Loads an existing report in to a reportico class instance
+    /**
+     * @brief Loads an existing report in to a reportico class instance
+     *
+     * @param $reportfile
+     * @param string $projects_folder
+     * @return Reportico
+     */
     static function &loadExistingReport($reportfile, $projects_folder = "projects")
     {
         $q = new Reportico();
         $q->reports_path = $projects_folder . "/" . ReporticoApp::getconfig("project");
         $q->projects_folder = $projects_folder;
 
-        $reader = new ReporticoXmlReader($q, $reportfile, false);
+        $reader = new XmlReader ($q, $reportfile, false);
         $reader->xml2query();
 
         return $q;
