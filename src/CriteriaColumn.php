@@ -364,6 +364,20 @@ class CriteriaColumn extends QueryColumn
         if (preg_match_all("/{USER_PARAM,([^}]*)}/", $in_list, $matches)) {
             foreach ($matches[0] as $k => $v) {
                 $param = $matches[1][$k];
+                if (isset($this->parent_reportico->user_parameters[$param]["function"]) ) {
+                    $function = $this->parent_reportico->user_parameters[$param]["function"];
+                    if ( !isset($this->parent_reportico->user_functions[$function] )) {
+                        trigger_error("User function $function required but not defined in user_functions array", E_USER_ERROR);
+                        return;
+                    }
+                    $result = ($this->parent_reportico->user_functions[$function])();
+                    var_dump($result);
+                    $in_list = implode(',', array_map(
+                        function ($v, $k) { return sprintf("%s=%s", $k, $v); },
+                        $result,
+                        array_keys($result)
+                    ));
+                } else 
                 if (isset($this->parent_reportico->user_parameters[$param]["values"]) &&
                     is_array($this->parent_reportico->user_parameters[$param]["values"])
                 ) {

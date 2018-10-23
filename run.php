@@ -175,6 +175,18 @@
     // and can be referenced in custom SQL with $this->user_parameters
     //$q->user_parameters["your_parameter_name"] = "your parameter value";
 
+    // To pass an array to be used as a criteria selection list use the "values" option
+    // Define for the example below a criteria of type Custom List and set the List Values to {USER_PARAM,mylist}
+    // Then use the criteria in the main SQL like table.column in ( {mylist} )
+    //$q->user_parameters["mylist"] = [ "values" => [ "a" => "b", "c" => "d"] ];
+
+    // To pass a function which can generate a criteria selection list
+    // Define an anonymous function to return a keyed array ( the value is the lookup display and the key is the 
+    // value passed into the main query, in the example below define a criteria of type Custom List and set the List Values to {USER_PARAM,myfunction}
+    //$q->user_parameters["myfunction"] = [ "function" => "myfunc" ];
+    //$q->user_functions = [ "myfunc" => function() { return [ "a" => "b", "c" => "d"]; } ];
+
+
     // Jquery already included?
     //$q->jquery_preloaded = false;
 
