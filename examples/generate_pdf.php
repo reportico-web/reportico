@@ -15,7 +15,6 @@ $q = new Reportico\Engine\Reportico();
 // Set $reportico_url_home to the url path to your reportico installation
 $reportico_home = __DIR__."/../";
 $reportico_url_home = "{url_path_to_reportico}";
-$reportico_url_home = "/reportico-6.0.7/";
 $q->reportico_ajax_script_url = $reportico_url_home."/run.php";
 $q->url_path_to_assets = $reportico_url_home."/assets";
 $q->url_path_to_templates = $reportico_url_home."/themes";

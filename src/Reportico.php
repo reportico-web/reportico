@@ -259,7 +259,7 @@ class Reportico extends ReporticoObject
     public $show_print_button = true;
 
     // Session namespace to use
-    public $session_namespace = false;
+    public $session_namespace = "reportico";
 
     // Whether to perform drill downs in their own namespace (normally from embedding in frameworks
     // where reportico namespaces are used within the framework session
@@ -418,6 +418,7 @@ class Reportico extends ReporticoObject
         $calling_script = $this->url_path_to_calling_script;
         if ($this->reportico_ajax_mode) {
             $calling_script = $this->reportico_ajax_script_url;
+            ReporticoApp::set("session_namespace", $this->session_namespace);
         }
 
         return $calling_script;
@@ -2942,6 +2943,7 @@ class Reportico extends ReporticoObject
         $this->force_reportico_mini_maintains = $sessionClass::registerSessionParam("force_reportico_mini_maintains", $this->force_reportico_mini_maintains);
 
         $this->url_path_to_assets = $sessionClass::registerSessionParam("url_path_to_assets", $this->url_path_to_assets);
+        $this->url_path_to_templates = $sessionClass::registerSessionParam("url_path_to_templates", $this->url_path_to_templates);
         $this->jquery_preloaded = $sessionClass::registerSessionParam("jquery_preloaded", $this->jquery_preloaded);
         $this->bootstrap_preloaded = $sessionClass::registerSessionParam("bootstrap_preloaded", $this->bootstrap_preloaded);
 
@@ -4654,7 +4656,7 @@ class Reportico extends ReporticoObject
             $errorMessage = false;
 
             // If the source is an array then dont try to run SQL
-            if (get_class($conn) == "DataSourceArray") {
+            if (is_object($conn) && get_class($conn) == "DataSourceArray") {
                 $recordSet = $conn;
             } else {
                 try {
