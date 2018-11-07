@@ -351,6 +351,8 @@ class Reportico extends ReporticoObject
     // At any point set to true to returnimmediately back, eg after error
     public $return_to_caller = false;
 
+    public $keep_session_open = false;
+
     public function __construct()
     {
         ReporticoObject::__construct();
@@ -3638,11 +3640,53 @@ class Reportico extends ReporticoObject
     }
 
     // -----------------------------------------------------------------------------
+    // Function : Clears local arrays ready for a new report run
+    // -----------------------------------------------------------------------------
+    public function initialize() {
+
+        $this->panels = array();
+        $this->targets = array();
+        $this->assignment = array();
+        $this->groups = array();
+        $this->columns = array();
+        $this->criteria_links = array();
+        $this->lookup_queries  = array();
+        $this->tables = array();
+        $this->display_order_set = array();
+        $this->order_set = array();
+        $this->group_set = array();
+        $this->pageHeaders = array();
+        $this->pageFooters = array();
+        $this->lookup_queries = array();
+        $this->clone_columns = array();
+        $this->pre_sql = array();
+        $this->graphs = array();
+        $this->menuitems = array();
+        $this->projectitems = array();
+        $this->groupvals = array();
+        $this->panels = array();
+        $this->targets = array();
+        $this->assignment = array();
+        $this->criteria_links = array();
+        $this->user_parameters = array();
+        // an array of available databases to connect ot
+        $this->available_connections = array();
+        $this->plugins = array();
+
+    }
+
+
+    // -----------------------------------------------------------------------------
     // Function : execute
     // -----------------------------------------------------------------------------
     public function execute($mode = false, $draw = true)
     {
+	    $this->initialize();
+
         $sessionClass = ReporticoSession();
+
+        if ( method_exists($sessionClass, "switchToRequestedNamespace"))
+            $this->session_namespace = $sessionClass::switchToRequestedNamespace($this->session_namespace);
 
         if ($this->session_namespace) {
             ReporticoApp::set("session_namespace", $this->session_namespace);
@@ -3654,6 +3698,9 @@ class Reportico extends ReporticoObject
 
         // If a session namespace doesnt exist create one
         if (!$sessionClass::existsReporticoSession() || isset($_REQUEST['clear_session']) || $this->clear_reportico_session) {
+            $namespace = ReporticoApp::get("session_namespace");
+            ReporticoApp::set("session_namespace", $namespace);
+            ReporticoApp::set("session_namespace_key", "reportico_" . ReporticoApp::get("session_namespace"));
             $sessionClass::initializeReporticoNamespace(ReporticoApp::get("session_namespace_key"));
         }
 
@@ -4078,12 +4125,6 @@ class Reportico extends ReporticoObject
                     if (!$this->return_to_caller) {
                         $text = $this->executeQuery(false);
                     }
-
-                    if ($this->target_format == "SOAP") {
-                        $sessionClass::closeReporticoSession();
-                        return;
-                    }
-
                 }
 
                 // Situtations where we dont want to switch results page - no data found, debug mode, not logged in
@@ -4316,7 +4357,8 @@ class Reportico extends ReporticoObject
 
         $this->handledInitialSettings();
 
-        $sessionClass::closeReporticoSession();
+        if ( !$this->keep_session_open )
+            $sessionClass::closeReporticoSession();
     }
 
     // -----------------------------------------------------------------------------
@@ -5180,7 +5222,8 @@ class Reportico extends ReporticoObject
             if ($this->changed($group_name)) {
                 $col->groupvals[$group_name]["sum"] = str_replace(",", "", $col->column_value);
             } else {
-                $col->groupvals[$group_name]["sum"] += str_replace(",", "", $col->column_value);
+    	        if ( is_numeric($col->column_value) )
+                    $col->groupvals[$group_name]["sum"] += str_replace(",", "", $col->column_value);
             }
 
             $result = $col->groupvals[$group_name]["sum"];

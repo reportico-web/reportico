@@ -15,6 +15,34 @@ class ReporticoSession
     private function __clone()
     {}
 
+    // Return the namespace selected by an external GET or PORT in form
+    // sessionid_namespacej
+    static function switchToRequestedNamespace($default_namespace)
+    {
+        $session_name = $default_namespace;
+
+        // Check for Posted Session Name and use that if specified
+        if (isset($_REQUEST['reportico_session_name'])) {
+            $session_name = $_REQUEST['reportico_session_name'];
+            if (preg_match("/_/", $session_name)) {
+
+                $ar = explode("_", $session_name);
+                ReporticoApp::set("session_namespace", $ar[1]);
+                if (ReporticoApp::get("session_namespace")) {
+                    ReporticoApp::set("session_namespace_key", "reportico_" . ReporticoApp::get("session_namespace"));
+                }
+
+                // Set session to join only if it is not NS meaning its called from framework and existing session
+                // should be used
+                if ($ar[0] != "NS") {
+                    $session_name = $ar[1];
+                }
+
+            }
+        }
+        return $session_name;
+    }
+
     // Ensure that sessions from different browser windows on same devide
     // target separate SESSION_ID
     static function setUpReporticoSession($namespace)
@@ -63,7 +91,6 @@ class ReporticoSession
             if (isset($_REQUEST['clear_session']) && isset($_SESSION)) {
                 self::initializeReporticoNamespace(self::reporticoNamespace());
             }
-            //echo "<PRE>";var_dump($_SESSION);echo "</PRE>";
             return;
         }
 
@@ -129,7 +156,7 @@ class ReporticoSession
     }
     
     /*
-     * Cleanly shuts doen session
+     * Cleanly shuts down session
      */
     static function closeReporticoSession()
     {
@@ -292,12 +319,12 @@ class ReporticoSession
      */
     static function initializeReporticoNamespace($namespace)
     {
+        $namespace = ReporticoApp::get("session_namespace_key");
         if (isset($_SESSION[$namespace])) {
             unset($_SESSION[$namespace]);
         }
 
-        $_SESSION[$namespace] = array();
-        $_SESSION[$namespace]["awaiting_initial_defaults"] = true;
-        $_SESSION[$namespace]["firsttimeIn"] = true;
+        ReporticoSession::setReporticoSessionParam("awaiting_initial_defaults", true);
+        ReporticoSession::setReporticoSessionParam("firsttimeIn", true);
     }
 }

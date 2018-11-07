@@ -94,13 +94,12 @@ class ReportPhantomJSPDF extends Report
 
         // Generate temporary name for pdf file to generate on disk. Since phantomjs must write to a file with pdf extension use tempnam, to create a file
         // without PDF extensiona and then delete this and use the name with etension for phantom generation
-	$outputfile = tempnam($engine->pdf_phantomjs_temp_path, "pdf");
+        $outputfile = tempnam($engine->pdf_phantomjs_temp_path, "pdf");
         
         unlink($outputfile);
         $outputfile .= ".pdf";
-	$outputfile = preg_replace("/\\\/", "/", $outputfile);
-	$request->setOutputFile($outputfile);
-
+        $outputfile = preg_replace("/\\\/", "/", $outputfile);
+        $request->setOutputFile($outputfile);
 
         // Set other PhantomJS parameters
         $request->setFormat(strtoupper($engine->getAttribute("PageSize")));
