@@ -49,7 +49,7 @@ class Reportico extends ReporticoObject
     public $delete_project_url;
     public $create_report_url;
 
-    public $version = "6.0.7";
+    public $version = "6.0.9";
     public $doc_version = "6.0.0";
 
     public $name;
