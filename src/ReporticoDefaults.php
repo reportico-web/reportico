@@ -26,7 +26,7 @@ function reporticoDefaults($reportico)
             //"background-color" => "#cccccc",
             "border-width" => "1px 1px 1px 1px",
             "border-style" => "none",
-            "border-color" => "#333333",
+            "border-color" => "#d0ccc9",
             "font-size" => "8pt",
             "font-family" => "freesans",
         );

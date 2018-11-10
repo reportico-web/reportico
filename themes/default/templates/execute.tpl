@@ -204,7 +204,11 @@
 {% endfor %}
 </div>
 
-{% include 'execute-content.inc.tpl' %}
+{% if PAGE_LAYOUT == "FORM" %}
+    {% include 'execute-content-form.inc.tpl' %}
+{% else %}
+    {% include 'execute-content.inc.tpl' %}
+{% endif %}
 
 {% if not REPORTICO_AJAX_CALLED %}
 </div>

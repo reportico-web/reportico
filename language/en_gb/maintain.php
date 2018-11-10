@@ -128,6 +128,7 @@ $locale_arr = array (
         "T_PDFZOOMFACTOR" => "PDF Zoom Factor",
         "T_HTMLZOOMFACTOR" => "HTML Zoom Factor",
         "T_PAGETITLEDISPLAY" => "Page Title Display",
+        "T_PAGELAYOUT" => "Page Layout",
         "T_AUTOPAGINATE" => "Generate Page Breaks",
         "T_PDFFONT" => "Font (PDF)",
         "T_ORDERNUMBER" => "Order Number",

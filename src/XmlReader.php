@@ -142,8 +142,6 @@ class XmlReader
             "PageFooterStylePosition" => array("Title" => "ASSIGNSTYLEPOSITION", "Type" => "POSITIONS", "XlateOptions" => true, "DocId" => "relative_to_current_position_or_page"),
             "PageFooterBackgroundImage" => array("Title" => "ASSIGNPDFBACKGROUNDIMAGE", "DocId" => "background_image"),
 
-            "DetailStyle" => array("Title" => "DETAILSTYLE"),
-
             "GroupHeaderCustom" => array("Title" => "GROUPHEADERCUSTOM", "Type" => "TEXTBOXNARROW", "WizardLink" => true, "HasChangeComparator" => true, "DocId" => "group_header_custom_text"),
             "GroupTrailerCustom" => array("Title" => "GROUPTRAILERCUSTOM", "Type" => "TEXTBOXNARROW", "WizardLink" => true, "HasChangeComparator" => true, "DocId" => "group_trailer_custom_text"),
 
@@ -239,9 +237,11 @@ class XmlReader
             "AutoPaginate" => array("Title" => "AUTOPAGINATE", "Type" => "DROPDOWN", "XlateOptions" => true,
                 "Values" => array(".DEFAULT", "None", "HTML", "PDF", "HTML+PDF" ), "DocId" => "autopaginate"),
             "PdfZoomFactor" => array("Title" => "PDFZOOMFACTOR", "DocId" => "pdf_zoom_factor"),
-            "HtmlZoomFactor" => array("Title" => "HTMLZOOMFACTOR", "DocId" => "html_zoom_factor"),
+            "HtmlZoomFactor" => array("Title" => "HTMLZOOMFACTOR", "Type" => "HIDE", "DocId" => "html_zoom_factor"),
             "PageTitleDisplay" => array("Title" => "PAGETITLEDISPLAY", "Type" => "DROPDOWN", "XlateOptions" => true,
                 "Values" => array(".DEFAULT", "Off", "TopOfFirstPage", "TopOfAllPages" ), "DocId" => "page_title_display"),
+            "PageLayout" => array("Title" => "PAGELAYOUT", "Type" => "DROPDOWN", "XlateOptions" => true,
+                "Values" => array(".DEFAULT", "Table", "Form" ), "DocId" => "page_layout"),
             "ReportTemplate" => array("Title" => "REPORTTEMPLATE", "Type" => "TEMPLATELIST"),
             "PageWidthHTML" => array("Title" => "PAGEWIDTHHTML"),
             "PageOrientation" => array("Title" => "PAGEORIENTATION", "Type" => "DROPDOWN", "XlateOptions" => true,

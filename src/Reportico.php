@@ -156,8 +156,10 @@ class Reportico extends ReporticoObject
         "LeftMargin" => "",
         "AutoPaginate" => "",
         "PdfZoomFactor" => "",
+        "PdfZoomFactor" => "",
         "HtmlZoomFactor" => "",
         "PageTitleDisplay" => "",
+        "PageLayout" => "",
         "pdfFont" => "",
         "pdfFontSize" => "",
         "PreExecuteCode" => "NONE",
@@ -4192,6 +4194,7 @@ class Reportico extends ReporticoObject
                         $title = ReporticoLang::translate($this->deriveAttribute("ReportTitle", "Unknown"));
                         $pagestyle = $this->targets[0]->getStyleTags($this->output_reportbody_styles);
 
+                        $this->panels["MAIN"]->template->assign('PAGE_LAYOUT', strtoupper($this->deriveAttribute("PageLayout", "TABLE")));
                         $this->panels["MAIN"]->template->assign('REPORT_PAGE_STYLE', $pagestyle);
                         $this->panels["MAIN"]->template->assign('TITLE', $title);
                         $this->panels["MAIN"]->template->assign('CONTENT', $text);
