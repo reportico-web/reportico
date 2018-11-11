@@ -17,7 +17,7 @@
         "adodb/adodb-php": "^5.20",
         "monolog/monolog": "^1.23",
         "twig/twig": "~1.16",
-        "jonnyw/php-phantomjs": "@dev",
+        "jonnyw/php-phantomjs": "^4.6.1",
         "tecnickcom/tcpdf": "^6.2",
         "szymach/c-pchart": "^3.0"
     },
