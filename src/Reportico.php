@@ -137,6 +137,7 @@ class Reportico extends ReporticoObject
     public $charting_engine_html = "NVD3";
     public $pdf_engine = "phantomjs";
     public $pdf_phantomjs_temp_path = false;
+    public $pdf_phantomjs_path = "bin/phantomjs";
     public $pdf_delivery_mode = "DOWNLOAD_SAME_WINDOW";
     public $pdf_engine_file = "ReportFPDF";
 
@@ -343,6 +344,7 @@ class Reportico extends ReporticoObject
     public $ajaxHandler;
 
     // Template Engine
+    public $theme = "default";
     public $templateEngine = false;
     public $templateViewPath = false;
     public $templateCachePath = false;
@@ -3685,7 +3687,7 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function execute($mode = false, $draw = true)
     {
-	    $this->initialize();
+        $this->initialize();
 
         $sessionClass = ReporticoSession();
 
@@ -3725,12 +3727,16 @@ class Reportico extends ReporticoObject
         // Fetch project config
         $this->setProjectEnvironment($this->initial_project, $this->projects_folder, $this->admin_projects_folder);
 
-        $sessionClass::registerSessionParam("external_user", $this->external_user);
-        $sessionClass::registerSessionParam("external_param1", $this->external_param1);
-        $sessionClass::registerSessionParam("external_param2", $this->external_param2);
-        $sessionClass::registerSessionParam("external_param3", $this->external_param3);
+        $this->external_user = $sessionClass::registerSessionParam("external_user", $this->external_user);
+        $this->external_param1 = $sessionClass::registerSessionParam("external_param1", $this->external_param1);
+        $this->external_param2 = $sessionClass::registerSessionParam("external_param2", $this->external_param2);
+        $this->external_param3 = $sessionClass::registerSessionParam("external_param3", $this->external_param3);
 
+        $this->theme = $sessionClass::registerSessionParam("theme", $this->theme);
 
+        $this->pdf_engine = $sessionClass::registerSessionParam("pdf_engine", $this->pdf_engine);
+        $this->pdf_phantomjs_path = $sessionClass::registerSessionParam("pdf_phantomjs_path", $this->pdf_phantomjs_path);
+        $this->pdf_delivery_mode = $sessionClass::registerSessionParam("pdf_delivery_mode", $this->pdf_delivery_mode);
         $this->user_parameters = $sessionClass::registerSessionParam("user_parameters", $this->user_parameters);
         $this->dropdown_menu = $sessionClass::registerSessionParam("dropdown_menu", $this->dropdown_menu);
         $this->static_menu = $sessionClass::registerSessionParam("static_menu", $this->static_menu);
@@ -5227,7 +5233,7 @@ class Reportico extends ReporticoObject
             if ($this->changed($group_name)) {
                 $col->groupvals[$group_name]["sum"] = str_replace(",", "", $col->column_value);
             } else {
-    	        if ( is_numeric($col->column_value) )
+                if ( is_numeric($col->column_value) )
                     $col->groupvals[$group_name]["sum"] += str_replace(",", "", $col->column_value);
             }
 
@@ -5953,7 +5959,6 @@ class Reportico extends ReporticoObject
     private function getTheme()
     {
         $sessionClass = ReporticoSession();
-
         $theme = $sessionClass::sessionRequestItem("theme", $this->theme);
 
         if ($theme == '') {
