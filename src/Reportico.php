@@ -348,7 +348,7 @@ class Reportico extends ReporticoObject
     public $templateEngine = false;
     public $templateViewPath = false;
     public $templateCachePath = false;
-    public $disableThemeCaching = false;
+    public $disableThemeCaching = true;
 
     // Response code to return back
     public $http_response_code = 200;
@@ -3733,6 +3733,7 @@ class Reportico extends ReporticoObject
         $this->external_param3 = $sessionClass::registerSessionParam("external_param3", $this->external_param3);
 
         $this->theme = $sessionClass::registerSessionParam("theme", $this->theme);
+        $this->disableThemeCaching = $sessionClass::registerSessionParam("disableThemeCaching", $this->disableThemeCaching);
 
         $this->pdf_engine = $sessionClass::registerSessionParam("pdf_engine", $this->pdf_engine);
         $this->pdf_phantomjs_path = $sessionClass::registerSessionParam("pdf_phantomjs_path", $this->pdf_phantomjs_path);

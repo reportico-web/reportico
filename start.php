@@ -31,22 +31,22 @@ ini_set("max_execution_time","90");
 //ob_start();
     
 // Instantiate Reportico
-$q = new Reportico\Engine\Reportico();
+$reportico = new Reportico\Engine\Reportico();
 
 // Force reset of session handling, so you always start from scratch
-$q->clear_reportico_session = true;
+$reportico->clear_reportico_session = true;
 
 // In design mode, allow sql debugging
-//$q->allow_debug = true;
+//$reportico->allow_debug = true;
 
 // Specify any URL parameters that should be added into any links generated in Reportico.
 // Useful when embedding in another application or frameworks where requests need to be channelled
 // back though themselves
-//$q->forward_url_get_parameters = "";
+//$reportico->forward_url_get_parameters = "";
 
 // Reportico Ajax mode. If set to true will run all reportico requests from buttons and links
 // through AJAX, meaning reportico will refresh in its own window and not refresh the whole page
-//$q->reportico_ajax_mode = "standalone";
+//$reportico->reportico_ajax_mode = "standalone";
 
 /*
 ** Initial execution states .. allows you to start user and limit user to specfic
@@ -55,37 +55,37 @@ $q->clear_reportico_session = true;
 */
 
 // Start user in specific project
-//$q->initial_project = "<project>";          
+//$reportico->initial_project = "<project>";          
 
 // If starting user in specific project then project passweord is required if one exists
 // and you dont want user to have to type it in
-//$q->initial_project_password = "<project password>";
+//$reportico->initial_project_password = "<project password>";
 
 // Specify a report to start user in specify the xml report file in the specified project folder
-//$q->initial_report = "reportfile.xml";
+//$reportico->initial_report = "reportfile.xml";
 
 // Specify whether user is started in administration page, project menu, report criteria entry, 
 // report output or report design mode, use respectively ( "ADMIN", "MENU", "PREPARE", "EXECUTE", "MAINTAIN")
 // default is "ADMIN"
-//$q->initial_execute_mode = "<MODE>";
+//$reportico->initial_execute_mode = "<MODE>";
 
 // When only executing a report, indicates what format it should be showed in .. HTML(the default), PDF or CSV
-//$q->initial_output_format = "HTML";
+//$reportico->initial_output_format = "HTML";
 
 // When initial mode is report criteria entry or execution, these set the flags for whether report detail, group hears, columns headers
 // etc are to be show. For example you might only want to run a report and show the graphs, by default all show except criteria
-//$q->initial_show_detail = "show";
-//$q->initial_show_graph = "show";
-//$q->initial_show_group_headers = "show";
-//$q->initial_show_group_trailers = "show";
-//$q->initial_showColumnHeaders = "show";
-//$q->initial_show_criteria = "show";
+//$reportico->initial_show_detail = "show";
+//$reportico->initial_show_graph = "show";
+//$reportico->initial_show_group_headers = "show";
+//$reportico->initial_show_group_trailers = "show";
+//$reportico->initial_showColumnHeaders = "show";
+//$reportico->initial_show_criteria = "show";
 
 // Set source SQL to generate report from, without requirement for report , requires an initial_project to be defined for connection details
-//$q->initial_sql = "SELECT column1 AS columntitle1, column2 AS columntitle2 FROM table";
+//$reportico->initial_sql = "SELECT column1 AS columntitle1, column2 AS columntitle2 FROM table";
 
 // Set Report Title  when running reort from an SQL statement above
-// $q->setAttribute("ReportTitle", "Report Title");
+// $reportico->setAttribute("ReportTitle", "Report Title");
 
 // Specify access mode to limit what user can do, one of :-
 // FULL - the default, allows user to log in under admin/design mode and design reports
@@ -93,64 +93,64 @@ $q->clear_reportico_session = true;
 // ONEPROJECT - allows entry to a single project and no access to the admin page
 // ONEREPORT - limits user to single report, crtieria entry and report execution ( requires initial project/report )
 // REPORTOUTPUT - executes a report and allows to "Return" button to crtieria entry ( requires initial project/report )
-//$q->access_mode = "<MODE>";
+//$reportico->access_mode = "<MODE>";
 //
 // Default initial execute mode to single report output if REPORTOUTPUT mode specified
-if ( $q->access_mode == "REPORTOUTPUT" )
-    $q->initial_execute_mode = "EXECUTE";
+if ( $reportico->access_mode == "REPORTOUTPUT" )
+    $reportico->initial_execute_mode = "EXECUTE";
 
 // Generate report definition from SQL  and set some column / report attributes
 // Also the full report definition can be built up programmatically
 // which requires further doicumentation
-//$q->importSQL("SELECT column1 AS columntitle1, column2 AS columntitle2 FROM table");
-//$q->get_column("column1")->setAttribute("column_display","hide");
-//$q->get_column("column1")->setAttribute("column_title","Custom Title");
-//$q->setAttribute("ReportTitle","New Report Title");
+//$reportico->importSQL("SELECT column1 AS columntitle1, column2 AS columntitle2 FROM table");
+//$reportico->get_column("column1")->setAttribute("column_display","hide");
+//$reportico->get_column("column1")->setAttribute("column_title","Custom Title");
+//$reportico->setAttribute("ReportTitle","New Report Title");
 
 // Provide an existing connection to Reportico, at the moment to use this there still needs to be project
 // in existence, but the connection specified here will override the 
 // this allows you build create temporary tables and perform other actions prior to reporting
-// $q->external_connection = false;
+// $reportico->external_connection = false;
 // try 
 // {
-            // $q->external_connection = new PDO("mysql:host=localhost; dbname=dbname", "username", "password" );
+            // $reportico->external_connection = new PDO("mysql:host=localhost; dbname=dbname", "username", "password" );
 // }
 // catch ( PDOException $ex )
 // {
-            // $q->external_connection = false;
+            // $reportico->external_connection = false;
             // // Handle Error
 // }
 
 // Specify alternate path to projects folder, templates_c folder
-//$q->projects_folder = "projects";
-//$q->admin_projects_folder = "projects";
-//$q->compiled_templates_folder = "templates_c";
+//$reportico->projects_folder = "projects";
+//$reportico->admin_projects_folder = "projects";
+//$reportico->compiled_templates_folder = "templates_c";
     
 // For setting report criteria parameters.. use the criteria name as the key and the criteria value
-// $q->initial_execution_parameters = array();
-// $q->initial_execution_parameters["lookupcriteria"] = "value1,value2";
-// $q->initial_execution_parameters["datecriteria"] = "2014-07-01";
-// $q->initial_execution_parameters["datecriteria2"] = "TODAY";
-// $q->initial_execution_parameters["daterangecriteria1"] = "2014-01-01-2014-02-01";
-// $q->initial_execution_parameters["daterangecriteria2"] = "FIRSTOFMONTH-LASTOFMONTH";
+// $reportico->initial_execution_parameters = array();
+// $reportico->initial_execution_parameters["lookupcriteria"] = "value1,value2";
+// $reportico->initial_execution_parameters["datecriteria"] = "2014-07-01";
+// $reportico->initial_execution_parameters["datecriteria2"] = "TODAY";
+// $reportico->initial_execution_parameters["daterangecriteria1"] = "2014-01-01-2014-02-01";
+// $reportico->initial_execution_parameters["daterangecriteria2"] = "FIRSTOFMONTH-LASTOFMONTH";
 
 // The session namespace to use. Only relevant when showing more than one report in a single page. Specify a name
 // to store all session variables for this instance and then when running another report instance later in the script 
 // use another name
-//$q->session_namespace = "reportico";
+//$reportico->session_namespace = "reportico";
 
 // Current user - when embedding reportico, you may wish to run queries by user. In this case
 // set the current user here. Then you can use the construct {FRAMEWORK_USER} within your queries
-//$q->external_user = "<CURRENT USER>";
+//$reportico->external_user = "<CURRENT USER>";
 
 // Indicates whether report output should include a refresh button
-//$q->show_refresh_button = false;
+//$reportico->show_refresh_button = false;
 
 // Set to true if you are embedding in another report
-//$q->embedded_report = false;
+//$reportico->embedded_report = false;
 
 // Specify an alternative AJAX runner from the stanfdard run.php
-//$q->reportico_ajax_script_url = $_SERVER["SCRIPT_NAME"];
+//$reportico->reportico_ajax_script_url = $_SERVER["SCRIPT_NAME"];
 
 // If you want to connect to a reporting database whose connection information is available in the calling
 // script, then you should configure your project connection type to "framework" using the configure project link
@@ -163,70 +163,70 @@ if ( $q->access_mode == "REPORTOUTPUT" )
 
 // For passing external user parameters, can be referenced in SQL with {USER_PARAM,parameter_name}
 // and can be referenced in custom SQL with $this->user_parameters
-//$q->user_parameters["your_parameter_name"] = "your parameter value";
+//$reportico->user_parameters["your_parameter_name"] = "your parameter value";
 
 // To pass an array to be used as a criteria selection list use the "values" option
 // Define for the example below a criteria of type Custom List and set the List Values to {USER_PARAM,mylist}
 // Then use the criteria in the main SQL like table.column in ( {mylist} )
-//$q->user_parameters["mylist"] = [ "values" => [ "a" => "b", "c" => "d"] ];
+//$reportico->user_parameters["mylist"] = [ "values" => [ "a" => "b", "c" => "d"] ];
 
 // To pass a function which can generate a criteria selection list
 // Define an anonymous function to return a keyed array ( the value is the lookup display and the key is the 
 // value passed into the main query, in the example below define a criteria of type Custom List and set the List Values to {USER_PARAM,myfunction}
-//$q->user_parameters["myfunction"] = [ "function" => "myfunc" ];
-//$q->user_functions = [ "myfunc" => function() { return [ "a" => "b", "c" => "d"]; } ];
+//$reportico->user_parameters["myfunction"] = [ "function" => "myfunc" ];
+//$reportico->user_functions = [ "myfunc" => function() { return [ "a" => "b", "c" => "d"]; } ];
 
 // Jquery already included?
-//$q->jquery_preloaded = false;
+//$reportico->jquery_preloaded = false;
 
 // Bootstrap Features
 // Set bootstrap_styles to false for reportico classic styles, or "3" for bootstrap 3 look and feel and 2 for bootstrap 2
 // If you are embedding reportico and you have already loaded bootstrap then set bootstrap_preloaded equals true so reportico
 // doestnt load it again.
-//$q->bootstrap_styles = "3";
-//$q->bootstrap_preloaded = false;
+//$reportico->bootstrap_styles = "3";
+//$reportico->bootstrap_preloaded = false;
 
 // In bootstrap enable pages, the bootstrap modal is by default used for the quick edit buttons
 // but they can be ignored and reportico's own modal invoked by setting this to true
-//$q->force_reportico_mini_maintains = false;
+//$reportico->force_reportico_mini_maintains = false;
 
 // Engine to use for charts .. 
 // HTML reports can use javascript charting, PDF reports must use PCHART
-//$q->charting_engine = "PCHART";
-//$q->charting_engine_html = "NVD3";
+//$reportico->charting_engine = "PCHART";
+//$reportico->charting_engine_html = "NVD3";
 
 // Whether to turn on dynamic grids to provide searchable/sortable reports
-// $q->dynamic_grids = true;
-// $q->dynamic_grids_sortable = true;
-// $q->dynamic_grids_searchable = true;
-// $q->dynamic_grids_paging = false;
-// $q->dynamic_grids_page_size = 10;
+// $reportico->dynamic_grids = true;
+// $reportico->dynamic_grids_sortable = true;
+// $reportico->dynamic_grids_searchable = true;
+// $reportico->dynamic_grids_paging = false;
+// $reportico->dynamic_grids_page_size = 10;
 
 // Show or hide various report elements
-//$q->output_template_parameters["show_hide_navigation_menu"] = "show";
-//$q->output_template_parameters["show_hide_dropdown_menu"] = "show";
-//$q->output_template_parameters["show_hide_report_output_title"] = "show";
-//$q->output_template_parameters["show_hide_prepare_section_boxes"] = "hide";
-//$q->output_template_parameters["show_hide_prepare_pdf_button"] = "show";
-//$q->output_template_parameters["show_hide_prepare_html_button"] = "show";
-//$q->output_template_parameters["show_hide_prepare_print_html_button"] = "show";
-//$q->output_template_parameters["show_hide_prepare_csv_button"] = "show";
-//$q->output_template_parameters["show_hide_prepare_page_style"] = "show";
-//$q->output_template_parameters["show_hide_prepare_go_buttons"] = "hide";
-//$q->output_template_parameters["show_hide_prepare_reset_buttons"] = "hide";
+//$reportico->output_template_parameters["show_hide_navigation_menu"] = "show";
+//$reportico->output_template_parameters["show_hide_dropdown_menu"] = "show";
+//$reportico->output_template_parameters["show_hide_report_output_title"] = "show";
+//$reportico->output_template_parameters["show_hide_prepare_section_boxes"] = "hide";
+//$reportico->output_template_parameters["show_hide_prepare_pdf_button"] = "show";
+//$reportico->output_template_parameters["show_hide_prepare_html_button"] = "show";
+//$reportico->output_template_parameters["show_hide_prepare_print_html_button"] = "show";
+//$reportico->output_template_parameters["show_hide_prepare_csv_button"] = "show";
+//$reportico->output_template_parameters["show_hide_prepare_page_style"] = "show";
+//$reportico->output_template_parameters["show_hide_prepare_go_buttons"] = "hide";
+//$reportico->output_template_parameters["show_hide_prepare_reset_buttons"] = "hide";
 
 // Set a theme
 // ======================
 // Use the specified folder under the themes folder to identify which templates, stylesheets and js to use for the instance
-$q->theme = "default";
+//$reportico->theme = "default";
 
 // Set this to true to allow changes to edits to theme templates to be reflected immediately, otherwise
 // you will need to clear out the themes/cache folder to register any changes
-$q->disableThemeCaching = true;
+//$reportico->disableThemeCaching = true;
 
 
 // Label for criteria section if required
-// $q->criteria_block_label = "Report Criteria:";
+// $reportico->criteria_block_label = "Report Criteria:";
 
 // Static Menu definition
 // ======================
@@ -238,7 +238,7 @@ $q->disableThemeCaching = true;
 // If title is left as AUTO then the title will be taken form the report definition
 // Use title of BLANKLINE to separate items and LINE to draw a horizontal line separator
 
-//$q->static_menu = array (
+//$reportico->static_menu = array (
         //array ( "report" => "an_xml_reportfile1", "title" => "<AUTO>" ),
         //array ( "report" => "another_reportfile", "title" => "<AUTO>" ),
         //array ( "report" => "", "title" => "BLANKLINE" ),
@@ -248,23 +248,23 @@ $q->disableThemeCaching = true;
 //);
 
 // To auto generate a static menu from all the xml report files in the project use
-//$q->static_menu = array ( array ( "report" => ".*\.xml", "title" => "<AUTO>" ) );
+//$reportico->static_menu = array ( array ( "report" => ".*\.xml", "title" => "<AUTO>" ) );
     
 // To hide the static report menu
-//$q->static_menu = array ();
+//$reportico->static_menu = array ();
 
 // Required PDF Engine set -- to phantomjs or tcpdf
-$q->pdf_engine = "phantomjs";
+$reportico->pdf_engine = "phantomjs";
 
 // Path to Phantom js executable relative to root
-$q->pdf_phantomjs_path = "bin/phantomjs";
+$reportico->pdf_phantomjs_path = "bin/phantomjs";
 
 // How CSV, PDF out is delivered to the browser
 // either as
 // "DOWNLOAD_SAME_WINDOW" - downloaded as attachment from within the current browser window ( default )
 // "INLINE" - shown inside a new  browser window making use of any existing browser PDF plugin (if not will download)
 // "DOWNLOAD_NEW_WINDOW" - downloaded as attachment from winthin the current browser window
-//$q->pdf_delivery_mode = "DOWNLOAD_SAME_WINDOW";
+//$reportico->pdf_delivery_mode = "DOWNLOAD_SAME_WINDOW";
 
 // Dropdown Menu definition
 // ========================
@@ -273,7 +273,7 @@ $q->pdf_phantomjs_path = "bin/phantomjs";
 // Each array element represents a dropdown menu across the page and sub array items for each drop down
 // You must specifiy a project folder for each project entry and the reportfile definitions must point to a valid xml report file
 // within the specified project
-//$q->dropdown_menu = array(
+//$reportico->dropdown_menu = array(
 //                array ( 
 //                    "project" => "projectname",
 //                    "title" => "dropdown menu 1 title",
@@ -294,10 +294,10 @@ $q->pdf_phantomjs_path = "bin/phantomjs";
 
 
 // Setup SESSION
-Reportico\Engine\ReporticoSession::setUpReporticoSession($q->session_namespace);
+Reportico\Engine\ReporticoSession::setUpReporticoSession($reportico->session_namespace);
 
 // Run the report
-$q->execute();
+$reportico->execute();
 
 //ob_end_flush();
 
