@@ -27,24 +27,33 @@ class ReporticoTemplateTwig
     private $cacheDir = false;
     private $viewDir = false;
 
-    public function __construct($viewDir = false, $cacheDir = false, $theme = false) {
+    public function __construct($viewDir = false, $cacheDir = false, $theme = false, $disableThemeCaching = false) {
         
         $this->viewDir = $viewDir ? $viewDir : ReporticoUtility::findBestLocationInIncludePath("themes");
+
+
         $this->cacheDir = $cacheDir ? $cacheDir : __DIR__ . "/../themes/cache";
 
         if ( $theme ) 
             $this->viewDir .= DIRECTORY_SEPARATOR. $theme. DIRECTORY_SEPARATOR. "templates";
 
-        $rp = realpath($this->cacheDir);
-        if ( !is_dir($this->cacheDir) ) {
-            echo "Error: Please make sure the cache folder '{$this->cacheDir}' exists<BR>";
-            die;
-        }
+	// If theme caching disabled, then any recent theme modifications will be picked up
+	if ( $disableThemeCaching )  {
+		$this->cacheDir = false;
+	}
+	else
+	{
+        	$rp = realpath($this->cacheDir);
+        	if ( !is_dir($this->cacheDir) ) {
+            		echo "Error: Please make sure the cache folder '{$this->cacheDir}' exists<BR>";
+            		die;
+        	}
 
-        if ( !is_writeable($this->cacheDir) ) {
-            echo "Error: Please make sure the cache folder '{$rp}' has write permissions<BR>";
-            die;
-        }
+        	if ( !is_writeable($this->cacheDir) ) {
+            		echo "Error: Please make sure the cache folder '{$rp}' has write permissions<BR>";
+            		die;
+        	}
+	}
 
         $loader = new \Twig_Loader_Filesystem($this->viewDir);
         $this->twig = new \Twig_Environment($loader, array(

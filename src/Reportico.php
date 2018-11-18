@@ -346,6 +346,7 @@ class Reportico extends ReporticoObject
     public $templateEngine = false;
     public $templateViewPath = false;
     public $templateCachePath = false;
+    public $disableThemeCaching = false;
 
     // Response code to return back
     public $http_response_code = 200;
@@ -354,6 +355,7 @@ class Reportico extends ReporticoObject
     public $return_to_caller = false;
 
     public $keep_session_open = false;
+
 
     public function __construct()
     {
@@ -2826,7 +2828,7 @@ class Reportico extends ReporticoObject
     {
         $sessionClass = ReporticoSession();
 
-        $template = new ReporticoTemplateTwig($this->templateViewPath, $this->templateCachePath, $this->getTheme());
+        $template = new ReporticoTemplateTwig($this->templateViewPath, $this->templateCachePath, $this->getTheme(), $this->disableThemeCaching);
 
         $dummy = "";
         $version = $this->version;
