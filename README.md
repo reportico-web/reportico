@@ -20,15 +20,15 @@ design reports, create report menus, configure criteria, graphs, grouping, drill
 
 ## Install
 
-The only way to install this beta version of Reportico is via composer.
+Reportico is best installed via composer.
 
-To install this beta version use the following composer command under a web folder
+To install the latest stable version use the following composer command under a web folder
 
-composer create-project reportico-web/reportico ^6.0
+composer create-project reportico-web/reportico <optional-installation-folder>
 
-This will create a reportico folder with the latest release.
+This will create a reportico folder with the latest release and with your specified name.
 
-To run your existing report projects against this release, you will need to generate new projects and move the xml files in from the old projects. 
+To run your existing report projects against this release, you will need to generate new project and move the xml files in from the old projects. 
 
 to get started see the quickstart guide :-
 http://www.reportico.org/yii2/web/index.php/quickstart
