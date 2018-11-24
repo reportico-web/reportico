@@ -370,7 +370,7 @@ class CriteriaColumn extends QueryColumn
                         trigger_error("User function $function required but not defined in user_functions array", E_USER_ERROR);
                         return;
                     }
-                    $result = ($this->parent_reportico->user_functions[$function])();
+                    $result = $this->parent_reportico->user_functions[$function]();
                     $in_list = implode(',', array_map(
                         function ($v, $k) { return sprintf("%s=%s", $k, $v); },
                         $result,
