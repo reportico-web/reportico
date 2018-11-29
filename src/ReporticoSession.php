@@ -34,9 +34,9 @@ class ReporticoSession
 
                 // Set session to join only if it is not NS meaning its called from framework and existing session
                 // should be used
-                if ($ar[0] != "NS") {
+                //if ($ar[0] != "NS") {
                     $session_name = $ar[1];
-                }
+                //}
 
             }
         }
