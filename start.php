@@ -67,7 +67,13 @@ $reportico->clear_reportico_session = true;
 // Specify whether user is started in administration page, project menu, report criteria entry, 
 // report output or report design mode, use respectively ( "ADMIN", "MENU", "PREPARE", "EXECUTE", "MAINTAIN")
 // default is "ADMIN"
-//$reportico->initial_execute_mode = "<MODE>";
+//$reportico->initial_execute_mode = "ADMIN";
+
+// Specify the class responsible for authenticating access to Reportico
+//$reportico->authenticator = "\Reportico\Engine\StandaloneAuthenticator";
+
+// Specify a role to go straight in with ( roles are specified in the relevant Authenticator class )
+//$reportico->initial_role = "design-fiddle";
 
 // When only executing a report, indicates what format it should be showed in .. HTML(the default), PDF or CSV
 //$reportico->initial_output_format = "HTML";
@@ -78,7 +84,7 @@ $reportico->clear_reportico_session = true;
 //$reportico->initial_show_graph = "show";
 //$reportico->initial_show_group_headers = "show";
 //$reportico->initial_show_group_trailers = "show";
-//$reportico->initial_showColumnHeaders = "show";
+//$reportico->initial_show_column_headers = "show";
 //$reportico->initial_show_criteria = "show";
 
 // Set source SQL to generate report from, without requirement for report , requires an initial_project to be defined for connection details
@@ -94,6 +100,8 @@ $reportico->clear_reportico_session = true;
 // ONEREPORT - limits user to single report, crtieria entry and report execution ( requires initial project/report )
 // REPORTOUTPUT - executes a report and allows to "Return" button to crtieria entry ( requires initial project/report )
 //$reportico->access_mode = "<MODE>";
+$reportico->access_mode = "one-project";
+
 //
 // Default initial execute mode to single report output if REPORTOUTPUT mode specified
 if ( $reportico->access_mode == "REPORTOUTPUT" )
@@ -212,7 +220,7 @@ if ( $reportico->access_mode == "REPORTOUTPUT" )
 //$reportico->output_template_parameters["show_hide_prepare_print_html_button"] = "show";
 //$reportico->output_template_parameters["show_hide_prepare_csv_button"] = "show";
 //$reportico->output_template_parameters["show_hide_prepare_page_style"] = "show";
-//$reportico->output_template_parameters["show_hide_prepare_go_buttons"] = "hide";
+$reportico->output_template_parameters["show_hide_prepare_go_buttons"] = "show";
 //$reportico->output_template_parameters["show_hide_prepare_reset_buttons"] = "hide";
 
 // Set a theme

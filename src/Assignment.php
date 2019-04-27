@@ -13,20 +13,254 @@ class Assignment extends ReporticoObject
     public $query_name;
     public $expression;
     public $criteria;
+    public $else;
     public $raw_expression;
     public $raw_criteria;
+    public $styletype;
+
+    public static $sections = array (
+        "CELL",
+        "ALLCELLS",
+        "COLUMNHEADERS",
+        "ROW",
+        "PAGE",
+        "BODY",
+        "GROUPHEADERLABEL",
+        "GROUPHEADERVALUE",
+        "GROUPTRAILER",
+        );
 
     // Indicates an operation which causes an action rather than setting a value
     public $non_assignment_operation = false;
 
-    public function __construct($query_name, $expression, $criteria)
+    public function __construct($query_name, $expression = "", $criteria = "", $else = "")
     {
-        //echo "ink ".$query_name." ".$expression." ".$criteria."\n<br>";
         $this->raw_expression = $expression;
         $this->raw_criteria = $criteria;
         $this->query_name = $query_name;
         $this->expression = $this->reporticoStringToPhp($expression);
         $this->criteria = $this->reporticoStringToPhp($criteria);
+        $this->else = $this->reporticoStringToPhp($else);
+    }
+
+    /*
+     * Magic method to set Reportico instance properties and call methods through
+     * scaffolding calls
+     */
+    public static function __callStatic($method, $args)
+    {
+        switch ( $method ) {
+
+            case "build":
+                $styletype = false;
+                $builder = $args[0];
+                $builder->store = [];
+
+                if (!isset($args[1])) {
+                    $colname = ReporticoUtility::getFirstColumn($builder->engine->columns)->query_name;
+                } else {
+                    if ( $builder->engine->getColumn($args[1])) {
+                        $styletype = "CELL";
+                        $colname = $args[1];
+                    }
+                    else {
+                        if ( in_array($args[1], Assignment::$sections) ) {
+                            $styletype = $args[1];
+                            $colname = ReporticoUtility::getFirstColumn($builder->engine->columns)->query_name;
+                        } else {
+                            $colname = $args[1];
+                        }
+                        if ( $builder->level == "section" || $builder->level == "element" ) {
+                            $styletype = $args[1];
+                            $colname = ReporticoUtility::getFirstColumn($builder->engine->columns)->query_name;
+                        }
+                        else
+                            $colname = $args[1];
+                    }
+                }
+                if ( !$builder->engine->getColumn($colname))
+                    $builder->engine->createQueryColumn($colname, "", "", "", "", '####.###', false);
+                $assignment = $builder->engine->addAssignment($colname, "''", "");
+                $assignment->builder = $builder;
+                $assignment->styletype = $styletype;
+                $builder->stepInto("expression", $assignment, "\Reportico\Engine\Assignment");
+                return $builder;
+                break;
+
+        }
+    }
+
+    /*
+     * Magic method to set Reportico instance properties and call methods through
+     * scaffolding calls
+     */
+    public function __call($method, $args)
+    {
+        $exitLevel = false;
+        switch ( $method ) {
+
+            case "url":
+                $width = isset($args[1]) ? $args[1] : false;
+                $height = isset($args[2]) ? $args[2] : false;
+                $this->setExpression("embed_image(\"{$args[0]}\",$width,$height)");
+                break;
+
+            case "style":
+                $styles = isset($args[0]) ? $args[0] : false;
+                $column = false;
+                if ( $this->styletype == "CELL" )
+                    $column = $this->query_name;
+                $this->non_assignment_operation = true;
+                if ( $styles)
+                    $this->builder->engine->applyStyleset($this->styletype, $styles, $column, false, false, $this);
+                break;
+
+            case "drill":
+            case "drilldown":
+            case "drilldownTo":
+                $this->builder->store["drilldownToReport"] = $args[0];
+                break;
+
+            case "target":
+            case "targetid":
+                break;
+
+            case "where":
+
+                $params = $args[0];
+                $drilldownTo = $this->builder->retrieve("drilldownToReport");
+
+                if ( !$drilldownTo ) {
+                    trigger_error("Drill parameters specified without drilldown defined", E_USER_ERROR);
+                }
+
+                $this->builder->engine->setProjectEnvironment($this->builder->engine->initial_project, $this->builder->engine->projects_folder, $this->builder->engine->admin_projects_folder);
+
+                $q = new Reportico();
+
+                $q->projects_folder = $this->builder->engine->projects_folder;
+
+
+                $q->reports_path = $q->projects_folder . "/" . ReporticoApp::getConfig("project");
+
+
+                $reader = new XmlReader($q, $drilldownTo, false);
+                $reader->xml2query();
+
+                $content = $this->raw_expression;
+                if ( !$content )
+                    $content = "Drill";
+
+                $this->builder->engine->deriveAjaxOperation();
+                $url = $this->builder->engine->getActionUrl() . "?xmlin=" . $drilldownTo . "&execute_mode=EXECUTE&target_format=HTML&project=" . ReporticoApp::getConfig("project");
+                $midbit = "";
+
+                foreach ($q->lookup_queries as $k => $v) {
+
+                    if ( isset($params[$v->query_name]) && $params[$v->query_name]) {
+
+                        if ($v->criteria_type == "DATERANGE") {
+                            $midbit .= "&MANUAL_" . $v->query_name . "_FROMDATE='.{" . $params[$v->query_name] . "}.'&" .
+                            "MANUAL_" . $v->query_name . "_TODATE='.{" . $params[$v->query_name] . "}.'";
+                        } else {
+                            $midbit .= "&MANUAL_" . $v->query_name . "='.{" . $params[$v->query_name] . "}.'";
+                        }
+
+                    }
+                }
+                if ($midbit) {
+                    $url .= $midbit;
+                    $this->setExpression("embed_hyperlink('" . $content . "', '" . $url . "', true, true)");
+                }
+
+                break;
+
+            case "hyperlink":
+            case "link":
+                $label = isset($args[0]) ? $args[0] : "link";
+                $url = isset($args[1]) ? $args[1] : false;
+                $newwindow = isset($args[2]) ? $args[2] : true;
+                $independent = isset($args[3]) ? $args[3] : 0;
+                $this->setExpression("embed_hyperlink(\"$label\",\"$url\",$newwindow,$independent)");
+                break;
+
+            case "expression":
+                $this->setExpression($args[0]);
+                break;
+
+            case "set":
+                $this->setExpression($args[0]);
+                break;
+
+            case "if":
+                $this->setCriteria($args[0]);
+                break;
+
+            case "else":
+                $this->setElse($args[0]);
+                break;
+
+            case "skip":
+            case "skipline":
+                $method = "skipline";
+                $this->setExpression( "$method()" );
+                $this->builder->engine->getColumn($this->query_name)->setAttribute("column_display", "hide");
+                break;
+
+            case "prev": $method = "old";
+
+            case "old":
+            case "avg":
+            case "sum":
+            case "min":
+            case "max":
+                $agg = isset($args[0]) ? $args[0] : false;
+                $on = isset($args[1]) ? $args[1] : false;
+                //echo $on ? "\$this->$method({{$agg}},\"{{$on}}\")" : "$method({{$agg}})<BR>";
+                $this->setExpression($on ? "$method({{$agg}},\"{{$on}}\")" : "$method({{$agg}})");
+                break;
+
+            case "end":
+            default:
+                $exitLevel = true;
+                break;
+        }
+
+        if (!$exitLevel) {
+            return $this;
+        }
+
+        return false;
+    }
+
+
+
+    /**
+     * @param $value
+     *
+     * Apply an expression to the assignment
+     */
+    public function setExpression($value) {
+        $this->raw_expression = $value;
+        $this->expression = $this->reporticoStringToPhp($value);
+    }
+
+    /**
+     * @param $value
+     *
+     * Apply a test condition to the assignment
+     */
+    public function setCriteria($value) {
+        $this->criteria = $this->reporticoStringToPhp($value);
+    }
+
+    /**
+     * @param $value
+     *
+     * Apply an else expression
+     */
+    public function setElse($value) {
+        $this->else = $this->reporticoStringToPhp($value);
     }
 
     // -----------------------------------------------------------------------------
@@ -119,7 +353,7 @@ class Assignment extends ReporticoObject
                     $label = "";
                     if (array_key_exists($crit, $in_query->lookup_queries)) {
                         $clause = $in_query->lookup_queries[$crit]->criteriaSummaryText($label, $clause);
-                    } else if ($cl = ReporticoUtility::getQueryColumn($crit, $this->query->columns)) {
+                    } else if ($cl = ReporticoUtility::getQueryColumn($crit, $in_query->columns)) {
                         if ($prev_col_value) {
                             $clause = $cl->old_column_value;
                         } else {
@@ -183,6 +417,12 @@ class Assignment extends ReporticoObject
 
                             case "VALUE":
                             default:
+                                //echo $crit;
+                                //echo get_class($in_query);
+                                //foreach ($in_query->lookup_queries as $k => $v) {
+                                    //echo $k;
+                                    //echo get_class($v)."<BR>";
+                                //}
                                 $clause = $in_query->lookup_queries[$crit]->getCriteriaClause(false, false, true, false, false, $showquotes);
                         }
                         if ($execute_mode == "MAINTAIN" && !$clause) {
@@ -245,6 +485,7 @@ class Assignment extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function reporticoStringToPhp($in_string)
     {
+
         // first change '(colval)' parameters
         $out_string = $in_string;
 
@@ -254,6 +495,10 @@ class Assignment extends ReporticoObject
 
         $out_string = preg_replace('/{TARGET_FORMAT}/',
             '$this->target_format',
+            $out_string);
+
+        $out_string = preg_replace('/old\({([^}]*)},{([^}]*)}\)/',
+            '$this->old("\1")',
             $out_string);
 
         $out_string = preg_replace('/old\({([^}]*)},{([^}]*)}\)/',
@@ -332,7 +577,7 @@ class Assignment extends ReporticoObject
             $out_string = preg_replace('/apply_style\(/',
                 '$this->applyStyle("' . $this->query_name . "\",", $out_string);
         }
-        else
+
         if (preg_match('/applyStyle\(.*\)/', $out_string)) {
             $this->non_assignment_operation = true;
             $out_string = preg_replace('/applyStyle\(/',

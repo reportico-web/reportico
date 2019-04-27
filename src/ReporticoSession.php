@@ -136,7 +136,7 @@ class ReporticoSession
             $namespace = ReporticoApp::get("session_namespace");
             $session_name = session_id();
         }
-        
+
         ReporticoLog::debug("Final session name : $session_name");
     }
 
@@ -160,6 +160,7 @@ class ReporticoSession
      */
     static function closeReporticoSession()
     {
+        // PPP echo "ISSETEND? ".self::issetReporticoSessionParam("reportConfig")."<BR>";
         session_write_close();
     }
 
@@ -239,6 +240,7 @@ class ReporticoSession
         if (!$namespace)
             $namespace = ReporticoApp::get("session_namespace_key");
 
+        //echo "Set $namespace:$param<BR>";
         if (!$array) {
             $_SESSION[$namespace][$param] = $value;
         } else {

@@ -335,13 +335,15 @@ class ChartNVD3
                     $js .= ",";
                 }
 
+
                 $xlabel = $this->xlabels[$k1];
                 $key = $k1;
                 if ($v["type"] == "SCATTER" && $k < count($this->plot) - 1) {
                     $yvalue = $this->plot[$k + 1]["data"][$k1];
                     $js .= "{index: $k1, series: 0, x: $v1, y: $yvalue, label: \"$xlabel\", value: $v1}";
                 } else {
-                    $js .= "{index: $k1, series: 0, x: $key, y: $v1, label: \"$xlabel\", value: $v1}";
+                    $yval = is_numeric($v1) ? $v1 : 0;
+                    $js .= "{index: $k1, series: 0, x: $key, y: $yval, label: \"$xlabel\", value: $yval}";
                 }
 
                 $plotct1++;
@@ -439,6 +441,9 @@ class ChartNVD3
         var colorrange = d3.scale.category10().range();
         ";
 
+        if ( !$this->plot ) {
+            return;
+        }
         $labct = count($this->plot[0]["data"]);
         if ($this->xticklabelinterval_actual) {
             if ($this->xticklabelinterval_actual == "AUTO") {

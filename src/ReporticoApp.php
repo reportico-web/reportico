@@ -281,7 +281,6 @@ class ReporticoApp
     public static function checkForDefaultConfig($in_code, $in_val)
     {
         $out_val = $in_val;
-        echo "try $in_code, $in_val<BR>";
         if (!$in_val) {
             $out_val = $in_val;
             if (ReporticoApp::isSetConfig($in_code)) {
@@ -402,9 +401,9 @@ class ReporticoApp
                 "errsource" => self::get("code_source"),
                 "errct" => 1,
                 );
-        //echo "<PRE>";
-        //var_dump($errors);
-        //echo "</PRE>";
+        echo "<PRE>";
+        var_dump($errors);
+        echo "</PRE>";
 
         self::set("error_status", 1);
 

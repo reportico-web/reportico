@@ -3,81 +3,138 @@
 
 <div id="reportico-container">
 
-    <script type="text/javascript">var reportico_datepicker_language = "{{ AJAX_DATEPICKER_FORMAT }}";</script>
-    <script>
-        reportico_criteria_items = [];
-{% if CRITERIA_ITEMS is defined %}
-{% for critno in CRITERIA_ITEMS %}
-        reportico_criteria_items.push("{{critno.name}}");
-{% endfor %}
-{% endif %}
-    </script>
-{% if PDF_DELIVERY_MODE is defined %}
-<script type="text/javascript">var reportico_pdf_delivery_mode = "{{ PDF_DELIVERY_MODE }}";</script>
-{% endif %}
+<!-- Widget Initialisation -->
+{{ASSETS_INIT}}
 
-<FORM class="reportico-prepare-form non-printable" id="criteriaform" name="topmenu" method="POST" action="{{ SCRIPT_SELF }}">
-<input type="hidden" name="reportico_session_name" value="{{ SESSION_ID }}" />
+<!-- Begin Form -->
+{{ WIDGETS["criteria-form"]["begin"] }}
 
-<!-- Menu Bar -->
-{% include 'prepare-menu-bar.inc.tpl' %}
+    <!-- Menu Bar -->
+    {% include 'navigation-menu.inc.tpl' %}
 
-<!-- Output options -->
-{% include 'prepare-design-options.inc.tpl' %}
+    {% if PERMISSIONS["design"] %}
+    <!-- Output options -->
+    {% include 'prepare-design-options.inc.tpl' %}
+    {% endif %}
 
-<!-- Report Title -->
-{% include 'prepare-title.inc.tpl' %}
+    {% if PERMISSIONS["execute"] %}
 
-<!-- Report Output options -->
-<div class="reportico-prepare-crit-output-options" style="background-color: #ffffff" id="critbody">
-{% if SHOW_OUTPUT and not IS_ADMIN_SCREEN %}
-{% include 'prepare-output-table-form.inc.tpl' %}
-{% include 'prepare-output-formats.inc.tpl' %}
-{% include 'prepare-output-setup-options.inc.tpl' %}
-{% include 'prepare-output-show-hide-options.inc.tpl' %}
-{% endif %}
-</div>
+    <!-- Report Title -->
+    {{ WIDGETS["title"] }}
 
-<!-- Criteria Items and Expand Box -->
-{% if SHOW_CRITERIA %}
-<div id="criteriabody">
-  <div class="reportico-prepare-crit-box" style="display: table">
-    <div id="reportico-prepare-crit-body" style="display: table-row">
-      <div class="reportico-prepare-crit-entry" style="float:left;">
-         {% include 'prepare-criteria-items-header.inc.tpl' %}
-         {% include 'prepare-criteria-items.inc.tpl' %}
-         {% include 'prepare-criteria-items-trailer.inc.tpl' %}
-      </div>
-      <div class="reportico-prepare-expand" style="float:left">
-        <div class="reportico-prepare-expandBox">
-          <div class="reportico-prepare-expandRow">
-            <div id="reportico-prepare-expandCell" valign="top">
-               {% include 'prepare-expand-contents.inc.tpl' %}
+    <!-- Report Output options -->
+    {% if not FLAGS["admin-report-selected"] %}
+    <div class="row" style="width: 100%;">
+
+        <div class="col-lg-12 col-md-12 col-sm-12">
+
+            {% if FLAGS["show_hide_prepare_print_html_button"] %} {{ WIDGETS["output-html-new-window"] }} {% endif %}
+            {% if FLAGS["show_hide_prepare_html_button"] %} {{ WIDGETS["output-html-inline"] }} {% endif %}
+            {% if FLAGS["show_hide_prepare_pdf_button"] %} {{ WIDGETS["output-pdf"] }} {% endif %}
+            {% if FLAGS["show_hide_prepare_csv_button"] %} {{ WIDGETS["output-csv"] }} {% endif %}
+
+            <div style="display: inline; border-left: dotted 1px">
+            {{ WIDGETS["popup-page-setup"] }}
             </div>
-          </div>
+            {{ WIDGETS["template"]["save-template"] }}
+            {{ WIDGETS["template"]["load-template"] }}
         </div>
+
+    </div>
+    {% endif %}
+
+
+  {# Criteria Midsection Main Selection Block #}
+  <div id="criteria-block" class="row" style="padding: 8px; border-top: 1px solid #d0ccc9;">
+
+      {# Left hand side Criteria Entry Blocks #}
+      <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6" >
+
+          {% if FLAGS["admin-report-selected"] or FLAGS["show_hide_prepare_go_buttons"] %}
+          {{ WIDGETS["submit-go"] }}
+          {% endif %}
+
+          {% if PERMISSIONS["design"] %}
+          {# Criteria Edit Button #}
+          {{ WIDGETS["popup-edit-criteria"] }}
+          {% endif %}
+
+          <div class="col-lg-12 container">
+
+              {# Display each criteria item #}
+              {% set last_tab = "" %}
+              {% for criterion in CRITERIA_BLOCK %}
+
+              {# Criteria grouped into collapsible tabs #}
+              {% if criterion.tab and ( criterion.tab != last_tab )  %}
+              <div class="row reportico-toggleCriteriaDiv" id="reportico-toggleCriteriaDiv{{ criterion.id }}">
+                      {% if criterion.hidden  %}
+                      <a class="reportico-toggleCriteria" id="reportico-toggleCriteria{{ criterion.id }}" href="javascript:toggleCriteria('{{ criterion.id }}')">+</a>
+                      {% else %}
+                      <a class="reportico-toggleCriteria" id="reportico-toggleCriteria{{ criterion.id }}" href="javascript:toggleCriteria('{{ criterion.id }}')">-</a>
+                      {% endif %}
+                      {{ criterion.tab }}
+              </div>
+              {% endif %}
+              {% set last_tab = criterion.tab %}
+
+              {# Criteria entry selection #}
+              {% if criterion.hidden %}
+              <div class='row {{ criterion.tabclass }}' style="padding: 3px 0px; display: none">
+              {% else %}
+              <div class='row {{ criterion.tabclass }}' style="padding: 3px 0px">
+              {% endif %}
+
+                  {# Criteria Title and Tooltip #}
+                  <div class='col-xs-3 col-sm-3 col-lg-3 col-md-3' style='font-weight: bold'>
+                      {% if criterion.tooltip %}
+                      <a class='reportico_tooltip' data-toggle="tooltip" data-placement="right" title="{{ criterion.tooltip }}">
+                          <span class="glyphicon glyphicon-question-sign"></span>
+                      </a>
+                      {% endif %}
+                      {{ criterion.title }}
+                  </div>
+
+                  {# Criteria Selection Widget - text field, datepicker etc #}
+                  <div class="col-xs-8 col-sm-8 col-lg-8 col-md-8">
+                      {{ criterion.selection }}
+                  </div>
+
+                  {# Criteria Expand Button #}
+                  <div class="col-xs-1 col-sm-1 col-lg-1 col-md-1">
+                      {{ criterion.lookup }}
+                  </div>
+
+              </div>
+
+              {% endfor %}
+
+          </div>
+
+          {% if not FLAGS["admin-report-selected"] and FLAGS["show_hide_prepare_reset_buttons"] %}
+          {{ WIDGETS["submit-reset"] }}
+          {% endif %}
+
+      </div>
+
+      {# Right hand side - Report Description and Lookup area #}
+      <div class="col-sm-6 col-lg-6 col-md-6" id="reportico-prepare-expand-cell" >
+
+           {% include 'prepare-expand-contents.inc.tpl' %}
       </div>
     </div>
-  </div>
-</div>
 
+          {% endif %}
 
-{% endif %}
+{{ WIDGETS["criteria-form"]["end"] }}
+<!-- End Form -->
 
-</FORM>
 {% include 'prepare-modals.inc.tpl' %}
 
-<div class="reportico-show-criteria" style="display:none">
-    <a href="#"><span class="glyphicon glyphicon-chevron-down icon-chevron-down" aria-hidden="true"></span></a>
-</div>
-<div class="reportico-hide-criteria" style="display:none">
-    <a href="#"><span class="glyphicon glyphicon-chevron-up icon-chevron-up" aria-hidden="true"></span></a>
-</div>
+{# After running inline HTML criteria block hides, this widget allows unhiding of it after running report #}
+{{ WIDGETS["criteria-toggle"] }}
 
-<div id="reportico-report-output">
-</div>
-
-{% include 'reportico-banner.inc.tpl' %}
+{{ WIDGETS["powered-by-banner"] }}
 </div>
 
 {% include 'footer.inc.tpl' %}

@@ -3,15 +3,14 @@
 namespace Reportico\Engine;
 
 
-use JonnyW\PhantomJs\Client;
-
 // Identify session class functionality appropriate for standalone or in-framework operation, eg use Laravel Session handlind if in Laravel etc
-if ( !defined("REPORTICO_SESSION_CLASS") )
-    define("REPORTICO_SESSION_CLASS", "Reportico\Engine\ReporticoSession");
+if (!defined("REPORTICO_SESSION_CLASS"))
+    define("REPORTICO_SESSION_CLASS", "\Reportico\Engine\ReporticoSession");
 
-function ReporticoSession() {
+function ReporticoSession()
+{
     return REPORTICO_SESSION_CLASS;
-} 
+}
 
 
 // Set Session handling based on framework
@@ -41,6 +40,13 @@ function ReporticoSession() {
  */
 class Reportico extends ReporticoObject
 {
+    public $usage = array(
+        "attributes" => array (
+            "title" => "ReportTitle",
+            "description" => "ReportDescription",
+        )
+    );
+
     public $class = "reportico";
     public $prepare_url;
     public $menu_url;
@@ -93,12 +99,11 @@ class Reportico extends ReporticoObject
     public $source_type = "database";
     public $source_datasource = false;
     public $source_xml = false;
-    public $top_level_query = true;
     public $clone_columns = array();
     public $pre_sql = array();
     public $graphs = array();
     public $clearform = false;
-    public $first_criteria_selection = true;
+    //public $first_criteria_selection = true;
     public $menuitems = array();
     public $dropdown_menu = false;
     public $static_menu = false;
@@ -144,7 +149,9 @@ class Reportico extends ReporticoObject
     public $projects_folder = "projects";
     public $admin_projects_folder = "projects";
     public $compiled_templates_folder = "templates_c";
-    public $tmp_folder = __DIR__."/../tmp";
+    public $tmp_folder = "";
+
+    public $widgets = [];
 
     public $attributes = array(
         "ReportTitle" => "Set Report Title",
@@ -156,7 +163,6 @@ class Reportico extends ReporticoObject
         "RightMargin" => "",
         "LeftMargin" => "",
         "AutoPaginate" => "",
-        "PdfZoomFactor" => "",
         "PdfZoomFactor" => "",
         "HtmlZoomFactor" => "",
         "PageTitleDisplay" => "",
@@ -178,9 +184,6 @@ class Reportico extends ReporticoObject
     public $targets = array();
     public $assignment = array();
     public $criteria_links = array();
-
-    // Admin or normal login
-    public $login_type = "NORMAL";
 
     // Output control
     public $output_skipline = false;
@@ -247,9 +250,12 @@ class Reportico extends ReporticoObject
     public $initial_show_graph = false;
     public $initial_show_group_headers = false;
     public $initial_show_group_trailers = false;
-    public $initial_showColumnHeaders = false;
+    public $initial_show_column_headers = false;
     public $initial_show_criteria = false;
     public $initial_execution_parameters = false;
+    public $authenticator = false;
+    public $authenticator_class = "\Reportico\Engine\AuthenticatorStandalone";
+    public $initial_role = "guest";
     public $initial_sql = false;
 
     // Access mode - one of FULL, ALLPROJECTS, ONEPROJECT, REPORTOUTPUT
@@ -302,16 +308,16 @@ class Reportico extends ReporticoObject
     public $jquery_preloaded = false;
     public $bootstrap_preloaded = false;
     public $bootstrap_styling_page = "table table-striped table-condensed";
-    public $bootstrap_styling_button_go = "btn btn-success";
-    public $bootstrap_styling_button_reset = "btn btn-default";
-    public $bootstrap_styling_button_admin = "btn";
-    public $bootstrap_styling_button_primary = "btn btn-primary";
-    public $bootstrap_styling_button_delete = "btn btn-danger";
+    public $bootstrap_styling_button_go = "btn btn-sm btn-success";
+    public $bootstrap_styling_button_reset = "btn btn-sm btn-default";
+    public $bootstrap_styling_button_admin = "btn btn-sm";
+    public $bootstrap_styling_button_primary = "btn btn-sm btn-primary";
+    public $bootstrap_styling_button_delete = "btn btn-sm btn-danger";
     public $bootstrap_styling_dropdown = "form-control";
     //var $bootstrap_styling_checkbox_button = "btn btn-default btn-xs";
     public $bootstrap_styling_checkbox_button = "checkbox-inline";
     public $bootstrap_styling_checkbox = "checkbox";
-    public $bootstrap_styling_toolbar_button = "btn";
+    public $bootstrap_styling_toolbar_button = "btn btn-sm";
     public $bootstrap_styling_htabs = "nav nav-justified nav-tabs nav-tabs-justified ";
     public $bootstrap_styling_vtabs = "nav nav-tabs nav-stacked";
     public $bootstrap_styling_design_dropdown = "form-control";
@@ -358,15 +364,25 @@ class Reportico extends ReporticoObject
 
     public $keep_session_open = false;
 
+    public $initialize_on_execute = true;
+    public $report_from_builder = false;
+    public $report_from_builder_first_call = false;
+
+    public $template = false;
+
+    // Define asset manager
+    public $assetManager = false;
+    public $theme_dir = false;
+
+    public $css_framework = false;
 
     public function __construct()
     {
         ReporticoObject::__construct();
 
+        $this->tmp_folder = __DIR__ . "/../tmp";
         $this->parent_query = &$this;
-
     }
-
 
     // Dummy functions for yii to work with Reportico
     public function init()
@@ -382,7 +398,8 @@ class Reportico extends ReporticoObject
     public function &createGraph()
     {
         $engine = $this->charting_engine;
-        if ($this->target_format == "HTML" || $this->target_format == "HTML2PDF") {
+
+        if (!$this->target_format || $this->target_format == "HTML" || $this->target_format == "HTML2PDF") {
             $engine = $this->charting_engine_html;
         }
 
@@ -423,7 +440,6 @@ class Reportico extends ReporticoObject
      */
     public function getActionUrl()
     {
-        $calling_script = $this->url_path_to_calling_script;
         if ($this->reportico_ajax_mode) {
             $calling_script = $this->reportico_ajax_script_url;
             ReporticoApp::set("session_namespace", $this->session_namespace);
@@ -547,6 +563,7 @@ class Reportico extends ReporticoObject
         }
 
         if ($cl = ReporticoUtility::getQueryColumn($query_name, $this->columns)) {
+
             foreach ($this->columns as $k => $v) {
                 $this->columns[$k]->lookup_display_flag = false;
                 $this->columns[$k]->lookup_abbrev_flag = false;
@@ -725,20 +742,20 @@ class Reportico extends ReporticoObject
     {
         if ($link_number != -1) {
             $this->criteria_links[$link_number] =
-            array(
-                "clause" => $clause,
-                "link_from" => $link_from,
-                "tag" => $link_to,
-                "query" => &$query,
-            );
+                array(
+                    "clause" => $clause,
+                    "link_from" => $link_from,
+                    "tag" => $link_to,
+                    "query" => &$query,
+                );
         } else {
             $this->criteria_links[] =
-            array(
-                "clause" => $clause,
-                "link_from" => $link_from,
-                "tag" => $link_to,
-                "query" => &$query,
-            );
+                array(
+                    "clause" => $clause,
+                    "link_from" => $link_from,
+                    "tag" => $link_to,
+                    "query" => &$query,
+                );
         }
 
     }
@@ -829,7 +846,7 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     // Function : setCriteriaLookup
     // -----------------------------------------------------------------------------
-    public function setCriteriaLookup($query_name, &$lookup_query, $in_table, $in_column)
+    public function &setCriteriaLookup($query_name, &$lookup_query, $in_table = false, $in_column = false)
     {
         if (array_key_exists($query_name, $this->lookup_queries)) {
         } else {
@@ -849,8 +866,9 @@ class Reportico extends ReporticoObject
 
         $this->parent_query = &$this;
         $this->lookup_queries[$query_name]->setCriteriaLookup($lookup_query);
-        $this->lookup_queries[$query_name]->first_criteria_selection = $this->first_criteria_selection;
+        //$this->lookup_queries[$query_name]->first_criteria_selection = $this->first_criteria_selection;
         $this->lookup_queries[$query_name]->lookup_query->parent_query = &$this;
+        return $this->lookup_queries[$query_name];
     }
 
     // -----------------------------------------------------------------------------
@@ -968,7 +986,7 @@ class Reportico extends ReporticoObject
         // in the appropriate query column value
         foreach ($this->columns as $k => $col) {
             $this->columns[$k]->old_column_value =
-            $this->columns[$k]->column_value;
+                $this->columns[$k]->column_value;
             $this->columns[$k]->reset_flag = false;
         }
     }
@@ -982,11 +1000,13 @@ class Reportico extends ReporticoObject
         // in the appropriate query column value
         $ct = 0;
         foreach ($this->columns as $k => $col) {
+
             if ($col->in_select) {
                 $this->debug("selecting $col->query_name in");
 
                 // Oracle returns associated array keys in upper case
                 $assoc_key = $col->query_name;
+
                 if (array_key_exists($assoc_key, $result_line)) {
                     $this->debug("exists");
                     $colval = $result_line[$assoc_key];
@@ -1003,18 +1023,18 @@ class Reportico extends ReporticoObject
 
                     //$this->debug("$colval");
                 } else
-                if (array_key_exists(strtoupper($assoc_key), $result_line)) {
-                    $this->debug("exists");
-                    $colval = $result_line[strtoupper($assoc_key)];
+                    if (array_key_exists(strtoupper($assoc_key), $result_line)) {
+                        $this->debug("exists");
+                        $colval = $result_line[strtoupper($assoc_key)];
 
-                    if (is_string($colval)) {
-                        $colval = trim($colval);
+                        if (is_string($colval)) {
+                            $colval = trim($colval);
+                        }
+
+                        $this->debug("$colval");
+                    } else {
+                        $colval = "NULL";
                     }
-
-                    $this->debug("$colval");
-                } else {
-                    $colval = "NULL";
-                }
 
                 $this->columns[$k]->column_value = $colval;
             } else {
@@ -1062,7 +1082,8 @@ class Reportico extends ReporticoObject
 
         if (array_key_exists('execute_mode', $_REQUEST)) {
             if ($_REQUEST["execute_mode"] == "MAINTAIN" && $this->allow_maintain != "SAFE"
-                && $this->allow_maintain != "FULL" && $this->allow_maintain != "DEMO") {} else {
+                && $this->allow_maintain != "FULL" && $this->allow_maintain != "DEMO") {
+            } else {
                 $this->execute_mode = $_REQUEST["execute_mode"];
             }
         }
@@ -1102,7 +1123,8 @@ class Reportico extends ReporticoObject
         if (array_key_exists('execute_mode', $_REQUEST)) {
             if ($_REQUEST["execute_mode"] == "MAINTAIN" && $this->allow_maintain != "SAFE"
                 && $this->allow_maintain != "DEMO"
-                && $this->allow_maintain != "FULL") {} else {
+                && $this->allow_maintain != "FULL") {
+            } else {
                 $this->execute_mode = $_REQUEST["execute_mode"];
             }
         }
@@ -1124,16 +1146,16 @@ class Reportico extends ReporticoObject
             $this->execute_mode = "MENU";
         }
 
-        if (ReporticoUtility::getRequestItem("jump_to_design_project", "") && array_key_exists("submit_design_project", $_REQUEST)) {
+        if (ReporticoUtility::getRequestItem("jump_to_create_report", "") && array_key_exists("submit_design_project", $_REQUEST)) {
             $this->xmloutfile = "";
             $this->execute_mode = "PREPARE";
         }
 
         // If Reset pressed force to Prepare mode
         if (array_key_exists("clearform", $_REQUEST)) {
-            $sessionClass::setReporticoSessionParam("firstTimeIn", true);
             $this->execute_mode = "PREPARE";
         }
+        //echo "<BR>first time clear2 = ".$sessionClass::getReporticoSessionParam("firstTimeIn");
 
         // If logout pressed then force to MENU mode
         if (array_key_exists("logout", $_REQUEST)) {
@@ -1162,7 +1184,7 @@ class Reportico extends ReporticoObject
 
         if (array_key_exists("clearform", $_REQUEST)) {
             $this->clearform = true;
-            $this->first_criteria_selection = true;
+            //$this->first_criteria_selection = true;
         }
 
         // Store filter group open close state
@@ -1180,7 +1202,6 @@ class Reportico extends ReporticoObject
             }
 
         }
-        //echo ">>>";var_dump($sessionClass::getReporticoSessionParam("openfilters"));
 
         // If an initial set of parameter values has been set then parameters are being
         // set probably from a framework. In this case we need clear any MANUAL and HIDDEN requests
@@ -1195,15 +1216,16 @@ class Reportico extends ReporticoObject
         }
 
         $execute_mode = $this->getExecuteMode();
+        /*
         foreach ($this->lookup_queries as $col) {
             // If this is first time into screen and we have defaults then
             // use these instead
             if ($sessionClass::getReporticoSessionParam("firstTimeIn")) {
                 $this->lookup_queries[$col->query_name]->column_value =
-                $this->lookup_queries[$col->query_name]->defaults;
+                    $this->lookup_queries[$col->query_name]->defaults;
                 if (is_array($this->lookup_queries[$col->query_name]->column_value)) {
                     $this->lookup_queries[$col->query_name]->column_value =
-                    implode(",", $this->lookup_queries[$col->query_name]->column_value);
+                        implode(",", $this->lookup_queries[$col->query_name]->column_value);
                 }
 
                 // Daterange defaults needs to  eb converted to 2 values
@@ -1226,7 +1248,7 @@ class Reportico extends ReporticoObject
                             $this->lookup_queries[$col->query_name]->column_value,
                             $this->lookup_queries[$col->query_name]->column_value,
                             $this->lookup_queries[$col->query_name]->column_value2)) {
-                            trigger_error("Date default '" . $this->defaults[0] . "' is not a valid date range. Should be 2 values separated by '-'. Each one should be in date format (e.g. yyyy-mm-dd, dd/mm/yyyy) or a date type (TODAY, TOMMORROW etc", E_USER_ERROR);
+                            trigger_error("Date default '" . $this->defaults[0] . "' is not a valid3 date range. Should be 2 values separated by '-'. Each one should be in date format (e.g. yyyy-mm-dd, dd/mm/yyyy) or a date type (TODAY, TOMMORROW etc", E_USER_ERROR);
                         }
 
                     }
@@ -1245,12 +1267,14 @@ class Reportico extends ReporticoObject
                 }
             }
         }
+        */
 
         if (array_key_exists("clearform", $_REQUEST)) {
             $sessionClass::setReporticoSessionParam("firstTimeIn", true);
             $sessionClass::setReporticoSessionParam("openfilters", false);
             $sessionClass::setReporticoSessionParam("closedfilters", false);
         }
+        //echo "first time cl = ".$sessionClass::getReporticoSessionParam("firstTimeIn");
 
         // Set up show option check box settings
 
@@ -1296,7 +1320,7 @@ class Reportico extends ReporticoObject
 
         if ($sessionClass::getReporticoSessionParam("firstTimeIn")
             && !$this->initial_show_detail && !$this->initial_show_graph && !$this->initial_show_group_headers
-            && !$this->initial_show_group_trailers && !$this->initial_showColumnHeaders && !$this->initial_show_criteria
+            && !$this->initial_show_group_trailers && !$this->initial_show_column_headers && !$this->initial_show_criteria
         ) {
             // If first time in default output hide/show elements to what is passed in URL params .. if none supplied show all
             if ($this->execute_mode == "EXECUTE") {
@@ -1383,6 +1407,7 @@ class Reportico extends ReporticoObject
             return;
         }
 
+        /*
         // Fetch current criteria choices from HIDDEN_ section
         foreach ($this->lookup_queries as $col) {
             // criteria name could be a field name or could be "groupby" or the like
@@ -1440,7 +1465,9 @@ class Reportico extends ReporticoObject
                 }
             }
         }
+        */
 
+        /*
         // Fetch current criteria choices from MANUAL_ section
         foreach ($this->lookup_queries as $col) {
             $identified_criteria = false;
@@ -1457,7 +1484,7 @@ class Reportico extends ReporticoObject
                             $criteriaval,
                             $val1,
                             $val2)) {
-                            trigger_error("Date default '" . $criteriaval . "' is not a valid date range. Should be 2 values separated by '-'. Each one should be in date format (e.g. yyyy-mm-dd, dd/mm/yyyy) or a date type (TODAY, TOMMORROW etc", E_USER_ERROR);
+                            trigger_error("Date default '" . $criteriaval . "' 1is not a valid date4 range. Should be 2 values separated by '-'. Each one should be in date format (e.g. yyyy-mm-dd, dd/mm/yyyy) or a date type (TODAY, TOMMORROW etc", E_USER_ERROR);
                         } else {
                             $_REQUEST["MANUAL_" . $col->query_name . "_FROMDATE"] = $val1;
                             $_REQUEST["MANUAL_" . $col->query_name . "_TODATE"] = $val2;
@@ -1512,14 +1539,15 @@ class Reportico extends ReporticoObject
                 // as a criteria selection
                 if (!(is_array($_REQUEST[$col->query_name]) && $_REQUEST[$col->query_name][0] == "")) {
                     $this->lookup_queries[$col->query_name]->column_value =
-                    $_REQUEST[$col->query_name];
+                        $_REQUEST[$col->query_name];
                 }
 
             }
 
             if (array_key_exists("MANUAL_" . $col->query_name, $_REQUEST)) {
+
                 $this->lookup_queries[$col->query_name]->column_value =
-                $_REQUEST["MANUAL_" . $col->query_name];
+                    $_REQUEST["MANUAL_" . $col->query_name];
 
                 $lq = &$this->lookup_queries[$col->query_name];
                 if ($lq->criteria_type == "LOOKUP" && $_REQUEST["MANUAL_" . $col->query_name]) {
@@ -1589,37 +1617,38 @@ class Reportico extends ReporticoObject
 
             if (array_key_exists($col->query_name . "_FROMDATE_DAY", $_REQUEST)) {
                 $this->lookup_queries[$col->query_name]->column_value =
-                $this->lookup_queries[$col->query_name]->collateRequestDate(
-                    $col->query_name, "FROMDATE",
-                    $this->lookup_queries[$col->query_name]->column_value,
-                    ReporticoApp::getConfig("prep_dateformat"));
+                    $this->lookup_queries[$col->query_name]->collateRequestDate(
+                        $col->query_name, "FROMDATE",
+                        $this->lookup_queries[$col->query_name]->column_value,
+                        ReporticoApp::getConfig("prep_dateformat"));
             }
 
             if (array_key_exists($col->query_name . "_TODATE_DAY", $_REQUEST)) {
                 $this->lookup_queries[$col->query_name]->column_value2 =
-                $this->lookup_queries[$col->query_name]->collateRequestDate(
-                    $col->query_name, "TODATE",
-                    $this->lookup_queries[$col->query_name]->column_value2,
-                    ReporticoApp::getConfig("prep_dateformat"));
+                    $this->lookup_queries[$col->query_name]->collateRequestDate(
+                        $col->query_name, "TODATE",
+                        $this->lookup_queries[$col->query_name]->column_value2,
+                        ReporticoApp::getConfig("prep_dateformat"));
             }
 
             if (array_key_exists("MANUAL_" . $col->query_name . "_FROMDATE", $_REQUEST)) {
                 $this->lookup_queries[$col->query_name]->column_value =
-                $_REQUEST["MANUAL_" . $col->query_name . "_FROMDATE"];
+                    $_REQUEST["MANUAL_" . $col->query_name . "_FROMDATE"];
 
             }
 
             if (array_key_exists("MANUAL_" . $col->query_name . "_TODATE", $_REQUEST)) {
                 $this->lookup_queries[$col->query_name]->column_value2 =
-                $_REQUEST["MANUAL_" . $col->query_name . "_TODATE"];
+                    $_REQUEST["MANUAL_" . $col->query_name . "_TODATE"];
             }
 
             if (array_key_exists("EXPANDED_" . $col->query_name, $_REQUEST)) {
                 $this->lookup_queries[$col->query_name]->column_value =
-                $_REQUEST["EXPANDED_" . $col->query_name];
+                    $_REQUEST["EXPANDED_" . $col->query_name];
             }
 
         }
+        */
 
         // If external page has supplied an initial output format then use it
         if ($this->initial_output_format) {
@@ -1646,13 +1675,11 @@ class Reportico extends ReporticoObject
 
             if ($this->target_format == "pdf") {
                 $this->pdf_engine_file = "Report" . strtoupper($this->pdf_engine) . ".php";
-                if ( $this->pdf_engine == "phantomjs" ) {
+                if ($this->pdf_engine == "phantomjs") {
                     require_once "ReportPhantomJSPDF.php";
-                }
-                else
+                } else
                     require_once $this->pdf_engine_file;
-            } 
-            else {
+            } else {
                 require_once "Report" . ucwords($this->target_format) . ".php";
             }
 
@@ -1753,132 +1780,6 @@ class Reportico extends ReporticoObject
             $this->email_recipients = $_REQUEST["mailto"];
         }
 
-    }
-
-    // -----------------------------------------------------------------------------
-    // Function : login_check
-    // -----------------------------------------------------------------------------
-    public function loginCheck($template)
-    {
-        $sessionClass = ReporticoSession();
-
-        if (!$this->datasource) {
-            $this->datasource = new ReporticoDataSource($this->external_connection, $this->available_connections);
-        }
-
-        $loggedon = false;
-
-        if (ReporticoApp::getConfig("project") == "admin") {
-            // Allow access to Admin Page if already logged as admin user, or configuration does not contain
-            // an Admin Password (older version of reportico) or Password is blank implying site configured with
-            // No Admin Password security or user has just reset password to blank (ie open access )
-            if ($sessionClass::issetReporticoSessionParam('admin_password') || !ReporticoApp::isSetConfig('admin_password') || (ReporticoApp::isSetConfig('admin_password_reset') && ReporticoApp::getConfig("admin_password_reset") == '')) {
-                $loggedon = "ADMIN";
-            } else {
-                if (array_key_exists("login", $_REQUEST) && isset($_REQUEST['admin_password'])) {
-                    // User has supplied an admin password and pressed login
-                    if ($_REQUEST['admin_password'] == ReporticoApp::getConfig("admin_password")) {
-                        $sessionClass::setReporticoSessionParam('admin_password', "1");
-                        $loggedon = "ADMIN";
-                    } else {
-                        $template->assign('ADMIN_PASSWORD_ERROR', ReporticoLang::templateXlate("PASSWORD_ERROR"));
-                    }
-                }
-            }
-
-            if (array_key_exists("adminlogout", $_REQUEST)) {
-                $sessionClass::unsetReporticoSessionParam('admin_password');
-                $loggedon = false;
-            }
-
-            // If Admin Password is set to blank then force logged on state to true
-            if (ReporticoApp::getConfig("admin_password") == "") {
-                $sessionClass::setReporticoSessionParam('admin_password', "1");
-                $loggedon = true;
-            }
-            $this->login_type = $loggedon;
-            if (!$this->login_type) {
-                $this->login_type = "NORMAL";
-            }
-
-            return $loggedon;
-        }
-
-        $matches = array();
-        if (preg_match("/_drilldown(.*)/", $sessionClass::reporticoNamespace(), $matches)) {
-            $parent_session = $matches[1];
-            if ($sessionClass::issetReporticoSessionParam("project_password", $parent_session)) {
-                $sessionClass::setReporticoSessionParam('project_password', $sessionClass::getReporticoSessionParam("project_password", $parent_session));
-            }
-        }
-
-        $project_password = ReporticoApp::getConfig("project_password");
-        if (
-            (!$project_password) ||
-            ($sessionClass::issetReporticoSessionParam('admin_password')) ||
-            ($this->execute_mode != "MAINTAIN" && $sessionClass::issetReporticoSessionParam('project_password') &&
-                $sessionClass::getReporticoSessionParam('project_password') == $project_password) ||
-            ($sessionClass::issetReporticoSessionParam('project_password') && $sessionClass::getReporticoSessionParam('project_password') == $project_password && $this->allow_maintain == "DEMO")
-
-        ) {
-            // After logging on to project allow user access to design mode if user is admin or if we
-            // are running in "DEMO" mode
-            if ($sessionClass::issetReporticoSessionParam('admin_password') || $this->allow_maintain == "DEMO") {
-                $loggedon = "DESIGN";
-            } else {
-                $loggedon = "NORMAL";
-            }
-
-        } else {
-            // User has attempted to login .. allow access to report PREPARE and MENU modes if user has entered either project
-            // or design password or project password is set to blank. Allow access to Design mode if design password is entered
-            // or design mode password is blank
-            if (isset($_REQUEST['project_password']) || $this->initial_project_password) {
-                if ($this->initial_project_password) {
-                    $testpassword = $this->initial_project_password;
-                } else {
-                    $testpassword = $_REQUEST['project_password'];
-                }
-
-                if ($sessionClass::issetReporticoSessionParam('admin_password') ||
-                    ($this->execute_mode != "MAINTAIN" && $testpassword == $project_password)
-                ) {
-                    $sessionClass::setReporticoSessionParam('project_password', $testpassword);
-                    $loggedon = true;
-                    if ($sessionClass::issetReporticoSessionParam('admin_password')) {
-                        $loggedon = "DESIGN";
-                    } else {
-                        $loggedon = "NORMAL";
-                    }
-
-                } else {
-                    if (isset($_REQUEST["login"])) {
-                        $template->assign('PROJ_PASSWORD_ERROR', "Error");
-                    }
-
-                }
-            }
-        }
-
-        // User has pressed logout button, default then to MENU mode
-        if (array_key_exists("logout", $_REQUEST)) {
-            if ($sessionClass::issetReporticoSessionParam("admin_password")) {
-                $sessionClass::unsetReporticoSessionParam('admin_password');
-            }
-            $sessionClass::unsetReporticoSessionParam('project_password');
-            $sessionClass::setReporticoSessionParam("execute_mode", "MENU");
-            $loggedon = false;
-            if ($project_password == '') {
-                $loggedon = "NORMAL";
-            }
-        }
-
-        $this->login_type = $loggedon;
-        if (!$this->login_type) {
-            $this->login_type = "NORMAL";
-        }
-
-        return $loggedon;
     }
 
     // -----------------------------------------------------------------------------
@@ -2076,7 +1977,8 @@ class Reportico extends ReporticoObject
                 $str = ' AND ' . $this->match_column . ' LIKE "%' . $expval . '%"';
             }
         } else if ($expval = ReporticoUtility::getRequestItem("reportico_criteria_match", false)) {
-            $str = ' AND ' . $this->match_column . ' LIKE "%' . $expval . '%"';
+            if ( $this->match_column )
+                $str = ' AND ' . $this->match_column . ' LIKE "%' . $expval . '%"';
         }
 
         return $str;
@@ -2238,24 +2140,24 @@ class Reportico extends ReporticoObject
                 if ($p->parse()) {
                     if ($p->haswhere) {
                         $this->query_statement =
-                        substr($this->query_statement, 0, $p->whereoffset) .
-                        " 1 = 1" .
-                        $critwhere .
-                        " AND" .
-                        substr($this->query_statement, $p->whereoffset);
+                            substr($this->query_statement, 0, $p->whereoffset) .
+                            " 1 = 1" .
+                            $critwhere .
+                            " AND" .
+                            substr($this->query_statement, $p->whereoffset);
                     } else {
                         $this->query_statement =
-                        substr($this->query_statement, 0, $p->whereoffset) .
-                        " WHERE 1 = 1 " .
-                        $critwhere .
-                        substr($this->query_statement, $p->whereoffset);
+                            substr($this->query_statement, 0, $p->whereoffset) .
+                            " WHERE 1 = 1 " .
+                            $critwhere .
+                            substr($this->query_statement, $p->whereoffset);
                     }
                 }
             }
 
             // Dont add limits/offset if crtieria query of entering SQL in design mode
-            if (!$criteria_name && !$in_design_mode) {
-                if ($this->datasource->_conn_driver != "pdo_informix" && $this->datasource->_conn_driver != "informix") {
+            if ($this->datasource && !$criteria_name && !$in_design_mode) {
+                if (isset($this->datasource->_conn_driver) && $this->datasource->_conn_driver != "pdo_informix" && $this->datasource->_conn_driver != "informix") {
                     $this->query_statement .= $this->buildLimitOffset();
                 }
             }
@@ -2265,14 +2167,14 @@ class Reportico extends ReporticoObject
             $this->query_statement = "SELECT";
 
             // Dont add limits/offset if crtieria query of entering SQL in design mode
-            if (!$criteria_name && !$in_design_mode) {
+            if ($this->datasource && !$criteria_name && !$in_design_mode) {
                 if ($this->datasource->_conn_driver == "pdo_informix" || $this->datasource->_conn_driver == "informix") {
                     $this->query_statement .= $this->buildLimitOffset();
                 }
             }
 
             if ($this->rowselection == "unique") {
-                if ($this->datasource->_conn_driver == "pdo_informix" || $this->datasource->_conn_driver == "informix") {
+                if ($this->datasource && $this->datasource->_conn_driver == "pdo_informix" || $this->datasource->_conn_driver == "informix") {
                     $this->query_statement .= " UNIQUE";
                 } else {
                     $this->query_statement .= " DISTINCT";
@@ -2304,22 +2206,25 @@ class Reportico extends ReporticoObject
         if ($execute_mode != "MAINTAIN") {
             $this->query_statement = Assignment::reporticoMetaSqlCriteria($this->parent_query, $this->query_statement, false, $no_warnings, $execute_mode);
         }
+        //echo $this->query_statement."<BR>";
 
     }
 
     // -----------------------------------------------------------------------------
     // Function : createPageHeader
     // -----------------------------------------------------------------------------
-    public function createPageHeader(
+    public function &createPageHeader(
         $page_header_name = "",
         $line,
         $page_header_text
-    ) {
+    )
+    {
         if (!$page_header_name) {
             $page_header_name = count($this->pageHeaders);
         }
 
         $this->pageHeaders[$page_header_name] = new ReporticoPageEnd($line, $page_header_text);
+        return $this->pageHeaders[$page_header_name];
     }
 
     // -----------------------------------------------------------------------------
@@ -2329,12 +2234,14 @@ class Reportico extends ReporticoObject
         $page_footer_name = "",
         $line,
         $page_footer_text
-    ) {
+    )
+    {
         if (!$page_footer_name) {
             $page_footer_name = count($this->pageFooters);
         }
 
         $this->pageFooters[$page_footer_name] = new ReporticoPageEnd($line, $page_footer_text);
+        return $this->pageFooters[$page_footer_name];
     }
 
     // -----------------------------------------------------------------------------
@@ -2343,7 +2250,8 @@ class Reportico extends ReporticoObject
     public function createGroup(
         $query_name = "",
         $in_group = false
-    ) {
+    )
+    {
         $this->groups[] = new ReporticoGroup($query_name, $this);
         end($this->groups);
         $ky = key($this->groups);
@@ -2357,10 +2265,14 @@ class Reportico extends ReporticoObject
     {
         $this->checkGroupName("createGroupTrailer", $query_name);
         //$this->check_column_name("createGroupTrailer", $trailer_column);
-        $this->checkColumnName("createGroupTrailer", $value_column);
+        if ( $value_column )
+            $this->checkColumnName("createGroupTrailer", $value_column);
 
         $grp = ReporticoUtility::getGroupColumn($query_name, $this->groups);
-        $qc = ReporticoUtility::getQueryColumn($value_column, $this->columns);
+        if ( $value_column )
+            $qc = ReporticoUtility::getQueryColumn($value_column, $this->columns);
+        else
+            $qc = ReporticoUtility::getFirstColumn( $this->columns);
         //$trl = ReporticoUtility::getQueryColumn($trailer_column, $this->columns )) )
         $grp->addTrailer($trailer_column, $qc, $trailer_custom, $show_in_html, $show_in_pdf);
     }
@@ -2370,7 +2282,7 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function deleteGroupTrailerByNumber($query_name, $trailer_number)
     {
-        $tn = (int) $trailer_number;
+        $tn = (int)$trailer_number;
         if (!$this->checkGroupNameR("createGroupTrailer", $query_name)) {
             ReporticoApp::handleError("Failure in Group Column Trailer: Unknown Group Name $query_name");
             return;
@@ -2395,7 +2307,7 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function setGroupTrailerByNumber($query_name, $trailer_number, $trailer_column, $value_column, $trailer_custom = false, $show_in_html, $show_in_pdf)
     {
-        $tn = (int) $trailer_number;
+        $tn = (int)$trailer_number;
         if (!$this->checkGroupNameR("createGroupTrailer", $query_name)) {
             ReporticoApp::handleError("Failure in Group Column Trailer: Unknown Group Name $query_name");
             return;
@@ -2442,10 +2354,15 @@ class Reportico extends ReporticoObject
     public function createGroupHeader($query_name, $header_column, $header_custom = false, $show_in_html = "yes", $show_in_pdf = "yes")
     {
         $this->checkGroupName("createGroupHeader", $query_name);
-        $this->checkColumnName("createGroupHeader", $header_column);
+        if ( $header_column )
+            $this->checkColumnName("createGroupHeader", $header_column);
 
         $grp = ReporticoUtility::getGroupColumn($query_name, $this->groups);
-        $col = ReporticoUtility::getQueryColumn($header_column, $this->columns);
+        if ( $header_column )
+            $col = ReporticoUtility::getQueryColumn($header_column, $this->columns);
+        else
+            $col = ReporticoUtility::getFirstColumn($this->columns);
+
         $grp->addHeader($col, $header_custom, $show_in_html, $show_in_pdf);
     }
 
@@ -2454,7 +2371,7 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function setGroupHeaderByNumber($query_name, $header_number, $header_column, $header_custom, $show_in_html = "yes", $show_in_pdf = "yes")
     {
-        $hn = (int) $header_number;
+        $hn = (int)$header_number;
         if (!$this->checkGroupNameR("createGroupHeader", $query_name)) {
             ReporticoApp::handleError("Failure in Group Column Header: Unknown Group Name $query_name");
             return;
@@ -2482,7 +2399,7 @@ class Reportico extends ReporticoObject
     public function deleteGroupHeaderByNumber($query_name, $header_number)
     {
 
-        $hn = (int) $header_number;
+        $hn = (int)$header_number;
         if (!$this->checkGroupNameR("delete_group_header", $query_name)) {
             ReporticoApp::handleError("Failure in Group Column Header: Unknown Group Name $query_name");
             return;
@@ -2500,7 +2417,8 @@ class Reportico extends ReporticoObject
         $assoc_column = "",
         $summary_columns = "",
         $header_columns = ""
-    ) {
+    )
+    {
         $col = &$this->getColumn($query_name);
         $col->assoc_column = $assoc_column;
         $col->header_columns = explode(',', $header_columns);
@@ -2515,7 +2433,8 @@ class Reportico extends ReporticoObject
     public function createOrderColumn(
         $query_name = "",
         $order_type = "ASC"
-    ) {
+    )
+    {
         $col = &$this->getColumn($query_name);
 
         $order_type = strtoupper($order_type);
@@ -2546,7 +2465,8 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function removeGroup(
         $query_name = ""
-    ) {
+    )
+    {
         if (!($grp = ReporticoUtility::getGroupColumn($query_name, $this->groups))) {
             return;
         }
@@ -2570,7 +2490,8 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function removeColumn(
         $query_name = ""
-    ) {
+    )
+    {
         $col = ReporticoUtility::getQueryColumn($query_name, $this->columns);
         if (!$col) {
             return;
@@ -2666,7 +2587,8 @@ class Reportico extends ReporticoObject
         $column_length = 0,
         $column_mask = "MASK",
         $in_select = true
-    ) {
+    )
+    {
         // Default Query Column Name to Datbase Column Name ( if not set )
 
         // If the column already exists we are probably importing over the
@@ -2707,9 +2629,9 @@ class Reportico extends ReporticoObject
         $column_length = 0,
         $column_mask = "MASK",
         $in_select = true
-    ) {
+    )
+    {
         // Default Query Column Name to Datbase Column Name ( if not set )
-
         $this->columns[] = new QueryColumn
         (
             $query_name,
@@ -2733,7 +2655,8 @@ class Reportico extends ReporticoObject
         $query_name = "",
         $order,
         $insert_before = true
-    ) {
+    )
+    {
         //echo "=========================================<br>";
         //echo "set order $query_name - $order<br>";
         // Changes the display order of the column
@@ -2752,12 +2675,12 @@ class Reportico extends ReporticoObject
                     $c["itemno"][$i] = $order;
                 }
             } else
-            if (($c["itemno"][$i] >= $order && $insert_before)
-                ||
-                ($c["itemno"][$i] > $order && !$insert_before)) {
-                //echo $c["itemno"][$i]." up5  ".$c["column"][$i]->query_name." $i<br>";
-                $c["itemno"][$i] += 500;
-            }
+                if (($c["itemno"][$i] >= $order && $insert_before)
+                    ||
+                    ($c["itemno"][$i] > $order && !$insert_before)) {
+                    //echo $c["itemno"][$i]." up5  ".$c["column"][$i]->query_name." $i<br>";
+                    $c["itemno"][$i] += 500;
+                }
             //else
             //echo $c["itemno"][$i]." leave ".$c["column"][$i]->query_name." $i<br>";
         }
@@ -2797,6 +2720,7 @@ class Reportico extends ReporticoObject
         $sessionClass::registerSessionParam("reportico_ajax_script_url", $this->reportico_ajax_script_url);
 
         $this->reportico_ajax_script_url = $sessionClass::getReporticoSessionParam("reportico_ajax_script_url");
+
         if ($this->reportico_ajax_script_url && !$this->reportico_ajax_mode) {
             $this->reportico_ajax_mode = "standalone";
         }
@@ -2813,11 +2737,6 @@ class Reportico extends ReporticoObject
         if ($sessionClass::getReporticoSessionParam("reportico_ajax_called")) {
             $this->reportico_ajax_mode = "standalone";
         }
-
-        //if ( $this->reportico_ajax_mode )
-        //{
-        //$this->embedded_report = true;
-        //}
     }
 
     // -----------------------------------------------------------------------------
@@ -2830,19 +2749,23 @@ class Reportico extends ReporticoObject
     {
         $sessionClass = ReporticoSession();
 
-        $template = new ReporticoTemplateTwig($this->templateViewPath, $this->templateCachePath, $this->getTheme(), $this->disableThemeCaching);
+        // Initialize authenticator
+        if ( !$this->authenticator ) {
+            $this->authenticator = Authenticator::initialize($this->authenticator_class, $this);
+            Authenticator::login();
+        }
 
-        $dummy = "";
-        $version = $this->version;
+        // Initialize templating engine
+        $template = new ReporticoTemplateTwig($this->templateViewPath, $this->templateCachePath, $this->getTheme(), $this->disableThemeCaching);
+        $template->engine = $this;
+        $this->template = &$template;
 
         $forward_url_params = $sessionClass::sessionRequestItem('forward_url_get_parameters', $this->forward_url_get_parameters);
         $forward_url_params_graph = $sessionClass::sessionRequestItem('forward_url_get_parameters_graph', $this->forward_url_get_parameters_graph);
         $forward_url_params_dbimage = $sessionClass::sessionRequestItem('forward_url_get_parameters_dbimage', $this->forward_url_get_parameters_dbimage);
 
-        $template->assign('REPORTICO_VERSION', $version);
-        $template->assign('REPORTICO_SITE', $this->url_site);
-        $template->assign('REPORTICO_CSRF_TOKEN', $this->csrfToken);
-        $template->assign('REPORTICO_AJAX_HANDLER', $this->ajaxHandler);
+        //$template->assign('REPORTICO_VERSION', $this->version);
+        //$template->assign('REPORTICO_SITE', $this->url_site);
 
         // Assign user parameters to template
         if ($this->user_parameters && is_array($this->user_parameters)) {
@@ -2852,38 +2775,14 @@ class Reportico extends ReporticoObject
             }
         }
 
-        // Twig needs to include Javascript if AJAX enabled
-        if (!defined('AJAX_ENABLED')) {
-            define('AJAX_ENABLED', true);
-        }
-
-        $template->assign('AJAX_ENABLED', AJAX_ENABLED);
-
         // Date format for ui Datepicker
-        $template->assign('AJAX_DATEPICKER_LANGUAGE', ReporticoLocale::getDatepickerLanguage(ReporticoApp::getConfig("language")));
-        $template->assign('AJAX_DATEPICKER_FORMAT', ReporticoLocale::getDatepickerFormat(ReporticoApp::getConfig("prep_dateformat")));
         $template->assign('PDF_DELIVERY_MODE', $this->pdf_delivery_mode);
-
-        $template->assign('SHOW_OPEN_LOGIN', false);
-        $template->assign('DB_LOGGEDON', false);
-        $template->assign('ADMIN_MENU_URL', false);
-        $template->assign('CONFIGURE_MENU_URL', false);
-        $template->assign('CREATE_REPORT_URL', false);
-        $template->assign('SESSION_ID', $sessionClass::reporticoSessionName());
 
         // Set template variables
         $template->assign('SCRIPT_SELF', $this->url_path_to_calling_script);
 
         $template->assign('REPORTICO_AJAX_MODE', $this->reportico_ajax_mode);
         $template->assign('REPORTICO_AJAX_CALLED', $this->reportico_ajax_called);
-
-        if ($this->url_path_to_assets) {
-            $template->assign('REPORTICO_URL_DIR', $this->url_path_to_assets);
-        } else {
-            $template->assign('REPORTICO_URL_DIR', $this->reportico_url_path);
-        }
-
-        $template->assign('REPORTICO_AJAX_RUNNER', $this->reportico_ajax_script_url);
 
         $template->assign('PRINTABLE_HTML', false);
         if (ReporticoUtility::getRequestItem("printable_html")) {
@@ -2895,53 +2794,19 @@ class Reportico extends ReporticoObject
         $template->assign('REPORTICO_STANDALONE_WINDOW', false);
         $template->assign('REPORTICO_AJAX_PRELOADED', $this->reportico_ajax_preloaded);
         if (ReporticoUtility::getRequestItem("new_reportico_window", false)) {
+            $this->reportico_ajax_preloaded = false;
             $template->assign('REPORTICO_AJAX_PRELOADED', false);
             $template->assign('REPORTICO_STANDALONE_WINDOW', true);
         }
 
-        $template->assign('SHOW_LOGOUT', false);
-        $template->assign('SHOW_LOGIN', false);
-        $template->assign('SHOW_REPORT_MENU', false);
-        $template->assign('SHOW_SET_ADMIN_PASSWORD', false);
-        $template->assign('SHOW_OUTPUT', false);
-        $template->assign('IS_ADMIN_SCREEN', false);
-        $template->assign('SHOW_DESIGN_BUTTON', false);
-        $template->assign('SHOW_ADMIN_BUTTON', true);
-        $template->assign('PROJ_PASSWORD_ERROR', "");
-        $template->assign('SHOW_PROJECT_MENU_BUTTON', true);
-        if ($this->access_mode && ($this->access_mode != "DEMO" && $this->access_mode != "FULL" && $this->access_mode != "ALLPROJECTS" && $this->access_mode != "ONEPROJECT")) {
-            $template->assign('SHOW_PROJECT_MENU_BUTTON', false);
-        }
-        $template->assign('SHOW_EXPAND', false);
-        $template->assign('SHOW_CRITERIA', false);
-        $template->assign('SHOW_EXPANDED', false);
-        $template->assign('SHOW_MODE_MAINTAIN_BOX', false);
         $template->assign('STATUSMSG', '');
         $template->assign('ERRORMSG', false);
-        $template->assign('SET_ADMIN_PASSWORD_INFO', '');
-        $template->assign('SET_ADMIN_PASSWORD_ERROR', '');
-        $template->assign('ADMIN_PASSWORD_ERROR', '');
-        $template->assign('PASSWORD_ERROR', '');
         $template->assign('DEMO_MODE', false);
-        $template->assign('DROPDOWN_MENU_ITEMS', false);
 
         // Dont allow admin menu buttons to show in demo mode
         if ($this->allow_maintain == "DEMO") {
             $template->assign('DEMO_MODE', true);
-            $template->assign('SHOW_ADMIN_BUTTON', false);
         }
-
-        if (!$this->admin_accessible) {
-            $template->assign('SHOW_ADMIN_BUTTON', false);
-        }
-
-        // Dont show admin button
-        if ($this->access_mode && ($this->access_mode != "DEMO" && $this->access_mode != "FULL" && $this->access_mode != "ALLPROJECTS")) {
-            $template->assign('SHOW_ADMIN_BUTTON', false);
-        }
-
-        $partialajaxpath = ReporticoUtility::findBestLocationInIncludePath("partial.php");
-        $template->assign('AJAX_PARTIAL_RUNNER', $this->reportico_url_path . $partialajaxpath);
 
         // Use alternative location for js/css/images if specified.
         // Set stylesheet to the reportico bootstrap if bootstrap styles in place
@@ -2954,6 +2819,7 @@ class Reportico extends ReporticoObject
         $this->url_path_to_templates = $sessionClass::registerSessionParam("url_path_to_templates", $this->url_path_to_templates);
         $this->jquery_preloaded = $sessionClass::registerSessionParam("jquery_preloaded", $this->jquery_preloaded);
         $this->bootstrap_preloaded = $sessionClass::registerSessionParam("bootstrap_preloaded", $this->bootstrap_preloaded);
+        $this->report_from_builder = $sessionClass::registerSessionParam("report_from_builder", $this->report_from_builder);
 
         //Define the asset dir path
         if ($this->url_path_to_assets) {
@@ -2967,15 +2833,12 @@ class Reportico extends ReporticoObject
             $this->url_path_to_assets = $asset_path;
         }
 
-        $template->assign('ASSETS_PATH', $asset_path);
-
         //Define the template dir where we could find specific template css js and template files
         // if not already provided
         $theme_dir = $this->url_path_to_templates;
-        if ( !$this->url_path_to_templates )
+        if (!$this->url_path_to_templates)
             $theme_dir = ReporticoUtility::findBestUrlInIncludePath('themes');
-
-        $template->assign('THEME_DIR', "$theme_dir/".$this->getTheme());
+        $this->theme_dir = $theme_dir;
 
         /*@todo Must be in the theme and not in the code*/
         if (!$this->bootstrap_styles) {
@@ -2994,6 +2857,9 @@ class Reportico extends ReporticoObject
             }
 
         }
+
+
+        /*
         $template->assign('STYLESHEET', $csspath);
         $template->assign('STYLESHEETDIR', dirname($csspath));
 
@@ -3011,6 +2877,7 @@ class Reportico extends ReporticoObject
         $template->assign('BOOTSTRAP_STYLE_MENU_TABLE', $this->getBootstrapStyle('menu_table'));
         $template->assign('BOOTSTRAP_STYLE_TEXTFIELD', $this->getBootstrapStyle('textfield'));
         $template->assign('BOOTSTRAP_STYLE_SMALL_BUTTON', $this->getBootstrapStyle('small_button'));
+        */
 
         // Set charting engine
         $template->assign('REPORTICO_CHARTING_ENGINE', $this->charting_engine_html);
@@ -3030,61 +2897,6 @@ class Reportico extends ReporticoObject
 
             $template->assign('JSPATH', $this->reportico_url_path . $jspath);
         }
-        $this->panels["MAIN"] = new DesignPanel($this, "MAIN");
-        $this->panels["MAIN"]->setTemplate($template);
-        $this->panels["BODY"] = new DesignPanel($this, "BODY");
-        $this->panels["TITLE"] = new DesignPanel($this, "TITLE");
-        $this->panels["TOPMENU"] = new DesignPanel($this, "TOPMENU");
-        $this->panels["MENUBUTTON"] = new DesignPanel($this, "MENUBUTTON");
-        $this->panels["LOGIN"] = new DesignPanel($this, "LOGIN");
-        $this->panels["SET_ADMIN_PASSWORD"] = new DesignPanel($this, "SET_ADMIN_PASSWORD");
-        $this->panels["LOGOUT"] = new DesignPanel($this, "LOGOUT");
-        $this->panels["FORM"] = new DesignPanel($this, "FORM");
-        $this->panels["MENU"] = new DesignPanel($this, "MENU");
-        $this->panels["ADMIN"] = new DesignPanel($this, "ADMIN");
-        $this->panels["USERINFO"] = new DesignPanel($this, "USERINFO");
-        $this->panels["RUNMODE"] = new DesignPanel($this, "RUNMODE");
-        $this->panels["PREPARE"] = new DesignPanel($this, "PREPARE");
-        $this->panels["CRITERIA"] = new DesignPanel($this, "CRITERIA");
-        $this->panels["CRITERIA_FORM"] = new DesignPanel($this, "CRITERIA_FORM");
-        $this->panels["CRITERIA_EXPAND"] = new DesignPanel($this, "CRITERIA_EXPAND");
-        $this->panels["MAINTAIN"] = new DesignPanel($this, "MAINTAIN");
-        $this->panels["REPORT"] = new DesignPanel($this, "REPORT");
-        $this->panels["DESTINATION"] = new DesignPanel($this, "DESTINATION");
-        $this->panels["EXECUTE"] = new DesignPanel($this, "EXECUTE");
-        $this->panels["STATUS"] = new DesignPanel($this, "STATUS");
-        $this->panels["ERROR"] = new DesignPanel($this, "ERROR");
-
-        // Identify which panels are visible by default
-        $this->panels["MAIN"]->setVisibility(true);
-        $this->panels["BODY"]->setVisibility(true);
-        $this->panels["TITLE"]->setVisibility(true);
-        $this->panels["TOPMENU"]->setVisibility(true);
-        $this->panels["STATUS"]->setVisibility(true);
-        $this->panels["ERROR"]->setVisibility(true);
-
-        // Set up a default panel hierarchy
-        $this->panels["MAIN"]->addPanel($this->panels["BODY"]);
-        $this->panels["BODY"]->addPanel($this->panels["TITLE"]);
-        $this->panels["BODY"]->addPanel($this->panels["TOPMENU"]);
-        $this->panels["BODY"]->addPanel($this->panels["FORM"]);
-        $this->panels["BODY"]->addPanel($this->panels["STATUS"]);
-        $this->panels["BODY"]->addPanel($this->panels["ERROR"]);
-        $this->panels["FORM"]->addPanel($this->panels["CRITERIA"]);
-        $this->panels["FORM"]->addPanel($this->panels["MAINTAIN"]);
-        $this->panels["FORM"]->addPanel($this->panels["REPORT"]);
-        $this->panels["FORM"]->addPanel($this->panels["MENU"]);
-        $this->panels["FORM"]->addPanel($this->panels["ADMIN"]);
-        $this->panels["CRITERIA"]->addPanel($this->panels["CRITERIA_FORM"]);
-        $this->panels["CRITERIA"]->addPanel($this->panels["CRITERIA_EXPAND"]);
-        $this->panels["CRITERIA"]->addPanel($this->panels["DESTINATION"]);
-        $this->panels["BODY"]->addPanel($this->panels["REPORT"]);
-        $this->panels["TOPMENU"]->addPanel($this->panels["LOGIN"]);
-        $this->panels["TOPMENU"]->addPanel($this->panels["SET_ADMIN_PASSWORD"]);
-        $this->panels["TOPMENU"]->addPanel($this->panels["USERINFO"]);
-        $this->panels["TOPMENU"]->addPanel($this->panels["MENUBUTTON"]);
-        $this->panels["TOPMENU"]->addPanel($this->panels["RUNMODE"]);
-        $this->panels["TOPMENU"]->addPanel($this->panels["LOGOUT"]);
 
         // Store any menu page URL, in ajax mode links go through the general ajax link, otherwise go through calling script
         $calling_script = $this->getActionUrl();
@@ -3109,64 +2921,11 @@ class Reportico extends ReporticoObject
             $this->delete_project_url .= "&" . $forward_url_params;
             $this->create_report_url .= "&" . $forward_url_params;
         }
-        // ***MENUURL ***if (array_key_exists("menu_url", $_SESSION[$sessionClass::reporticoNamespace()]))
-        // ***MENUURL ***{
-        // ***MENUURL ***$this->menu_url = $sessionClass::getReporticoSessionParam("menu_url");
-        // ***MENUURL ***}
 
         // Generate dropdown menu strip in menu or prepare mode
         if (ReporticoApp::get("dropdown_menu") && !$this->dropdown_menu) {
             $this->dropdown_menu = ReporticoApp::get("dropdown_menu");
         }
-
-        if ($this->dropdown_menu && ($mode == "MENU" || $mode == "PREPARE")) {
-            $this->generateDropdownMenu($this->dropdown_menu);
-            $template->assign('DROPDOWN_MENU_ITEMS', $this->dropdown_menu);
-        }
-        $template->assign('MENU_TITLE', ReporticoApp::get('menu_title'));
-
-        if ($mode == "MENU") {
-            // Store the URL of thi smenu so it can be referred to
-            // in later screens
-            // ***MENUURL ***$this->menu_url = $_SERVER["PHP_SELF"];
-            // ***MENUURL ***$sessionClass::setReporticoSessionParam("menu_url",$this->menu_url);
-            $this->panels["MENU"]->setVisibility(true);
-            //$this->panels["FORM"]->addPanel($this->panels["MENU"]);
-        }
-
-        if ($mode == "EXECUTE") {
-            $this->panels["REPORT"]->setVisibility(true);
-            //$this->panels["FORM"]->addPanel($this->panels["REPORT"]);
-        }
-
-        if ($mode == "MAINTAIN") {
-            $this->panels["MAINTAIN"]->setVisibility(true);
-            //$this->panels["FORM"]->addPanel($this->panels["MAINTAIN"]);
-        }
-
-        if ($mode == "ADMIN") {
-            $this->panels["ADMIN"]->setVisibility(true);
-            $this->panels["MENU"]->setVisibility(true);
-            //$this->panels["FORM"]->addPanel($this->panels["MAINTAIN"]);
-        }
-
-        if ($mode == "PREPARE") {
-            $this->panels["CRITERIA"]->setVisibility(true);
-            $this->panels["CRITERIA_FORM"]->setVisibility(true);
-            $this->panels["CRITERIA_EXPAND"]->setVisibility(true);
-            $this->panels["DESTINATION"]->setVisibility(true);
-            //$this->panels["FORM"]->addPanel($this->panels["CRITERIA"]);
-        }
-
-        // Visibility of Login details depends on whether user has provided login
-        // details and also whether those details are valid, so set user name
-        // and password to use for connection and then attempt to connect
-        $this->panels["MENUBUTTON"]->setVisibility(true);
-        $this->panels["LOGIN"]->setVisibility(false);
-        $this->panels["SET_ADMIN_PASSWORD"]->setVisibility(false);
-        $this->panels["LOGOUT"]->setVisibility(true);
-        $this->panels["USERINFO"]->setVisibility(true);
-        $this->panels["RUNMODE"]->setVisibility(true);
 
         $template->assign('REPORTICO_BOOTSTRAP_MODAL', true);
         if (!$this->bootstrap_styles || $this->force_reportico_mini_maintains) {
@@ -3175,127 +2934,28 @@ class Reportico extends ReporticoObject
 
         // If no admin password then force user to enter one and  a language
         if (ReporticoApp::getConfig("project") == "admin" && ReporticoApp::getConfig("admin_password") == "PROMPT") {
-            $template->assign('LANGUAGES', ReporticoLang::availableLanguages());
-            // New Admin password submitted, attempt to set password and go to MENU option
-            if (array_key_exists("submit_admin_password", $_REQUEST)) {
-                $template->assign('SET_ADMIN_PASSWORD_ERROR',
-                    $this->saveAdminPassword($_REQUEST["new_admin_password"], $_REQUEST["new_admin_password2"], $_REQUEST["jump_to_language"]));
-            }
 
-            $this->panels["SET_ADMIN_PASSWORD"]->setVisibility(true);
-            $template->assign('SHOW_SET_ADMIN_PASSWORD', true);
-            $this->panels["LOGOUT"]->setVisibility(false);
-            $this->panels["MENU"]->setVisibility(false);
-            $template->assign('SHOW_REPORT_MENU', false);
-            if (!ReporticoApp::isSetConfig('admin_password_reset')) {
-                return;
-            } else {
-                $template->assign('SHOW_SET_ADMIN_PASSWORD', false);
-            }
+            Authenticator::flag("show-languages");
+            Authenticator::flag("show-set-admin-password");
+            Authenticator::flag("show-set-admin-password-error");
 
         }
 
-        $template->assign('SHOW_MINIMAINTAIN', false);
-        {
-            $sessionClass::setReporticoSessionParam("loggedin", true);
-            if ($this->loginCheck($template)) {
-                // User has supplied details ( user and password ), so assume that login box should
-                // not occur ( user details
-                $this->panels["MENUBUTTON"]->setVisibility(true);
-                $this->panels["LOGIN"]->setVisibility(false);
-                $this->panels["SET_ADMIN_PASSWORD"]->setVisibility(false);
-                $this->panels["LOGOUT"]->setVisibility(true);
-                $this->panels["USERINFO"]->setVisibility(true);
-                $this->panels["FORM"]->setVisibility(true);
-
-                // Show quick edit/mini maintain elements if in design or demo mode
-                // unless the report is a reportico configuration report
-                if ($this->login_type == "DESIGN" || $this->access_mode == "DEMO") {
-                    $template->assign('SHOW_MINIMAINTAIN', true);
-                }
-
-                if ($this->login_type == "DESIGN") {
-                    $this->panels["RUNMODE"]->setVisibility(true);
-                } else {
-                    $this->panels["RUNMODE"]->setVisibility(false);
-                }
-
-                $template->assign('SHOW_REPORT_MENU', true);
-
-                // Only show a logout button if a password is in effect
-                $project_password = ReporticoApp::getConfig("project_password");
-                if ($this->login_type == "DESIGN" || $this->login_type == "ADMIN" || (ReporticoApp::isSetConfig('project_password') && ReporticoApp::getConfig('PROJECT_PASSWORD') != '')) {
-                    $template->assign('SHOW_LOGOUT', true);
-                }
-
-                // Dont show logout button in ALLPROJECTS, ONE PROJECT
-                if ($this->access_mode && ($this->access_mode != "DEMO" && $this->access_mode != "FULL" && $this->access_mode != "ALLPROJECTS")) {
-                    $template->assign('SHOW_LOGOUT', false);
-                }
-
-
-                if ($mode == "PREPARE" && ($this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml")) {
-
-                    // Dont show database errors if displaying Configure Project prepare page as database connectivity could be wrong
-                    // and user will correct it
-                } else {
-
-                if ( is_object($this->datasource) && ( get_class($this->datasource) == "stdClass" ||  $this->datasource->connect() || $mode != "MAINTAIN" ) ) {
-                    // Store connection session details
-                    if( get_class($this->datasource) != "stdClass" ){
-                        $sessionClass::setReporticoSessionParam("database", $this->datasource->database);
-                        $sessionClass::setReporticoSessionParam("hostname", $this->datasource->host_name);
-                        $sessionClass::setReporticoSessionParam("driver", $this->datasource->driver);
-                        $sessionClass::setReporticoSessionParam("server", $this->datasource->server);
-                        $sessionClass::setReporticoSessionParam("protocol", $this->datasource->protocol);
-                    }
-                } else {
-                    //echo "not connected okay<br>";
-                    $this->panels["LOGIN"]->setVisibility(true);
-                    $this->panels["SET_ADMIN_PASSWORD"]->setVisibility(false);
-                    $this->panels["MENUBUTTON"]->setVisibility(false);
-                    $this->panels["LOGOUT"]->setVisibility(false);
-                    $this->panels["USERINFO"]->setVisibility(false);
-                    $this->panels["RUNMODE"]->setVisibility(true);
-                    $this->panels["FORM"]->setVisibility(false);
-                    $this->panels["STATUS"]->setVisibility(true);
-                    $this->panels["ERROR"]->setVisibility(true);
-                }
-                }
-                //echo "done connecting";
-            } else {
-
-                // If not logged in then set first criteria entry to true
-                // So when we do get into criteria it will work
-                $sessionClass::setReporticoSessionParam("firstTimeIn", true);
-                $sessionClass::setReporticoSessionParam("loggedin", false);
-
-                $this->panels["LOGIN"]->setVisibility(true);
-                $this->panels["MENUBUTTON"]->setVisibility(true);
-                $this->panels["LOGOUT"]->setVisibility(false);
-                $this->panels["USERINFO"]->setVisibility(false);
-                $this->panels["RUNMODE"]->setVisibility(false);
-
-                // Dont allow admin design access if access mode is set and not FULL access
-                if (ReporticoApp::getConfig("project") == "admin") {
-                    if ($this->access_mode && ($this->access_mode != "FULL")) {
-                        $this->panels["LOGIN"]->setVisibility(false);
-                    }
-                }
-
-                // We do want to show the "run project" list in admin mode if not logged in
-                if (ReporticoApp::getConfig("project") == "admin") {
-                    $this->panels["FORM"]->setVisibility(true);
-                } else {
-                    $this->panels["FORM"]->setVisibility(false);
-                }
-
+        if ( is_object($this->datasource)
+            && (
+                get_class($this->datasource) == "stdClass"
+                ||  $this->datasource->connect()
+                || $mode != "MAINTAIN"
+            )
+        ) {
+            // Store connection session details
+            if( get_class($this->datasource) != "stdClass" ){
+                $sessionClass::setReporticoSessionParam("database", $this->datasource->database);
+                $sessionClass::setReporticoSessionParam("hostname", $this->datasource->host_name);
+                $sessionClass::setReporticoSessionParam("driver", $this->datasource->driver);
+                $sessionClass::setReporticoSessionParam("server", $this->datasource->server);
+                $sessionClass::setReporticoSessionParam("protocol", $this->datasource->protocol);
             }
-        }
-
-        // Turn off design mode if login type anything except design
-        if ($this->login_type != "DESIGN" && !ReporticoUtility::getRequestItem("partialMaintain", false)) {
-            $this->panels["MAINTAIN"]->setVisibility(false);
         }
 
     }
@@ -3320,7 +2980,7 @@ class Reportico extends ReporticoObject
             $this->initial_show_graph = false;
             $this->initial_show_group_headers = false;
             $this->initial_show_group_trailers = false;
-            $this->initial_showColumnHeaders = false;
+            $this->initial_show_column_headers = false;
             $this->initial_show_criteria = false;
             $this->initial_execution_parameters = false;
             $this->access_mode = false;
@@ -3380,19 +3040,14 @@ class Reportico extends ReporticoObject
     public function handleXmlQueryInput($mode = false)
     {
         $sessionClass = ReporticoSession();
+        //echo "first time handle = ".$sessionClass::getReporticoSessionParam("firstTimeIn");
 
-        if (!$this->top_level_query) {
-            return;
-        }
-
-        if ($mode == "MENU" && $sessionClass::issetReporticoSessionParam("xmlin"))
-        //if ( $mode == "MENU" && array_key_exists("xmlin", $_SESSION[$sessionClass::reporticoNamespace()]) )
+        if ($mode == "MENU" && $sessionClass::issetReporticoSessionParam("xmlin")) //if ( $mode == "MENU" && array_key_exists("xmlin", $_SESSION[$sessionClass::reporticoNamespace()]) )
         {
             $sessionClass::unsetReporticoSessionParam("xmlin");
         }
 
-        if ($mode == "ADMIN" && $sessionClass::issetReporticoSessionParam("xmlin"))
-        //if ( $mode == "ADMIN" && array_key_exists("xmlin", $_SESSION[$sessionClass::reporticoNamespace()]) )
+        if ($mode == "ADMIN" && $sessionClass::issetReporticoSessionParam("xmlin")) //if ( $mode == "ADMIN" && array_key_exists("xmlin", $_SESSION[$sessionClass::reporticoNamespace()]) )
         {
             $sessionClass::unsetReporticoSessionParam("xmlin");
         }
@@ -3401,20 +3056,19 @@ class Reportico extends ReporticoObject
         $this->xmlinput = false;
         $this->sqlinout = false;
 
-        if ($sessionClass::issetReporticoSessionParam("xmlin"))
-        //if ( array_key_exists("xmlin", $_SESSION[$sessionClass::reporticoNamespace()]) )
+        if ($sessionClass::issetReporticoSessionParam("xmlin")) //if ( array_key_exists("xmlin", $_SESSION[$sessionClass::reporticoNamespace()]) )
         {
             $this->xmlinput = $sessionClass::getReporticoSessionParam("xmlin");
             $sessionClass::setReporticoSessionParam("xmlout", $this->xmlinput);
         }
 
-        if ($sessionClass::issetReporticoSessionParam("sqlin"))
-        //if ( array_key_exists("sqlin", $_SESSION[$sessionClass::reporticoNamespace()]) )
+        if ($sessionClass::issetReporticoSessionParam("sqlin")) //if ( array_key_exists("sqlin", $_SESSION[$sessionClass::reporticoNamespace()]) )
         {
             $this->sqlinput = $sessionClass::getReporticoSessionParam("sqlin");
         }
 
         if (array_key_exists("xmlin", $_REQUEST)) {
+
             $sessionClass::setReporticoSessionParam("firstTimeIn", true);
             $this->xmlinput = $_REQUEST["xmlin"];
 
@@ -3422,6 +3076,7 @@ class Reportico extends ReporticoObject
             $sessionClass::setReporticoSessionParam("xmlin", $this->xmlinput);
             $sessionClass::setReporticoSessionParam("xmlout", $this->xmlinput);
         }
+        //echo "first time xmlin = ".$sessionClass::getReporticoSessionParam("firstTimeIn");
 
         if ($this->initial_report) {
             $this->xmlinput = $this->initial_report;
@@ -3451,8 +3106,7 @@ class Reportico extends ReporticoObject
         }
 
         // Set template from request if specified
-        if ($sessionClass::issetReporticoSessionParam("template"))
-        //if ( array_key_exists("template", $_SESSION[$sessionClass::reporticoNamespace()]) )
+        if ($sessionClass::issetReporticoSessionParam("template")) //if ( array_key_exists("template", $_SESSION[$sessionClass::reporticoNamespace()]) )
         {
             $this->user_template = $sessionClass::getReporticoSessionParam("template");
             $sessionClass::setReporticoSessionParam("template", $this->user_template);
@@ -3466,31 +3120,12 @@ class Reportico extends ReporticoObject
             $this->xmlinput .= ".xml";
         }
 
-        if (($this->xmlinput && $mode == "PREPARE" || $mode == "EXECUTE") && ($this->login_type == "NORMAL") && ($this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml" || $this->xmlinput == "createproject.xml")) {
-            $sessionClass::unsetReporticoSessionParam("xmlin");
-            $this->xmlinput = "unknown.xml";
-            $this->xmlin = "unknown.xml";
-            $_REQUEST["xmlin"] = "unknown.xml";
-            trigger_error("Can't find report", E_USER_NOTICE);
-            return;
-        }
-
-        if ($this->xmlinput && !preg_match("/^[A-Za-z0-9]/", $this->xmlinput)) {
-            $sessionClass::unsetReporticoSessionParam("xmlin");
-            $this->xmlinput = "unknown.xml";
-            $this->xmlin = "unknown.xml";
-            $_REQUEST["xmlin"] = "unknown.xml";
-            trigger_error("Can't find report", E_USER_NOTICE);
-            return;
-        }
-
         // Now work out out file...
         if (!$this->xmloutfile) {
             $this->xmloutfile = $this->xmlinput;
         }
 
-        if ($sessionClass::issetReporticoSessionParam("xmlout"))
-        //if ( array_key_exists("xmlout", $_SESSION[$sessionClass::reporticoNamespace()]) )
+        if ($sessionClass::issetReporticoSessionParam("xmlout")) //if ( array_key_exists("xmlout", $_SESSION[$sessionClass::reporticoNamespace()]) )
         {
             $this->xmloutfile = $sessionClass::getReporticoSessionParam("xmlout");
         }
@@ -3500,7 +3135,9 @@ class Reportico extends ReporticoObject
             $sessionClass::setReporticoSessionParam("xmlout", $this->xmloutfile);
         }
         $this->xmlintext = false;
-        if ($this->top_level_query && $sessionClass::issetReporticoSessionParam("xmlintext")) {
+
+        if ( $sessionClass::issetReporticoSessionParam("xmlintext")) {
+
             if (($this->xmlintext = $sessionClass::getReporticoSessionParam("xmlintext"))) {
                 $this->xmlinput = false;
             }
@@ -3520,26 +3157,28 @@ class Reportico extends ReporticoObject
         // apply default customized reportico actions if not using xml text in session
         $do_defaults = true;
 
-        if ($this->sqlinput) {
-            $this->importSQL($this->sqlinput);
-        } else if ($this->xmlinput || $this->xmlintext) {
-            if ($this->getExecuteMode() == "MAINTAIN") {
-                $do_defaults = false;
-            }
-            //else if ( $this->xmlintext )
-            //$do_defaults = false;
+        if ( !$this->report_from_builder_first_call ) {
+            if ($this->sqlinput) {
+                $this->importSQL($this->sqlinput);
+            } else if ($this->xmlinput || $this->xmlintext) {
+                if ($this->getExecuteMode() == "MAINTAIN") {
+                    $do_defaults = false;
+                }
+                //else if ( $this->xmlintext )
+                //$do_defaults = false;
 
-            $this->xmlin = new XmlReader($this, $this->xmlinput, $this->xmlintext);
-            $this->xmlin->xml2query();
-        } else {
-            if ($this->getExecuteMode() == "MAINTAIN") {
-                $do_defaults = false;
+                $this->xmlin = new XmlReader($this, $this->xmlinput, $this->xmlintext);
+                $this->xmlin->xml2query();
+            } else {
+                if ($this->getExecuteMode() == "MAINTAIN") {
+                    $do_defaults = false;
+                }
+
+                $this->xmlin = new XmlReader($this, false, "");
+                $this->xmlin->xml2query();
             }
 
-            $this->xmlin = new XmlReader($this, false, "");
-            $this->xmlin->xml2query();
         }
-
 
         // Custom query stuff loaded from project config.php.
         if ($do_defaults) {
@@ -3548,63 +3187,73 @@ class Reportico extends ReporticoObject
 
         }
 
+        if ($this->xmlinput == "deleteproject.xml" ||
+            $this->xmlinput == "configureproject.xml" ||
+            $this->xmlinput == "createtutorials.xml" ||
+            $this->xmlinput == "createproject.xml" ||
+            $this->xmlinput == "generate_tutorial.xml") {
+
+            Authenticator::flag("admin-report-selected");
+        }
+
     }
 
     // -----------------------------------------------------------------------------
     // Function : Set page header, footers and other options form config.php
     // -----------------------------------------------------------------------------
-    function applyOutputOptionsFromConfig() {
+    function applyOutputOptionsFromConfig()
+    {
 
         $keyct = 1;
         $output_config = array();
 
-        if ($this->pdf_engine == "tcpdf" && $this->target_format == "PDF" )
+        if ($this->pdf_engine == "tcpdf" && $this->target_format == "PDF")
             $output_config = ReporticoApp::getConfig("output_sections_tcpdf");
         else
             $output_config = ReporticoApp::getConfig("output_sections");
 
-        if ( $output_config )  {
-            
-            foreach ( $output_config as $k => $v ) {
+        if ($output_config) {
 
-                if ( $k == "page-header-block" ) {
-                    
-                    foreach ( $v as $header ) {
-                    
+            foreach ($output_config as $k => $v) {
+
+                if ($k == "page-header-block") {
+
+                    foreach ($v as $header) {
+
                         $key = "AUTO$keyct";
                         $content = $header["content"];
-                        if ( isset($header["content"]) )
+                        if (isset($header["content"]))
                             $content .= "{STYLE {$header["styles"]}}";
-                        $this->createPageHeader($key, 1, $content); 
-                        $this->setPageHeaderAttribute($key, "ShowInHTML", "yes" );
-                        $this->setPageHeaderAttribute($key, "ShowInPDF", "yes" );
+                        $this->createPageHeader($key, 1, $content);
+                        $this->setPageHeaderAttribute($key, "ShowInHTML", "yes");
+                        $this->setPageHeaderAttribute($key, "ShowInPDF", "yes");
                         $keyct++;
-                        
+
                     }
 
                 }
-                
-                if ( $k == "page-footer-block" ) {
-                    
-                    foreach ( $v as $footer ) {
-                    
+
+                if ($k == "page-footer-block") {
+
+                    foreach ($v as $footer) {
+
                         $key = "AUTO$keyct";
                         $content = $footer["content"];
-                        if ( isset($footer["content"]) )
+                        if (isset($footer["content"]))
                             $content .= "{STYLE {$footer["styles"]}}";
-                        $this->createPageFooter($key, 1, $content); 
-                        $this->setPageFooterAttribute($key, "ShowInHTML", "yes" );
-                        $this->setPageFooterAttribute($key, "ShowInPDF", "yes" );
+                        $this->createPageFooter($key, 1, $content);
+                        $this->setPageFooterAttribute($key, "ShowInHTML", "yes");
+                        $this->setPageFooterAttribute($key, "ShowInPDF", "yes");
                         $keyct++;
-                        
+
                     }
 
                 }
 
-                if ( $k == "styles" ) {
-                    
-                    foreach ( $v as $type => $styleset ) {
-                       $this->applyStyleset(strtoupper($type), $styleset["style"]); 
+                if ($k == "styles") {
+
+                    foreach ($v as $type => $styleset) {
+                        $this->applyStyleset(strtoupper($type), $styleset["style"]);
                     }
 
                 }
@@ -3643,12 +3292,17 @@ class Reportico extends ReporticoObject
         if ($p->parse(false)) {
             $p->importIntoQuery($this);
         }
+        $this->initialize_on_execute = false;
     }
 
     // -----------------------------------------------------------------------------
     // Function : Clears local arrays ready for a new report run
     // -----------------------------------------------------------------------------
-    public function initialize() {
+    public function initialize()
+    {
+
+        if (!$this->initialize_on_execute)
+            return;
 
         $this->panels = array();
         $this->targets = array();
@@ -3656,7 +3310,7 @@ class Reportico extends ReporticoObject
         $this->groups = array();
         $this->columns = array();
         $this->criteria_links = array();
-        $this->lookup_queries  = array();
+        $this->lookup_queries = array();
         $this->tables = array();
         $this->display_order_set = array();
         $this->order_set = array();
@@ -3681,6 +3335,27 @@ class Reportico extends ReporticoObject
 
     }
 
+    // -----------------------------------------------------------------------------
+    // Function : render
+    // -----------------------------------------------------------------------------
+    public function render($mode = false, $draw = true)
+    {
+        $sessionClass = ReporticoSession();
+
+        if ( !$sessionClass::issetReporticoSessionParam("xmlintext") ) {
+            $xmlout = new XmlWriter($this);
+            $xmlout->prepareXmlData();
+            //$sessionClass::registerSessionParam("reportConfig", htmlspecialchars($xmlout->getXmldata()));
+            $this->reportDefinitionLoaded = true;
+            $sessionClass::registerSessionParam("xmlintext", $xmlout->getXmldata());
+        }
+
+        // PPP echo "ISSET?2 ".$sessionClass::issetReporticoSessionParam("reportConfig")."<BR>";
+        $this->clear_reportico_session = false;
+        ReporticoApp::setConfig('allow_output', true);
+
+        $this->execute($mode, $draw);
+    }
 
     // -----------------------------------------------------------------------------
     // Function : execute
@@ -3691,7 +3366,7 @@ class Reportico extends ReporticoObject
 
         $sessionClass = ReporticoSession();
 
-        if ( method_exists($sessionClass, "switchToRequestedNamespace"))
+        if (method_exists($sessionClass, "switchToRequestedNamespace"))
             $this->session_namespace = $sessionClass::switchToRequestedNamespace($this->session_namespace);
 
         if ($this->session_namespace) {
@@ -3710,10 +3385,13 @@ class Reportico extends ReporticoObject
             $sessionClass::initializeReporticoNamespace(ReporticoApp::get("session_namespace_key"));
         }
 
+        //echo "<BR>first time start = ".$sessionClass::getReporticoSessionParam("firstTimeIn");
+
         // Work out the mode (ADMIN, PREPARE, MENU, EXECUTE, MAINTAIN based on all parameters )
         if (!$mode) {
             $mode = $this->getExecuteMode();
         }
+
 
         $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
         set_exception_handler("Reportico\Engine\ReporticoApp::ExceptionHandler");
@@ -3761,26 +3439,37 @@ class Reportico extends ReporticoObject
         // Store whether in framework
         $sessionClass::setReporticoSessionParam("framework_parent", $this->framework_parent);
 
+        /*
         // Set access mode to decide whether to allow user to access Design Mode, Menus, Criteria or just run a single report
+        echo "Access mode = $this->access_mode<BR>";
         $this->access_mode = $sessionClass::sessionItem("access_mode", $this->access_mode);
+        echo "Access mode = $this->access_mode<BR>";
         if ($this->access_mode == "DEMO") {
             $this->allow_maintain = "DEMO";
         }
+        */
 
         // Convert input and out charsets into their PHP versions
         // for later iconv use
         $this->db_charset = ReporticoLocale::dbCharsetToPhpCharset(ReporticoApp::getConfig("db_encoding", "UTF8"));
         $this->output_charset = ReporticoLocale::outputCharsetToPhpCharset(ReporticoApp::getConfig("output_encoding", "UTF8"));
 
-        ReporticoApp::set("debug_mode", ReporticoUtility::getRequestItem("debug_mode", "0", $this->first_criteria_selection));
+        ReporticoApp::set("debug_mode", ReporticoUtility::getRequestItem("debug_mode", "0"));
+        //ReporticoApp::set("debug_mode", ReporticoUtility::getRequestItem("debug_mode", "0", $this->first_criteria_selection));
 
         if (!$mode) {
             $mode = $this->getExecuteMode();
         }
 
         // If the project is the ADMIN project then the Main Menu will be the Admin Page
-        if (ReporticoApp::getConfig("project") == "admin" &&  $mode == "MENU"  ) {
+        if (ReporticoApp::getConfig("project") == "admin" && $mode == "MENU") {
             $mode = "ADMIN";
+        }
+
+        // Initialize authenticator
+        if ( !$this->authenticator ) {
+            $this->authenticator = Authenticator::initialize($this->authenticator_class, $this);
+            Authenticator::login();
         }
 
         // If this is PREPARE mode then we want to identify whether user has entered prepare
@@ -3788,29 +3477,25 @@ class Reportico extends ReporticoObject
         switch ($mode) {
             case "PREPARE":
                 $this->reportProgress("Ready", "READY");
-                $this->first_criteria_selection = true;
-                // Must find ALternative to THIs for first time in testing!!!
-                if (array_key_exists("target_format", $_REQUEST)) {
-                    $this->first_criteria_selection = false;
-                    $sessionClass::setReporticoSessionParam("firstTimeIn", false);
-                }
+                //$this->first_criteria_selection = true;
+                // Must find ALternative to this for first time in testing!!!
+                //if (array_key_exists("target_format", $_REQUEST)) {
+                    ////$this->first_criteria_selection = false;
+                    //$sessionClass::setReporticoSessionParam("firstTimeIn", false);
+                //}
+
+                //echo "frst ".$sessionClass::getReporticoSessionParam("firstTimeIn")."<BR>";
 
                 if (!$sessionClass::issetReporticoSessionParam("firstTimeIn")) {
                     $sessionClass::setReporticoSessionParam("firstTimeIn", true);
                 }
+                //echo "first time unset = ".$sessionClass::getReporticoSessionParam("firstTimeIn");
 
                 // Default output to HTML in PREPARE mode first time in
-                if ($sessionClass::getReporticoSessionParam("firstTimeIn") && !isset($_REQUEST["target_format"])) {
-                    $this->target_format = "HTML";
-                    $sessionClass::setReporticoSessionParam("target_format", "HTML");
-                }
-
-                // Default style to TABLE in PREPARE mode first time in
-                //if ( $sessionClass::getReporticoSessionParam("firstTimeIn") && !isset($_REQUEST["target_style"]))
-                //{
-                //$this->target_format = "TABLE";
-                //$sessionClass::setReporticoSessionParam("target_style","TABLE");
-                //echo "set table ";
+                //if ($sessionClass::getReporticoSessionParam("firstTimeIn") && !isset($_REQUEST["target_format"])) {
+//
+                    //$this->target_format = "HTML";
+                    //$sessionClass::setReporticoSessionParam("target_format", "HTML");
                 //}
 
                 break;
@@ -3834,34 +3519,41 @@ class Reportico extends ReporticoObject
 
                 $this->target_format = strtoupper($_REQUEST["target_format"]);
 
-                if (array_key_exists("submit", $_REQUEST)) {
-                    $this->first_criteria_selection = false;
-                } else {
-                    $this->first_criteria_selection = true;
-                }
+                //if (array_key_exists("submit", $_REQUEST)) {
+                    //$this->first_criteria_selection = false;
+                //} else {
+                    //$this->first_criteria_selection = true;
+                //}
 
+                //echo "first time ex = ".$sessionClass::getReporticoSessionParam("firstTimeIn");
                 if ($sessionClass::getReporticoSessionParam("awaiting_initial_defaults")) {
                     $sessionClass::setReporticoSessionParam("firstTimeIn", true);
+                    //echo "first time exa2 = ".$sessionClass::getReporticoSessionParam("firstTimeIn");
                 } else
-                if ($sessionClass::getReporticoSessionParam("firstTimeIn") && ReporticoUtility::getRequestItem("refreshReport", false)) {
-                    $sessionClass::setReporticoSessionParam("firstTimeIn", true);
-                } else {
-                    $sessionClass::setReporticoSessionParam("firstTimeIn", false);
-                }
+                    //echo "first time exb2 = ".$sessionClass::getReporticoSessionParam("firstTimeIn");
+                    if ($sessionClass::getReporticoSessionParam("firstTimeIn") && ReporticoUtility::getRequestItem("refreshReport", false)) {
+                        $sessionClass::setReporticoSessionParam("firstTimeIn", true);
+                    } else {
+                        $sessionClass::setReporticoSessionParam("firstTimeIn", false);
+                    }
+                //echo "first time ex2 = ".$sessionClass::getReporticoSessionParam("firstTimeIn");
                 break;
 
             case "MAINTAIN":
                 $this->reportProgress("Ready", "READY");
-                $this->first_criteria_selection = true;
-                $sessionClass::setReporticoSessionParam("firstTimeIn", true);
+                //$this->first_criteria_selection = true;
+                //echo "first time mn1 = ".$sessionClass::getReporticoSessionParam("firstTimeIn");
+                //$sessionClass::setReporticoSessionParam("firstTimeIn", true);
+                //echo "first time mn2 = ".$sessionClass::getReporticoSessionParam("firstTimeIn");
                 break;
 
             default:
-                //$this->report_progress("Ready", "READY" );
-                $this->first_criteria_selection = true;
+                //echo "first time def = ".$sessionClass::getReporticoSessionParam("firstTimeIn");
                 $sessionClass::setReporticoSessionParam("firstTimeIn", true);
+                //echo "first time def2 = ".$sessionClass::getReporticoSessionParam("firstTimeIn");
                 break;
         }
+        if ( !$this->authenticator ) { echo "NOT AUTH<BR>"; }
 
         // If xml file is used to generate the reportico_query, either by the xmlin session variable
         // or the xmlin request variable then process this before executing
@@ -3874,24 +3566,20 @@ class Reportico extends ReporticoObject
             $refreshmode = ReporticoUtility::getRequestItem("refreshReport", false);
 
             // HTML2PDF format is called locally and must pick up criteria from prior request
-            if ( $this->target_format == "HTML2PDF" && $sessionClass::issetReporticoSessionParam('latestRequest') )
-            {
+            if ($this->target_format == "HTML2PDF" && $sessionClass::issetReporticoSessionParam('latestRequest')) {
                 $_REQUEST = $sessionClass::getReporticoSessionParam('latestRequest');
                 $_REQUEST["target_format"] = $this->target_format;
                 $_REQUEST["new_reportico_window"] = 1;
                 $_REQUEST["reportico_ajax_called"] = false;
                 $this->embedded_report = false;
-            }
-
-            else if (!ReporticoUtility::getRequestItem("printable_html") && 
-                ($runfromcriteriascreen || 
-                (!$sessionClass::issetReporticoSessionParam('latestRequest')  ||
-                !ReporticoSession::getReporticoSessionParam('latestRequest')))) 
-            {
+            } else if (!ReporticoUtility::getRequestItem("printable_html") &&
+                ($runfromcriteriascreen ||
+                    (!$sessionClass::issetReporticoSessionParam('latestRequest') ||
+                        !ReporticoSession::getReporticoSessionParam('latestRequest')))) {
                 $sessionClass::setReporticoSessionParam('latestRequest', $_REQUEST);
 
             } else {
-                if (!$runfromcriteriascreen && ( $refreshmode || $this->target_format == "HTML2PDF" )) {
+                if (!$runfromcriteriascreen && ($refreshmode || $this->target_format == "HTML2PDF")) {
                     $_REQUEST = $sessionClass::getReporticoSessionParam('latestRequest');
                     $_REQUEST["target_format"] = $this->target_format;
                     $_REQUEST["reportico_ajax_called"] = false;
@@ -3923,6 +3611,7 @@ class Reportico extends ReporticoObject
             }
             $sessionClass::setReporticoSessionParam('latestRequest', "");
         }
+        if ( !$this->authenticator ) { echo "NOT AUTH<BR>"; }
 
         // Derive URL call of the calling script so it can be recalled in form actions when not running in AJAX mode
         if (!$this->url_path_to_calling_script) {
@@ -3960,19 +3649,14 @@ class Reportico extends ReporticoObject
                 die;
 
             case "ADMIN":
+                $this->initializePanels($mode);
+                ReporticoLang::loadModeLanguagePack("languages", $this->output_charset);
+                ReporticoLang::loadModeLanguagePack("admin", $this->output_charset);
+                ReporticoLang::localiseTemplateStrings($this->template);
                 $this->setRequestColumns();
                 $txt = "";
                 $this->handleXmlQueryInput($mode);
-                $this->buildAdminScreen();
-                $text = $this->panels["BODY"]->drawTemplate();
-                $this->panels["MAIN"]->template->debugging = false;
-                $this->panels["MAIN"]->template->assign('LANGUAGES', ReporticoLang::availableLanguages());
-                $this->panels["MAIN"]->template->assign('CONTENT', $txt);
-                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
-                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
-                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
-                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
-                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
+                $this->loadWidgets("core");
 
                 restore_error_handler();
 
@@ -3982,32 +3666,26 @@ class Reportico extends ReporticoObject
                 $template = $this->getTemplatePath('admin.tpl');
 
                 if ($this->return_output_to_caller) {
-                    $txt = $this->panels["MAIN"]->template->fetch($template);
+                    $txt = $this->template->fetch($template);
                     $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                     return $txt;
                 } else {
-                    $this->panels["MAIN"]->template->display($template);
+                    $this->template->display($template);
                     $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                 }
                 break;
 
             case "MENU":
+
+                $this->initializePanels($mode);
                 $this->handleXmlQueryInput($mode);
                 $this->setRequestColumns();
-                $this->buildMenu();
+                //$this->buildMenu();
                 ReporticoLang::loadModeLanguagePack("languages", $this->output_charset);
                 ReporticoLang::loadModeLanguagePack("menu", $this->output_charset);
-                ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->template);
+                ReporticoLang::localiseTemplateStrings($this->template);
 
-                $text = $this->panels["BODY"]->drawTemplate();
-                $this->panels["MAIN"]->template->debugging = false;
-                $this->panels["MAIN"]->template->assign('CONTENT', $text);
-                $this->panels["MAIN"]->template->assign('LANGUAGES', ReporticoLang::availableLanguages());
-                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
-                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
-                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
-                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
-                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
+                $this->loadWidgets("core");
 
                 restore_error_handler();
                 // Some calling frameworks require output to be returned
@@ -4016,71 +3694,23 @@ class Reportico extends ReporticoObject
                 $template = $this->getTemplatePath('menu.tpl');
 
                 if ($this->return_output_to_caller) {
-                    $txt = $this->panels["MAIN"]->template->fetch($template);
+                    $txt = $this->template->fetch($template);
                     $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                     return $txt;
                 } else {
-                    $this->panels["MAIN"]->template->display($template);
+                    $this->template->display($template);
                     $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                 }
                 break;
 
             case "PREPARE":
+
                 ReporticoLang::loadModeLanguagePack("languages", $this->output_charset);
                 $this->initializePanels($mode);
                 $this->handleXmlQueryInput($mode);
                 $this->setRequestColumns();
 
-                if ($this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml" || $this->xmlinput == "createproject.xml" || $this->xmlinput == "generate_tutorial.xml") {
-                    // If configuring project then use project language strings from admin project
-                    // found in projects/admin/lang.php
-                    ReporticoLang::loadProjectLanguagePack("admin", $this->output_charset);
-                    $this->panels["MAIN"]->template->assign('SHOW_MINIMAINTAIN', false);
-                    $this->panels["MAIN"]->template->assign('IS_ADMIN_SCREEN', true);
-                }
-                ReporticoLang::loadModeLanguagePack("prepare", $this->output_charset);
-                ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->template);
-
-                $text = $this->panels["BODY"]->drawTemplate();
-                $this->panels["MAIN"]->template->debugging = false;
-                $this->panels["MAIN"]->template->assign('CONTENT', $text);
-                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
-                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
-                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
-                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
-                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
-
-                if ($this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml" || $this->xmlinput == "createproject.xml" || $this->xmlinput == "generate_tutorial.xml") {
-                    $reportfile = "";
-                } else {
-                    $reportfile = preg_replace("/\.xml/", "", $this->xmloutfile);
-                }
-
-                $this->panels["MAIN"]->template->assign('XMLFILE', $reportfile);
-
-                $reportname = preg_replace("/.xml/", "", $this->xmloutfile . '_prepare.tpl');
-                restore_error_handler();
-
-                // Some calling frameworks require output to be returned
-                // for rendering inside web pages .. in this case
-                // return_output_to_caller will be set to true
-                $template = $this->getTemplatePath('prepare.tpl');
-
-                if ($this->return_output_to_caller) {
-                    $txt = $this->panels["MAIN"]->template->fetch($template);
-                    $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
-                    return $txt;
-                } else {
-                    $this->panels["MAIN"]->template->display($template);
-                    $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
-                }
-                break;
-
-            case "EXECUTE":
-
-                ReporticoLang::loadModeLanguagePack("languages", $this->output_charset);
-                $this->initializePanels($mode);
-                $this->handleXmlQueryInput($mode);
+                // load widgets
 
                 // Set Grid display options based on report and session defaults
                 if ($this->attributes["gridDisplay"] != ".DEFAULT") {
@@ -4103,82 +3733,120 @@ class Reportico extends ReporticoObject
                     $this->dynamic_grids_page_size = $this->attributes["gridPageSize"];
                 }
 
+                if ($this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml" || $this->xmlinput == "createproject.xml" || $this->xmlinput == "generate_tutorial.xml") {
+                    // If configuring project then use project language strings from admin project
+                    // found in projects/admin/lang.php
+                    ReporticoLang::loadProjectLanguagePack("admin", $this->output_charset);
+                    $this->template->assign('SHOW_MINIMAINTAIN', false);
+                    $this->template->assign('IS_ADMIN_SCREEN', true);
+                }
+                ReporticoLang::loadModeLanguagePack("prepare", $this->output_charset);
+                ReporticoLang::localiseTemplateStrings($this->template);
 
-                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
-                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
-                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
-                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
-                $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
+                $this->loadWidgets("core");
 
+                if ($this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml" || $this->xmlinput == "createproject.xml" || $this->xmlinput == "generate_tutorial.xml") {
+                    $reportfile = "";
+                } else {
+                    $reportfile = preg_replace("/\.xml/", "", $this->xmloutfile);
+                }
+
+                $this->template->assign('XMLFILE', $reportfile);
+
+                $reportname = preg_replace("/.xml/", "", $this->xmloutfile . '_prepare.tpl');
+                restore_error_handler();
+
+                // Some calling frameworks require output to be returned
+                // for rendering inside web pages .. in this case
+                // return_output_to_caller will be set to true
+                $template = $this->getTemplatePath('prepare.tpl');
+
+                $sessionClass::setReporticoSessionParam("firstTimeIn", false);
+                //echo "first time endprep = ".$sessionClass::getReporticoSessionParam("firstTimeIn");
+
+                if ($this->return_output_to_caller) {
+                    $txt = $this->template->fetch($template);
+                    $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
+                    return $txt;
+                } else {
+                    $this->template->display($template);
+                    $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
+                }
+                break;
+
+            case "EXECUTE":
+
+                ReporticoLang::loadModeLanguagePack("languages", $this->output_charset);
+                $this->initializePanels($mode);
+
+                $this->handleXmlQueryInput($mode);
+
+                ReporticoLang::loadModeLanguagePack("execute", $this->output_charset);
+                ReporticoLang::localiseTemplateStrings($this->template);
+                $this->checkCriteriaValidity();
+
+                $this->loadWidgets("core");
 
                 ReporticoApp::set("code_area", "Main Query");
                 $this->buildQuery(false, "");
                 ReporticoApp::set("code_area", false);
-                ReporticoLang::loadModeLanguagePack("execute", $this->output_charset);
-                ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->template);
-                $this->checkCriteriaValidity();
 
 
-                if ($this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml" || $this->xmlinput == "createproject.xml") {
+                if ( Authenticator::allowed("admin-report-selected")) {
                     // If configuring project then use project language strings from admin project
                     // found in projects/admin/lang.php
                     ReporticoLang::loadProjectLanguagePack("admin", $this->output_charset);
                 }
 
                 // For PDF output via phantom report will have already been executed so dont rerun it here
-                if ( $_REQUEST["target_format"] == "PDF" && $this->pdf_engine == "phantomjs" ) { 
+                if ($_REQUEST["target_format"] == "PDF" && $this->pdf_engine == "phantomjs") {
                     $target = &$this->targets[0];
                     $target->start($this);
                 } else {
-                    if (!$sessionClass::getReporticoSessionParam("loggedin", false)) {
+                    if (!Authenticator::allowed("execute") && !$this->report_from_builder ) {
                         $text = "you are not logged in ";
                     } else
-                    if (!$this->return_to_caller) {
-                        $text = $this->executeQuery(false);
-                    }
+                        if (!$this->return_to_caller) {
+                            $text = $this->executeQuery(false);
+                        }
                 }
 
-                // Situtations where we dont want to switch results page - no data found, debug mode, not logged in
-                if ((count(ReporticoApp::getSystemErrors()) > 0 || ReporticoApp::get("debug_mode") || count(ReporticoApp::getSystemDebug()) > 0 || !$sessionClass::getReporticoSessionParam("loggedin"))) {
+                if ( count(ReporticoApp::getSystemErrors()) > 0 ||
+                      ReporticoApp::get("debug_mode") ||
+                      count(ReporticoApp::getSystemDebug()) > 0 ||
+                      !Authenticator::allowed("project") )
+                {
 
                     // If errors and this is an ajax request return json ajax response for first message
                     $runfromcriteriascreen = ReporticoUtility::getRequestItem("user_criteria_entered", false);
-
-                    //if ( ReporticoApp::get("no_data") && ReporticoUtility::getRequestItem("new_reportico_window",  false ) && !ReporticoApp::get("debug_mode") && $this->target_format == "HTML" && $runfromcriteriascreen && $this->reportico_ajax_mode && count(ReporticoApp::getSystemErrors()) == 1 )
-                    //
-                    //{
-                    //header("HTTP/1.0 404 Not Found", true);
-                    //$response_array = array();
-                    //$response_array["errno"] = (ReporticoApp::getSystemErrors())[0]["errno"];
-                    //$response_array["errmsg"] = (ReporticoApp::getSystemErrors())[0]["errstr"];
-                    //echo json_encode($response_array);
-                    //die;
-                    //}
 
                     header("HTTP/1.0 500 Not Found", true);
                     $this->initializePanels("PREPARE");
                     //$this->setRequestColumns();
 
-                    $this->panels["FORM"]->setVisibility(false);
-                    $text = $this->panels["BODY"]->drawTemplate();
-
-                    $this->panels["MAIN"]->template->debugging = false;
                     $title = ReporticoLang::translate($this->deriveAttribute("ReportTitle", "Unknown"));
-                    $this->panels["MAIN"]->template->assign('TITLE', $title);
-                    
-                    $this->panels["MAIN"]->template->assign('CONTENT', $text);
-                    if ($this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml" || $this->xmlinput == "createproject.xml" || $this->xmlinput == "generate_tutorial.xml") {
+                    $this->template->assign('TITLE', $title);
+
+                    $this->template->assign('CONTENT', $text);
+
+                    if ( Authenticator::allowed("admin-report-selected")) {
                         // If configuring project then use project language strings from admin project
                         // found in projects/admin/lang.php
                         ReporticoLang::loadProjectLanguagePack("admin", $this->output_charset);
-                        $this->panels["MAIN"]->template->assign('SHOW_MINIMAINTAIN', false);
-                        $this->panels["MAIN"]->template->assign('IS_ADMIN_SCREEN', true);
+                        $this->template->assign('SHOW_MINIMAINTAIN', false);
+                        $this->template->assign('IS_ADMIN_SCREEN', true);
                     }
                     ReporticoLang::loadModeLanguagePack("languages", $this->output_charset, true);
                     ReporticoLang::loadModeLanguagePack("prepare", $this->output_charset);
-                    ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->template);
+                    ReporticoLang::localiseTemplateStrings($this->template);
                     $reportname = preg_replace("/.xml/", "", $this->xmloutfile . '_execute.tpl');
                     restore_error_handler();
+
+
+                    // Re-render Status/Error message in case any new errors appeared since last render
+                    $this->widgets["status-message-block"] = new \Reportico\Widgets\StatusMessageBlock($this, true);
+                    $this->widgetRenders["status-message-block"] = $this->widgets["status-message-block"]->render();
+                    $this->template->assign('WIDGETS', $this->widgetRenders);
 
                     // Some calling frameworks require output to be returned
                     // for rendering inside web pages .. in this case
@@ -4186,11 +3854,11 @@ class Reportico extends ReporticoObject
                     $template = $this->getTemplatePath('error.tpl');
 
                     if (false && $this->return_output_to_caller) {
-                        $txt = $this->panels["MAIN"]->template->fetch($template);
+                        $txt = $this->template->fetch($template);
                         $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                         return $txt;
                     } else {
-                        $this->panels["MAIN"]->template->display($template);
+                        $this->template->display($template);
                         $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                     }
                 } else {
@@ -4203,49 +3871,46 @@ class Reportico extends ReporticoObject
                         $title = ReporticoLang::translate($this->deriveAttribute("ReportTitle", "Unknown"));
                         $pagestyle = $this->targets[0]->getStyleTags($this->output_reportbody_styles);
 
-                        $this->panels["MAIN"]->template->assign('PAGE_LAYOUT', strtoupper($this->deriveAttribute("PageLayout", "TABLE")));
-                        $this->panels["MAIN"]->template->assign('REPORT_PAGE_STYLE', $pagestyle);
-                        $this->panels["MAIN"]->template->assign('TITLE', $title);
-                        $this->panels["MAIN"]->template->assign('CONTENT', $text);
+                        $this->template->assign('PAGE_LAYOUT', strtoupper($this->deriveAttribute("PageLayout", "TABLE")));
+                        $this->template->assign('REPORT_PAGE_STYLE', $pagestyle);
+                        $this->template->assign('TITLE', $title);
+                        $this->template->assign('CONTENT', $text);
 
                         // Pass Print formatting options to Template
-                        if ( $this->target_format == "HTML2PDF" ) {
-                            $this->panels["MAIN"]->template->assign('PRINT_FORMAT', "reportico-print-pdf");
+                        if ($this->target_format == "HTML2PDF") {
+                            $this->template->assign('PRINT_FORMAT', "reportico-print-pdf");
 
-                            if ( preg_match("/PDF/i", $this->getAttribute("AutoPaginate") ) )
-                                $this->panels["MAIN"]->template->assign('AUTOPAGINATE', "autopaginate");
+                            if (preg_match("/PDF/i", $this->getAttribute("AutoPaginate")))
+                                $this->template->assign('AUTOPAGINATE', "autopaginate");
                             else
-                                $this->panels["MAIN"]->template->assign('AUTOPAGINATE', "");
-                            $this->panels["MAIN"]->template->assign('ZOOM_FACTOR', strtolower($this->getAttribute("PdfZoomFactor")));
+                                $this->template->assign('AUTOPAGINATE', "");
+                            $this->template->assign('ZOOM_FACTOR', strtolower($this->getAttribute("PdfZoomFactor")));
+                        } else {
+                            $this->template->assign('PRINT_FORMAT', "reportico-print-html");
+
+                            if (preg_match("/HTML/i", $this->getAttribute("AutoPaginate"))) {
+                                $this->template->assign('AUTOPAGINATE', "autopaginate");
+                            } else
+                                $this->template->assign('AUTOPAGINATE', "");
+                            $this->template->assign('ZOOM_FACTOR', strtolower($this->getAttribute("HtmlZoomFactor")));
                         }
-                        else {
-                            $this->panels["MAIN"]->template->assign('PRINT_FORMAT', "reportico-print-html");
+                        $this->template->assign('PAGE_TITLE_DISPLAY', strtolower($this->getAttribute("PageTitleDisplay")));
 
-                            if ( preg_match("/HTML/i", $this->getAttribute("AutoPaginate") ) ) {
-                                $this->panels["MAIN"]->template->assign('AUTOPAGINATE', "autopaginate");
-                            }
-                            else
-                                $this->panels["MAIN"]->template->assign('AUTOPAGINATE', "");
-                            $this->panels["MAIN"]->template->assign('ZOOM_FACTOR', strtolower($this->getAttribute("HtmlZoomFactor")));
-                        }
-                        $this->panels["MAIN"]->template->assign('PAGE_TITLE_DISPLAY', strtolower($this->getAttribute("PageTitleDisplay")));
+                        $this->template->assign('EMBEDDED_REPORT', $this->embedded_report);
 
-                        $this->panels["MAIN"]->template->assign('EMBEDDED_REPORT', $this->embedded_report);
-
-                        $this->panels["MAIN"]->template->assign('PAGE_SIZE', $this->getAttribute("PageSize"));
-                        $this->panels["MAIN"]->template->assign('PAGE_ORIENTATION', strtolower($this->getAttribute("PageOrientation")));
-                        $this->panels["MAIN"]->template->assign('PAGE_TOP_MARGIN', strtolower($this->getAttribute("TopMargin")));
-                        $this->panels["MAIN"]->template->assign('PAGE_BOTTOM_MARGIN', strtolower($this->getAttribute("BottomMargin")));
-                        $this->panels["MAIN"]->template->assign('PAGE_LEFT_MARGIN', strtolower($this->getAttribute("LeftMargin")));
-                        $this->panels["MAIN"]->template->assign('PAGE_RIGHT_MARGIN', strtolower($this->getAttribute("RightMargin")));
-                        //$this->panels["MAIN"]->template->assign('PAGE_TOP_MARGIN', "100px");
-                        //$this->panels["MAIN"]->template->assign('PAGE_BOTTOM_MARGIN', "50px");
-
+                        $this->template->assign('PAGE_SIZE', $this->getAttribute("PageSize"));
+                        $this->template->assign('PAGE_ORIENTATION', strtolower($this->getAttribute("PageOrientation")));
+                        $this->template->assign('PAGE_TOP_MARGIN', strtolower($this->getAttribute("TopMargin")));
+                        $this->template->assign('PAGE_BOTTOM_MARGIN', strtolower($this->getAttribute("BottomMargin")));
+                        $this->template->assign('PAGE_LEFT_MARGIN', strtolower($this->getAttribute("LeftMargin")));
+                        $this->template->assign('PAGE_RIGHT_MARGIN', strtolower($this->getAttribute("RightMargin")));
+                        //$this->template->assign('PAGE_TOP_MARGIN', "100px");
+                        //$this->template->assign('PAGE_BOTTOM_MARGIN', "50px");
 
 
                         // When printing in separate html window make sure we dont treat report as embedded
                         if (ReporticoUtility::getRequestItem("new_reportico_window", false)) {
-                            $this->panels["MAIN"]->template->assign('EMBEDDED_REPORT', false);
+                            $this->template->assign('EMBEDDED_REPORT', false);
                         }
 
                         if ($this->email_recipients) {
@@ -4254,9 +3919,9 @@ class Reportico extends ReporticoObject
                             foreach ($recipients as $rec) {
                                 ReporticoLang::loadModeLanguagePack("languages", $this->output_charset, true);
                                 ReporticoLang::loadModeLanguagePack("execute", $this->output_charset);
-                                ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->template);
+                                ReporticoLang::localiseTemplateStrings($this->template);
                                 $template = $this->getTemplatePath('execute.tpl');
-                                $mailtext = $this->panels["MAIN"]->template->fetch($template, null, null, false);
+                                $mailtext = $this->template->fetch($template, null, null, false);
                                 //$boundary = '-----=' . md5( uniqid ( rand() ) );
                                 //$message = "Content-Type: text/html; name=\"my attachment\"\n";
                                 //$message .= "Content-Transfer-Encoding: base64\n";
@@ -4275,19 +3940,19 @@ class Reportico extends ReporticoObject
                         } else {
                             ReporticoLang::loadModeLanguagePack("languages", $this->output_charset, true);
                             ReporticoLang::loadModeLanguagePack("execute", $this->output_charset);
-                            ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->template);
+                            ReporticoLang::localiseTemplateStrings($this->template);
                             $reportname = preg_replace("/.xml/", "", $this->xmloutfile . '_execute.tpl');
                             restore_error_handler();
 
                             $template = $this->getTemplatePath('execute.tpl');
                             if ($this->return_output_to_caller) {
-                                $txt = $this->panels["MAIN"]->template->fetch($template);
+                                $txt = $this->template->fetch($template);
                                 $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                                 return $txt;
                             } else {
-                                //$txt = $this->panels["MAIN"]->template->fetch($template);
+                                //$txt = $this->template->fetch($template);
                                 //file_put_contents("/tmp/fred1", $txt);
-                                $this->panels["MAIN"]->template->display($template);
+                                $this->template->display($template);
                                 $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                             }
 
@@ -4298,40 +3963,26 @@ class Reportico extends ReporticoObject
 
             case "MAINTAIN":
 
+                if ( !$this->authenticator ) {
+                    $this->authenticator = Authenticator::initialize($this->authenticator_class, $this);
+                    //Authenticator::login();
+                }
+
                 // Avoid url manipulation by only allowing maintain mode in design or demo mode
                 $this->handleXmlQueryInput($mode);
-                if ($this->top_level_query) {
+                $this->initializePanels($mode);
 
-                    // Allow read-only access to MAINTAIN is an in-criteria screen edit button was called
-                    if ( ReporticoUtility::getRequestItem("partialMaintain", false)) {
-                        if ( $this->login_type != "DESIGN" ) {
-                            $this->access_mode = "DEMO";
-                        }
-                    }
+                ReporticoLang::loadModeLanguagePack("maintain", $this->output_charset);
+                ReporticoLang::localiseTemplateStrings($this->template);
+                $this->xmlin->handleUserEntry();
+                $sessionClass::setReporticoSessionParam("xmlintext", $this->xmlintext);
 
-                    $this->initializePanels($mode);
-                    if (!($this->login_type == "DESIGN" || $this->access_mode == "DEMO")) {
-                        break;
-                    }
+                $this->loadWidgets("core");
 
-                    ReporticoLang::loadModeLanguagePack("maintain", $this->output_charset);
-                    ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->template);
-                    $this->xmlin->handleUserEntry();
-                    $sessionClass::setReporticoSessionParam("xmlintext", $this->xmlintext);
-
-                    $text = $this->panels["BODY"]->drawTemplate();
-                    $this->panels["MAIN"]->template->assign('PARTIALMAINTAIN', ReporticoUtility::getRequestItem("partialMaintain", false));
-                    $this->panels["MAIN"]->template->assign('CONTENT', $text);
-                    $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS', $this->dynamic_grids);
-                    $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_SORTABLE', $this->dynamic_grids_sortable);
-                    $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_SEARCHABLE', $this->dynamic_grids_searchable);
-                    $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_PAGING', $this->dynamic_grids_paging);
-                    $this->panels["MAIN"]->template->assign('REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE', $this->dynamic_grids_page_size);
-                    $template = $this->getTemplatePath('maintain.tpl');
-                    $this->panels["MAIN"]->template->display($template);
-                } else {
-                    $this->premaintainQuery();
-                }
+                $text = $this->xmlin->xml2html($this->xmlin->data);
+                $this->template->assign('CONTENT', $text);
+                $template = $this->getTemplatePath('maintain.tpl');
+                $this->template->display($template);
                 break;
 
             case "XMLOUT":
@@ -4369,140 +4020,10 @@ class Reportico extends ReporticoObject
 
         $this->handledInitialSettings();
 
-        if ( !$this->keep_session_open )
+        if (!$this->keep_session_open)
             $sessionClass::closeReporticoSession();
-    }
-
-    // -----------------------------------------------------------------------------
-    // Function : build_admin_screen()
-    // -----------------------------------------------------------------------------
-    public function buildAdminScreen()
-    {
-
-        $p = new DesignPanel($this, "ADMIN");
-        $this->initializePanels("ADMIN");
-        $this->setAttribute("ReportTitle", ReporticoApp::get('menu_title'));
-        ReporticoLang::loadModeLanguagePack("languages", $this->output_charset);
-        ReporticoLang::loadModeLanguagePack("admin", $this->output_charset);
-        ReporticoLang::localiseTemplateStrings($this->panels["MAIN"]->template);
-
-        if (ReporticoApp::getConfig("project") != "admin") {
-            return;
-        }
-
-        if (ReporticoApp::get("static_menu") && is_array(ReporticoApp::get("static_menu"))) {
-            $ct = 0;
-            foreach (ReporticoApp::get("static_menu") as $menuitem) {
-                if ($menuitem["title"] == "<AUTO>") {
-                    // Generate Menu from XML files
-                    if (is_dir(ReporticoApp::get("projpath"))) {
-                        if ($dh = opendir(ReporticoApp::get("projpath"))) {
-                            while (($file = readdir($dh)) !== false) {
-                                $mtch = "/" . $menuitem["report"] . "/";
-                                if (preg_match($mtch, $file)) {
-                                    $repxml = new XmlReader($this, $file, false, "ReportTitle");
-                                    $this->panels["MENU"]->setMenuItem($file, $repxml->search_response);
-                                }
-                            }
-                            closedir($dh);
-                        }
-                    }
-                } else {
-                    $this->panels["MENU"]->setMenuItem($menuitem["report"], ReporticoLang::templateXlate($menuitem["title"]));
-                }
-                $ct++;
-            }
-
-            if ($ct == 0) {
-                ReporticoApp::handleError("No Menu Items Available - Check Language - " . ReporticoApp::get("language"));
-            }
-
-            // Generate list of projects to choose from by finding all folders above the
-            // current project area (i.e. the projects folder) and looking for any folder
-            // that contains a config.php file (which means it proably is a project)
-            $projpath = $this->projects_folder;
-            if (!is_dir($projpath)) {
-                ReporticoUtility::findFileToInclude($projpath, $projpath);
-            }
-
-            if (is_dir($projpath)) {
-                $ct = 0;
-                if ($dh = opendir($projpath)) {
-                    while (($file = readdir($dh)) !== false) {
-                        if ($file == ".") {
-                            continue;
-                        }
-
-                        if (is_dir($projpath . "/" . $file)) {
-                            if (is_file($projpath . "/" . $file . "/config.php")) {
-                                //$repxml = new XmlReader($this, $file, false, "ReportTitle");
-                                $this->panels["ADMIN"]->setProjectItem($file, $file);
-                            }
-                        }
-
-                    }
-                    closedir($dh);
-                }
-            }
-
-        }
-    }
-
-    // -----------------------------------------------------------------------------
-    // Function : build_menu()
-    // -----------------------------------------------------------------------------
-    public function buildMenu()
-    {
-        $sessionClass = ReporticoSession();
-
-        if (!$this->static_menu && !is_array($this->static_menu)) {
-            $this->static_menu = ReporticoApp::get("static_menu");
-        }
-
-        // In admin mode static_menu shows all reports
-        if ($sessionClass::issetReporticoSessionParam('admin_password')) {
-            // .. unless an admin menu has been specified
-            if (ReporticoApp::get("admin_menu")) {
-                $this->static_menu = ReporticoApp::get("admin_menu");
-            } else {
-                $this->static_menu = array(array("report" => ".*\.xml", "title" => "<AUTO>"));
-            }
-
-        }
-
-        $p = new DesignPanel($this, "MENU");
-        $this->initializePanels("MENU");
-        $this->setAttribute("ReportTitle", ReporticoApp::getConfig("project_title", "Report Suite"));
-
-        if ($this->static_menu && is_array($this->static_menu)) {
-            $ct = 0;
-            foreach ($this->static_menu as $menuitem) {
-                if ($menuitem["title"] == "<AUTO>") {
-                    // Generate Menu from XML files
-                    if (is_dir(ReporticoApp::get("projpath"))) {
-                        if ($dh = opendir(ReporticoApp::get("projpath"))) {
-                            while (($file = readdir($dh)) !== false) {
-                                $mtch = "/^" . $menuitem["report"] . "/";
-                                if (preg_match($mtch, $file)) {
-                                    $repxml = new XmlReader($this, $file, false, "ReportTitle");
-                                    $this->panels["MENU"]->setMenuItem($file, ReporticoLang::translate($repxml->search_response));
-                                }
-                            }
-                            closedir($dh);
-                        }
-                    }
-                } else {
-                    $this->panels["MENU"]->setMenuItem($menuitem["report"], ReporticoLang::translate($menuitem["title"]));
-                }
-
-                $ct++;
-            }
-
-            if ($ct == 0) {
-                ReporticoApp::handleError("No Menu Items Available - Check Language - " . ReporticoApp::get("language"));
-            }
-
-        }
+        //Authenticator::show("FINAL");
+        Authenticator::saveToSession();
     }
 
     // -----------------------------------------------------------------------------
@@ -4564,7 +4085,9 @@ class Reportico extends ReporticoObject
         // one target means first target is array which becomes source
         // for second target
         //for ($i = 0; $i < count($this->targets); $i++ )
-        for ($_counter = 0; $_counter < 1; $_counter++) {
+        $_counter = 0;
+        //for ($_counter = 0; $_counter < 1; $_counter++) {
+        {
             $target = &$this->targets[$_counter];
             $target->setQuery($this);
             $target->setColumns($this->columns);
@@ -4576,6 +4099,7 @@ class Reportico extends ReporticoObject
                 $this->columns[$k]->old_column_value = "";
             }
 
+            /*
             if ($_counter > 0) {
                 // Execute query 2
                 $this->assignment = array();
@@ -4589,6 +4113,7 @@ class Reportico extends ReporticoObject
                     $this->columns[$k]->in_select = true;
                 }
             }
+            */
 
             /* Performing SQL query */
             $ds = &$this->datasource;
@@ -4647,7 +4172,7 @@ class Reportico extends ReporticoObject
                     $code = "\$_pdo =& \$_connection->_connectionID;" . $code;
                     $code = "if ( \$_connection )" . $code;
                     $code = "\$_pdo = false;" . $code;
-                    $code = "set_include_path(get_include_path().'".PATH_SEPARATOR.__DIR__."/..".PATH_SEPARATOR.$this->admin_projects_folder."/admin/');" . $code;
+                    $code = "set_include_path(get_include_path().'" . PATH_SEPARATOR . __DIR__ . "/.." . PATH_SEPARATOR . $this->admin_projects_folder . "/admin/');" . $code;
                     $code = "\$_connection =& \$this->datasource->ado_connection;" . $code;
                     $code = "namespace Reportico\Engine;" . $code;
 
@@ -4701,18 +4226,19 @@ class Reportico extends ReporticoObject
             }
 
             // User may have flagged returning before SQL performed
-            if (ReporticoApp::get("no_sql")) {
+            if (ReporticoApp::get("no_sql"))
                 return;
-            }
 
+            // Prepare for query execution
             $recordSet = false;
             $errorCode = false;
             $errorMessage = false;
 
             // If the source is an array then dont try to run SQL
-            if (is_object($conn) && get_class($conn) == "DataSourceArray") {
+            if (is_object($conn) && basename(get_class($conn)) == "DataSourceArray") {
                 $recordSet = $conn;
             } else {
+
                 try {
                     if (!ReporticoApp::get("error_status") && $conn != false) {
                         $recordSet = $conn->Execute($this->query_statement);
@@ -4831,7 +4357,7 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function fetchColumnAttributes()
     {
-        if ( !is_object($this->datasource) )
+        if (!is_object($this->datasource))
             return false;
 
         $conn = $this->datasource->ado_connection;
@@ -4846,16 +4372,16 @@ class Reportico extends ReporticoObject
 
             if (array_key_exists($value->query_name, $this->clone_columns)) {
                 $value->column_type =
-                $this->clone_columns[$value->query_name][0];
+                    $this->clone_columns[$value->query_name][0];
                 $value->column_length =
-                $this->clone_columns[$value->query_name][1];
+                    $this->clone_columns[$value->query_name][1];
 
             } else if ($value->table_name) {
                 if ($lasttab != $value->table_name) {
                     $datadict = $this->datasource->ado_connection->MetaColumns($value->table_name);
                     if (!$datadict) {
                         // echo "Data Dictionary Attack Failed Table $value->table_name\n";
-                        // echo "Error ".$this->datasource->ado_connection->ErrorMsg()."<br>";
+                        // PREPAREecho "Error ".$this->datasource->ado_connection->ErrorMsg()."<br>";
                         //die;
                     }
                 }
@@ -4865,16 +4391,16 @@ class Reportico extends ReporticoObject
                         //$coldets = $datadict[strtoupper($value->column_name)];
                         $coldets = $datadict[$k];
                         $value->column_type =
-                        ReporticoDataSource::mapColumnType(
-                            $this->datasource->driver,
-                            $datadict[$k]->type);
+                            ReporticoDataSource::mapColumnType(
+                                $this->datasource->driver,
+                                $datadict[$k]->type);
 
                         if (strtoupper($value->column_type) == "INTEGER") {
                             $value->column_length = 0;
                         } else if (strtoupper($value->column_type) == "SMALLINT") {
                             $value->column_length = 0;
                         } else {
-                            $value->column_length = (int) $datadict[$k]->max_length;
+                            $value->column_length = (int)$datadict[$k]->max_length;
                         }
 
                         break;
@@ -4887,7 +4413,7 @@ class Reportico extends ReporticoObject
     }
 
     // -----------------------------------------------------------------------------
-    // Function : dd_assignment
+    // Function : Add_assignment
     // -----------------------------------------------------------------------------
     public function addAssignment
     (
@@ -4895,7 +4421,8 @@ class Reportico extends ReporticoObject
         $expression,
         $criteria,
         $atstart = false
-    ) {
+    )
+    {
         //print("Added assign $query_name, $expression, $criteria<BR>");
         if ($atstart) {
             array_unshift($this->assignment, new Assignment
@@ -4913,6 +4440,10 @@ class Reportico extends ReporticoObject
                 $criteria
             );
         }
+
+        //$x = end($this->assignment);
+        //$x->expression = "'gg'";
+        return end($this->assignment);
 
     }
 
@@ -4946,6 +4477,7 @@ class Reportico extends ReporticoObject
 
         // Perform assignments
         foreach ($this->assignment as $assign) {
+
             $col = ReporticoUtility::getQueryColumn($assign->query_name, $this->columns);
             if (!$col) {
                 continue;
@@ -4953,6 +4485,7 @@ class Reportico extends ReporticoObject
             ReporticoApp::set("code_area", "Assignment");
             ReporticoApp::set("code_source", "<BR>In Assignment if " . $assign->criteria . "<BR>");
             ReporticoApp::set("code_source", "<BR>In Assignment " . $assign->query_name . "=" . $assign->expression);
+
             if ($this->test($assign->criteria)) {
                 if ($assign->non_assignment_operation) {
                     $a = $assign->expression . ';';
@@ -4962,11 +4495,27 @@ class Reportico extends ReporticoObject
 
                 $r = eval($a);
 
-                if ( ReporticoApp::get("debug_mode")) {
+                if (ReporticoApp::get("debug_mode")) {
                     ReporticoApp::handleDebug("Assignment " . $assign->query_name . " = " . $assign->expression .
                         " => " . $col->column_value, ReporticoApp::DEBUG_HIGH);
                 }
 
+            } else {
+                if ($assign->else) {
+
+                    if ($assign->non_assignment_operation) {
+                        $a = $assign->else . ';';
+                    } else {
+                        $a = '$col->column_value = ' . $assign->else . ';';
+                    }
+
+                    $r = eval($a);
+
+                    if (ReporticoApp::get("debug_mode")) {
+                        ReporticoApp::handleDebug("Assignment " . $assign->query_name . " = " . $assign->else .
+                            " => " . $col->column_value, ReporticoApp::DEBUG_HIGH);
+                    }
+                }
             }
 
         }
@@ -5106,7 +4655,7 @@ class Reportico extends ReporticoObject
     public function embedImage($column_assignee, $image, $width = false, $height = false)
     {
         ReporticoUtility::getQueryColumn($column_assignee, $this->columns)->output_images =
-        array("image" => $image, "width" => $width, "height" => $height);
+            array("image" => $image, "width" => $width, "height" => $height);
     }
 
     // -----------------------------------------------------------------------------
@@ -5116,7 +4665,7 @@ class Reportico extends ReporticoObject
     public function embedHyperlink($column_assignee, $label, $url, $open_in_new = true, $is_drilldown = false)
     {
         ReporticoUtility::getQueryColumn($column_assignee, $this->columns)->output_hyperlinks =
-        array("label" => $label, "url" => $url, "open_in_new" => $open_in_new, "is_drilldown" => $is_drilldown);
+            array("label" => $label, "url" => $url, "open_in_new" => $open_in_new, "is_drilldown" => $is_drilldown);
     }
 
     // -----------------------------------------------------------------------------
@@ -5183,7 +4732,7 @@ class Reportico extends ReporticoObject
         if ($group_name) {
             if (!array_key_exists($group_name, $this->groupvals)) {
                 $this->groupvals[$group_name] =
-                array("lineno" => 0);
+                    array("lineno" => 0);
             }
 
             if ($this->changed($group_name)) {
@@ -5213,28 +4762,28 @@ class Reportico extends ReporticoObject
         }
         $result = str_replace(",", "", $col->column_value);
 
-        if ( !is_numeric($col->old_column_value)  )
+        if (!is_numeric($col->old_column_value))
             $col->old_column_value = 0;
         if ($col->old_column_value && !$col->reset_flag) {
             $result =
-            $col->old_column_value +
-            str_replace(",", "", $col->column_value);
+                $col->old_column_value +
+                str_replace(",", "", $col->column_value);
         }
         if ($group_name) {
             if (!array_key_exists($group_name, $col->groupvals)) {
                 $col->groupvals[$group_name] =
-                array("average" => 0,
-                    "sum" => "0",
-                    "avgct" => 0,
-                    "avgsum" => 0,
-                    "min" => 0,
-                    "max" => 0);
+                    array("average" => 0,
+                        "sum" => "0",
+                        "avgct" => 0,
+                        "avgsum" => 0,
+                        "min" => 0,
+                        "max" => 0);
             }
 
             if ($this->changed($group_name)) {
                 $col->groupvals[$group_name]["sum"] = str_replace(",", "", $col->column_value);
             } else {
-                if ( is_numeric($col->column_value) )
+                if (is_numeric($col->column_value))
                     $col->groupvals[$group_name]["sum"] += str_replace(",", "", $col->column_value);
             }
 
@@ -5269,12 +4818,12 @@ class Reportico extends ReporticoObject
         if ($group_name) {
             if (!array_key_exists($group_name, $col->groupvals)) {
                 $col->groupvals[$group_name] =
-                array("average" => 0,
-                    "sum" => "0",
-                    "avgct" => 0,
-                    "avgsum" => 0,
-                    "min" => 0,
-                    "max" => 0);
+                    array("average" => 0,
+                        "sum" => "0",
+                        "avgct" => 0,
+                        "avgsum" => 0,
+                        "min" => 0,
+                        "max" => 0);
             }
 
             if ($this->changed($group_name)) {
@@ -5314,12 +4863,12 @@ class Reportico extends ReporticoObject
         if ($group_name) {
             if (!array_key_exists($group_name, $col->groupvals)) {
                 $col->groupvals[$group_name] =
-                array("average" => 0,
-                    "sum" => "0",
-                    "avgct" => 0,
-                    "avgsum" => 0,
-                    "min" => 0,
-                    "max" => 0);
+                    array("average" => 0,
+                        "sum" => "0",
+                        "avgct" => 0,
+                        "avgsum" => 0,
+                        "min" => 0,
+                        "max" => 0);
             }
 
             $grpval = &$col->groupvals[$group_name];
@@ -5331,8 +4880,8 @@ class Reportico extends ReporticoObject
                 $grpval["avgct"]++;
                 $grpval["avgsum"] += $col->column_value;
                 $grpval["average"] =
-                $grpval["avgsum"] /
-                $grpval["avgct"];
+                    $grpval["avgsum"] /
+                    $grpval["avgct"];
             }
             $result = $grpval["average"];
         } else {
@@ -5368,12 +4917,12 @@ class Reportico extends ReporticoObject
         if ($group_name) {
             if (!array_key_exists($group_name, $col->groupvals)) {
                 $col->groupvals[$group_name] =
-                array("average" => 0,
-                    "sum" => "0",
-                    "avgct" => 0,
-                    "avgsum" => 0,
-                    "min" => 0,
-                    "max" => 0);
+                    array("average" => 0,
+                        "sum" => "0",
+                        "avgct" => 0,
+                        "avgsum" => 0,
+                        "min" => 0,
+                        "max" => 0);
             }
 
             $grpval = &$col->groupvals[$group_name];
@@ -5390,9 +4939,9 @@ class Reportico extends ReporticoObject
             if ($col->reset_flag || !$col->maximum) {
                 $col->maximum = $col->column_value;
             } else
-            if ($col->maximum < $col->column_value) {
-                $col->maximum = $col->column_value;
-            }
+                if ($col->maximum < $col->column_value) {
+                    $col->maximum = $col->column_value;
+                }
 
             $result = $col->maximum;
         }
@@ -5417,12 +4966,12 @@ class Reportico extends ReporticoObject
         if ($group_name) {
             if (!array_key_exists($group_name, $col->groupvals)) {
                 $col->groupvals[$group_name] =
-                array("average" => 0,
-                    "sum" => "0",
-                    "avgct" => 0,
-                    "avgsum" => 0,
-                    "min" => 0,
-                    "max" => 0);
+                    array("average" => 0,
+                        "sum" => "0",
+                        "avgct" => 0,
+                        "avgsum" => 0,
+                        "min" => 0,
+                        "max" => 0);
             }
 
             $grpval = &$col->groupvals[$group_name];
@@ -5439,9 +4988,9 @@ class Reportico extends ReporticoObject
             if ($col->reset_flag || !$col->minimum) {
                 $col->minimum = $col->column_value;
             } else
-            if ($col->minimum > $col->column_value) {
-                $col->minimum = $col->column_value;
-            }
+                if ($col->minimum > $col->column_value) {
+                    $col->minimum = $col->column_value;
+                }
 
             $result = $col->minimum;
         }
@@ -5567,12 +5116,13 @@ class Reportico extends ReporticoObject
         }
     }
 
-/**
- * Function save_admin_password
- *
- * Writes new admin password to the admin project config.php. If the projects area is in a different location
- * than the admin area, then place the config.php in the projects area
- */
+    /**
+     * Function save_admin_password
+     *
+     * Writes new admin password to the admin project config.php. If the projects area is in a different location
+     * than the admin area, then place the config.php in the projects area
+     */
+    /*
     public function saveAdminPassword($password1, $password2, $language)
     {
         $sessionClass = ReporticoSession();
@@ -5605,7 +5155,7 @@ class Reportico extends ReporticoObject
         $target_conf = $source_conf;
 
         // If projects area different to source admin, create admin project in projects folder to store config.php
-        if ( $this->admin_projects_folder != $this->projects_folder ) {
+        if ($this->admin_projects_folder != $this->projects_folder) {
             $target_parent = ReporticoUtility::findBestLocationInIncludePath($this->projects_folder);
             $target_dir = $target_parent . "/admin";
             $target_conf = $target_dir . "/config.php";
@@ -5614,7 +5164,7 @@ class Reportico extends ReporticoObject
         if (!@is_dir($target_dir)) {
             @mkdir($target_dir, 0755, true);
             if (!is_dir($target_dir)) {
-            $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
+                $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
                 return "Could not create admin config folder $target_conf - check permissions and continue";
             }
         }
@@ -5653,8 +5203,8 @@ class Reportico extends ReporticoObject
         }
 
         $txt = preg_replace("/(define.*?SW_ADMIN_PASSWORD',).*\);/", "$1'$password1');", $txt);
-        $txt = preg_replace ( "/(ReporticoApp::setConfig\(.admin_password.,).*/", "$1'$password1');", $txt);
-        $txt = preg_replace ( "/(ReporticoApp::setConfig\(.language.,).*/", "$1'$language');", $txt);
+        $txt = preg_replace("/(ReporticoApp::setConfig\(.admin_password.,).*PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP/", "$1'$password1');", $txt);
+        $txt = preg_replace("/(ReporticoApp::setConfig\(.language.,).*PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP/", "$1'$language');", $txt);
 
         $sessionClass::unsetReporticoSessionParam('admin_password');
         $retval = file_put_contents($target_conf, $txt);
@@ -5669,16 +5219,17 @@ class Reportico extends ReporticoObject
         return;
 
     }
+    */
 
-/**
- * Function setProjectEnvironment
- *
- * Analyses configuration and current session to identify which project area
- * is to be used.
- * If a project is specified in the HTTP parameters then that is used, otherwise
- * the current SESSION
- * "reports" project is used
- */
+    /**
+     * Function setProjectEnvironment
+     *
+     * Analyses configuration and current session to identify which project area
+     * is to be used.
+     * If a project is specified in the HTTP parameters then that is used, otherwise
+     * the current SESSION
+     * "reports" project is used
+     */
     public function setProjectEnvironment($initial_project = false, $project_folder = "projects", $admin_project_folder = "projects")
     {
         $sessionClass = ReporticoSession();
@@ -5712,7 +5263,7 @@ class Reportico extends ReporticoObject
         }
 
         if (!$project && array_key_exists("submit_design_project", $_REQUEST)) {
-            $project = ReporticoUtility::getRequestItem("jump_to_design_project", "");
+            $project = ReporticoUtility::getRequestItem("jump_to_create_report", "");
             $sessionClass::setReporticoSessionParam("project", $project);
         }
 
@@ -5884,10 +5435,10 @@ class Reportico extends ReporticoObject
 
         }
 
-        if (isset($menu_title) && !ReporticoApp::get("menu_title")) 
-        ReporticoApp::set('menu_title', $menu_title);
+        if (isset($menu_title) && !ReporticoApp::get("menu_title"))
+            ReporticoApp::set('menu_title', $menu_title);
 
-        if (isset($dropdown_menu) && !ReporticoApp::get("dropdown_menu") ) {
+        if (isset($dropdown_menu) && !ReporticoApp::get("dropdown_menu")) {
             ReporticoApp::set("dropdown_menu", $dropdown_menu);
         }
 
@@ -5957,7 +5508,7 @@ class Reportico extends ReporticoObject
         }
     }
 
-    private function getTheme()
+    public function getTheme()
     {
         $sessionClass = ReporticoSession();
         $theme = $sessionClass::sessionRequestItem("theme", $this->theme);
@@ -5997,7 +5548,7 @@ class Reportico extends ReporticoObject
         //return $this->getTheme() . '/' . $template;
     }
 
-    public function applyStyleset($type, $styles, $column = false, $mode = false, $condition = false)
+    public function applyStyleset($type, $styles, $column = false, $mode = false, $condition = false, $assignment = false)
     {
         $txt = "";
         $usecolumn = false;
@@ -6011,6 +5562,18 @@ class Reportico extends ReporticoObject
             //echo "Apply Styleset Column $column not found<BR>";
             return;
         }
+
+        if ( is_string($styles)) {
+            $stylearr = explode(";", $styles);
+            $styles = [];
+            foreach ($stylearr as $v) {
+                $element = explode(":", $v);
+                if ($element && isset($element[1])) {
+                    $styles[$element[0]] = trim($element[1]);
+                }
+            }
+        }
+
         foreach ($styles as $element => $style) {
             $txt .= "applyStyle('$type', '$element', '$style');";
         }
@@ -6020,10 +5583,203 @@ class Reportico extends ReporticoObject
             $condition = "{TARGET_FORMAT} == '$mode'";
         }
 
-        $this->addAssignment($usecolumn, $txt, $condition, true);
+        if ( !$assignment )
+            $this->addAssignment($usecolumn, $txt, $condition, true);
+        else
+            $assignment->setExpression($txt);
 
     }
 
+    function session($namespace = "")
+    {
+
+        $sessionClass = ReporticoSession();
+        if (method_exists($sessionClass, "switchToRequestedNamespace"))
+            $this->session_namespace = $sessionClass::switchToRequestedNamespace($this->session_namespace);
+
+        if ($this->session_namespace) {
+            ReporticoApp::set("session_namespace", $this->session_namespace);
+        }
+
+        if (ReporticoApp::get("session_namespace")) {
+            ReporticoApp::set("session_namespace_key", "reportico_" . ReporticoApp::get("session_namespace"));
+        }
+
+        ReporticoSession::setUpReporticoSession($this->session_namespace);
+
+        if ( $this->clear_reportico_session) {
+            $namespace = ReporticoApp::get("session_namespace");
+            ReporticoApp::set("session_namespace", $namespace);
+            ReporticoApp::set("session_namespace_key", "reportico_" . ReporticoApp::get("session_namespace"));
+            $sessionClass::initializeReporticoNamespace(ReporticoApp::get("session_namespace_key"));
+        }
+        // PPP echo "ISSETB?EXE ".$sessionClass::issetReporticoSessionParam("reportConfig")."<BR>";
+
+        if ($namespace)
+            $this->session_namespace = $namespace;
+    }
+
+    /*
+     * Prepare asset manager
+     */
+    function initialiseAssetManager(){
+
+        $this->assetManager = new \Reportico\Engine\AssetManager($this);
+        $this->assetManager->initialise();
+        $this->assetManager->initialiseTheme();
+
+    }
+
+    /*
+     * Initialise controls and browser objects which are relevant to the maind
+     */
+    function renderWidget($name, $class){
+
+        $class = "\Reportico\Widgets\\$class";
+        if (isset($this->widgets[$name]))
+            $widget = $this->widgets["$name"];
+        else {
+            $widget = $this->widgets[$name] = new $class($this, true, "$name");
+        }
+
+        return $widget->render();
+    }
+
+    /*
+     * Initialise controls and browser objects which are relevant to the maind
+     */
+    function loadWidgets($group){
+
+        $this->initialiseAssetManager();
+
+        $this->assetManager->setOptions("dynamicgrid",
+                [
+                "enabled" => $this->dynamic_grids,
+                "sortable" => $this->dynamic_grids_sortable,
+                "searchable" => $this->dynamic_grids_searchable,
+                "paging" => $this->dynamic_grids_paging,
+                "pageSize" => $this->dynamic_grids_page_size
+                ]);
+
+        $this->assetManager->setOptions("core",
+            [
+                "csrfToken" => $this->csrfToken,
+                "ajaxHandler" => $this->ajaxHandler,
+            ]);
+
+        $this->widgets = [];
+
+        // Action externally controlled show/hide of widget elements
+        foreach ( $this->output_template_parameters as $k => $v ) {
+            if ( $v == "show" ) {
+                Authenticator::flag($k);
+            }
+        }
+
+        //if ( !$this->reportico_ajax_called || ( $this->execute_mode == "PREPARE" ) ) {
+            $this->widgets["popup-page-setup"] = new \Reportico\Widgets\PopupEditButton($this, true, "page-setup");
+            $this->widgets["output-html-new-window"] = new \Reportico\Widgets\SubmitExecute($this, true, "output-html-new-window");
+            $this->widgets["output-html-inline"] = new \Reportico\Widgets\SubmitExecute($this, true, "output-html-inline");
+            $this->widgets["output-pdf"] = new \Reportico\Widgets\SubmitExecute($this, true, "output-pdf");
+            $this->widgets["output-csv"] = new \Reportico\Widgets\SubmitExecute($this, true, "output-csv");
+            $this->widgets["submit-go"] = new \Reportico\Widgets\SubmitExecute($this, true, "submit-go");
+            $this->widgets["submit-reset"] = new \Reportico\Widgets\SubmitExecute($this, true, "submit-reset");
+            $this->widgets["lookup-search"] = new \Reportico\Widgets\SubmitExecute($this, true, "lookup-search");
+            $this->widgets["lookup-clear"] = new \Reportico\Widgets\SubmitExecute($this, true, "lookup-clear");
+            $this->widgets["lookup-select-all"] = new \Reportico\Widgets\SubmitExecute($this, true, "lookup-select-all");
+            $this->widgets["lookup-ok"] = new \Reportico\Widgets\SubmitExecute($this, true, "lookup-ok");
+        //}
+
+        if ( !$this->reportico_ajax_called || ( Authenticator::allowed("design") ) ) {
+
+            $this->widgets["save-report"] = new \Reportico\Widgets\SaveReport($this, true);
+            $this->widgets["run-report"] = new \Reportico\Widgets\SubmitExecute($this, true, "run-report");
+            $this->widgets["delete-report"] = new \Reportico\Widgets\SubmitExecute($this, true, "delete-report");
+            $this->widgets["new-report"] = new \Reportico\Widgets\SubmitExecute($this, true, "new-report");
+
+            $this->widgets["popup-edit-sql"] = new \Reportico\Widgets\PopupEditButton($this, true, "edit-sql");
+            $this->widgets["popup-edit-description"] = new \Reportico\Widgets\PopupEditButton($this, true, "edit-description");
+            $this->widgets["popup-edit-columns"] = new \Reportico\Widgets\PopupEditButton($this, true, "edit-columns");
+            $this->widgets["popup-edit-assignments"] = new \Reportico\Widgets\PopupEditButton($this, true, "edit-assignments");
+            $this->widgets["popup-edit-groups"] = new \Reportico\Widgets\PopupEditButton($this, true, "edit-groups");
+            $this->widgets["popup-edit-charts"] = new \Reportico\Widgets\PopupEditButton($this, true, "edit-charts");
+            $this->widgets["popup-edit-criteria"] = new \Reportico\Widgets\PopupEditButton($this, true, "edit-criteria");
+            $this->widgets["popup-edit-page-headers"] = new \Reportico\Widgets\PopupEditButton($this, true, "edit-page-headers");
+            $this->widgets["popup-edit-page-footers"] = new \Reportico\Widgets\PopupEditButton($this, true, "edit-page-footers");
+            $this->widgets["popup-edit-grid"] = new \Reportico\Widgets\PopupEditButton($this, true, "edit-grid");
+            $this->widgets["popup-edit-title"] = new \Reportico\Widgets\PopupEditButton($this, true, "edit-title");
+            $this->widgets["popup-edit-code"] = new \Reportico\Widgets\PopupEditButton($this, true, "edit-code");
+            $this->widgets["popup-edit-pre-sqls"] = new \Reportico\Widgets\PopupEditButton($this, true, "edit-pre-sqls");
+            $this->widgets["popup-edit-display-order"] = new \Reportico\Widgets\PopupEditButton($this, true, "edit-display-order");
+        }
+
+        $this->widgets["navigation-menu"] = new \Reportico\Widgets\NavigationMenu($this, true, "navigation-menu");
+        $this->widgets["criteria-form"] = new \Reportico\Widgets\CriteriaForm($this, true, "prepare");
+        $this->widgets["form"] = new \Reportico\Widgets\Form($this, true, "basic");
+        $this->widgets["design-form"] = new \Reportico\Widgets\Form($this, true, "design");
+        //$this->widgets["criteria-lookup"] = new \Reportico\Widgets\CriteriaLookup($this, true);
+        $this->widgets["criteria-toggle"] = new \Reportico\Widgets\CriteriaToggle($this, true);
+        $this->widgets["powered-by-banner"] = new \Reportico\Widgets\PoweredByBanner($this, true);
+        $this->widgets["template"] = new \Reportico\Widgets\Template($this, true);
+
+        $this->widgets["title"] = new \Reportico\Widgets\Title($this, true);
+        $this->widgets["description"] = new \Reportico\Widgets\Description($this, true);
+        $this->widgets["status-message-block"] = new \Reportico\Widgets\StatusMessageBlock($this, true);
+        $this->widgets["user-access"] = new \Reportico\Widgets\UserAccess($this, true);
+        $this->widgets["admin-page"] = new \Reportico\Widgets\AdminPage($this, true);
+        $this->widgets["design-page"] = new \Reportico\Widgets\DesignPage($this, true);
+        $this->widgets["menu-page"] = new \Reportico\Widgets\MenuPage($this, true);
+
+        // Handle Widget Submit
+        foreach ( $this->widgets as $k => $v ) {
+            $this->widgetRenders[$k] = $v->onSubmit();
+        }
+
+        $this->widgetRenders = [];
+        foreach ( $this->widgets as $k => $v ) {
+            $this->widgetRenders[$k] = $v->render();
+        }
+
+        // Set up a widget for each criteria
+        $criteriaRenders = [];
+        foreach ( $this->lookup_queries as $v ) {
+            $this->widgets["criteria-{$v->query_name}"] = new \Reportico\Widgets\Criteria($this, true, $v);
+            $this->widgets["criteria-{$v->query_name}"]->prehandleUrlParameters();
+            $this->widgets["criteria-{$v->query_name}"]->handleUrlParameters();
+            $criteriaRenders[] = $this->widgets["criteria-{$v->query_name}"]->render();
+        }
+
+        foreach ( $criteriaRenders as $key => $render ) {
+
+            if ( isset($render["lookup-selection"])) {
+                $this->widgetRenders["criteria-lookup"] = $render["lookup-selection"];
+                $this->widgetRenders["lookup-search"] = preg_replace("/{LOOKUPITEM}/", $render["lookup-criteria-name"], $this->widgetRenders["lookup-search"]);
+                $this->widgetRenders["lookup-select-all"] = preg_replace("/{LOOKUPITEM}/", $render["lookup-criteria-name"], $this->widgetRenders["lookup-select-all"]);
+                $this->widgetRenders["lookup-clear"] = preg_replace("/{LOOKUPITEM}/", $render["lookup-criteria-name"], $this->widgetRenders["lookup-clear"]);
+                $this->widgetRenders["lookup-ok"] = preg_replace("/{LOOKUPITEM}/", $render["lookup-criteria-name"], $this->widgetRenders["lookup-ok"]);
+            }
+        }
+
+        $this->assetManager->reload($group);
+
+        $this->template->assign('ASSETS_CSS', $this->assetManager->css());
+        $this->template->assign('ASSETS_JS', $this->assetManager->js());
+
+        $this->template->assign('ASSETS_INIT', $this->assetManager->event("init"));
+        $this->template->assign('ASSETS_RUNTIME', $this->assetManager->event("runtime"));
+
+        Authenticator::flag("run-mode-".strtolower($this->execute_mode));
+
+        $this->template->assign('ASSETS_MODALS', $this->assetManager->render("modal"));
+        $this->template->assign('CRITERIA_BLOCK', $criteriaRenders);
+        $this->template->assign('WIDGETS', $this->widgetRenders);
+        $this->template->assign('PERMISSIONS', Authenticator::widgetRenders("permissions"));
+        $this->template->assign('FLAGS', Authenticator::widgetRenders("flags"));
+
+        $translations = ReporticoApp::get("translations");
+        //Authenticator::show("end");
+
+    }
 
 }
 // -----------------------------------------------------------------------------

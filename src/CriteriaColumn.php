@@ -28,9 +28,14 @@ class CriteriaColumn extends QueryColumn
     public $hidden;
     public $order_type;
     public $list_values = array();
-    public $first_criteria_selection = true;
+    //public $first_criteria_selection = true;
     public $parent_reportico = false;
     public $criteria_summary;
+    public $widget;
+    public $widgetExpand;
+    public $column_value = false;
+    public $column_value2 = false;
+    public $column_value_derived = false;
 
     // For criteria that is linked to in another report
     // Specifies both the report to link to and the criteria item
@@ -87,7 +92,6 @@ class CriteriaColumn extends QueryColumn
     // -----------------------------------------------------------------------------
     public function executeCriteriaLookup($in_is_expanding = false, $no_warnings = false)
     {
-        ReporticoApp::set("code_area", "Criteria " . $this->query_name);
         $rep = new ReportArray();
 
         $this->lookup_query->rowselection = true;
@@ -216,13 +220,22 @@ class CriteriaColumn extends QueryColumn
         }
 
         $manual_params = array();
+        //echo $this->query_name;
         if (!array_key_exists("EXPANDED_" . $this->query_name, $_REQUEST)) {
             if (array_key_exists("MANUAL_" . $this->query_name, $_REQUEST)) {
-                $manual_params = explode(',', $_REQUEST["MANUAL_" . $this->query_name]);
+                if ( is_array( $_REQUEST["MANUAL_" . $this->query_name] ) ) {
+                    $manual_params = $_REQUEST["MANUAL_" . $this->query_name];
+                    $param_string = implode(",",$manual_params);
+                }
+                else {
+                    $manual_params = explode(',', $_REQUEST["MANUAL_" . $this->query_name]);
+                    $param_string = $_REQUEST["MANUAL_". $this->query_name];
+                }
+
                 if ($manual_params) {
                     $hidden_params = $manual_params;
                     $manual_override = true;
-                    $value_string = $_REQUEST["MANUAL_" . $this->query_name];
+                    $value_string = $param_string;
                 }
             }
         }
@@ -333,6 +346,7 @@ class CriteriaColumn extends QueryColumn
             array_key_exists("EXPANDSELECTALL_" . $this->query_name, $_REQUEST) ||
             array_key_exists("EXPANDSEARCH_" . $this->query_name, $_REQUEST) ||
             $this->criteria_display == "NOINPUT") {
+
             $tag = $value_string;
             if (strlen($tag) > 40) {
                 $tag = substr($tag, 0, 40) . "...";
@@ -572,6 +586,7 @@ class CriteriaColumn extends QueryColumn
     // -----------------------------------------------------------------------------
     // Function : date_display
     // -----------------------------------------------------------------------------
+    /*
     public function &date_display()
     {
 
@@ -607,10 +622,12 @@ class CriteriaColumn extends QueryColumn
         return $text;
 
     }
+    */
 
     // -----------------------------------------------------------------------------
     // Function : daterange_display
     // -----------------------------------------------------------------------------
+    /*
     public function &daterange_display()
     {
 
@@ -633,7 +650,7 @@ class CriteriaColumn extends QueryColumn
 
             if ($this->defaults[0]) {
                 if (!ReporticoLocale::convertDateRangeDefaultsToDates("DATERANGE", $this->defaults[0], $this->range_start, $this->range_end)) {
-                    trigger_error("Date default '" . $this->defaults[0] . "' is not a valid date range. Should be 2 values separated by '-'. Each one should be in date format (e.g. yyyy-mm-dd, dd/mm/yyyy) or a date type (TODAY, TOMMORROW etc", E_USER_ERROR);
+                    trigger_error("Date default '" . $this->defaults[0] . "' is not a valid date2 range. Should be 2 values separated by '-'. Each one should be in date format (e.g. yyyy-mm-dd, dd/mm/yyyy) or a date type (TODAY, TOMMORROW etc", E_USER_ERROR);
                 }
 
                 unset($_REQUEST["MANUAL_" . $this->query_name . "_FROMDATE"]);
@@ -668,7 +685,9 @@ class CriteriaColumn extends QueryColumn
         $text .= $this->formatDateValue($this->query_name . '_TODATE', $this->range_end, ReporticoApp::getConfig("prep_dateformat"));
         return $text;
     }
+    */
 
+    /*
     // -----------------------------------------------------------------------------
     // Function : formatDateValue
     // -----------------------------------------------------------------------------
@@ -789,6 +808,7 @@ class CriteriaColumn extends QueryColumn
         return $text;
 
     }
+    */
 
     /**
      *
@@ -1536,6 +1556,7 @@ class CriteriaColumn extends QueryColumn
             for ($i = 0; $i < count($res[$k]); $i++) {
                 $line = &$res[$i];
                 foreach ($this->lookup_query->columns as $ky => $col) {
+
                     if ($col->lookup_display_flag) {
                         $lab = $res[$col->query_name][$i];
                     }
@@ -1699,7 +1720,6 @@ class CriteriaColumn extends QueryColumn
     // -----------------------------------------------------------------------------
     public function getCriteriaClause($lhs = true, $operand = true, $rhs = true, $rhs1 = false, $rhs2 = false, $add_del = true)
     {
-
         $cls = "";
 
         if ($this->_use == "SHOW/HIDE-and-GROUPBY") {
@@ -1866,72 +1886,11 @@ class CriteriaColumn extends QueryColumn
                 break;
 
             case "DATE":
-                $cls = "";
-                if ($this->column_value) {
-                    $val1 = ReporticoLocale::parseDate($this->column_value, false, ReporticoApp::getConfig("prep_dateformat"));
-                    $val1 = ReporticoLocale::convertYMDtoLocal($val1, ReporticoApp::getConfig("prep_dateformat"), ReporticoApp::getConfig("db_dateformat"));
-                    if ($lhs) {
-                        if ($this->table_name && $this->column_name) {
-                            $cls .= " AND " . $this->table_name . "." . $this->column_name;
-                        } else
-                        if ($this->column_name) {
-                            $cls .= " AND " . $this->column_name;
-                        }
-
-                    }
-                    if ($add_del) {
-                        $del = $this->getValueDelimiter();
-                    }
-
-                    if ($rhs) {
-                        if ($operand) {
-                            $cls .= " = ";
-                        }
-
-                        $cls .= $del . $val1 . $del;
-                    }
-                }
+                $cls = $this->widget->getCriteriaClause($lhs, $operand, $rhs, $rhs1, $rhs2, true);
                 break;
 
             case "DATERANGE":
-                $cls = "";
-                if ($this->column_value) {
-                    // If daterange value here is a range in a single value then its been
-                    // run directly from command line and needs splitting up using "-"
-
-                    $val1 = ReporticoLocale::parseDate($this->column_value, false, ReporticoApp::getConfig("prep_dateformat"));
-                    $val2 = ReporticoLocale::parseDate($this->column_value2, false, ReporticoApp::getConfig("prep_dateformat"));
-                    $val1 = ReporticoLocale::convertYMDtoLocal($val1, ReporticoApp::getConfig("prep_dateformat"), ReporticoApp::getConfig("db_dateformat"));
-                    $val2 = ReporticoLocale::convertYMDtoLocal($val2, ReporticoApp::getConfig("prep_dateformat"), ReporticoApp::getConfig("db_dateformat"));
-                    if ($lhs) {
-                        if ($this->table_name && $this->column_name) {
-                            $cls .= " AND " . $this->table_name . "." . $this->column_name;
-                        } else
-                        if ($this->column_name) {
-                            $cls .= " AND " . $this->column_name;
-                        }
-
-                    }
-
-                    if ($add_del) {
-                        $del = $this->getValueDelimiter();
-                    }
-
-                    if ($rhs) {
-                        $cls .= " BETWEEN ";
-                        //$cls .= $del.$this->column_value.$del;
-                        $cls .= $del . $val1 . $del;
-                        $cls .= " AND ";
-                        //$cls .= $del.$this->column_value2.$del;
-                        $cls .= $del . $val2 . $del;
-                    }
-                    if ($rhs1) {
-                        $cls = $del . $val1 . $del;
-                    }
-                    if ($rhs2) {
-                        $cls = $del . $val2 . $del;
-                    }
-                }
+                $cls = $this->widget->getCriteriaClause($lhs, $operand, $rhs, $rhs1, $rhs2, true);
                 break;
 
             case "LOOKUP":
@@ -2040,30 +1999,43 @@ class CriteriaColumn extends QueryColumn
 
         switch ($type) {
             case "LIST":
-                $text .= $this->list_display(true);
+                $text .= (\Reportico\Widgets\CriteriaList::createCriteriaList($this->parent_reportico, $this, true ))->render();
+                //$text .= $this->list_display(true);
                 break;
 
             case "LOOKUP":
                 $this->executeCriteriaLookup(true);
-                $text .= $this->lookup_display(true);
+                $text .= (\Reportico\Widgets\CriteriaLookup::createCriteriaLookup($this->parent_reportico, $this, true ))->render();
+                //$text .= $this->lookup_display(true);
                 break;
 
             case "DATE":
-                $text .= $this->date_display(true);
+                //$text .= $this->date_display(true);
+                $this->widgetExpand = new \Reportico\Widgets\DatePicker(false);
+                $this->widgetExpand->criteria = $this;
+                $text .= $this->widgetExpand->render();
                 break;
 
             case "DATERANGE":
-                $text .= $this->daterange_display(true);
+                //$text .= $this->daterange_display(true);
+                $this->widgetExpand = new \Reportico\Widgets\DateRangePicker(false);
+                $this->widgetExpand->criteria = $this;
+                $text .= $this->widgetExpand->render();
                 break;
 
             case "ANYCHAR":
             case "TEXTFIELD":
-                $tag = "";
-                $tag .= '<input  type="text" name="EXPANDED_' . $this->query_name . '"';
-                $tag .= ' size="' . ($this->column_length) . '"';
-                $tag .= ' maxlength="' . $this->column_length . '"';
-                $tag .= ' value="' . $this->column_value . '">';
-                $text .= $tag;
+                $this->widgetExpand = new \Reportico\Widgets\TextField($this->parent_reportico);
+                $this->widgetExpand->criteria = $this;
+                $this->widgetExpand->expanded = true;
+                $text = $this->widgetExpand->render();
+
+                //$tag = "";
+                //$tag .= '<input  type="text" name="EXPANDED_' . $this->query_name . '"';
+                //$tag .= ' size="' . ($this->column_length) . '"';
+                //$tag .= ' maxlength="' . $this->column_length . '"';
+                //$tag .= ' value="' . $this->column_value . '">';
+                //$text .= $tag;
 
                 break;
 
@@ -2113,33 +2085,48 @@ class CriteriaColumn extends QueryColumn
 
         $text .= '<DIV id="hello" style="display:none">';
         $text .= '</DIV>';
+
         switch ($type) {
             case "LIST":
-                $text .= $this->list_display(true);
+                $text .= (\Reportico\Widgets\CriteriaList::createCriteriaList($this->parent_reportico, $this, true ))->render();
+                //$text .= $this->list_display(true);
                 break;
 
             case "LOOKUP":
                 $this->executeCriteriaLookup(true);
-                $text .= $this->lookup_display(true);
+                $text .= (\Reportico\Widgets\CriteriaLookup::createCriteriaLookup($this->parent_reportico, $this, true ))->render();
                 break;
 
             case "DATE":
-                $text .= $this->date_display(true);
+                //$text .= $this->date_display(true);
+                $this->widgetExpand = new \Reportico\Widgets\DatePicker(false);
+                $this->widgetExpand->criteria = $this;
+                $text .= $this->widgetExpand->render();
+                //echo $text; die;
                 break;
 
             case "DATERANGE":
-                $text .= $this->daterange_display(true);
+                //$text .= $this->daterange_display(true);
+                $this->widgetExpand = new \Reportico\Widgets\DateRangePicker(false);
+                $this->widgetExpand->criteria = $this;
+                $text .= $this->widgetExpand->render();
                 break;
 
             case "ANYCHAR":
             case "TEXTFIELD":
+
+                $this->widgetExpand = new \Reportico\Widgets\TextField($this->parent_reportico);
+                $this->widgetExpand->criteria = $this;
+                $this->widgetExpand->expanded = true;
+                $text = $this->widgetExpand->render();
+
                 //ECHO $TAG;
-                $tag = "";
-                $tag .= '<input  type="text" name="EXPANDED_' . $this->query_name . '"';
-                $tag .= ' size="' . ($this->column_length) . '"';
-                $tag .= ' maxlength="' . $this->column_length . '"';
-                $tag .= ' value="' . $this->column_value . '">';
-                $text .= $tag;
+                //$tag = "";
+                //$tag .= '<input  type="text" name="EXPANDED_' . $this->query_name . '"';
+                //$tag .= ' size="' . ($this->column_length) . '"';
+                //$tag .= ' maxlength="' . $this->column_length . '"';
+                //$tag .= ' value="' . $this->column_value . '">';
+                //$text .= $tag;
 
                 break;
 
@@ -2154,20 +2141,20 @@ class CriteriaColumn extends QueryColumn
         return $text;
     }
 
-    public function formatFormColumn()
+    public function renderSelection($expanding = false)
     {
         $text = "";
+
         $type = $this->criteria_type;
 
         switch ($type) {
             case "LIST":
-                $text .= $this->list_display(false);
+                $text .= (\Reportico\Widgets\CriteriaList::createCriteriaList($this->parent_reportico, $this, $expanding ))->render();
+                //$text .= $this->list_display(false);
                 break;
 
             case "LOOKUP":
                 if (
-                    //!array_key_exists("clearform", $_REQUEST) &&
-                    //(
                     ($this->criteria_display !== "TEXTFIELD" && $this->criteria_display !== "ANYCHAR" && $this->criteria_display != "NOINPUT")
                     ||
                     (
@@ -2175,32 +2162,40 @@ class CriteriaColumn extends QueryColumn
                         array_key_exists("HIDDEN_" . $this->query_name, $_REQUEST) ||
                         $this->column_value
                     )
-                    //)
                 ) {
 
                     // Dont bother running select for criteria lookup if criteria item is a dynamic
                     $this->executeCriteriaLookup();
                 }
-                $text .= $this->lookup_display(false);
+                //$text .= $this->lookup_display(false);
+                $text .= (\Reportico\Widgets\CriteriaLookup::createCriteriaLookup($this->parent_reportico, $this, $expanding ))->render();
                 break;
 
             case "DATE":
-                $text .= $this->date_display();
+                //$text .= $this->date_display();
+                $this->widget = new \Reportico\Widgets\DatePicker(false);
+                $this->widget->criteria = $this;
+                $text .= $this->widget->render();
                 break;
 
             case "DATERANGE":
-                $text .= $this->daterange_display();
+                //$text .= $this->daterange_display();
+                $this->widget = new \Reportico\Widgets\DateRangePicker(false);
+                $this->widget->criteria = $this;
+                $text .= $this->widget->render();
                 break;
 
             case "ANYCHAR":
             case "TEXTFIELD":
-                //$text .= '<SELECT style="visibility:hidden" name="'."HIDDEN_".$this->query_name.'[]" size="1" multiple>';
-                //$text .= '<SELECT name="'."HIDDEN_".$this->query_name.'[]" size="1" multiple>';
-                $tag = "";
-                $tag .= '<input  type="text" class="' . $this->lookup_query->getBootstrapStyle('textfield') . 'reportico-prepare-text-field" name="MANUAL_' . $this->query_name . '"';
-                $tag .= ' size="50%"';
-                $tag .= ' value="' . $this->column_value . '">';
-                $text .= $tag;
+                $this->widget = new \Reportico\Widgets\TextField($this->parent_reportico);
+                $this->widget->criteria = $this;
+                $text = $this->widget->render();
+
+                //$tag = "";
+                //$tag .= '<input  type="text" class="' . $this->lookup_query->getBootstrapStyle('textfield') . 'reportico-prepare-text-field" name="MANUAL_' . $this->query_name . '"';
+                //$tag .= ' size="50%"';
+                //$tag .= ' value="' . $this->column_value . '">';
+                //$text .= $tag;
 
                 break;
 

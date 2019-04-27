@@ -39,6 +39,7 @@ class QueryColumn extends ReporticoObject
     public $lookup_display_flag;
     public $lookup_abbrev_flag;
     public $datasource = false;
+    public $engine = false;
 
     public $minimum = false;
     public $maximum = false;
@@ -80,6 +81,20 @@ class QueryColumn extends ReporticoObject
         $this->datasource = &$datasource;
     }
 
+    public $usage = array(
+        "description" => "",
+        "methods" => array(
+            "properties" => array(
+                "description" => "Properties of the column",
+                "parameters" => array( "properties" => "Array of properties")
+            ),
+            "hide" => array(
+                "description" => "Hide a Column from the body of the report",
+                "parameters" => array( "column" => "Column to hide")
+            ),
+        )
+    );
+
     public function __construct
     (
         $query_name = "",
@@ -104,6 +119,104 @@ class QueryColumn extends ReporticoObject
             $this->query_name = $this->column_name;
         }
 
+    }
+
+    /*
+     * Magic method to set Reportico instance properties and call methods through
+     * scaffolding calls
+     */
+    public static function __callStatic($method, $args)
+    {
+        switch ( $method ) {
+
+            case "build":
+                $builder = $args[0];
+                $colname = $args[1];
+
+                if ( !($column = $builder->engine->getColumn($colname)) ) {
+                    die ("Column $colname not found");
+                }
+
+                $column->engine = $builder->engine;
+                $builder->stepInto("column", $column, "\Reportico\Engine\QueryColumn");
+                return $builder;
+                break;
+
+        }
+    }
+
+    /*
+     * Magic method to set Reportico instance properties and call methods through
+     * scaffolding calls
+     */
+    public function __call($method, $args)
+    {
+        $exitLevel = false;
+
+        switch ( $method ) {
+
+            case "properties":
+
+                foreach ( $args[0] as $key => $val ) {
+                    switch ( strtolower($key) ) {
+
+                        case 'grouptrailerlabel':
+                            if ( !$val )
+                                $val = "BLANK";
+                            $this->setAttribute("group_trailer_label", $val);
+                            break;
+
+                        case 'groupheaderlabel':
+                            if ( !$val )
+                                $val = "BLANK";
+                            $this->setAttribute("group_header_label", $val);
+                            break;
+
+                        case 'columnwidth':
+                            $this->setAttribute("ColumnWidthHTML", $val);
+                            break;
+
+                        case 'columnwidthpdf':
+                            $this->setAttribute("ColumnWidthPDF", $val);
+                            break;
+
+                        case 'justify':
+                            $this->setAttribute("justify", $val);
+                            break;
+
+                        case 'title':
+                        case 'label':
+                            $this->setAttribute("column_title", $val);
+                            break;
+
+                        case 'visible':
+                            if ( !$val )
+                                $this->setAttribute("column_display", "hide");
+                            break;
+                    }
+                }
+                break;
+
+            case "sequence":
+            case "order":
+                $this->engine->setColumnOrder($this->query_name, $args[0], true);
+                break;
+
+            case "hide":
+                $this->setAttribute("column_display", "hide");
+                break;
+
+            case "end":
+            default:
+                $exitLevel = true;
+                break;
+        }
+
+        if (!$exitLevel) {
+            return $this;
+        }
+
+        return false;
     }
 
     // -----------------------------------------------------------------------------

@@ -1,245 +1,133 @@
 {% autoescape false %}
 {% include './header.inc.tpl' %}
+
 <div id="reportico-container">
-    <script>
-        reportico_criteria_items = [];
-{% if CRITERIA_ITEMS is defined %}
-{% for critno in CRITERIA_ITEMS %}
-        reportico_criteria_items.push("{{ critno.name }}");
-{% endfor %}
-{% endif %}
-    </script>
 
-<FORM class="reportico-menuForm" name="topmenu" method="POST" action="{{ SCRIPT_SELF }}">
-<div style="height: 78px" class="reportico-admin-banner">
-<div style="float: right;">
-<img height="78px" src="{{ ASSETS_PATH }}/images/reportico100.png"/>
-<div class="smallbanner">Version <a href="http://www.reportico.org/" target="_blank">{{ REPORTICO_VERSION }}</a></div>
-</div>
-<div style="height: 78px">
-<H1 class="reportico-title-bar" style="text-align: center; padding-top: 30px; padding-left: 200px;">{{ T_TITLE }}</H1>
-</div>
-</div>
-<input type="hidden" name="reportico_session_name" value="{{ SESSION_ID }}" /> 
-{% if SHOW_TOPMENU is defined %}
-	<TABLE class="reportico-prepare-top-menu">
-		<TR>
-			{% if (DB_LOGGEDON) %}
-				{% if DBUSER|length >0 %} 
-					<TD class="reportico-prepare-top-menuCell">{{ T_LOGGED_ON_AS }} {{ DBUSER }}</TD>
-				{% endif %}
-				{% if DBUSER|length==0 %} 
-					<TD style="width: 15%" class="reportico-prepare-top-menuCell">&nbsp;</TD>
-				{% endif %}
-			{% endif %}
-			{% if MAIN_MENU_URL|length>0 %} 
-				<TD style="text-align:center">&nbsp;</TD>
-			{% endif %}
-			{% if SHOW_LOGOUT %}
-				<TD width="15%" align="right" class="reportico-prepare-top-menuCell">
-					<input class="{{ BOOTSTRAP_STYLE_PRIMARY_BUTTON }}reportico-prepare-submit reportico-submit" type="submit" name="adminlogout" value="{{ T_LOGOFF }}">
-				</TD>
-			{% endif %}
-			{% if SHOW_OPEN_LOGIN %}
-				<TD width="50%"></TD>
-					<TD width="98%" align="right" class="reportico-prepare-top-menuCell">
-						{{ T_OPEN_ADMIN_INSTRUCTIONS }}
-						<br><input class="{{ BOOTSTRAP_STYLE_TEXTFIELD }} inline" style="display: none" type="password" name="admin_password" value="__OPENACCESS__">
-						<input class="{{ BOOTSTRAP_STYLE_PRIMARY_BUTTON }}reportico-prepare-submit reportico-submit" type="submit" name="login" value="{{ T_OPEN_LOGIN }}">
-						{% if ADMIN_PASSWORD_ERROR|length > 0 %}
-							<div style="color: #ff0000;">{{ T_ADMIN_PASSWORD_ERROR }}</div>
-						{% endif %}
-					</TD>
-					<TD width="15%" align="right" class="reportico-prepare-top-menuCell">
-					</TD>
-			{% else %}
-				{% if SHOW_LOGIN %}
-					<TD width="50%"></TD>
-					<TD width="35%" align="right" class="reportico-prepare-top-menuCell">
-						{{ T_ADMIN_INSTRUCTIONS }}
-						<br><input style="display: inline not important" class="{{ BOOTSTRAP_STYLE_TEXTFIELD }}" type="password" name="admin_password" value="">
-						<input class="{{ BOOTSTRAP_STYLE_PRIMARY_BUTTON }}reportico-prepare-submit reportico-submit" type="submit" name="login" value="{{ T_LOGIN }}">
-						{% if ADMIN_PASSWORD_ERROR|length > 0 %}
-							<div style="color: #ff0000;">{{ T_ADMIN_PASSWORD_ERROR }}</div>
-						{% endif %}
-					</TD>
-					<TD width="15%" align="right" class="reportico-prepare-top-menuCell">
-					</TD>
-				{% endif %}
-			{% endif %}
-		</TR>
-	</TABLE>
-{% endif %}
-{% if SHOW_SET_ADMIN_PASSWORD %}
-<div style="text-align:center;">
-{% if SET_ADMIN_PASSWORD_ERROR|length > 0 %}
-				<div style="color: #ff0000;">{{ SET_ADMIN_PASSWORD_ERROR }}</div>
-{% endif %}
-				<br>
-				<br>
-{{ T_SET_ADMIN_PASSWORD_INFO|raw }}
-				<br>
-{{ T_SET_ADMIN_PASSWORD_NOT_SET|raw }}
-				<br>
-{{ T_SET_ADMIN_PASSWORD_PROMPT|raw }}
-				<br>
-				<input type="password" name="new_admin_password" value=""><br>
-				<br>
-{{ T_SET_ADMIN_PASSWORD_REENTER|raw }} <br><input type="password" name="new_admin_password2" value=""><br>
-<br>
-<br>
-{% if LANGUAGES|length > 0  %}
-				<span style="text-align:right;width: 230px; display: inline-block">{{ T_CHOOSE_LANGUAGE }}</span>
-				<select class="{{ BOOTSTRAP_STYLE_DROPDOWN }}reportico-drop-select-regular" name="jump_to_language">
-{% for menuitem in LANGUAGES %}
+<!-- Begin Form -->
+{{ WIDGETS["criteria-form"]["begin"] }}
 
-{% if menuitem.active  %}
-				<OPTION label="{{ menuitem.label }}" selected value="{{ menuitem.value }}">{{ menuitem.label }}</OPTION>
-{% else %}
-				<OPTION label="{{ menuitem.label }}" value="{{ menuitem.value }}">{{ menuitem.label }}</OPTION>
-{% endif %}
-{% endfor %}
-                </select>
-{% endif %}
-<br>
-				<br>
-				<input class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}reportico-prepare-submit reportico-submit" type="submit" name="submit_admin_password" value="{{ T_SET_ADMIN_PASSWORD }}">
-				<br>
-				
-</div>
-{% endif %}
-{% if SHOW_REPORT_MENU %}
-	<TABLE class="reportico-menu">
-		<TR> <TD>&nbsp;</TD> </TR>
-{% if not SHOW_SET_ADMIN_PASSWORD %}
-{% if LANGUAGES|length > 0  %}
-		<TR> 
-			<TD class="reportico-menuItem" style="width: 30%"><span style="text-align:right;width: 230px; display: inline-block">{{ T_CHOOSE_LANGUAGE }}</span>
-				<select class="{{ BOOTSTRAP_STYLE_DROPDOWN }}reportico-drop-select-regular" name="jump_to_language">
-{% for menuitem in LANGUAGES %}
-{{ menuitem }}
+    {# Header Banner #}
+	<div class="container-fluid">
+		<div style="float: right;">
+			<img height="78px" src="{{ WIDGETS["admin-page"]["admin-header"]["logo"] }}">
+			<div class="smallbanner">Version <a href="http://www.reportico.org/" target="_blank">6.0.10</a></div>
+		</div>
+		<div style="height: 78px">
+			<h1 class="reportico-title-bar" style="text-align: center; padding-top: 30px; padding-left: 200px;">Reportico Administration Page</h1>
+		</div>
+	</div>
 
-
-{% if menuitem.active  %}
-				<OPTION label="{{ menuitem.label }}" selected value="{{ menuitem.value }}">{{ menuitem.label }}</OPTION>
-{% else %}
-				<OPTION label="{{ menuitem.label }}" value="{{ menuitem.value }}">{{ menuitem.label }}</OPTION>
-{% endif %}
-{% endfor %}
-				</select>
-				<input class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}reportico-maintain-button reportico-submit" type="submit" name="submit_language" value="{{ T_GO }}">
-			</TD>
-		</TR>
-{% endif %}
-
-{% if PROJECT_ITEMS|length > 0  %}
-		<TR> 
-			<TD class="reportico-menuItem" style="width: 30%"><span style="text-align:right;width: 230px; display: inline-block">{{ T_RUN_SUITE }}</span>
-				<select class="{{ BOOTSTRAP_STYLE_DROPDOWN }}reportico-drop-select-regular" name="jump_to_menu_project">
-{% for menuitem in PROJECT_ITEMS %}
-				<OPTION label="{{ menuitem.label }}" value="{{ menuitem.label }}">{{ menuitem.label }}</OPTION>
-{% endfor %}
-				</select>
-				<input class="{{ BOOTSTRAP_STYLE_GO_BUTTON }}reportico-maintain-button reportico-submit" type="submit" name="submit_menu_project" value="{{ T_GO }}">
-			</TD>
-		</TR>
-{% endif %}
-{% endif %}
-
-{% if PROJECT_ITEMS|length > 0  %}
-		<TR> 
-			<TD class="reportico-menuItem" style="width: 30%"><span style="text-align:right;width: 230px; display: inline-block">{{ T_CREATE_REPORT }}</span>
-				<select class="{{ BOOTSTRAP_STYLE_DROPDOWN }}reportico-drop-select-regular" name="jump_to_design_project">
-{% for menuitem in PROJECT_ITEMS %}
-				<OPTION label="{{ menuitem.label }}" value="{{ menuitem.label }}">{{ menuitem.label }}</OPTION>
-{% endfor %}
-				</select>
-				<input class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}reportico-maintain-button reportico-submit" type="submit" name="submit_design_project" value="{{ T_GO }}">
-			</TD>
-		</TR>
-		<TR> 
-			<TD class="reportico-menuItem" style="width: 30%"><span style="text-align:right;width: 230px; display: inline-block">{{ T_CONFIG_PARAM }}</span>
-				<select class="{{ BOOTSTRAP_STYLE_DROPDOWN }}reportico-drop-select-regular" name="jump_to_configure_project">
-					{% for menuitem in PROJECT_ITEMS %}
-							<OPTION label="{{ menuitem.label }}" value="{{ menuitem.label }}">{{ menuitem.label }}</OPTION>
-					{% endfor %}
-				</select>
-				<input class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}reportico-maintain-button reportico-submit" type="submit" name="submit_configure_project" value="{{ T_GO }}">
-			</TD>
-		</TR>
-		<TR> 
-			<TD class="reportico-menuItem" style="width: 30%"><span style="text-align:right;width: 230px; display: inline-block">{{ T_DELETE_PROJECT }}</span>
-				<select class="{{ BOOTSTRAP_STYLE_DROPDOWN }}reportico-drop-select-regular" name="jump_to_delete_project">
-					{% for menuitem in PROJECT_ITEMS %}
-							<OPTION label="{{ menuitem.label }}" value="{{ menuitem.label }}">{{ menuitem.label }}</OPTION>
-					{% endfor %}
-				</select>
-				<input class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}reportico-maintain-button reportico-submit" type="submit" name="submit_delete_project" value="{{ T_GO }}">
-			</TD>
-		</TR>
-{% endif %}
-{% for menuitem in MENU_ITEMS %}
-		<TR> 
-			<TD class="reportico-menuItem">
-{% if menuitem.label == "BLANKLINE" %}
-                                &nbsp;
-{% else %}
-{% if menuitem.label == "LINE" %}
-                                <hr>
-{% else %}
-                                <a class="reportico-menu-item-link" href="{{ menuitem.url }}">{{ menuitem.label }}</a>
-{% endif %}
-{% endif %}
-			</TD>
-		</TR>
-{% endfor %}
-		
-		<TR> <TD>&nbsp;</TD> </TR>
-		<TR> 
-			<TD class="reportico-menuItem" style="width: 30%"><a target="_blank" href="{{ REPORTICO_SITE }}documentation/{{ REPORTICO_VERSION }}">{{ T_DOCUMENTATION }}</a>
-			</TD>
-		</TR>
-	</TABLE>
-{% else %}
-	<TABLE class="reportico-menu">
-		<TR> <TD>&nbsp;</TD> </TR>
-{% if not SHOW_SET_ADMIN_PASSWORD %}
-{% if LANGUAGES|length > 1  %}
-		<TR> 
-			<TD class="reportico-menuItem" style="width: 30%"><span style="text-align:right;width: 230px; display: inline-block">{{ T_CHOOSE_LANGUAGE }}</span>
-				<select class="{{ BOOTSTRAP_STYLE_DROPDOWN }}reportico-drop-select-regular" name="jump_to_language">
-{% for menuitem in LANGUAGES %}
-
-	{% if menuitem.active  %}
-		<OPTION label="{{ menuitem.label }}" selected value="{{ menuitem.value }}">{{ menuitem.label }}</OPTION>
-	{% else %}
-		<OPTION label="{{ menuitem.label }}" value="{{ menuitem.value }}">{{ menuitem.label }}</OPTION>
+	{# Handle User logout or login ========================================= #}
+	{# Prompt for login #}
+	{% if PERMISSIONS["user-logged-in"] %}
+	<div>
+		{{ WIDGETS["admin-login"]["current-user"] }}
+	</div>
 	{% endif %}
-{% endfor %}
-				</select>
-				<input class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}reportico-maintain-button reportico-submit" type="submit" name="submit_language" value="{{ T_GO }}">
-			</TD>
-		</TR>
-{% endif %}
-{% if PROJECT_ITEMS|length > 0  %}
-		<TR> 
-			<TD class="reportico-menuItem" style="width: 30%"><span style="text-align:right;width: 230px; display: inline-block">{{ T_RUN_SUITE }}</span>
-				<select class="{{ BOOTSTRAP_STYLE_DROPDOWN }}reportico-drop-select-regular" name="jump_to_menu_project">
-{% for menuitem in PROJECT_ITEMS %}
-				<OPTION label="{{ menuitem.label }}" value="{{ menuitem.label }}">{{ menuitem.label }}</OPTION>
-{% endfor %}
-				</select>
-				<input class="{{ BOOTSTRAP_STYLE_ADMIN_BUTTON }}reportico-maintain-button reportico-submit" type="submit" name="submit_menu_project" value="{{ T_GO }}">
-			</TD>
-		</TR>
-{% endif %}
-{% endif %}
-		<TR> <TD>&nbsp;</TD> </TR>
-	</TABLE>
-{% endif %}
 
-{% include 'message-error.inc.tpl' %}
-</FORM>
+	{% if not PERMISSIONS["design-fiddle"] %}
+	<div class="container-fluid">
+		<div class="row">
+			<div style='text-align:right; margin-right: 30px'>
+				{{ WIDGETS["admin-page"]["admin-login"]["logout-button"] }}
+			</div>
+		</div>
+		<div class="row">
+			<div class="" style="width: 35%; margin-left: 50%; text-align: right">
+				{{ WIDGETS["admin-page"]["admin-login"]["instructions"] }}
+				<br>
+                <div style="margin: 10px 0px 4px 0px">
+				{{ WIDGETS["admin-page"]["admin-login"]["login-prompt"] }}
+				</div>
+				<div style="margin: 10px 0px 4px 0px">
+				{{ WIDGETS["admin-page"]["admin-login"]["login-submit"] }}
+			    </div>
+				<br>
+				{% if FLAGS["admin-password-error"] %}
+				<span style="color: #ff0000">{{ WIDGETS["admin-page"]["admin-login"]["login-error"] }}</span>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+	{% endif %}
+
+	<div class="container-fluid">
+
+        {# Run Project Option #}
+		<div class="row" style="text-align: center; padding: 4px">
+				<div style="width: 230px; text-align: right; display: inline-block">{{ T_RUN_SUITE }}</div>
+			    <select class='form-control reportico-drop-select-regular' name='jump_to_menu_project'>
+				    {{ WIDGETS["admin-page"]["admin-menu"]["project-options"] }}
+			    </select>
+		        {{ WIDGETS["admin-page"]["admin-menu"]["run-project-button"] }}
+		</div>
+
+		{% if PERMISSIONS["admin"] %}
+
+		{# Create Report Option #}
+		<div class="row" style="text-align: center; padding: 4px">
+			<div style="width: 230px; text-align: right; display:inline-block">{{ T_CREATE_REPORT }}</div>
+			<select class='form-control reportico-drop-select-regular' name='jump_to_create_report'>
+				{{ WIDGETS["admin-page"]["admin-menu"]["project-options"] }}
+			</select>
+			{{ WIDGETS["admin-page"]["admin-menu"]["create-report-button"] }}
+		</div>
+
+		{# Configure Project Option #}
+		<div class="row" style="text-align: center; padding: 4px">
+				<div style="width: 230px; text-align: right; display:inline-block">{{ T_CONFIG_PARAM }}</div>
+				<select class='form-control reportico-drop-select-regular' name='jump_to_configure_project'>
+					{{ WIDGETS["admin-page"]["admin-menu"]["project-options"] }}
+				</select>
+				{{ WIDGETS["admin-page"]["admin-menu"]["configure-project-button"] }}
+		</div>
+
+        {# Delete Project Option #}
+		<div class="row" style="text-align: center; padding: 4px">
+				<div style="width: 230px; text-align: right; display:inline-block">{{ T_DELETE_PROJECT }}</div>
+		        <select class='form-control reportico-drop-select-regular' name='jump_to_delete_project'>
+			        {{ WIDGETS["admin-page"]["admin-menu"]["project-options"] }}
+                </select>
+                {{ WIDGETS["admin-page"]["admin-menu"]["delete-project-button"] }}
+		</div>
+
+        {# Menu Items #}
+        {% for menuitem in  WIDGETS["admin-page"]["admin-menu"]["project-menu-items"]  %}
+		<div class="row" style="text-align: center; padding: 4px">
+                {% if menuitem.url %}
+			    <div class="reportico-menu-item-link" style='text-align:center;'>
+				    <a href="{{menuitem.url}}" class="">{{menuitem.label}}</a>
+				</div>
+				{% else %}
+			         <div style='text-align:center;'>
+						 {{ menuitem.label }}
+			         </div>
+                {% endif %}
+        </div>
+        {% endfor %}
+
+		{# Delete Project Option #}
+		<div class="row" style="text-align: center; padding: 4px">
+			<div style='text-align:center;'>
+				{{ WIDGETS["admin-page"]["admin-menu"]["documentation"] }}
+			</div>
+		</div>
+
+		{% endif %} {# Admin options #}
+
+    </div>
+
+	{# Set Admin Password on first use #}
+	{{ WIDGETS["admin-page"]["admin-password-set"] }}
+
+	{# Admin menu items #}
+	{# WIDGETS["admin-page"]["admin-menu"]["complete"] #}
+
+
+	{# General messages #}
+    {% include 'message-error.inc.tpl' %}
+
+{{ WIDGETS["criteria-form"]["end"] }}
 
 
 

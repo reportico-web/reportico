@@ -1,30 +1,21 @@
+{% autoescape false %}
 <div>
-    {% if ERRORMSG|length>0 %}
-        <div style="display:none" id="reporticoEmbeddedError">
-            {{ ERRORMSG|raw }}
-        </div>
-        
-            <script>
-                if ( typeof(reportico_jquery) != "undefined" )
-                    reportico_jquery(document).ready(function()
-                    {
-                        showParentNoticeModal(reportico_jquery("#reporticoEmbeddedError").html());
-                    });
-                else
-                    if ( typeof(parent.reportico_jquery) != "undefined" ) 
-                        parent.reportico_jquery(document).ready(function()
-                        {   
-                            parent.showNoticeModal(document.getElementById("reporticoEmbeddedError").innerHTML);
-                        });
-            </script>
-        
-        <div class="alert alert-danger" role="alert">
-            {{ ERRORMSG|raw }}
-        </div>
+    {% if WIDGETS["status-message-block"]["error"] %}
+    <div class="reportico-status-block" style="color:#ff0000">
+        {{ WIDGETS["status-message-block"]["error"] }}
+    </div>
     {% endif %}
-    {% if STATUSMSG|length>0 %} 
-        <div class="alert alert-info" role="alert">
-            {{ STATUSMSG|raw }}
-        </div>
+
+    {% if WIDGETS["status-message-block"]["status"] %}
+    <div class="reportico-status-block">
+        {{ WIDGETS["status-message-block"]["status"] }}
+    </div>
+    {% endif %}
+
+    {% if WIDGETS["status-message-block"]["debug"] %}
+    <div class="reportico-status-block">
+        {{ WIDGETS["status-message-block"]["debug"] }}
+    </div>
     {% endif %}
 </div>
+{% endautoescape %}

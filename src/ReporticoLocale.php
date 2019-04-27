@@ -287,7 +287,8 @@ class ReporticoLocale
             $range_start = "TODAY";
             $range_end = "TODAY";
             $elar = preg_split("/-/", $in_string);
-
+            foreach ( $elar as $k => $v )
+                    $elar[$k] = trim($v);
             if (count($elar) == 2) {
                 $range_start = $elar[0];
                 $range_end = $elar[1];

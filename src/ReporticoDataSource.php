@@ -31,6 +31,7 @@ use \PDO;
 class ReporticoDataSource extends ReporticoObject
 {
 
+    public $type = false;
     public $driver = "mysql";
     public $host_name;
     public $service_name;
@@ -40,6 +41,7 @@ class ReporticoDataSource extends ReporticoObject
     public $server;
     public $protocol;
     public $connection;
+    public $connection_string;
     public $connected = false;
     public $ado_connection;
 
@@ -67,6 +69,86 @@ class ReporticoDataSource extends ReporticoObject
         $this->external_connection = &$pdo;
         $this->available_connections = &$connections;
     }
+
+    /*
+     * Magic method to set Reportico instance properties and call methods through
+     * scaffolding calls
+     */
+    public static function __callStatic($method, $args)
+    {
+        switch ( $method ) {
+
+            case "build":
+                $builder = $args[0];
+                $builder->store = [];
+
+                $datasource = $builder->engine->datasource = new ReporticoDataSource();
+                $builder->engine->datasource->builder = $builder;
+
+                $builder->stepInto("datasource", $datasource, "\Reportico\Engine\ReporticoDataSource");
+                return $builder;
+                break;
+
+        }
+    }
+
+    /*
+     * Magic method to set Reportico instance properties and call methods through
+     * scaffolding calls
+     */
+    public function __call($method, $args)
+    {
+        $exitLevel = false;
+        switch ( $method ) {
+
+            case "array":
+                $this->builder->engine->datasource->driver = "array";
+                $this->builder->engine->datasource->database = $args[0];
+                //$this->builder->engine->datasource->connect(true);
+
+                $invalid = false;
+                if ( !is_array($args[0]) )
+                    $invalid = true;
+                else
+                    foreach ( $args[0] as $k => $columns ){
+                        if (!is_array($columns))
+                            $invalid = true;
+                        else{
+                            foreach ($columns as $columnkey => $column) {
+                                $this->builder->engine->createQueryColumn($columnkey, "", "", "", "", '####.###', true);
+                            }
+                        }
+                    }
+
+                if ($invalid)
+                    trigger_error("Array datasource requires array parameter in form [ [ 'col1' => 'val1', 'col2' => 'val2' [ 'col1' => 'val3', 'col2' => 'val4' ], ], ", E_USER_ERROR);
+                break;
+
+            case "database":
+                $this->builder->engine->datasource->connection_string = $args[0];
+                break;
+
+            case "user":
+                $this->builder->engine->datasource->user_name = $args[0];
+                break;
+
+            case "password":
+                $this->builder->engine->datasource->password = $args[0];
+                break;
+
+            case "end":
+            default:
+                $exitLevel = true;
+                break;
+        }
+
+        if (!$exitLevel) {
+            return $this;
+        }
+
+        return false;
+    }
+
 
     public function setDetails($driver = "mysql", $host_name = "localhost",
         $service_name = "?Unknown?",
@@ -308,6 +390,9 @@ class ReporticoDataSource extends ReporticoObject
             $this->disconnect();
         }
 
+        if ( $this->driver == "array" )
+            $ignore_config = true;
+
         if ($ignore_config) {
             $this->_conn_driver = $this->driver;
             $this->_conn_user_name = $this->user_name;
@@ -444,6 +529,26 @@ class ReporticoDataSource extends ReporticoObject
             if (isset($useConnection["password"])) {
                 $this->_conn_password = $useConnection["password"];
             }
+
+        }
+
+        if ( $this->connection_string ) {
+
+            $connected = false;
+            if (class_exists('PDO', false)) {
+                if (!$this->pdoDriverExists("mysql")) {
+                    trigger_error("PDO driver \"mysql\" not found. Available drivers are " . $this->pdoDriversAsString(), E_USER_NOTICE);
+                } else {
+                    $this->ado_connection = NewADOConnection("pdo");
+
+                    $connected = $this->ado_connection->Connect($this->connection_string, $this->user_name, $this->password);
+                }
+            } else {
+                ReporticoApp::handleError("Attempt to connect to MySQL Database Failed. PDO Support does not seem to be Available");
+            }
+            $this->connected = $connected;
+
+            return $this->connected;
 
         }
 

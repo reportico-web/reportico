@@ -370,6 +370,9 @@ class Report extends ReporticoObject
                 $label = "";
                 $value = "";
 
+                if ( $crit->hidden == "yes" )
+                    continue;
+
                 if (isset($crit->criteria_summary) && $crit->criteria_summary) {
                     $label = $crit->deriveAttribute("column_title", $crit->query_name);
                     $value = $crit->criteria_summary;
@@ -435,6 +438,7 @@ class Report extends ReporticoObject
         $this->formatPageHeaderStart();
 
         foreach ($this->query->pageHeaders as $ph) {
+
             // If one of the headers is {NOMORE} then ignore any subsequenct ones problably the default ones form the
             // reporticoDefaults file
             if ($ph->text == "{NOMORE}") {

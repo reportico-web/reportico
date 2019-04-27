@@ -55,49 +55,51 @@
 
                 {% set triggered = 1 %}
 
-            {% set headersexist = 0 %}
-            {% set pageno = pageno + 1 %}
+                {% set headersexist = 0 %}
+                {% set pageno = pageno + 1 %}
 
-            {# Page Header on group change ============================================= #}
-            {% include 'execute-content-page-headers.inc.tpl' %}
+                {# Page Header on group change ============================================= #}
+                {% include 'execute-content-page-headers.inc.tpl' %}
 
-            {# Report title group change =============================================== #}
-            {% include 'execute-content-page-title.inc.tpl' %}
+                {# Report title group change =============================================== #}
+                {% include 'execute-content-page-title.inc.tpl' %}
 
-            {% set groupcount = groupcount + 1 %}
+                {% set groupcount = groupcount + 1 %}
 
-        {% endif %}
+            {% endif %}
+        {% endfor %}
 
 
 
         {# Group Headers + Detail ======================================= #}
-        <!--div class="reportico-group-section"--> 
+        <!--div class="reportico-group-section"-->
 
         {# Custom group headers ======================================== #}
-        <div class="reportico-custom-header-block" >
         {% for group in row.groupstarts %}
-            {% for header in group.customheaders %}
-                <div class="reportico-custom-header" style="{{ header.styles }}">
-                    {% if ( header.image ) %}
-                        <img src='{{ header.image}}' style="{{ header.imagestyles }}">
-                    {% endif %}
-                    {{ header.content }}
-                </div>
-            {% endfor %}
-        {% endfor %}
-         </div>
-
-        {# Group Headers ================================================ #}
-        <table class="reportico-group-header-box">
-            <tbody>
-                {% for header in group.headers %}
-                <tr class="reportico-group-header-row">
-                    <td class="reportico-group-header-label" style="{{ CONTENT.styles.group_header_label }}">{{ header.label }}</td>
-                    <td class="reportico-group-header-value" style="{{ CONTENT.styles.group_header_value }}">{{ header.value }}</td>
-                </tr>
+            <div class="reportico-custom-header-block" >
+                {% for header in group.customheaders %}
+                    <div class="reportico-custom-header" style="{{ header.styles }}">
+                        {% if ( header.image ) %}
+                            <img src='{{ header.image}}' style="{{ header.imagestyles }}">
+                        {% endif %}
+                        {{ header.content }}
+                    </div>
                 {% endfor %}
-            </tbody>
-        </table>
+            </div>
+        {% endfor %}
+
+        {% for group in row.groupstarts %}
+            {# Group Headers ================================================ #}
+            <table class="reportico-group-header-box">
+                <tbody>
+                    {% for header in group.headers %}
+                    <tr class="reportico-group-header-row">
+                        <td class="reportico-group-header-label" style="{{ CONTENT.styles.group_header_label }}">{{ header.label }}</td>
+                        <td class="reportico-group-header-value" style="{{ CONTENT.styles.group_header_value }}">{{ header.value }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         {% endfor %}
 
         {# Start of group/report - new detail block  ======= #}

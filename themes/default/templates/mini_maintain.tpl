@@ -1,7 +1,14 @@
-<FORM class="reportico-edit-link-form" name="topmenu" method="POST" action="{{ SCRIPT_SELF }}">
-	{% if (PARTIALMAINTAIN) %} 
-	    <input type="hidden" name="partialMaintain" value="{{ PARTIALMAINTAIN }}" />
+{% autoescape false %}
+{{ WIDGETS["design-form"]["begin"] }}
+
+	{% if WIDGETS["design-page"]["partial-section"] %}
+	    <input type="hidden" name="partialMaintain" value="{{ WIDGETS["design-page"]["partial-section"] }}" />
 	{% endif %}
+
+
+    {% include 'error.tpl' %}
+    {% include 'message-error.inc.tpl' %}
+
 	{% if STATUSMSG|length>0 %} 
 		<div class="alert alert-info" role="alert">
             {{ STATUSMSG|raw }}
@@ -12,6 +19,7 @@
             {{ ERRORMSG|raw }}
         </div>
 	{% endif %}
-	<input type="hidden" name="reportico_session_name" value="{{ SESSION_ID }}" />
-				{{ CONTENT|raw }}
-</FORM>
+	{{ CONTENT|raw }}
+
+{{ WIDGETS["form"]["end"] }}
+{% endautoescape %}

@@ -1,119 +1,41 @@
 {% autoescape false %}
+
 {% if not REPORTICO_AJAX_CALLED %}
 {% if not EMBEDDED_REPORT %}
 <!DOCTYPE html>
 <HTML>
 <HEAD>
 <TITLE>{{ TITLE|raw }}</TITLE>
+{{ASSETS_CSS}}
 {{ OUTPUT_ENCODING|raw }}
 </HEAD>
-{% if REPORT_PAGE_STYLE %}
+
 {% if REPORTICO_STANDALONE_WINDOW %}
-<BODY class="reportico-body reportico-bodyStandalone" {{ REPORT_PAGE_STYLE }};">
+<BODY class="reportico-body reportico-bodyStandalone" style="{{ REPORT_PAGE_STYLE }}">
 {% else %}
-<BODY class="reportico-body">
+<BODY class="reportico-body" style="{{ REPORT_PAGE_STYLE }}">
+
+
+
 {% endif %}
+
 {% else %}
-{% if REPORTICO_STANDALONE_WINDOW %}
-<BODY class="reportico-body reportico-bodyStandalone">
-{% else %}
-<BODY class="reportico-body">
-{% endif %}
-{% endif %}
 
-    <LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{{ ASSETS_PATH }}/js/bootstrap3/css/bootstrap.min.css">
 
-<LINK id="PRP_StyleSheet" REL="stylesheet" TYPE="text/css" HREF="{{ THEME_DIR }}/css/reportico.css">
-{% else %}
-    {% if not REPORTICO_BOOTSTRAP_PRELOADED %}
-        <LINK id="bootstrap_css" REL="stylesheet" TYPE="text/css" HREF="{{ ASSETS_PATH }}/js/bootstrap3/css/bootstrap.min.css">
-    {% endif %}
-    <LINK id="PRP_StyleSheet" REL="stylesheet" TYPE="text/css" HREF="{{ THEME_DIR }}/css/reportico.css">
-{% endif %}
-{% if AJAX_ENABLED %}
-{% if not REPORTICO_AJAX_PRELOADED %}
-{% if not REPORTICO_JQUERY_PRELOADED or REPORTICO_STANDALONE_WINDOW %}
-
-<script type="text/javascript" src="{{ ASSETS_PATH }}/js/jquery.js"></script>
+{{ASSETS_CSS}}
 
 {% endif %}
 
-<script type="text/javascript" src="{{ ASSETS_PATH }}/js/ui/jquery-ui.js"></script>
 
+<style>
 
-<script type="text/javascript" src="{{ ASSETS_PATH }}/js/download.js"></script>
-<script type="text/javascript" src="{{ ASSETS_PATH }}/js/reportico.js"></script>
+table :first-of-type) {
+background-color: #900;
+}
+</style>
 
-{% endif %}
-{% if REPORTICO_CSRF_TOKEN %}
-<script type="text/javascript">var reportico_csrf_token = "{{ REPORTICO_CSRF_TOKEN }}";</script>
-<script type="text/javascript">var ajax_event_handler = "{{ REPORTICO_AJAX_HANDLER }}";</script>
-{% endif %}
-{% if BOOTSTRAP_STYLES %}
-{% if not REPORTICO_BOOTSTRAP_PRELOADED %}
-<script type="text/javascript" src="{{ ASSETS_PATH }}/js/bootstrap3/js/bootstrap.min.js"></script>
-{% endif %}
-{% endif %}
-{% endif %}
-{% if not REPORTICO_AJAX_PRELOADED %}
-
-<script type="text/javascript" src="{{ ASSETS_PATH }}/js/ui/i18n/jquery.ui.datepicker-{{ AJAX_DATEPICKER_LANGUAGE }}.js"></script>
-
-{% endif %}
-{% if not BOOTSTRAP_STYLES %}
-
-<script type="text/javascript" src="{{ ASSETS_PATH }}/js/jquery.jdMenu.js"></script>
-<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{{ ASSETS_PATH }}/js/jquery.jdMenu.css">
-
-{% endif %}
-
-<LINK id="reportico_css" REL="stylesheet" TYPE="text/css" HREF="{{ ASSETS_PATH }}/js/ui/jquery-ui.css">
-<script type="text/javascript">var reportico_datepicker_language = "{{ AJAX_DATEPICKER_FORMAT }}";</script>
-<script type="text/javascript">var reportico_this_script = "{{ SCRIPT_SELF }}";</script>
-<script type="text/javascript">var reportico_ajax_script = "{{ REPORTICO_AJAX_RUNNER }}";</script>
-<script type="text/javascript">var pdf_delivery_mode = "{{ PDF_DELIVERY_MODE }}";</script>
-
-
-{% if REPORTICO_BOOTSTRAP_MODAL %}
-<script type="text/javascript">var reportico_bootstrap_styles = "{{ BOOTSTRAP_STYLES }}";</script>
-<script type="text/javascript">var reportico_bootstrap_modal = true;</script>
-{% else %}
-<script type="text/javascript">var reportico_bootstrap_modal = false;</script>
-<script type="text/javascript">var reportico_bootstrap_styles = false;</script>
-{% endif %}
-
-<script type="text/javascript">var reportico_ajax_mode = "{{ REPORTICO_AJAX_MODE }}";</script>
-<script type="text/javascript">var reportico_report_title = "{{ TITLE }}";</script>
-<script type="text/javascript">var reportico_css_path = "{{ THEME_DIR }}/css/reportico.css";</script>
-
-{% endif %}
-{% if REPORTICO_CHARTING_ENGINE == "FLOT"  %}
-
-<script type="text/javascript" src="{{ ASSETS_PATH }}/js/flot/jquery.flot.js"></script>
-<script type="text/javascript" src="{{ ASSETS_PATH }}/js/flot/jquery.flot.axislabels.js"></script>
-
-{% endif %}
-{% if REPORTICO_CHARTING_ENGINE == "NVD3"  %}
-{% if not REPORTICO_AJAX_PRELOADED %}
-
-<script type="text/javascript" src="{{ ASSETS_PATH }}/js/nvd3/d3.min.js"></script>
-<script type="text/javascript" src="{{ ASSETS_PATH }}/js/nvd3/nv.d3.js"></script>
-<LINK id="nvd3_css" REL="stylesheet" TYPE="text/css" HREF="{{ ASSETS_PATH }}/js/nvd3/nv.d3.css">
-
-{% endif %}
-{% endif %}
-{% if not REPORTICO_AJAX_PRELOADED %}
-
-<script type="text/javascript" src="{{ ASSETS_PATH }}/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="{{ ASSETS_PATH }}/js/select2/js/select2.min.js"></script>
-
-<LINK id="PRP_StyleSheet_s2" REL="stylesheet" TYPE="text/css" HREF="{{ ASSETS_PATH }}/js/select2/css/select2.min.css">
-<LINK id="datatable_css" REL="stylesheet" TYPE="text/css" HREF="{{ STYLESHEETDIR }}/jquery.dataTables.css">
-{% endif %}
-{% if PRINTABLE_HTML %}
-
-<script type="text/javascript" src="{{ ASSETS_PATH }}/js/reportico.js"></script>
-
+{{ASSETS_JS}}
+{{ASSETS_INIT}}
 
 {% endif %}
 
@@ -170,27 +92,9 @@
 				<input class="reportico-ajax-link" type="submit" name="login" value="Login">
 			</TD>
 {% endif %}
-{% if REPORTICO_DYNAMIC_GRIDS %}
-<script type="text/javascript">var reportico_dynamic_grids = true;</script>
-{% if REPORTICO_DYNAMIC_GRIDS_SORTABLE %}
-<script type="text/javascript">var reportico_dynamic_grids_sortable = true;</script>
-{% else %}
-<script type="text/javascript">var reportico_dynamic_grids_sortable = false;</script>
-{% endif %}
-{% if REPORTICO_DYNAMIC_GRIDS_SEARCHABLE %}
-<script type="text/javascript">var reportico_dynamic_grids_searchable = true;</script>
-{% else %}
-<script type="text/javascript">var reportico_dynamic_grids_searchable = false;</script>
-{% endif %}
-{% if REPORTICO_DYNAMIC_GRIDS_PAGING %}
-<script type="text/javascript">var reportico_dynamic_grids_paging = true;</script>
-{% else %}
-<script type="text/javascript">var reportico_dynamic_grids_paging = false;</script>
-{% endif %}
-<script type="text/javascript">var reportico_dynamic_grids_page_size = {{ REPORTICO_DYNAMIC_GRIDS_PAGE_SIZE }};</script>
-{% else %}
-<script type="text/javascript">var reportico_dynamic_grids = false;</script>
-{% endif %}
+
+{{ASSETS_RUNTIME}}
+
 
 <div class="reportico-output-button-block">
 {# Navigation Buttons #}
@@ -263,4 +167,5 @@
   </div>
 </div>
 {% endif %}
+
 {% endautoescape %}

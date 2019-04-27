@@ -9,14 +9,73 @@ namespace Reportico\Engine;
 class ReporticoObject
 {
 
+    public $usage = array();
     public $debug = false;
     public $formats = array();
     public $attributes = array();
     public $default_attr = array();
+    public $builder = false;
 
     public function __construct()
     {
         $this->default_attr = $this->attributes;
+    }
+
+    public function builderMethodValid($level, $method, $args) {
+
+        if ( isset($this->usage["methods"]["$method"])) {
+            //echo "<PRE>"; var_dump($this->usage["methods"][$method]); var_dump($args);echo "</PRE>";
+            if ( count($args) != count($this->usage["methods"][$method]["parameters"]))  {
+                trigger_error("$level()->$method requires ".count($this->usage["methods"][$method]["parameters"]). " parameters.<BR>".$this->builderMethodUsage($level, $method), E_USER_ERROR);
+                return false;
+            }
+
+            if ( isset ($this->usage["methods"][$method]["parameters"] ) ) {
+                $ct = 0;
+                foreach ($this->usage["methods"][$method]["parameters"] as $k => $v ) {
+                    $ct++;
+                    if (isset($v["options"]))                    {
+                        if (!isset($v["options"][$args[$ct-1]])) {
+                            trigger_error("$level()->$method parameter $ct - $k must be one of ".implode("|", array_keys($v["options"])).".<BR>".$this->builderMethodUsage($level, $method), E_USER_ERROR);
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public function builderMethodUsage($level, $method) {
+
+        $text = "Usage: $level()->$method (<BR>";
+
+        $ct = 0;
+        foreach ($this->usage["methods"][$method]["parameters"] as $k => $v) {
+            if ( $ct )
+                $text .= ",";
+            //var_dump($v);
+            if ( !is_array($v) ) {
+                $text .= "&nbsp;&nbsp;$k : $v<BR>";
+            } else {
+                $text .= "&nbsp;&nbsp;$k";
+                $last = false;
+                if ( isset($v["options"])){
+                    $text .=  " options ";
+                    foreach ( $v["options"] as $k1 => $v1 ) {
+                        if ( $last ) $text .= "|";
+                        $text .=  "$k1";
+                        $last = $k1;
+                    }
+                }
+                $text .= "<BR>";
+            }
+            $ct++;
+        }
+
+        $text .= ")<BR>";
+        return $text;
     }
 
     public function debug($val)
@@ -121,7 +180,7 @@ class ReporticoObject
 
     }
 
-    public function &deriveAttribute($attrib_name, $default)
+    public function &deriveAttribute($attrib_name, $default = false)
     {
         if ($this->attributes[$attrib_name]) {
             return $this->attributes[$attrib_name];

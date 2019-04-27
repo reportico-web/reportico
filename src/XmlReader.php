@@ -453,11 +453,10 @@ class XmlReader
                 }
 
                 if ($query) {
-                    if ($query->login_type != "ADMIN" && $query->login_type != "DESIGN") {
+                    if (!Authenticator::allowed("admin")) {
                         if (ReporticoApp::getConfig("project") == "admin") {
                             $readfile = false;
                         }
-
                         $adminfile = false;
                     }
                 }
@@ -466,6 +465,7 @@ class XmlReader
                     ReporticoUtility::findFileToInclude($readfile, $readfile);
                 }
 
+                $use_admin_xml = false;
                 if ($readfile && is_file($readfile)) {
                     $readfile = $readfile;
                 } else {
@@ -476,11 +476,14 @@ class XmlReader
                         }
 
                     } else {
+                        $use_admin_xml = true;
                         $readfile = $adminfile;
                     }
-
                 }
+
                 if ($readfile) {
+                    //if ( $use_admin_xml )
+                        //Authenticator::flag("admin-report-selected");
                     $x = join("", file($readfile));
                 } else {
                     trigger_error("Report Definition File  " . $this->query->reports_path . "/" . $filename . " Not Found", E_USER_ERROR);
@@ -941,6 +944,7 @@ class XmlReader
                     if ($this->query->reportlink_report_item == "ALLITEMS" ||
                         $this->query->reportlink_report_item == $v->query_name) {
                         $qu = new Reportico();
+                        $qu->manager = $this->query->manager;
 
                         $this->query->setCriteriaLookup($v->query_name, $qu, "", "");
                         $lastitem = count($this->query->lookup_queries) - 1;
@@ -1506,7 +1510,7 @@ class XmlReader
                 $qr = &$anal["quer"];
                 $maintain_sql = $updates["QuerySql"];
                 $sql = $updates["QuerySql"];
-                if ($qr->loginCheck(false)) {
+                if (Authenticator::login()) {
                     $p = new SqlParser($sql);
                     if ($p->parse()) {
                         $p->importIntoQuery($qr);
@@ -2155,7 +2159,7 @@ class XmlReader
                         $sql = stripslashes($_REQUEST["mainquerqury_SQL"]);
 
                         $maintain_sql = $sql;
-                        if ($this->query->loginCheck()) {
+                        if (Authenticator::login()) {
                             $p = new SqlParser($sql);
                             if ($p->parse()) {
                                 $p->importIntoQuery($qr);
@@ -2255,10 +2259,7 @@ class XmlReader
         }
 
         $xml = $xmlout->getXmldata();
-
-        if ($this->query->top_level_query) {
-            $this->query->xmlintext = $xml;
-        }
+        $this->query->xmlintext = $xml;
 
         $this->query->xmlin = new XmlReader($this->query, false, $xml);
         $this->query->xmlin->show_area = $show_area;
@@ -2760,7 +2761,8 @@ class XmlReader
                             break;
                         }
 
-                        $text .= '<TR>';
+                        /*
+                         * $text .= '<TR>';
                         $text .= '<TD colspan="2">';
                         $text .= '&nbsp;&nbsp;' . ReporticoLang::templateXlate('PROJECT') . ReporticoApp::getConfig("project") . '&nbsp;&nbsp;&nbsp;&nbsp;';
                         if ($this->query->xmloutfile == "configureproject") {
@@ -2775,6 +2777,7 @@ class XmlReader
                         $text .= '</TD>';
                         $text .= '</TR>';
                         //$text .= '<TR>';
+                        */
                         break;
 
                     case "CogQuery":
@@ -5066,6 +5069,8 @@ return $text;
                                 $in_query = false;
                             }
 
+                            if ( !$crit_lookup_display ) $crit_lookup_display = $ccol["Name"];
+                            if ( !$crit_lookup_return ) $crit_lookup_return = $ccol["Name"];
                             $critquery->createCriteriaColumn
                             (
                                 $ccol["Name"],
@@ -5126,7 +5131,7 @@ return $text;
                     $this->query->setCriteriaLookup($critnm, $critquery, $crittb, $critcl);
                     $this->query->setCriteriaInput($critnm, $crittp, $critds, $critexp, $crituse);
                     $this->query->setCriteriaLinkReport($critnm, $linked_report, $linked_report_item);
-//echo "SET $critnm $crit_required<BR>";
+
                     $this->query->setCriteriaDefaults($critnm, $critdefault);
                     $this->query->setCriteriaList($critnm, $critlt);
                     //var_dump($crit_required);
@@ -5150,106 +5155,4 @@ return $text;
     }
 }
 
-/**
- * Class ReporticoXmlval
- *
- * Stores the definition of a single tag within an XML report definition
- */
-class ReporticoXmlval
-{
-    public $name;
-    public $value;
-    public $attributes;
-    public $ns;
-    public $xmltext = "";
-    public $elements = array();
 
-    public function __construct($name, $value = false, $attributes = array())
-    {
-        $this->name = $name;
-        $this->value = $value;
-        $this->attributes = $attributes;
-    }
-
-    public function &add_xmlval($name, $value = false, $attributes = false)
-    {
-        $element = new ReporticoXmlval($name, htmlspecialchars($value), $attributes);
-        $this->elements[] = &$element;
-        return $element;
-    }
-
-    public function unserialize()
-    {
-        $this->xmltext = "<";
-        $this->xmltext .= $this->name;
-
-        if ($this->attributes) {
-            $infor = true;
-            foreach ($this->attributes as $k => $v) {
-                if ($v) {
-                    if ($infor) {
-                        $this->xmltext .= " ";
-                    } else {
-                        $infor = true;
-                    }
-
-                    $this->xmltext .= $k . '="' . $v . '"';
-                }
-
-            }
-        }
-
-        $this->xmltext .= ">";
-
-        if ($this->value || $this->value === "0") {
-            $this->xmltext .= $this->value;
-        } else {
-            foreach ($this->elements as $el) {
-                $this->xmltext .= $el->unserialize();
-            }
-        }
-
-        $this->xmltext .= "</";
-        $this->xmltext .= $this->name;
-        $this->xmltext .= ">";
-
-        return $this->xmltext;
-    }
-
-    public function write()
-    {
-        echo "<";
-        echo $this->name;
-
-        if ($this->attributes) {
-            $infor = true;
-            foreach ($this->attributes as $k => $v) {
-                if ($v) {
-                    if ($infor) {
-                        echo " ";
-                    } else {
-                        $infor = true;
-                    }
-
-                    echo $k . '="' . $v . '"';
-                }
-
-            }
-        }
-
-        echo ">";
-
-        if ($this->value) {
-            echo $this->value;
-        } else {
-            foreach ($this->elements as $el) {
-                $el->write();
-            }
-        }
-
-        echo "</";
-        echo $this->name;
-        echo ">";
-    }
-
-}

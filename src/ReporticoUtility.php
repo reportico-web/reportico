@@ -2,8 +2,6 @@
 
 namespace Reportico\Engine;
 
-//Class to store global var
-
 class ReporticoUtility
 {
     static function getQueryColumnValue($name, &$arr)
@@ -22,6 +20,14 @@ class ReporticoUtility
         //return $name;
     }
 
+    static function getFirstColumn(&$arr)
+    {
+        foreach ($arr as $k => $val) {
+            return $arr[$k];
+        }
+        return false;
+    }
+
     static function getQueryColumn($name, &$arr)
     {
         foreach ($arr as $k => $val) {
@@ -33,7 +39,7 @@ class ReporticoUtility
         return false;
     }
 
-    static function getGroupColumn($name, &$arr)
+    static function &getGroupColumn($name, &$arr)
     {
         foreach ($arr as $k => $val) {
             if ($val->group_name == $name) {
@@ -145,7 +151,9 @@ class ReporticoUtility
 
     static function backtrace()
     {
+        echo "<PRE>";
         debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+        echo "</PRE>";
     }
 
     // Look for a file in the include path, or the path of the current source file
@@ -464,7 +472,10 @@ class ReporticoUtility
         if (!function_exists("mb_strtolower")) {
             $retstring = ucwords(strtolower($retstring));
         } else {
-            $retstring = ucwords(mb_strtolower($retstring, ReporticoLocale::outputCharsetToPhpCharset(ReporticoApp::getConfig("output_encoding"))));
+            $charset = ReporticoLocale::outputCharsetToPhpCharset(ReporticoApp::getConfig("output_encoding"));
+            echo $charset;
+            if ( $charset && $charset != "None" )
+                $retstring = ucwords(mb_strtolower($retstring, ReporticoLocale::outputCharsetToPhpCharset(ReporticoApp::getConfig("output_encoding"))));
         }
 
         return $retstring;

@@ -155,7 +155,6 @@ class SqlParser
         if ($this->unique) {
             $in_query->rowselection = "unique";
         }
-
     }
 
     public function display()
