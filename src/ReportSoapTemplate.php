@@ -23,7 +23,7 @@ class ReportSoapTemplate extends Report
     public $soapline = array();
     public $soapresult = false;
 
-    public function start()
+    public function start($engine = false)
     {
 
         // Include NuSoap Web Service PlugIn

@@ -474,13 +474,14 @@ input.reportico-admin-button2
 {
 }
 
-.reportico-prepare-expand-cell
+#reportico-prepare-expand-cell
 {
     border: none;
     border-color : #DDFFDD;
     text-align : left;
     padding: 0;
     margin-top: 0;
+    min-height: 100px;
 }
 
 .swRunMode

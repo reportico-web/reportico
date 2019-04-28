@@ -692,7 +692,7 @@ reportico_jquery(document).on('click', '.reportico-edit-linkSubmit,.reportico-bo
         var loadpanel = reportico_jquery("#reporticoModal .reportico-modal-dialog .reportico-modal-content .reportico-modal-header");
 
 	var expandpanel = reportico_jquery('#reportico-prepare-expand-cell');
-	var expandpanel = reportico_jquery('.reportico-prepare-crit-output-options');
+	//var expandpanel = reportico_jquery('.reportico-prepare-crit-output-options');
     reportico_jquery(loadpanel).addClass("modal-loading");
 
     forms = reportico_jquery(this).closest('#reportico-container').find(".reportico-form");
@@ -769,7 +769,7 @@ reportico_jquery(document).on('click', '.reportico-edit-linkSubmit,.reportico-bo
 function popupEditLink(sourceWidget) {
 
     var expandpanel = reportico_jquery(sourceWidget).closest('#reportico-form').find('#reportico-prepare-expand-cell');
-    var expandpanel = reportico_jquery(sourceWidget).closest('#reportico-form').find('.reportico-prepare-crit-output-options');
+    //var expandpanel = reportico_jquery(sourceWidget).closest('#reportico-form').find('.reportico-prepare-crit-output-options');
     var reportico_container = reportico_jquery(sourceWidget).closest("#reportico-container");
 
     reportico_jquery(expandpanel).addClass("loading");
@@ -896,7 +896,7 @@ function submitAjaxLink(sourceWidget, url = false)
     if ( reportico_jquery(sourceWidget).parents("#reportico-edit-link").length == 1 )
     {
 	    var expandpanel = reportico_jquery(sourceWidget).closest('#reportico-form').find('#reportico-prepare-expand-cell');
-	    var expandpanel = reportico_jquery(sourceWidget).closest('#reportico-form').find('.reportico-prepare-crit-output-options');
+	    //var expandpanel = reportico_jquery(sourceWidget).closest('#reportico-form').find('.reportico-prepare-crit-output-options');
         if ( reportico_bootstrap_modal )
             var loadpanel = reportico_jquery("#reporticoModal .modal-dialog .modal-content .modal-header");
         else
@@ -1266,7 +1266,7 @@ function executeReport(sourceWidget, format ) {
 
     var reportico_container = reportico_jquery(sourceWidget).closest("#reportico-container");
     var expandpanel = reportico_jquery(sourceWidget).closest('#reportico-form').find('#reportico-prepare-expand-cell');
-    var expandpanel = reportico_jquery(sourceWidget).closest('#reportico-form').find('.reportico-prepare-crit-output-options');
+    //var expandpanel = reportico_jquery(sourceWidget).closest('#reportico-form').find('.reportico-prepare-crit-output-options');
     var critform = reportico_jquery(sourceWidget).closest('#reportico-form');
     reportico_jquery(expandpanel).addClass("loading");
 

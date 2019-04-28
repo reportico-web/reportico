@@ -133,7 +133,7 @@ class ReportFPDF extends Report
 
     }
 
-    public function start()
+    public function start($engine = false)
     {
         Report::start();
         $this->debug("PDF Start **");

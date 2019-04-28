@@ -26,7 +26,7 @@ class ReportPhantomJSPDF extends Report
         $this->column_spacing = 0;
     }
 
-    public function start($engine)
+    public function start($engine = false)
     {
         $sessionClass = ReporticoSession();
 
@@ -107,7 +107,6 @@ class ReportPhantomJSPDF extends Report
         $request->setMargin(0);
         $request->setDelay(2);
 
-        $headertext .= '';
 
         // Get Response
         $response = $this->client->getMessageFactory()->createResponse();

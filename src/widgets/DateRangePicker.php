@@ -356,7 +356,7 @@ reportico_jquery(\'.reportico-daterange-field\').daterangepicker({
         if ( $this->criteria ) {
             $text .= '<div style="position: relative">';
             $text .= '<input  type="text" class="form-control reportico-daterange-field" id="reportico-daterange-field_'.$name.'" name="MANUAL_derived_'.$name.'" value="' . $this->value . '">';
-            $text .= '<input  type="text" class="label label-primary" readonly="readonly" style="display: inline;border:none; position: absolute; right:4px; top:4px" id="reportico-daterange-label-'.$name.'" name="MANUAL_'.$name.'" value="' . $this->range_raw . '">';
+            $text .= '<input  type="text" class="label label-primary" readonly="readonly" style="display: inline;border:none; position: absolute; right:4px; top:4px" id="reportico-daterange-label-'.$name.'" name="MANUAL_label_'.$name.'" value="' . $this->range_raw . '">';
             $text .= '</div>';
             $text .= '<input  type="text" readonly="readonly" style="display:none" id="reportico-daterange-preset-'.$name.'" name="MANUAL_'.$name.'" value="' . $this->range_raw . '">';
         }

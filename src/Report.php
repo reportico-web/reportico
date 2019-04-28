@@ -206,7 +206,7 @@ class Report extends ReporticoObject
         $this->columns = &$columns;
     }
 
-    public function start()
+    public function start($engine = false)
     {
         $this->body_display = "show";
         if (ReporticoUtility::getRequestItem("hide_output_text")) {

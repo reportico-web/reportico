@@ -227,6 +227,9 @@ reportico_jquery(\'.reportico-date-field\').daterangepicker({
         if (!array_key_exists("clearform", $_REQUEST) && array_key_exists("MANUAL_" . $criteriaName, $_REQUEST)) {
 
             $this->range_name = $_REQUEST["MANUAL_".$criteriaName];
+            if ( is_array($this->range_name ))
+                $this->range_name = $this->range_name[0];
+
             if ( isset($this->options[$this->range_name])) {
                 $this->range_raw = $this->range_name;
                 $dateRange = $this->options[$this->range_name]["phpEvaluate"];
@@ -348,7 +351,7 @@ reportico_jquery(\'.reportico-date-field\').daterangepicker({
                 $presetStyle = "inline";
             else
                 $presetStyle = "none";
-            $text .= '<input  type="text" class="label label-primary" readonly="readonly" style="display: $presetStyle;border:none; position: absolute; right:4px; top:4px" id="reportico-date-label-'.$name.'" name="MANUAL_'.$name.'" value="' . $this->range_raw . '">';
+            $text .= '<input  type="text" class="label label-primary" readonly="readonly" style="display: $presetStyle;border:none; position: absolute; right:4px; top:4px" id="reportico-date-label-'.$name.'" name="MANUAL_label_'.$name.'" value="' . $this->range_raw . '">';
             $text .= '</div>';
             $text .= '<input  type="text" readonly="readonly" style="display: none" id="reportico-date-preset-'.$name.'" name="MANUAL_'.$name.'" value="' . $this->range_raw . '">';
         }

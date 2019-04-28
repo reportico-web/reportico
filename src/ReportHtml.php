@@ -62,7 +62,7 @@ class ReportHtml extends Report
         return;
     }
 
-    public function start()
+    public function start($engine = false)
     {
         Report::start();
 

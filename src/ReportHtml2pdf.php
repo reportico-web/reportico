@@ -62,7 +62,7 @@ class ReportHtml2pdf extends Report
         return;
     }
 
-    public function start()
+    public function start($engine = false)
     {
         Report::start();
 
