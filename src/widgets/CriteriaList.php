@@ -139,7 +139,11 @@ class CriteriaList extends Widget
             $manual_params = array();
             if (!array_key_exists("EXPANDED_" . $this->criteria->query_name, $_REQUEST)) {
                 if (array_key_exists("MANUAL_" . $this->criteria->query_name, $_REQUEST)) {
-                    $manual_params = explode(',', $_REQUEST["MANUAL_" . $this->criteria->query_name]);
+			if (is_array($_REQUEST["MANUAL_". $this->criteria->query_name])) {
+                    		$manual_params = $_REQUEST["MANUAL_". $this->criteria->query_name];
+			}
+			else
+                    		$manual_params = explode(',', $_REQUEST["MANUAL_" . $this->criteria->query_name]);
                     if ($manual_params) {
                         $hidden_params = $manual_params;
                     }

@@ -407,7 +407,26 @@ class CriteriaColumn extends QueryColumn
 
         if ($in_list) {
             $choices = array();
-            if ($in_list == "{connections}" && $this->parent_reportico->framework_parent == "october" ) {
+
+            $alias = false;
+            if ( $aliases = ReporticoApp::get("criteria_list_aliases")) {
+
+                $test = preg_replace("/[{}]/", "", $in_list);
+
+                if ( isset($aliases[$test])) {
+                    $alias = $aliases[$test];
+                }
+            }
+
+            if ( $alias ) {
+                    if ( is_array ($alias) ){
+                        foreach ( $alias as $item ){
+                            if ( is_string($item ))
+                                $choices[] = $item;
+                        }
+                    }
+            }
+            else if ($in_list == "{connections}" && $this->parent_reportico->framework_parent == "october" ) {
                 $choices[] = "Existing October Connection=existingconnection";
                 if (isset($this->parent_reportico) && $this->parent_reportico->available_connections) {
                     foreach ($this->parent_reportico->available_connections as $k => $v) {
@@ -2141,6 +2160,65 @@ class CriteriaColumn extends QueryColumn
         return $text;
     }
 
+    public function createWidget($expanding = false)
+    {
+        $text = "";
+
+	$type = $this->criteria_type;
+
+	//if ( !$expanding )
+		//return;
+
+        switch ($type) {
+            case "LIST":
+		    $text .= (\Reportico\Widgets\CriteriaList::createCriteriaList($this->parent_reportico, $this, $expanding ))->render();
+                //$text .= $this->list_display(false);
+                break;
+
+            case "LOOKUP":
+                $this->widget = \Reportico\Widgets\CriteriaLookup::createCriteriaLookup($this->parent_reportico, $this, $expanding ); 
+                $this->widget->criteria = $this;
+                break;
+
+            case "DATE":
+                //$text .= $this->date_display();
+                $this->widget = new \Reportico\Widgets\DatePicker(false);
+                $this->widget->criteria = $this;
+                break;
+
+            case "DATERANGE":
+                //$text .= $this->daterange_display();
+                $this->widget = new \Reportico\Widgets\DateRangePicker(false);
+                $this->widget->criteria = $this;
+                break;
+
+            case "ANYCHAR":
+            case "TEXTFIELD":
+                $this->widget = new \Reportico\Widgets\TextField($this->parent_reportico);
+                $this->widget->criteria = $this;
+
+                //$tag = "";
+                //$tag .= '<input  type="text" class="' . $this->lookup_query->getBootstrapStyle('textfield') . 'reportico-prepare-text-field" name="MANUAL_' . $this->query_name . '"';
+                //$tag .= ' size="50%"';
+                //$tag .= ' value="' . $this->column_value . '">';
+                //$text .= $tag;
+
+                break;
+
+            case "SQLCOMMAND":
+                $tag = "";
+                $tag .= '<br><textarea  cols="70" rows="20" class="' . $this->lookup_query->getBootstrapStyle('textfield') . 'reportico-prepare-text-field" type="text" name="MANUAL_' . $this->query_name . '">';
+                $tag .= $this->column_value;
+                $tag .= "</textarea>";
+                $text .= $tag;
+                break;
+
+            default:
+                break;
+        }
+
+        return $text;
+    }
     public function renderSelection($expanding = false)
     {
         $text = "";
@@ -2149,7 +2227,7 @@ class CriteriaColumn extends QueryColumn
 
         switch ($type) {
             case "LIST":
-                $text .= (\Reportico\Widgets\CriteriaList::createCriteriaList($this->parent_reportico, $this, $expanding ))->render();
+		    $text .= (\Reportico\Widgets\CriteriaList::createCriteriaList($this->parent_reportico, $this, $expanding ))->render();
                 //$text .= $this->list_display(false);
                 break;
 

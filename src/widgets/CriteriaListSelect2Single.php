@@ -66,12 +66,14 @@ class CriteriaListSelect2Single extends CriteriaList
             }
         }
 
-        $tag = "select2_dropdown_" . $this->criteria->query_name;
+        $criteriaName = preg_replace("/ /", " ", $this->criteria->query_name);
+        $tag = "select2_dropdown_static_" . $criteriaName;
         if ( $this->expanded) {
             $tag .= "_expanded";
         }
 
-        $text = '<SELECT id="'.$tag.'" class="' . $this->criteria->parent_reportico->getBootstrapStyle('design_dropdown') . 'reportico-prepare-drop-select2" name="' . $tag_pref . $this->criteria->query_name . '[]" size="' . $multisize . '" >';
+        $tag_pref = $this->expanded ? "EXPANDED_" : "MANUAL_";
+        $text = '<SELECT id="'.$tag.'" class="' . $this->criteria->parent_reportico->getBootstrapStyle('design_dropdown') . 'reportico-prepare-drop-select2 reportico-prepare-select2-static" name="' . $tag_pref . $this->criteria->query_name . '[]" size="' . $multisize . '" >';
         $text .= '<OPTION></OPTION>';
         return $text;
     }
@@ -79,8 +81,10 @@ class CriteriaListSelect2Single extends CriteriaList
     public function renderWidgetItem($label, $value, $selected )
     {
 
+        $criteriaName = preg_replace("/ /", " ", $this->criteria->query_name);
+
         $selectedFlag = $selected ? "selected" : "";
-        $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : $this->criteria->query_name;
+        $name = $this->expanded ? "EXPANDED_" . $criteriaName : $criteriaName;
         return '<OPTION label="' . $label . '" value="' . $value . '" ' . $selectedFlag . '>' . $label . '</OPTION>';
     }
 

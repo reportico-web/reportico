@@ -55,8 +55,6 @@ class AdminPasswordSet extends Widget
     {
         $text = "";
 
-        echo "PSET";
-
         // New admin password
         $status_message = false;
         if (array_key_exists("submit_admin_password", $_REQUEST)) {

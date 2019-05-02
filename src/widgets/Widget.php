@@ -130,7 +130,6 @@ class Widget
 
 
         $col = $this->engineCriteria;
-        //echo "HUP ".get_class($col)."/"." $col->query_name  ".print_r($col->column_value, true)."<BR>";
         $engine = $this->engine;
         $execute_mode = $this->engine->execute_mode;
         $identified_criteria = false;

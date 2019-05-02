@@ -408,7 +408,7 @@ class Assignment extends ReporticoObject
                                 break;
 
                             case "RANGE1":
-                                $clause = $in_query->lookup_queries[$crit]->getCriteriaClause(false, false, false, true, false, $showquotes);
+				$clause = $in_query->lookup_queries[$crit]->getCriteriaClause(false, false, false, true, false, $showquotes);
                                 break;
 
                             case "RANGE2":
@@ -575,7 +575,7 @@ class Assignment extends ReporticoObject
         if (preg_match('/apply_style\(.*\)/', $out_string)) {
             $this->non_assignment_operation = true;
             $out_string = preg_replace('/apply_style\(/',
-                '$this->applyStyle("' . $this->query_name . "\",", $out_string);
+                'applyStyle("' . $this->query_name . "\",", $out_string);
         }
 
         if (preg_match('/applyStyle\(.*\)/', $out_string)) {

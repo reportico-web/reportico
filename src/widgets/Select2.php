@@ -79,6 +79,8 @@ else
 ajaxaction +=  getCSRFURLParams();
 headers =  getCSRFHeaders();
 
+reportico_jquery('#select2_dropdown_static_' + jtag + ',#select2_dropdown_expanded_' + jtag).select2();
+
 reportico_jquery('#select2_dropdown_' + jtag + ',#select2_dropdown_expanded_' + jtag).select2({
           ajax: {
     url: ajaxaction,

@@ -918,7 +918,7 @@ class XmlReader
 
             case "clnk":
                 $cr = &$anal["crit"];
-                $this->query->set_criteria_link(
+                $this->query->setCriteriaLink(
                     $cr->query_name, $cr->query_name,
                     ReporticoLang::templateXlate("ENTERCLAUSE"));
                 break;
@@ -1039,7 +1039,7 @@ class XmlReader
 
             case "clnk":
                 $cr = &$anal["crit"];
-                $this->query->set_criteria_link(
+                $this->query->setCriteriaLink(
                     $cr->query_name, $cr->query_name,
                     ReporticoLang::templateXlate("ENTERCLAUSE"));
                 break;
@@ -1785,7 +1785,7 @@ class XmlReader
 
             case "clnk":
                 $qr = &$anal["crit"]->lookup_query;
-                $this->query->set_criteria_link(
+                $this->query->setCriteriaLink(
                     $updates["LinkFrom"], $updates["LinkTo"],
                     $updates["LinkClause"], $anal["number"]);
                 break;
@@ -5147,7 +5147,7 @@ return $text;
 
                 // Set up any Criteria Links
                 foreach ($criteria_links as $cl) {
-                    $this->query->set_criteria_link($cl["LinkFrom"], $cl["LinkTo"], $cl["LinkClause"]);
+                    $this->query->setCriteriaLink($cl["LinkFrom"], $cl["LinkTo"], $cl["LinkClause"]);
                 }
             }
         }
