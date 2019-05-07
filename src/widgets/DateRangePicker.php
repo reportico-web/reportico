@@ -161,15 +161,15 @@ reportico_jquery(\'.reportico-daterange-field\').daterangepicker({
         $cls = "";
 
         $criteria = $this->criteria;
-		$this->deriveValue();
+        $this->deriveValue();
 
         if ($criteria->column_value_derived) 
-		$range_name = $criteria->column_value_derived;
-	else
-		$range_name = $criteria->column_value;
+            $range_name = $criteria->column_value_derived;
+        else
+            $range_name = $criteria->column_value;
 
         if ($range_name) {
-	    
+
             // If daterange value here is a range in a single value then its been
             // run directly from command line and needs splitting up using "-"
 
@@ -200,6 +200,7 @@ reportico_jquery(\'.reportico-daterange-field\').daterangepicker({
 
             }
 
+            $del = "";
             if ($add_del) {
                 $del = $criteria->getValueDelimiter();
             }

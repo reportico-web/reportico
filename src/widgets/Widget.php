@@ -182,32 +182,6 @@ class Widget
             }
         }
 
-        // Fetch the criteria value summary if required for displaying
-        // the criteria entry summary at top of report
-        if ($execute_mode && $execute_mode != "MAINTAIN" && $engine->target_show_criteria &&
-            ((array_key_exists($col->query_name, $_REQUEST) && !(is_array($_REQUEST[$col->query_name]) && $_REQUEST[$col->query_name][0] == ""))
-                || array_key_exists("MANUAL_" . $col->query_name, $_REQUEST)
-                || array_key_exists("HIDDEN_" . $col->query_name, $_REQUEST)
-            )) {
-            $lq = &$engine->lookup_queries[$col->query_name];
-            if ($lq->criteria_type == "LOOKUP") {
-                $lq->executeCriteriaLookup();
-            }
-
-            $lq->criteriaSummaryDisplay();
-            $identified_criteria = true;
-        }
-
-        if (array_key_exists($col->query_name, $_REQUEST)) {
-            // Since using Select2, we find unselected list boxes still send an empty array with a single character which we dont want to include
-            // as a criteria selection
-            if (!(is_array($_REQUEST[$col->query_name]) && $_REQUEST[$col->query_name][0] == "")) {
-                $engine->lookup_queries[$col->query_name]->column_value =
-                    $_REQUEST[$col->query_name];
-            }
-
-        }
-
         if (array_key_exists("MANUAL_" . $col->query_name, $_REQUEST)) {
 
             if (array_key_exists("MANUAL_derived_" . $col->query_name, $_REQUEST)) {
@@ -288,6 +262,33 @@ class Widget
 
                 }
             }
+        }
+
+
+        // Fetch the criteria value summary if required for displaying
+        // the criteria entry summary at top of report
+        if ($execute_mode && $execute_mode != "MAINTAIN" && $engine->target_show_criteria &&
+            ((array_key_exists($col->query_name, $_REQUEST) && !(is_array($_REQUEST[$col->query_name]) && $_REQUEST[$col->query_name][0] == ""))
+                || array_key_exists("MANUAL_" . $col->query_name, $_REQUEST)
+                || array_key_exists("HIDDEN_" . $col->query_name, $_REQUEST)
+            )) {
+            $lq = &$engine->lookup_queries[$col->query_name];
+            if ($lq->criteria_type == "LOOKUP") {
+                $lq->executeCriteriaLookup();
+            }
+
+            $lq->criteriaSummaryDisplay();
+            $identified_criteria = true;
+        }
+
+        if (array_key_exists($col->query_name, $_REQUEST)) {
+            // Since using Select2, we find unselected list boxes still send an empty array with a single character which we dont want to include
+            // as a criteria selection
+            if (!(is_array($_REQUEST[$col->query_name]) && $_REQUEST[$col->query_name][0] == "")) {
+                $engine->lookup_queries[$col->query_name]->column_value =
+                    $_REQUEST[$col->query_name];
+            }
+
         }
 
         /*

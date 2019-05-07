@@ -22,6 +22,8 @@ class CriteriaListSelect2Multi extends CriteriaList
 {
     public $value = false;
     public $expanded = false;
+    public $lastgroup = false;
+    public $group = false;
 
     public function __construct($engine, $criteria = false, $expanded = false)
     {
@@ -81,17 +83,41 @@ class CriteriaListSelect2Multi extends CriteriaList
     public function renderWidgetItem($label, $value, $selected )
     {
 
+        $text = "";
+        $this->lastgroup = false;
+        $this->group = false;
         $criteriaName = preg_replace("/ /", " ", $this->criteria->query_name);
 
         $selectedFlag = $selected ? "selected" : "";
         $name = $this->expanded ? "EXPANDED_" . $criteriaName : $criteriaName;
+
+        if ( $lab == "GROUP" )
+            $group = $ret;
+        if ( $group != $this->lastgroup )
+        {
+            if ( $this->lastgroup )
+                $text .= "</OPTGROUP>";
+            $text .= '<OPTGROUP LABEL="'.$ret.'">';
+            $this->lastgroup = $group;
+        }
+        else
+        {
+            $text .= '<OPTION label="'.$lab.'" value="'.$ret.'" '.$checked.'>'.$lab.'</OPTION>';
+        }
+
+
+
         return '<OPTION label="' . $label . '" value="' . $value . '" ' . $selectedFlag . '>' . $label . '</OPTION>';
     }
 
 
     public function renderWidgetEnd()
     {
-        return "</SELECT>";
+        $text = "";
+        if ( $this->lastgroup )
+                $text .= "</OPTGROUP>";
+        $text .=  "</SELECT>";
+        return $text;
     }
 
 }

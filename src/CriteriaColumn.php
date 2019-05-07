@@ -1711,6 +1711,7 @@ class CriteriaColumn extends QueryColumn
     {
 
         $cls = "";
+
         switch ($in_type) {
             case "RANGE1":
                 $cls = $this->getCriteriaClause(false, false, false, true, false, $use_del);
@@ -1905,11 +1906,11 @@ class CriteriaColumn extends QueryColumn
                 break;
 
             case "DATE":
-                $cls = $this->widget->getCriteriaClause($lhs, $operand, $rhs, $rhs1, $rhs2, true);
+                $cls = $this->widget->getCriteriaClause($lhs, $operand, $rhs, $rhs1, $rhs2, $add_del);
                 break;
 
             case "DATERANGE":
-                $cls = $this->widget->getCriteriaClause($lhs, $operand, $rhs, $rhs1, $rhs2, true);
+                $cls = $this->widget->getCriteriaClause($lhs, $operand, $rhs, $rhs1, $rhs2, $add_del);
                 break;
 
             case "LOOKUP":
@@ -2164,15 +2165,12 @@ class CriteriaColumn extends QueryColumn
     {
         $text = "";
 
-	$type = $this->criteria_type;
-
-	//if ( !$expanding )
-		//return;
+        $type = $this->criteria_type;
 
         switch ($type) {
             case "LIST":
-		    $text .= (\Reportico\Widgets\CriteriaList::createCriteriaList($this->parent_reportico, $this, $expanding ))->render();
-                //$text .= $this->list_display(false);
+                $this->widget = \Reportico\Widgets\CriteriaList::createCriteriaList($this->parent_reportico, $this, $expanding );
+                $this->widget->criteria = $this;
                 break;
 
             case "LOOKUP":
@@ -2227,7 +2225,7 @@ class CriteriaColumn extends QueryColumn
 
         switch ($type) {
             case "LIST":
-		    $text .= (\Reportico\Widgets\CriteriaList::createCriteriaList($this->parent_reportico, $this, $expanding ))->render();
+                $text .= (\Reportico\Widgets\CriteriaList::createCriteriaList($this->parent_reportico, $this, $expanding ))->render();
                 //$text .= $this->list_display(false);
                 break;
 

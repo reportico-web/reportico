@@ -3557,6 +3557,13 @@ class Reportico extends ReporticoObject
 
         // If xml file is used to generate the reportico_query, either by the xmlin session variable
         // or the xmlin request variable then process this before executing
+        if ($mode == "MAINTAIN") {
+            $_REQUEST['execute_mode'] = "$mode";
+            $runfromcriteriascreen = ReporticoUtility::getRequestItem("user_criteria_entered", false);
+                if ($runfromcriteriascreen || !$sessionClass::issetReporticoSessionParam('latestRequest') || !ReporticoSession::getReporticoSessionParam('latestRequest')) {
+                    $sessionClass::setReporticoSessionParam('latestRequest', $_REQUEST);
+                }
+        } else
         if ($mode == "EXECUTE") {
             $_REQUEST['execute_mode'] = "$mode";
 
@@ -3588,6 +3595,7 @@ class Reportico extends ReporticoObject
         } else {
             if ($mode != "MODIFY" && $sessionClass::issetReporticoSessionParam('latestRequest')) {
                 if ($sessionClass::getReporticoSessionParam('latestRequest')) {
+
                     $OLD_REQUEST = $_REQUEST;
 
                     // If a new report is being run dont bother trying to restore previous
@@ -3607,6 +3615,7 @@ class Reportico extends ReporticoObject
 
                     }
                     $_REQUEST['execute_mode'] = "$mode";
+                    $_REQUEST['partial_template'] = "";
                 }
             }
             $sessionClass::setReporticoSessionParam('latestRequest', "");
@@ -3783,9 +3792,10 @@ class Reportico extends ReporticoObject
 
                 ReporticoLang::loadModeLanguagePack("execute", $this->output_charset);
                 ReporticoLang::localiseTemplateStrings($this->template);
-                $this->checkCriteriaValidity();
 
                 $this->loadWidgets("core");
+
+                $this->checkCriteriaValidity();
 
                 ReporticoApp::set("code_area", "Main Query");
                 $this->buildQuery(false, "");
@@ -4186,7 +4196,7 @@ class Reportico extends ReporticoObject
                         ob_start();
                     }
 
-		    eval($code);
+                    eval($code);
                     $eval_output = ob_get_contents();
                     if ($ob_level > 0) {
                         ob_end_clean();
@@ -5745,8 +5755,13 @@ class Reportico extends ReporticoObject
         // Set up a widget for each criteria
         $criteriaRenders = [];
         foreach ( $this->lookup_queries as $v ) {
-		$v->createWidget();
+            $v->createWidget();
+        }
+        foreach ( $this->lookup_queries as $v ) {
             $this->widgets["criteria-{$v->query_name}"] = new \Reportico\Widgets\Criteria($this, true, $v);
+        }
+        foreach ( $this->lookup_queries as $v ) {
+            //$v->widget = $this->widgets["criteria-{$v->query_name}"];
             $this->widgets["criteria-{$v->query_name}"]->prehandleUrlParameters();
             $this->widgets["criteria-{$v->query_name}"]->handleUrlParameters();
         }
@@ -5755,7 +5770,6 @@ class Reportico extends ReporticoObject
         }
 
         foreach ( $criteriaRenders as $key => $render ) {
-
             if ( isset($render["lookup-selection"])) {
                 $this->widgetRenders["criteria-lookup"] = $render["lookup-selection"];
                 $this->widgetRenders["lookup-search"] = preg_replace("/{LOOKUPITEM}/", $render["lookup-criteria-name"], $this->widgetRenders["lookup-search"]);

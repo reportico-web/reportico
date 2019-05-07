@@ -336,7 +336,7 @@ class Assignment extends ReporticoObject
             $ct++;
             if ($ct > 100) {
                 if (!$no_warnings) {
-                    echo "Problem with SQL cannot resolve Criteria Items<br>";
+                    echo "Problem with SQL cannot resolve Criteria Items $crit<br>";
                 }
 
                 break;
@@ -408,7 +408,7 @@ class Assignment extends ReporticoObject
                                 break;
 
                             case "RANGE1":
-				$clause = $in_query->lookup_queries[$crit]->getCriteriaClause(false, false, false, true, false, $showquotes);
+                                $clause = $in_query->lookup_queries[$crit]->getCriteriaClause(false, false, false, true, false, $showquotes);
                                 break;
 
                             case "RANGE2":
