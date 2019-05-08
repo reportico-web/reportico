@@ -37,7 +37,7 @@ class Jquery extends Widget
                 'order' => 10,
                 'files' => [
                     'js' => [
-                        'node_modules/jquery/dist/jquery.js'
+                        "{$this->engine->url_path_to_assets}/node_modules/jquery/js/jquery.js"
                     ]
                 ],
             ];

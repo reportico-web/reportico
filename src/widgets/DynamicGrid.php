@@ -49,8 +49,8 @@ class DynamicGrid extends Widget
         $paging = $this->options["paging"] ? "true" : "false";
         $pagesize = $this->options["pageSize"];
 
-        $css = [ 'node_modules/datatables/media/css/jquery.dataTables.min.css', ];
-        $js = [ 'node_modules/datatables/media/js/jquery.dataTables.min.js' ];
+        $css = [ "{$this->engine->url_path_to_assets}/node_modules/datatables/css/jquery.dataTables.min.css", ];
+        $js = [ "{$this->engine->url_path_to_assets}/node_modules/datatables/js/jquery.dataTables.min.js" ];
         if ( $this->engine->reportico_ajax_preloaded ) {
             $css = [];
             $js = [];

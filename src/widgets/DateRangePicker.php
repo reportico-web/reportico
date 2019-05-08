@@ -82,12 +82,11 @@ class DateRangePicker extends Widget
                 'order' => 200,
                 'files' => [
                     'css' => [
-                        'node_modules/bootstrap-daterangepicker/daterangepicker.css',
+                        "{$this->engine->url_path_to_assets}/node_modules/bootstrap-daterangepicker/css/daterangepicker.css",
                     ],
                     'js' => [
-                        'node_modules/bootstrap-daterangepicker/moment.min.js',
-                        'node_modules/bootstrap-daterangepicker/daterangepicker.js',
-                        //'node_modules/bootstrap-datepicker/dist/locales/bootstrap-daterangepicker.'.
+                        "{$this->engine->url_path_to_assets}/node_modules/bootstrap-daterangepicker/js/moment.min.js",
+                        "{$this->engine->url_path_to_assets}/node_modules/bootstrap-daterangepicker/js/daterangepicker.js",
                         //ReporticoLocale::getDatepickerLanguage(ReporticoApp::getConfig("language")). '.min.js'
                     ],
                     'events' => [
