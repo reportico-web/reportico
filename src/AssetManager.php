@@ -36,7 +36,7 @@ class AssetManager
      */
     function initialise(){
 
-        $this->manager = new \Reportico\Assetter\Assetter(new \Requtize\FreshFile\FreshFile(__DIR__."/../"));
+        $this->manager = new \Requtize\Assetter\Assetter(new \Requtize\FreshFile\FreshFile(__DIR__."/../"));
 
         /*
          * Autoload assets from widgets folder
