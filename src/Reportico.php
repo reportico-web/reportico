@@ -3563,6 +3563,13 @@ class Reportico extends ReporticoObject
 
         // If xml file is used to generate the reportico_query, either by the xmlin session variable
         // or the xmlin request variable then process this before executing
+        if ($mode == "MAINTAIN") {
+            $_REQUEST['execute_mode'] = "$mode";
+            $runfromcriteriascreen = ReporticoUtility::getRequestItem("user_criteria_entered", false);
+                if ($runfromcriteriascreen || !$sessionClass::issetReporticoSessionParam('latestRequest') || !ReporticoSession::getReporticoSessionParam('latestRequest')) {
+                    $sessionClass::setReporticoSessionParam('latestRequest', $_REQUEST);
+                }
+        } else
         if ($mode == "EXECUTE") {
             $_REQUEST['execute_mode'] = "$mode";
 
@@ -3594,6 +3601,7 @@ class Reportico extends ReporticoObject
         } else {
             if ($mode != "MODIFY" && $sessionClass::issetReporticoSessionParam('latestRequest')) {
                 if ($sessionClass::getReporticoSessionParam('latestRequest')) {
+
                     $OLD_REQUEST = $_REQUEST;
 
                     // If a new report is being run dont bother trying to restore previous
@@ -3613,6 +3621,7 @@ class Reportico extends ReporticoObject
 
                     }
                     $_REQUEST['execute_mode'] = "$mode";
+                    $_REQUEST['partial_template'] = "";
                 }
             }
             $sessionClass::setReporticoSessionParam('latestRequest', "");
@@ -3789,9 +3798,10 @@ class Reportico extends ReporticoObject
 
                 ReporticoLang::loadModeLanguagePack("execute", $this->output_charset);
                 ReporticoLang::localiseTemplateStrings($this->template);
-                $this->checkCriteriaValidity();
 
                 $this->loadWidgets("core");
+
+                $this->checkCriteriaValidity();
 
                 ReporticoApp::set("code_area", "Main Query");
                 $this->buildQuery(false, "");
@@ -4158,7 +4168,7 @@ class Reportico extends ReporticoObject
                 // Execute Any Pre Execute Code, if not specified then
                 // attempt to pick up code automatically from a file "projects/project/report.xml.php"
                 $code = $this->getAttribute("PreExecuteCode");
-                if (!$code || $code == "NONE" || $code == "XX") {
+                if (true || !$code || $code == "NONE" || $code == "XX") {
                     if (preg_match("/.xml$/", $sessionClass::getReporticoSessionParam("xmlin"))) {
                         $source_path = ReporticoUtility::findBestLocationInIncludePath($this->projects_folder . "/" . ReporticoApp::getConfig("project") . "/" . $sessionClass::getReporticoSessionParam("xmlin") . ".php");
                     } else {
@@ -4172,15 +4182,17 @@ class Reportico extends ReporticoObject
                 }
                 if ($code) {
                     ReporticoApp::set("code_area", "");
+                    $code = "";
                     $code = "\$lk =& \$this->lookup_queries;" . $code;
                     $code = "\$ds =& \$this->datasource->ado_connection;" . $code;
                     $code = "\$_criteria =& \$this->lookup_queries;" . $code;
                     $code = "\$_pdo =& \$_connection->_connectionID;" . $code;
                     $code = "if ( \$_connection )" . $code;
                     $code = "\$_pdo = false;" . $code;
-                    $code = "set_include_path(get_include_path().'" . PATH_SEPARATOR . __DIR__ . "/.." . PATH_SEPARATOR . $this->admin_projects_folder . "/admin/');" . $code;
+                    $code = "set_include_path(get_include_path().'".PATH_SEPARATOR.__DIR__."/..".PATH_SEPARATOR.$this->admin_projects_folder."/admin/');" . $code;
                     $code = "\$_connection =& \$this->datasource->ado_connection;" . $code;
                     $code = "namespace Reportico\Engine;" . $code;
+                    $code .= "include '$source_path';";
 
                     // set to the user defined error handler
                     ReporticoApp::set("eval_code", $code);
@@ -4241,7 +4253,7 @@ class Reportico extends ReporticoObject
             $errorMessage = false;
 
             // If the source is an array then dont try to run SQL
-            if (is_object($conn) && basename(get_class($conn)) == "DataSourceArray") {
+            if (is_object($conn) && preg_match("/DataSourceArray/", get_class($conn)) ) {
                 $recordSet = $conn;
             } else {
 
@@ -5749,9 +5761,17 @@ class Reportico extends ReporticoObject
         // Set up a widget for each criteria
         $criteriaRenders = [];
         foreach ( $this->lookup_queries as $v ) {
+            $v->createWidget();
+        }
+        foreach ( $this->lookup_queries as $v ) {
             $this->widgets["criteria-{$v->query_name}"] = new \Reportico\Widgets\Criteria($this, true, $v);
+        }
+        foreach ( $this->lookup_queries as $v ) {
+            //$v->widget = $this->widgets["criteria-{$v->query_name}"];
             $this->widgets["criteria-{$v->query_name}"]->prehandleUrlParameters();
             $this->widgets["criteria-{$v->query_name}"]->handleUrlParameters();
+        }
+        foreach ( $this->lookup_queries as $v ) {
             $criteriaRenders[] = $this->widgets["criteria-{$v->query_name}"]->render();
             if ( $this->widgets["criteria-{$v->query_name}"]->engineCriteria->widget == false ) {
                 echo $v->query_name;
@@ -5764,7 +5784,6 @@ class Reportico extends ReporticoObject
             }
         }
         foreach ( $criteriaRenders as $key => $render ) {
-
             if ( isset($render["lookup-selection"])) {
                 $this->widgetRenders["criteria-lookup"] = $render["lookup-selection"];
                 $this->widgetRenders["lookup-search"] = preg_replace("/{LOOKUPITEM}/", $render["lookup-criteria-name"], $this->widgetRenders["lookup-search"]);
@@ -5790,6 +5809,12 @@ class Reportico extends ReporticoObject
         $this->template->assign('WIDGETS', $this->widgetRenders);
         $this->template->assign('PERMISSIONS', Authenticator::widgetRenders("permissions"));
         $this->template->assign('FLAGS', Authenticator::widgetRenders("flags"));
+
+        $this->template->assign('REPORTICO_VERSION', $this->version);
+        $this->template->assign('REPORTICO_SITE', $this->url_site);
+        $this->template->assign('REPORTICO_CSRF_TOKEN', $this->csrfToken);
+        $this->template->assign('REPORTICO_AJAX_HANDLER', $this->ajaxHandler);
+
 
         $translations = ReporticoApp::get("translations");
         //Authenticator::show("end");

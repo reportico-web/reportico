@@ -1409,6 +1409,10 @@ border-top: 1px solid #e5e5e5;
   z-index: 1001 !important;
 }
 
+.reportico-prepare-drop-select2 {
+  width: 300px;
+}
+
 
 /* ---------- STYLES FOR PDF CHARTS ----------*/
 /* Chart Default Text */

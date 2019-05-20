@@ -336,7 +336,7 @@ class Assignment extends ReporticoObject
             $ct++;
             if ($ct > 100) {
                 if (!$no_warnings) {
-                    echo "Problem with SQL cannot resolve Criteria Items<br>";
+                    echo "Problem with SQL cannot resolve Criteria Items $crit<br>";
                 }
 
                 break;
@@ -575,7 +575,7 @@ class Assignment extends ReporticoObject
         if (preg_match('/apply_style\(.*\)/', $out_string)) {
             $this->non_assignment_operation = true;
             $out_string = preg_replace('/apply_style\(/',
-                '$this->applyStyle("' . $this->query_name . "\",", $out_string);
+                'applyStyle("' . $this->query_name . "\",", $out_string);
         }
 
         if (preg_match('/applyStyle\(.*\)/', $out_string)) {

@@ -22,6 +22,8 @@ class CriteriaListSelect2Single extends CriteriaList
 {
     public $value = false;
     public $expanded = false;
+    public $lastgroup = false;
+    public $group = false;
 
     public function __construct($engine, $criteria = false, $expanded = false)
     {
@@ -178,13 +180,40 @@ reportico_jquery('#select2_dropdown_' + jtag + ',#select2_dropdown_expanded_' + 
     public function renderWidgetItem($label, $value, $selected )
     {
 
-        return '<OPTION label="' . $label . '" value="' . $value . '" ' . $selected . '>' . $label . '</OPTION>';
+        $text = "";
+        $this->lastgroup = false;
+        $this->group = false;
+        $criteriaName = preg_replace("/ /", " ", $this->criteria->query_name);
+
+        $selectedFlag = $selected ? "selected" : "";
+
+        if ( $label == "GROUP" )
+            $this->group = $value;
+        if ( $this->group != $this->lastgroup )
+        {
+            if ( $this->lastgroup )
+                $text .= "</OPTGROUP>";
+            $text .= '<OPTGROUP LABEL="'.$value.'">';
+            $this->lastgroup = $this->group;
+        }
+        else
+        {
+            $text .= '<OPTION label="' . $label . '" value="' . $value . '" ' . $selected . '>' . $label . '</OPTION>';
+        }
+
+
+
+        return $text;
     }
 
 
     public function renderWidgetEnd()
     {
-        return "</SELECT>";
+        $text = "";
+        if ( $this->lastgroup )
+                $text .= "</OPTGROUP>";
+        $text .=  "</SELECT>";
+        return $text;
     }
 
 }

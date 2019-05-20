@@ -54,8 +54,6 @@ class AdminPasswordSet extends Widget
     public function render()
     {
 
-        $text = "";
-
         // New admin password
         $status_message = false;
         if (array_key_exists("submit_admin_password", $_REQUEST)) {

@@ -47,10 +47,10 @@ class Modal extends Widget
                 'order' => 200,
                 'files' => [
                     'css' => [
-                        'node_modules/datatables/media/css/jquery.dataTables.min.css',
+                        "{$this->engine->url_path_to_assets}/node_modules/datatables/css/jquery.dataTables.min.css",
                     ],
                     'js' => [
-                        'node_modules/datatables/media/js/jquery.dataTables.min.js',
+                        "{$this->engine->url_path_to_assets}/node_modules/datatables/js/jquery.dataTables.min.js",
                     ],
                     'events' => [
                         'runtime' =>

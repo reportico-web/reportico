@@ -28,6 +28,7 @@ class DateRangePicker extends Widget
     public $range_start = false;
     public $range_end = false;
     public $range_raw = false;
+    public $derived = false;
 
     public $options = [
            "Today" => [
@@ -85,12 +86,11 @@ class DateRangePicker extends Widget
                 'order' => 200,
                 'files' => [
                     'css' => [
-                        'node_modules/bootstrap-daterangepicker/daterangepicker.css',
+                        "{$this->engine->url_path_to_assets}/node_modules/bootstrap-daterangepicker/css/daterangepicker.css",
                     ],
                     'js' => [
-                        'node_modules/bootstrap-daterangepicker/moment.min.js',
-                        'node_modules/bootstrap-daterangepicker/daterangepicker.js',
-                        //'node_modules/bootstrap-datepicker/dist/locales/bootstrap-daterangepicker.'.
+                        "{$this->engine->url_path_to_assets}/node_modules/bootstrap-daterangepicker/js/moment.min.js",
+                        "{$this->engine->url_path_to_assets}/node_modules/bootstrap-daterangepicker/js/daterangepicker.js",
                         //ReporticoLocale::getDatepickerLanguage(ReporticoApp::getConfig("language")). '.min.js'
                     ],
                     'events' => [
@@ -160,15 +160,22 @@ reportico_jquery(\'.reportico-daterange-field\').daterangepicker({
 
     public function getCriteriaClause($lhs = true, $operand = true, $rhs = true, $rhs1 = false, $rhs2 = false, $add_del = true)
     {
+
         $cls = "";
 
         $criteria = $this->criteria;
+        $this->deriveValue();
 
-        if ($criteria->column_value) {
+        if ($criteria->column_value_derived) 
+            $range_name = $criteria->column_value_derived;
+        else
+            $range_name = $criteria->column_value;
+
+        if ($range_name) {
+
             // If daterange value here is a range in a single value then its been
             // run directly from command line and needs splitting up using "-"
 
-            $range_name = $criteria->column_value;
             /*
             if ( isset($this->options[$range_name])) {
                 $dateRange = $this->options[$range_name]["phpEvaluate"];
@@ -180,6 +187,7 @@ reportico_jquery(\'.reportico-daterange-field\').daterangepicker({
                 $val2 = ReporticoLocale::parseDate($criteria->column_value2, false, ReporticoApp::getConfig("prep_dateformat"));
             }
             */
+
             //echo "GCL:".$this->range_start."-".$this->range_end."<BR>";
             $val1 = ReporticoLocale::convertYMDtoLocal($this->range_start, ReporticoApp::getConfig("prep_dateformat"), ReporticoApp::getConfig("db_dateformat"));
             $val2 = ReporticoLocale::convertYMDtoLocal($this->range_end, ReporticoApp::getConfig("prep_dateformat"), ReporticoApp::getConfig("db_dateformat"));
@@ -195,6 +203,7 @@ reportico_jquery(\'.reportico-daterange-field\').daterangepicker({
 
             }
 
+            $del = "";
             if ($add_del) {
                 $del = $criteria->getValueDelimiter();
             }

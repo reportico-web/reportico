@@ -181,9 +181,6 @@ class CriteriaList extends Widget
                     && !array_key_exists("EXPAND_" . $name, $_REQUEST)
                     && !array_key_exists("EXPANDCLEAR_" . $name, $_REQUEST)
             ) {
-                if ( $name == "List_Select2_Multiselect") {
-                    echo "there";
-                }
                 $expanded_params = $_REQUEST["EXPANDED_" . $name];
                 if (!is_array($expanded_params)) {
                     $expanded_params = array($expanded_params);

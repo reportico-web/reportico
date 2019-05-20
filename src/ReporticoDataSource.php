@@ -431,7 +431,39 @@ class ReporticoDataSource extends ReporticoObject
             $connected = true;
         }
 
-        if ($this->external_connection) {
+	// Plugin specified look in config.php for plugin details in "Plugins->Datasources"
+	// then instantite the class mentioned and pass in the credentials
+        $dbtype = ReporticoApp::getConfig("db_type", false);
+        if ($dbtype && $dbtype == "plugin" ) {
+
+            $db_driver = ReporticoApp::getConfig("db_driver", false);
+	    include_once(__DIR__."/adodb_elasticsearch.php");
+
+	    $sources = ReporticoApp::get("plugins");
+	    if ( !$sources ) {
+		    die ("Plugin $db_driver specified but no plugin section exists in the project config.php");
+	    }
+
+	    if ( !isset($sources["Datasources"]["$db_driver"]) ) {
+		    die ("Plugin $db_driver is not an element of the [\"plugins\"][\"Datasources\"] array in the project config.php");
+	    }
+	    	
+	    $datasource = $sources["Datasources"][$db_driver];
+	    if ( !isset($datasource["class"] ) ){
+		    die ("Plugin $db_driver in the project config.php does not specify a class");
+	    }
+
+	    $x = new \Reportico\Engine\DataSourceElastic($datasource);
+
+	    $class = $sources["Datasources"][$db_driver]["class"];
+            $this->ado_connection = new $class($datasource);
+	    $connected = $this->ado_connection->Connect();
+
+            return $this->connected;
+        }
+
+
+        if (false && $this->external_connection) {
             $this->ado_connection = NewADOConnection("pdo");
             $this->ado_connection->_connectionID = $this->external_connection;
             if ($this->ado_connection->_connectionID) {

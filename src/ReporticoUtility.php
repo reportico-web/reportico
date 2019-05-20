@@ -473,7 +473,6 @@ class ReporticoUtility
             $retstring = ucwords(strtolower($retstring));
         } else {
             $charset = ReporticoLocale::outputCharsetToPhpCharset(ReporticoApp::getConfig("output_encoding"));
-            echo $charset;
             if ( $charset && $charset != "None" )
                 $retstring = ucwords(mb_strtolower($retstring, ReporticoLocale::outputCharsetToPhpCharset(ReporticoApp::getConfig("output_encoding"))));
         }

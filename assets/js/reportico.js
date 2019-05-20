@@ -120,6 +120,21 @@ function setupCriteriaItems()
     {
         j = reportico_criteria_items[i];
 
+        reportico_jquery(".reportico-prepare-select2-static").select2();
+        reportico_jquery(".reportico-prepare-select2-static").each(function() {
+            preselected =[];
+            reportico_jquery(this).find("option").each(function() {
+                lab = reportico_jquery(this).prop("label");
+                value = reportico_jquery(this).prop("value");
+                checked = reportico_jquery(this).attr("checked");
+                if ( checked )
+                {
+                    preselected.push(value);
+                }
+            });
+            reportico_jquery(this).val(preselected).trigger("change");
+        });
+
         // Already checked values for prepopulation
         preselected =[];
         reportico_jquery("#select2_dropdown_" + j + ",#select2_dropdown_expanded_" + j).find("option").each(function() {

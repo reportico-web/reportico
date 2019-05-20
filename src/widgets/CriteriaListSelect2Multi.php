@@ -22,6 +22,8 @@ class CriteriaListSelect2Multi extends CriteriaList
 {
     public $value = false;
     public $expanded = false;
+    public $lastgroup = false;
+    public $group = false;
 
     public function __construct($engine, $criteria = false, $expanded = false)
     {
@@ -164,11 +166,10 @@ reportico_jquery('#select2_dropdown_' + jtag + ',#select2_dropdown_expanded_' + 
             }
         }
 
-        $tag = "select2_dropdown_" . $this->criteria->query_name;
-        $name = $this->criteria->query_name;
+        $criteriaName = preg_replace("/ /", " ", $this->criteria->query_name);
+        $tag = "select2_dropdown_static_" . $criteriaName;
         if ( $this->expanded) {
-            $tag = "select2_dropdown_expanded_" . $this->criteria->query_name;
-            $name = "EXPANDED_". $name;
+            $tag .= "_expanded";
         }
 
         $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : "MANUAL_". $this->criteria->query_name;
@@ -180,14 +181,40 @@ reportico_jquery('#select2_dropdown_' + jtag + ',#select2_dropdown_expanded_' + 
     public function renderWidgetItem($label, $value, $selected )
     {
 
+        $text = "";
+        $this->lastgroup = false;
+        $this->group = false;
+        $criteriaName = preg_replace("/ /", " ", $this->criteria->query_name);
+
         $selectedFlag = $selected ? "selected" : "";
-        return '<OPTION label="' . $label . '" value="' . $value . '" ' . $selectedFlag . '>' . $label . '</OPTION>';
+
+
+        if ( $lab == "GROUP" )
+            $group = $ret;
+        if ( $group != $this->lastgroup )
+        {
+            if ( $this->lastgroup )
+                $text .= "</OPTGROUP>";
+            $text .= '<OPTGROUP LABEL="'.$ret.'">';
+            $this->lastgroup = $group;
+        }
+        else
+        {
+            $text .= '<OPTION label="'.$lab.'" value="'.$ret.'" '.$checked.'>'.$lab.'</OPTION>';
+        }
+
+
+        return '<OPTION label="' . $label . '" value="' . $value . '" ' . $selected . '>' . $label . '</OPTION>';
     }
 
 
     public function renderWidgetEnd()
     {
-        return "</SELECT>";
+        $text = "";
+        if ( $this->lastgroup )
+                $text .= "</OPTGROUP>";
+        $text .=  "</SELECT>";
+        return $text;
     }
 
 }

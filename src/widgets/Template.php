@@ -55,10 +55,13 @@ class Template extends Widget
         ajaxaction = reportico_ajax_script;
     }
 
-    if ( reportico_ajax_mode == 1 )
-        ajaxaction += '?r=reporticopdf/reportico/ajax';
-    else
-        ajaxaction += '/reporticopdf/reportico/ajax';
+    //if ( reportico_ajax_mode == 1 )
+        //ajaxaction += '?r=reportico/ajax';
+    //else
+        //ajaxaction += '/reportico/ajax';
+
+    ajaxaction +=  getCSRFURLParams();
+    headers =  getCSRFHeaders();
 
     params = forms.serialize();
 
@@ -93,6 +96,7 @@ class Template extends Widget
         type: 'POST',
         url: ajaxaction,
         data: params,
+        headers: headers,
         dataType: 'html',
         success: function(data, status)
         {

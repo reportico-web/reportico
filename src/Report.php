@@ -355,7 +355,10 @@ class Report extends ReporticoObject
                 } else if (ReporticoUtility::getRequestItem("MANUAL_" . $name, "")) {
                     $label = $crit->deriveAttribute("column_title", $crit->query_name);
                     $label = ReporticoLang::translate($label);
-                    $value .= ReporticoUtility::getRequestItem("MANUAL_" . $name, "");
+		    if ( is_array(  ReporticoUtility::getRequestItem("MANUAL_" . $name, "") ))
+                    	$value .= implode( ",", ReporticoUtility::getRequestItem("MANUAL_" . $name, ""));
+		    else
+                    	$value .= ReporticoUtility::getRequestItem("MANUAL_" . $name, "");
 
                 }
             }
@@ -416,7 +419,10 @@ class Report extends ReporticoObject
                     } else if (ReporticoUtility::getRequestItem("MANUAL_" . $name, "")) {
                         $label = $crit->deriveAttribute("column_title", $crit->query_name);
                         $label = ReporticoLang::translate($label);
-                        $value .= ReporticoUtility::getRequestItem("MANUAL_" . $name, "");
+			    if ( is_array(  ReporticoUtility::getRequestItem("MANUAL_" . $name, "") ))
+				$value .= implode( ",", ReporticoUtility::getRequestItem("MANUAL_" . $name, ""));
+			    else
+				$value .= ReporticoUtility::getRequestItem("MANUAL_" . $name, "");
 
                     }
                 }

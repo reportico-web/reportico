@@ -40,10 +40,10 @@ class Bootstrap3 extends \Reportico\Widgets\Widget
                 'order' => 100,
                 'files' => [
                     'css' => [
-                        'node_modules/bootstrap/dist/css/bootstrap.min.css'
+                        "{$this->engine->url_path_to_assets}/node_modules/bootstrap/css/bootstrap.min.css"
                     ],
                     'js' => [
-                        'node_modules/bootstrap/dist/js/bootstrap.min.js'
+                        "{$this->engine->url_path_to_assets}/node_modules/bootstrap/js/bootstrap.min.js"
                     ],
                     'events' => [
                         'runtime' => [
