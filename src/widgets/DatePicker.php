@@ -64,6 +64,10 @@ class DatePicker extends Widget
         return
             [
                 'name' => 'datepicker',
+                'type' => 'criteria-selection',
+                'title' => 'Date Picker',
+                'renderType' => 'TEXTFIELD',
+                'sourceType' => 'DATE',
                 'order' => 200,
                 'files' => [
                     'css' => [

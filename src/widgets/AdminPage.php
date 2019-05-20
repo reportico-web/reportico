@@ -61,13 +61,18 @@ class AdminPage extends Widget
         $sections = [];
         $sections["admin-password-set"] = "";
 
-        $sections["admin-header"] = $this->engine->renderWidget("admin-header", "AdminHeader");
-        $sections["admin-login"] = $this->engine->renderWidget("admin-login", "AdminLogin");
-        $sections["admin-menu"] = $this->engine->renderWidget("admin-menu", "AdminMenu");
 
-        // For first time ( no admin projects config.php we want to prompt for admin password
+        $sections["admin-header"] = $this->engine->renderWidget("admin-header", "AdminHeader");
+
         if (ReporticoApp::getConfig("project") == "admin" && ReporticoApp::getConfig("admin_password") == "PROMPT") {
+            // For first time ( no admin projects config.php we want to prompt for admin password
             $sections["admin-password-set"] = $this->engine->renderWidget("admin-password-set", "AdminPasswordSet");
+        }
+
+        if (ReporticoApp::getConfig("project") == "admin" && ReporticoApp::getConfig("admin_password") != "PROMPT") {
+            // Just print normal admin menu
+            $sections["admin-login"] = $this->engine->renderWidget("admin-login", "AdminLogin");
+            $sections["admin-menu"] = $this->engine->renderWidget("admin-menu", "AdminMenu");
         }
 
         return $sections;

@@ -38,7 +38,11 @@ class CriteriaListMultiDropdown extends CriteriaList
 
         return
             [
-                'name' => 'criteria-list-dropdown',
+                'name' => 'criteria-list-multi-dropdown',
+                'type' => 'criteria-selection',
+                'title' => 'Multi List Dropdown',
+                'renderType' => 'DROPDOWN',
+                'sourceType' => 'LIST',
                 'order' => 200,
                 'files' => [
                     'css' => [],
@@ -66,15 +70,14 @@ class CriteriaListMultiDropdown extends CriteriaList
             }
         }
 
-        $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : $this->criteria->query_name;
-        $text .= '<SELECT class="' . $this->criteria->parent_reportico->getBootstrapStyle('design_dropdown') . 'reportico-prepare-drop-select" name="'.$name.'[]" size="' . $multisize . '" multiple>';
+        $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : "MANUAL_". $this->criteria->query_name;
+        $text = '<SELECT class="' . $this->criteria->parent_reportico->getBootstrapStyle('design_dropdown') . 'reportico-prepare-drop-select" name="'.$name.'[]" size="' . $multisize . '" multiple>';
         return $text;
     }
 
     public function renderWidgetItem($label, $value, $selected )
     {
         $selectedFlag = $selected ? "selected" : "";
-        $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : $this->criteria->query_name;
         return '<OPTION label="' . $label . '" value="' . $value . '" ' . $selectedFlag . '>' . $label . '</OPTION>';
     }
 

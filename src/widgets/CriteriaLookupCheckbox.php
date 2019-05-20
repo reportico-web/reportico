@@ -25,6 +25,7 @@ class CriteriaLookupCheckbox extends CriteriaLookup
 
     public function __construct($engine, $criteria = false, $expanded = false)
     {
+        $this->check_text = "checked";
         $this->criteria = $criteria;
         $this->expanded = $expanded;
 
@@ -39,6 +40,10 @@ class CriteriaLookupCheckbox extends CriteriaLookup
         return
             [
                 'name' => 'criteria-checkbox',
+                'type' => 'criteria-selection',
+                'title' => 'Check Boxes',
+                'renderType' => 'CHECKBOX',
+                'sourceType' => 'LOOKUP',
                 'order' => 200,
                 'files' => [
                     'css' => [],

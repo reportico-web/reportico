@@ -17,6 +17,7 @@ namespace Reportico\Widgets;
 use \Reportico\Engine\ReporticoLocale;
 use \Reportico\Engine\ReporticoApp;
 use \Reportico\Engine\ReporticoLang;
+use Reportico\Engine\ReporticoUtility;
 
 class CriteriaListRadio extends CriteriaList
 {
@@ -25,6 +26,7 @@ class CriteriaListRadio extends CriteriaList
 
     public function __construct($engine, $criteria = false, $expanded = false)
     {
+        $this->check_text = "checked";
         $this->criteria = $criteria;
         $this->expanded = $expanded;
 
@@ -39,6 +41,10 @@ class CriteriaListRadio extends CriteriaList
         return
             [
                 'name' => 'criteria-list-radio',
+                'type' => 'criteria-selection',
+                'title' => 'Checkbox List',
+                'renderType' => 'RADIO',
+                'sourceType' => 'LIST',
                 'order' => 200,
                 'files' => [
                     'css' => [],
@@ -59,7 +65,7 @@ class CriteriaListRadio extends CriteriaList
     public function renderWidgetItem($label, $value, $selected )
     {
         $selectedFlag = $selected ? "checked" : "";
-        $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : $this->criteria->query_name;
+        $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : "MANUAL_". $this->criteria->query_name;
         return '<INPUT type="radio" name="'.$name.'" value="' . $value . '" ' . $selected . '>' . ReporticoLang::translate($label) . '<BR>';
     }
 

@@ -25,6 +25,7 @@ class CriteriaListCheckbox extends CriteriaList
 
     public function __construct($engine, $criteria = false, $expanded = false)
     {
+        $this->check_text = "checked";
         $this->criteria = $criteria;
         $this->expanded = $expanded;
 
@@ -39,6 +40,10 @@ class CriteriaListCheckbox extends CriteriaList
         return
             [
                 'name' => 'criteria-checkbox',
+                'type' => 'criteria-selection',
+                'title' => 'List Checkboxes',
+                'renderType' => 'CHECKBOX',
+                'sourceType' => 'LIST',
                 'order' => 200,
                 'files' => [
                     'css' => [],
@@ -59,7 +64,7 @@ class CriteriaListCheckbox extends CriteriaList
     public function renderWidgetItem($label, $value, $selected )
     {
         $selectedFlag = $selected ? "checked" : "";
-        $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : $this->criteria->query_name;
+        $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : "MANUAL_". $this->criteria->query_name;
         return '<INPUT type="checkbox" name="'.$name.'[]" value="' . $value . '" ' . $selectedFlag . '>' . ReporticoLang::translate($label) . '<BR>';
     }
 

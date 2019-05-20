@@ -75,6 +75,8 @@ class AdminMenu extends Widget
         $sections["menu-item-run-project"] = "";
         $sections["select-run-project"] = "";
 
+        $sections["admin-login-button"] = $this->engine->renderWidget("admin-login-button", "SubmitExecute", "admin-login-button");
+        $sections["admin-logout-button"] = $this->engine->renderWidget("admin-logout-button", "SubmitExecute", "admin-logout-button");
         $sections["run-project-button"] = $this->engine->renderWidget("admin-run-project", "SubmitExecute", "admin-run-project");
         $sections["delete-project-button"] = $this->engine->renderWidget("admin-delete-project", "SubmitExecute", "admin-delete-project");
         $sections["create-report-button"] = $this->engine->renderWidget("admin-create-report", "SubmitExecute", "admin-create-report");

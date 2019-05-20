@@ -308,14 +308,17 @@ class XmlReader
             "Title" => array("Title" => "TITLE", "DocId" => "title"),
             "CriteriaDefaults" => array("Title" => "CRITERIADEFAULTS", "HelpPage" => "criteria", "DocId" => "defaults"),
             "CriteriaList" => array("Title" => "CRITERIALIST", "HelpPage" => "criteria", "DocId" => "list_values"),
-            "CriteriaType" => array("Title" => "CRITERIATYPE", "HelpPage" => "criteria", "Type" => "DROPDOWN",
-                "Values" => array("TEXTFIELD", "LOOKUP", "DATE", "DATERANGE", "LIST", "SQLCOMMAND"), "XlateOptions" => true, "DocId" => "criteria_type"),
+            "CriteriaType" => array("Title" => "CRITERIATYPE", "HelpPage" => "criteria", "Type" => "CRITERIARENDERS",
+                //"Values" => array("TEXTFIELD", "LOOKUP", "DATE", "DATERANGE", "LIST", "SQLCOMMAND"),
+                "XlateOptions" => true, "DocId" => "criteria_type"),
             "Use" => array("Title" => "USE", "HelpPage" => "criteria", "Type" => "DROPDOWN",
                 "Values" => array("DATA-FILTER", "SHOW/HIDE", "SHOW/HIDE-and-GROUPBY")),
             "LinkToReport" => array("Type" => "TEXTFIELDREADONLY", "Title" => "LINKTOREPORT"),
             "LinkToReportItem" => array("Type" => "TEXTFIELDREADONLY", "Title" => "LINKTOREPORTITEM"),
-            "CriteriaDisplay" => array("Title" => "CRITERIADISPLAY", "Type" => "DROPDOWN", "HelpPage" => "criteria", "XlateOptions" => true,
-                "Values" => array("NOINPUT", "TEXTFIELD", "DROPDOWN", "MULTI", "SELECT2SINGLE", "SELECT2MULTIPLE", "CHECKBOX", "RADIO"), "DocId" => "criteria_display"),
+            "CriteriaDisplay" => array("Title" => "CRITERIADISPLAY", "Type" => "CRITERIAWIDGETS", "HelpPage" => "criteria",
+                "XlateOptions" => true,
+                //"Values" => array("NOINPUT", "TEXTFIELD", "DROPDOWN", "MULTI", "SELECT2SINGLE", "SELECT2MULTIPLE", "CHECKBOX", "RADIO"), "DocId" => "criteria_display"),
+                "DocId" => "criteria_display"),
             "ExpandDisplay" => array("Title" => "EXPANDDISPLAY", "Type" => "DROPDOWN", "HelpPage" => "criteria", "XlateOptions" => true,
                 "Values" => array("NOINPUT", "TEXTFIELD", "DROPDOWN", "MULTI", "SELECT2SINGLE", "SELECT2MULTIPLE", "CHECKBOX", "RADIO"), "DocId" => "expand_display"),
             "DatabaseType" => array("Title" => "DATABASETYPE", "Type" => "DROPDOWN",
@@ -1992,7 +1995,7 @@ class XmlReader
                 break;
 
             case "pghd":
-                //$updates["HeaderText"] = $this->applyPdfStyles ( "PageHeader", $updates, $updates["HeaderText"] );
+                //$updates["HeaderTxt"] = $this->applyPdfStyles ( "PageHeader", $updates, $updates["HeaderText"] );
                 if (isset($updates["HeaderText_shadow"]) && $updates["HeaderText_shadow"] != $updates["HeaderText"]) {
                     $updates["HeaderText"] = $updates["HeaderText"];
                 } else {
@@ -3991,6 +3994,41 @@ class XmlReader
 
                 $text .= $this->drawArrayDropdown("set_" . $this->id . "_" . $showtag . $shadow, $keys, $val, false, $translateoptions);
                 break;
+
+            case "CRITERIAWIDGETS":
+
+                $keys = array();
+                foreach ( $this->query->assetManager->availableAssets as $k => $widget){
+                    $config = $widget->getConfig();
+
+                    $order = isset($config["order"]) ? str_pad($config["order"],5, "0" ) : "99999";
+                    if ( isset($config["renderType"]) && !in_array($config["renderType"], $keys)){
+                        $keys[$order."-".$config["name"]] = $config["renderType"];
+                    }
+                }
+
+                ksort($keys);
+
+                $text .= $this->drawArrayDropdown("set_" . $this->id . "_" . $showtag . $shadow, $keys, $val, false, $translateoptions);
+                break;
+
+            case "CRITERIARENDERS":
+
+                $keys = array();
+                foreach ( $this->query->assetManager->availableAssets as $k => $widget){
+                    $config = $widget->getConfig();
+
+                    $order = isset($config["order"]) ? str_pad($config["order"],5, "0" ) : "99999";
+                    if ( isset($config["sourceType"]) && !in_array($config["sourceType"], $keys)){
+                        $keys[$order."-".$config["name"]] = $config["sourceType"];
+                    }
+                }
+
+                ksort($keys);
+
+                $text .= $this->drawArrayDropdown("set_" . $this->id . "_" . $showtag . $shadow, $keys, $val, false, $translateoptions);
+                break;
+
 
             case "REPORTLIST":
                 $keys = array();

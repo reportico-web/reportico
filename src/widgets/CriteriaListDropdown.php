@@ -39,6 +39,10 @@ class CriteriaListDropdown extends CriteriaList
         return
             [
                 'name' => 'criteria-list-dropdown',
+                'type' => 'criteria-selection',
+                'title' => 'Single List Dropdown',
+                'renderType' => 'MULTI',
+                'sourceType' => 'LIST',
                 'order' => 200,
                 'files' => [
                     'css' => [],
@@ -53,7 +57,7 @@ class CriteriaListDropdown extends CriteriaList
 
     public function renderWidgetStart()
     {
-        $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : $this->criteria->query_name;
+        $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : "MANUAL_". $this->criteria->query_name;
         $text = '<SELECT class="' . $this->criteria->lookup_query->getBootstrapStyle('design_dropdown') . 'reportico-drop-select-regular" name="' . $name . '">';
         return $text;
     }

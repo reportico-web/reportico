@@ -39,6 +39,10 @@ class CriteriaLookupTextField extends CriteriaLookup
         return
             [
                 'name' => 'criteria-lookup-text-field',
+                'type' => 'criteria-selection',
+                'title' => 'Textfield Lookup',
+                'renderType' => 'TEXTFIELD',
+                'sourceType' => 'LOOKUP',
                 'order' => 200,
                 'files' => [
                     'css' => [],

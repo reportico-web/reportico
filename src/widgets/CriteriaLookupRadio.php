@@ -27,6 +27,7 @@ class CriteriaLookupRadio extends CriteriaLookup
     {
         $this->criteria = $criteria;
         $this->expanded = $expanded;
+        $this->check_text = "checked";
 
         parent::__construct($engine, $criteria, $expanded);
     }
@@ -39,6 +40,10 @@ class CriteriaLookupRadio extends CriteriaLookup
         return
             [
                 'name' => 'criteria-list-radio',
+                'type' => 'criteria-selection',
+                'title' => 'Radio Buttons',
+                'renderType' => 'RADIO',
+                'sourceType' => 'LOOKUP',
                 'order' => 200,
                 'files' => [
                     'css' => [],

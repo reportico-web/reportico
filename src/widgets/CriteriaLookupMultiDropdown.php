@@ -38,7 +38,11 @@ class CriteriaLookupMultiDropdown extends CriteriaLookup
 
         return
             [
-                'name' => 'criteria-list-dropdown',
+                'name' => 'criteria-lookup-multi-dropdown',
+                'type' => 'criteria-selection',
+                'title' => 'Multi Lookup Dropdown',
+                'renderType' => 'MULTI',
+                'sourceType' => 'LOOKUP',
                 'order' => 200,
                 'files' => [
                     'css' => [],

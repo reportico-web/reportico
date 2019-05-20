@@ -24,6 +24,7 @@ class CriteriaLookup extends Widget
 {
     public $value = false;
     public $expanded = false;
+    public $check_text = "selected";
 
     public function __construct($engine, $criteria = false, $expanded = false)
     {
@@ -51,10 +52,11 @@ class CriteriaLookup extends Widget
             case "CHECKBOX": $class = "\Reportico\Widgets\CriteriaLookupCheckbox"; break;
             case "RADIO": $class = "\Reportico\Widgets\CriteriaLookupRadio"; break;
             case "DROPDOWN": $class = "\Reportico\Widgets\CriteriaLookupDropdown"; break;
-            default: $class = "\Reportico\Widgets\CriteriaLookupDropdown"; break;
+            default: $class = "\Reportico\Widgets\\".$type; break;
         }
 
-        return new $class($engine, $criteria, $expanded);
+        $criteria->widget = new $class($engine, $criteria, $expanded);
+        return $criteria->widget;
 
     }
 
@@ -114,6 +116,7 @@ class CriteriaLookup extends Widget
         $manual_override = false;
 
         if (array_key_exists("clearform", $_REQUEST)) {
+            // If clearform is set, then reset selections
             $hidden_params = $this->criteria->defaults;
             $manual_params = $this->criteria->defaults;
             $params = $this->criteria->defaults;
@@ -163,7 +166,7 @@ class CriteriaLookup extends Widget
                 }
             }
 
-            // If this->criteria is first time into screen and we have defaults then
+            // If this is first time into screen and we have defaults then
             // use these instead
             if (!$hidden_params && $sessionClass::getReporticoSessionParam("firstTimeIn")) {
                 $hidden_params = $this->criteria->defaults;
@@ -185,21 +188,7 @@ class CriteriaLookup extends Widget
 
         $text .= $this->renderWidgetStart();
 
-        $check_text = "";
-
-        switch ($type) {
-            case "MULTI":
-            case "DROPDOWN":
-            case "ANYCHAR":
-            case "TEXTFIELD":
-            case "NOINPUT":
-                $check_text = "selected";
-                break;
-
-            default:
-                $check_text = "checked";
-                break;
-        }
+        $check_text = $this->check_text;
 
         $clearall = false;
         $isselected = false;
@@ -292,7 +281,6 @@ class CriteriaLookup extends Widget
                     $isselected = true;
                     $checked = $check_text;
                 }
-
 
                 if ($selectall) {
                     $isselected = true;

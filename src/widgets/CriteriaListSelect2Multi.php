@@ -34,11 +34,109 @@ class CriteriaListSelect2Multi extends CriteriaList
     public function getConfig() {
 
         $init = [ ];
-        $runtime = [ ];
+        $runtime = [
+            "
+CriteriaListSelect2Multi = function() {
+        
+            var load = function (j) {
+
+        // Already checked values for prepopulation
+        preselected =[];
+
+        jtag = j.replace(/ /g, '\\\\ ');
+
+        reportico_jquery('#select2_dropdown_' + jtag + ',#select2_dropdown_expanded_' + jtag).find('option').each(function() {
+            lab = reportico_jquery(this).prop('label');
+            value = reportico_jquery(this).prop('value');
+            checked = reportico_jquery(this).prop('selected');
+            if ( checked )
+            {
+                preselected.push(value);
+            }
+        });
+
+headers =  getCSRFHeaders();
+
+if ( jQuery.type(reportico_ajax_script) === 'undefined' || !reportico_ajax_script )
+{
+var ajaxaction = reportico_jquery(forms).prop('action');
+}
+else
+{
+    ajaxaction = reportico_ajax_script;
+}
+
+ajaxextra = getYiiAjaxURL();
+if ( ajaxextra != '' ) {
+    ajaxaction += ajaxextra
+            ajaxaction += '&' + 'reportico_criteria=' + j;
+        }
+else
+    ajaxaction += '?' + 'reportico_criteria=' + j;
+
+ajaxaction +=  getCSRFURLParams();
+headers =  getCSRFHeaders();
+
+reportico_jquery('#select2_dropdown_' + jtag + ',#select2_dropdown_expanded_' + jtag).select2({
+          escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+          minimumInputLength: 1
+          //templateResult: select2FormatResult, // omitted for brevity, see the source of this page
+          //templateSelection: select2FormatSelection // omitted for brevity, see the source of this page
+        })
+        reportico_jquery('#select2_dropdown_' + jtag).val(preselected).trigger('change');
+
+        // If select2 exists in expand tab then hide the search box .. its not relevant
+        reportico_jquery('#select2_dropdown_expanded_' + jtag).each(function() {
+            reportico_jquery('#expandsearch').hide();
+            reportico_jquery('#reporticoSearchExpand').hide();
+        });
+    }
+    return {
+        load: function (string) {
+            return load(string);
+        }
+    }
+    }();
+
+" ];
 
         return
             [
                 'name' => 'criteria-list-select2-multi',
+                'type' => 'criteria-selection',
+                'title' => 'Select2 Multi List',
+                'renderType' => 'SELECT2MULTIPLE',
+                'sourceType' => 'LIST',
+                'order' => 200,
+                'files' => [
+                    'css' => [
+                        'node_modules/select2/dist/css/select2.min.css',
+                    ],
+                    'js' => [
+                        'node_modules/select2/dist/js/select2.min.js',
+                    ],
+                    'events' => [
+                        'init' => $init,
+                        'runtime' => $runtime
+                    ]
+                ]
+            ];
+    }
+
+    public function getRenderConfig() {
+
+        $init = [
+            "\nCriteriaListSelect2Multi.load('{$this->criteria->query_name}')\n"
+            ];
+        $runtime = [ ];
+
+        return
+            [
+                'name' => 'criteria-list-select2-multi-'.$this->criteria->query_name,
+                'type' => 'criteria-selection',
+                'title' => 'Select2 Multi List',
+                'renderType' => 'SELECT2MULTIPLE',
+                'sourceType' => 'LIST',
                 'order' => 200,
                 'files' => [
                     'css' => [],
@@ -73,7 +171,8 @@ class CriteriaListSelect2Multi extends CriteriaList
             $name = "EXPANDED_". $name;
         }
 
-        $text = '<SELECT id="'.$tag.'" class="' . $this->criteria->parent_reportico->getBootstrapStyle('design_dropdown') . 'reportico-prepare-drop-select2" name="' . $name . $this->criteria->query_name . '[]" size="' . $multisize . '" multiple >';
+        $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : "MANUAL_". $this->criteria->query_name;
+        $text = '<SELECT id="'.$tag.'" class="' . $this->criteria->parent_reportico->getBootstrapStyle('design_dropdown') . 'reportico-prepare-drop-select2" name="' . $name .  '[]" size="' . $multisize . '" multiple >';
         $text .= '<OPTION></OPTION>';
         return $text;
     }
@@ -82,7 +181,6 @@ class CriteriaListSelect2Multi extends CriteriaList
     {
 
         $selectedFlag = $selected ? "selected" : "";
-        $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : $this->criteria->query_name;
         return '<OPTION label="' . $label . '" value="' . $value . '" ' . $selectedFlag . '>' . $label . '</OPTION>';
     }
 

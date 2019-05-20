@@ -18,7 +18,7 @@ namespace Reportico\Widgets;
 use \Reportico\Engine\ReporticoLocale;
 use \Reportico\Engine\ReporticoApp;
 
-class TextField extends Widget
+class NoEntry extends Widget
 {
     public $value = false;
     public $expanded = false;
@@ -35,12 +35,12 @@ class TextField extends Widget
 
         return
             [
-                'name' => 'text-field',
+                'name' => 'no-entry',
                 'type' => 'criteria-selection',
                 'title' => 'Text Field',
-                'renderType' => 'TEXTFIELD',
+                'renderType' => 'NOINPUT',
                 'sourceType' => 'TEXTFIELD',
-                'order' => 2,
+                'order' => 1,
                 'files' => [
                     'css' => [],
                     'js' => [],

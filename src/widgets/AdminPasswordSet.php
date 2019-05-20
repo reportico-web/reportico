@@ -53,9 +53,8 @@ class AdminPasswordSet extends Widget
 
     public function render()
     {
-        $text = "";
 
-        echo "PSET";
+        $text = "";
 
         // New admin password
         $status_message = false;
@@ -180,12 +179,11 @@ class AdminPasswordSet extends Widget
         $retval = file_put_contents($target_conf, $txt);
 
         // Password is saved so use it so user can login
-        if (!ReporticoApp::isSetConfig('admin_password')) {
+        if (!ReporticoApp::isSetConfig('admin_password') || ReporticoApp::getConfig('admin_password') == "PROMPT"  ) {
             ReporticoApp::setConfig("admin_password", $password1);
         }
-        //} else {
-            //ReporticoApp::setConfig("admin_password_reset", $password1);
-        //}
+
+        \Reportico\Engine\Authenticator::unflag("show-set-admin-password");
 
         return;
 

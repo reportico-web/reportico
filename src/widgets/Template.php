@@ -37,7 +37,8 @@ class Template extends Widget
 
 ];
         $runtime = [
-            "reportico_jquery(document).on('click', '#submitDeleteTemplate,#submitSaveTemplate,#submitLoadTemplate', function(event)
+            "
+            reportico_jquery(document).on('click', '#submitDeleteTemplate,#submitSaveTemplate,#submitLoadTemplate', function(event)
 {
     id = reportico_jquery(this).prop('id');
     var expandpanel = reportico_jquery(this).closest('#criteriaform').find('#swPrpExpandCell');

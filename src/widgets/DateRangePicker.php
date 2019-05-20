@@ -78,6 +78,10 @@ class DateRangePicker extends Widget
         return
             [
                 'name' => 'daterangepicker',
+                'type' => 'criteria-selection',
+                'title' => 'Date Range Picker',
+                'renderType' => 'TEXTFIELD',
+                'sourceType' => 'DATERANGE',
                 'order' => 200,
                 'files' => [
                     'css' => [
@@ -254,7 +258,7 @@ reportico_jquery(\'.reportico-daterange-field\').daterangepicker({
                 }
                 $this->range_start_raw = $this->range_start;
                 $this->range_end_raw = $this->range_end;
-                echo "DRANGE:".$this->range_start."-".$this->range_end."<BR>";
+                //echo "DRANGE:".$this->range_start."-".$this->range_end."<BR>";
             }
 
         } else if (!array_key_exists("clearform", $_REQUEST) && array_key_exists("MANUAL_" . $criteriaName . "_FROMDATE", $_REQUEST)) {
@@ -317,7 +321,7 @@ reportico_jquery(\'.reportico-daterange-field\').daterangepicker({
 
         if ( !$this->range_raw && $this->range_start_raw && $this->range_end_raw ) {
             $this->range_raw = $this->range_start_raw ."-". $this->range_end_raw;
-            echo "got $this->range_raw";
+            //echo "got $this->range_raw";
 
         }
         //echo "NOW: $this->range_start - $this->range_end<BR>";

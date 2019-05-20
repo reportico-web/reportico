@@ -53,8 +53,9 @@ class AuthenticatorStandalone extends Authenticator
 
             case "FULL":
             case "all":
+            case "full":
             case "admin":
-                //self::_reset("admin");
+                self::_reset("admin");
                 break;
 
             case "DEMO":
@@ -183,6 +184,7 @@ class AuthenticatorStandalone extends Authenticator
                 } else {
                     $testpassword = $_REQUEST['project_password'];
                 }
+
                 if ($testpassword == $project_password) {
                     self::_grant("project");
                     self::_grant("admin-page");

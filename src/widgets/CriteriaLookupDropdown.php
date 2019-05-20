@@ -38,7 +38,11 @@ class CriteriaLookupDropdown extends CriteriaLookup
 
         return
             [
-                'name' => 'criteria-list-dropdown',
+                'name' => 'criteria-lookup-dropdown',
+                'type' => 'criteria-selection',
+                'title' => 'Single Lookup Dropdown',
+                'renderType' => 'DROPDOWN',
+                'sourceType' => 'LOOKUP',
                 'order' => 200,
                 'files' => [
                     'css' => [],
@@ -53,7 +57,7 @@ class CriteriaLookupDropdown extends CriteriaLookup
 
     public function renderWidgetStart()
     {
-        $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : $this->criteria->query_name;
+        $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : "MANUAL_" . $this->criteria->query_name;
         $text = '<SELECT class="' . $this->criteria->lookup_query->getBootstrapStyle('design_dropdown') . 'reportico-drop-select-regular" name="' . $name . '">';
         return $text;
     }

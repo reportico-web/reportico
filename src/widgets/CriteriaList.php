@@ -23,6 +23,7 @@ class CriteriaList extends Widget
 {
     public $value = false;
     public $expanded = false;
+    public $check_text = "selected";
 
     public function __construct($engine, $criteria = false, $expanded = false)
     {
@@ -50,10 +51,11 @@ class CriteriaList extends Widget
             case "CHECKBOX": $class = "\Reportico\Widgets\CriteriaListCheckbox"; break;
             case "RADIO": $class = "\Reportico\Widgets\CriteriaListRadio"; break;
             case "DROPDOWN": $class = "\Reportico\Widgets\CriteriaListDropdown"; break;
-            default: $class = "\Reportico\Widgets\CriteriaListDropdown"; break;
+            default: $class = "\Reportico\Widgets\\$type"; break;
         }
 
-        return new $class($engine, $criteria, $expanded);
+        $criteria->widget = new $class($engine, $criteria, $expanded);
+        return $criteria->widget;
 
     }
 
@@ -84,9 +86,13 @@ class CriteriaList extends Widget
         $this->value = "";
         $name = "unknown";
 
-        $class = $this->criteria->parent_reportico->getBootstrapStyle('textfield');
+        $class = $this->engine->getBootstrapStyle('textfield');
 
         // START
+
+        $value_string = "";
+        $text = "";
+
         $sessionClass = \Reportico\Engine\ReporticoSession();
 
         $text = "";
@@ -98,151 +104,124 @@ class CriteriaList extends Widget
             $type = $this->criteria->criteria_display;
         }
 
+        $name = preg_replace("/ /", "_", $this->criteria->query_name);
+
         $value_string = "";
 
         $params = array();
         $manual_params = array();
         $hidden_params = array();
         $expanded_params = array();
-
+        $manual_override = false;
 
         if (!$this->criteria->list_values) {
-            trigger_error("'{$this->criteria->query_name}' is defined as a custom list criteria type without any list values defined", E_USER_ERROR);
+            trigger_error("'{$name}' is defined as a custom list criteria type without any list values defined", E_USER_ERROR);
         }
 
         if (array_key_exists("clearform", $_REQUEST)) {
-                // If clearform is set, then reset selections
-                $hidden_params = $this->criteria->defaults;
-                $manual_params = $this->criteria->defaults;
+            // If clearform is set, then reset selections
+            $hidden_params = $this->criteria->defaults;
+            $manual_params = $this->criteria->defaults;
+            $params = $this->criteria->defaults;
         } else {
-            if (!array_key_exists("EXPANDED_" . $this->criteria->query_name, $_REQUEST)) {
-                if (array_key_exists($this->criteria->query_name, $_REQUEST)) {
-                    $params = $_REQUEST[$this->criteria->query_name];
+            if (!array_key_exists("EXPANDED_" . $name, $_REQUEST)) {
+                if (array_key_exists($name, $_REQUEST)) {
+                    $params = $_REQUEST[$name];
                     if (!is_array($params)) {
-                        $params = explode(',', $_REQUEST[ $this->criteria->query_name]);
+                        $params = explode(',', $_REQUEST[ $name]);
                         $params = array($params);
                     }
+
                 }
             }
 
             $hidden_params = array();
-            if (!array_key_exists("EXPANDED_" . $this->criteria->query_name, $_REQUEST)) {
-                if (array_key_exists("HIDDEN_" . $this->criteria->query_name, $_REQUEST)) {
-                    $hidden_params = $_REQUEST["HIDDEN_" . $this->criteria->query_name];
+             if (!array_key_exists("EXPANDED_" . $name, $_REQUEST)
+                    || array_key_exists("EXPAND_". $name, $_REQUEST )
+                    || array_key_exists("EXPANDCLEAR_". $name, $_REQUEST )
+                    || array_key_exists("EXPANDSELECTALL_". $name, $_REQUEST )) {
+                if (array_key_exists("HIDDEN_" . $name, $_REQUEST)) {
+                    $hidden_params = $_REQUEST["HIDDEN_" . $name];
                     if (!is_array($hidden_params)) {
                         $hidden_params = array($hidden_params);
                     }
-
                 }
             }
 
             $manual_params = array();
-            if (!array_key_exists("EXPANDED_" . $this->criteria->query_name, $_REQUEST)) {
-                if (array_key_exists("MANUAL_" . $this->criteria->query_name, $_REQUEST)) {
-                    $manual_params = explode(',', $_REQUEST["MANUAL_" . $this->criteria->query_name]);
+            if (!array_key_exists("EXPANDED_" . $name, $_REQUEST)
+                || array_key_exists("EXPAND_". $name, $_REQUEST )
+                || array_key_exists("EXPANDCLEAR_". $name, $_REQUEST )
+                || array_key_exists("EXPANDSELECTALL_". $name, $_REQUEST )
+            )
+            {
+                if (array_key_exists("MANUAL_" . $name, $_REQUEST)) {
+                    if (is_array($_REQUEST["MANUAL_". $name]))
+                        $manual_params = $_REQUEST["MANUAL_" . $name];
+                    else
+                        $manual_params = explode(',', $_REQUEST["MANUAL_" . $name]);
                     if ($manual_params) {
                         $hidden_params = $manual_params;
+                        $manual_override = true;
+                        $params = $manual_params;
                     }
-
                 }
             }
 
             // If this is first time into screen and we have defaults then
             // use these instead
-            if (!$params && !$hidden_params && $sessionClass::getReporticoSessionParam("firstTimeIn")) {
+            if (!$hidden_params && $sessionClass::getReporticoSessionParam("firstTimeIn")) {
                 $hidden_params = $this->criteria->defaults;
                 $manual_params = $this->criteria->defaults;
+                $params = $manual_params;
             }
 
             $expanded_params = array();
-            if (array_key_exists("EXPANDED_" . $this->criteria->query_name, $_REQUEST)) {
-                $expanded_params = $_REQUEST["EXPANDED_" . $this->criteria->query_name];
+            if (array_key_exists("EXPANDED_" . $name, $_REQUEST)
+                    && !array_key_exists("EXPAND_" . $name, $_REQUEST)
+                    && !array_key_exists("EXPANDCLEAR_" . $name, $_REQUEST)
+            ) {
+                if ( $name == "List_Select2_Multiselect") {
+                    echo "there";
+                }
+                $expanded_params = $_REQUEST["EXPANDED_" . $name];
                 if (!is_array($expanded_params)) {
                     $expanded_params = array($expanded_params);
                 }
+                $params = $expanded_params;
 
             }
         }
 
-        switch ($type) {
-            case "NOINPUT":
-            case "ANYCHAR":
-            case "TEXTFIELD":
-                $text .= $this->renderWidgetStart();
-                //$text .= '<SELECT style="display:none" name="' . "HIDDEN_" . $this->criteria->query_name . '[]" size="1" multiple>';
-                //$text .= '<OPTION selected label="ALL" value="(ALL)">ALL</OPTION>';
-                break;
+        $text .= $this->renderWidgetStart();
 
-            case "MULTI":
-                $text .= $this->renderWidgetStart();
-                break;
-
-            case "SELECT2MULTIPLE":
-            case "SELECT2SINGLE":
-                $text .= $this->renderWidgetStart();
-                /*
-                $res = &$this->criteria->list_values;
-                $k = key($res);
-                $multisize = 4;
-                if ($res && count($res[$k]) > 4) {
-                    $multisize = count($res[$k]);
-                }
-
-                if (isset($res[$k])) {
-                    if (count($res[$k]) >= 10) {
-                        $multisize = 10;
-                    }
-                }
-
-                if ($type == "SELECT2MULTIPLE") {
-                    $text .= '<SELECT class="' . $this->criteria->lookup_query->getBootstrapStyle('design_dropdown') . 'reportico-prepare-drop-select2" name="' . $tag_pref . $this->criteria->query_name . '[]" size="' . $multisize . '" multiple>';
-                } else {
-                    $text .= '<SELECT class="' . $this->criteria->lookup_query->getBootstrapStyle('design_dropdown') . 'reportico-prepare-drop-select2" name="' . $tag_pref . $this->criteria->query_name . '[]" size="' . $multisize . '" >';
-                }
-
-                $text .= '<OPTION></OPTION>';
-                */
-                break;
-
-            case "CHECKBOX":
-            case "RADIO":
-                $text .= $this->renderWidgetStart();
-                break;
-
-            default:
-                //$text .= '<SELECT class="' . $this->criteria->lookup_query->getBootstrapStyle('design_dropdown') . 'reportico-drop-select-regular" name="' . $tag_pref . $this->criteria->query_name . '">';
-                $text .= $this->renderWidgetStart();
-                break;
-        }
-
-        $check_text = "";
-        switch ($type) {
-            case "MULTI":
-            case "DROPDOWN":
-            case "ANYCHAR":
-            case "TEXTFIELD":
-            case "NOINPUT":
-                $check_text = "selected";
-                break;
-
-            default:
-                $check_text = "checked";
-                break;
-        }
+        $check_text = $this->check_text;
 
         $clearall = false;
         $isselected = false;
+        $leavealone = false;
 
         // If clear has been pressed we dont want any list items selected
-        if ($this->criteria->submitted('EXPANDCLEAR_' . $this->criteria->query_name)) {
+
+        if ($this->expanded && $this->criteria->submitted('EXPANDCLEAR_' . $name)) {
             $isselected = false;
             $clearall = true;
             $check_text = "";
         }
 
+        if (!$this->expanded && $this->criteria->submitted('EXPANDCLEAR_' . $name)) {
+            $manual_override = false;
+            $clearall = true;
+        }
+
+        if (!$this->expanded && $this->criteria->submitted('EXPANDSELECTALL_' . $name)) {
+            $leavealone = true;
+        }
+
+
         // If select all has been pressed we want all highlighted
         $selectall = false;
-        if ($this->criteria->submitted('EXPANDSELECTALL_' . $this->criteria->query_name)) {
+        if ($this->expanded && $this->criteria->submitted('EXPANDSELECTALL_' . $name)) {
             $isselected = true;
             $selectall = true;
         }
@@ -255,12 +234,21 @@ class CriteriaList extends Widget
             reset($res);
             $k = key($res);
             for ($i = 0; $i < count($res); $i++) {
+
                 $line = &$res[$i];
                 $lab = $res[$i]["label"];
                 $ret = $res[$i]["value"];
+                //echo "Values $lab / $ret <BR>";
                 $checked = "";
+                $isselected = false;
 
                 if (!$clearall && in_array($ret, $params)) {
+                    $isselected = true;
+                    $checked = $check_text;
+                }
+
+                if (!$clearall && in_array($ret, $hidden_params) && !$manual_override) {
+                    //echo "added 2 $abb";
                     $isselected = true;
                     $checked = $check_text;
                 }
@@ -281,65 +269,19 @@ class CriteriaList extends Widget
                 }
 
                 if ($checked != "") {
-                    if (!$value_string) {
+                    if (!$value_string && $value_string != "0") {
                         $value_string = $lab;
                     } else {
                         $value_string .= "," . $lab;
                     }
                 }
 
-
-                switch ($type) {
-                    case "MULTI":
-                        $text .= $this->renderWidgetItem($lab, $ret, $isselected);
-                        break;
-
-                    case "SELECT2MULTIPLE":
-                    case "SELECT2SINGLE":
-                        $text .= $this->renderWidgetItem($lab, $ret, $isselected);
-                        //$text .= '<OPTION label="' . $lab . '" value="' . $ret . '" ' . $checked . '>' . $lab . '</OPTION>';
-                        break;
-
-                    case "RADIO":
-                        $text .= $this->renderWidgetItem($lab, $ret, $isselected);
-                        //$text .= '<INPUT type="radio" name="' . $tag_pref . $this->criteria->query_name . '" value="' . $ret . '" ' . $checked . '>' . ReporticoLang::translate($lab) . '<BR>';
-                        break;
-
-                    case "CHECKBOX":
-                        //$text .= '<INPUT type="checkbox" name="' . $tag_pref . $this->criteria->query_name . '[]" value="' . $ret . '" ' . $checked . '>' . ReporticoLang::translate($lab) . '<BR>';
-                        $text .= $this->renderWidgetItem($lab, $ret, $isselected);
-                        break;
-
-                    default:
-                        //$text .= '<OPTION label="' . $lab . '" value="' . $ret . '" ' . $checked . '>' . $lab . '</OPTION>';
-                        $text .= $this->renderWidgetItem($lab, $ret, $isselected);
-                        break;
-                }
+                $text .= $this->renderWidgetItem($lab, $ret, $checked);
 
             }
         }
 
-        switch ($type) {
-            case "SELECT2MULTIPLE":
-            case "SELECT2SINGLE":
-                //$text .= '</SELECT>';
-                $text .= $this->renderWidgetEnd();
-                break;
-
-            case "MULTI":
-                $text .= $this->renderWidgetEnd();
-                break;
-
-            case "CHECKBOX":
-            case "RADIO":
-                $text .= $this->renderWidgetEnd();
-                break;
-
-            default:
-                //$text .= '</SELECT>';
-                $text .= $this->renderWidgetEnd();
-                break;
-        }
+        $text .= $this->renderWidgetEnd();
 
         if (!$this->expanded) {
 

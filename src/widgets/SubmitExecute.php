@@ -325,7 +325,6 @@ reportico_jquery(document).on('click', '$triggerTag', function() {
 
 
 
-
         if ( $this->buttonTypes[$this->buttonType]["type"] == "icon-button" )
             $text = "<input type='submit' id='$id' class='$classes' style='$styles' title='$label' name='$name' value=''>";
         else

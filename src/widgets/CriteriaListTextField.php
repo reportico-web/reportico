@@ -39,6 +39,10 @@ class CriteriaListTextField extends CriteriaList
         return
             [
                 'name' => 'criteria-list-text-field',
+                'type' => 'criteria-selection',
+                'title' => 'Textfield List',
+                'renderType' => 'TEXTFIELD',
+                'sourceType' => 'LIST',
                 'order' => 200,
                 'files' => [
                     'css' => [],
@@ -61,7 +65,6 @@ class CriteriaListTextField extends CriteriaList
     public function renderWidgetItem($label, $value, $selected )
     {
         $selectedFlag = $selected ? "selected" : "";
-        $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : $this->criteria->query_name;
         return '<OPTION label="' . $label . '" value="' . $value . '" ' . $selectedFlag . '>' . $label . '</OPTION>';
     }
 

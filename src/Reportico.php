@@ -1675,6 +1675,9 @@ class Reportico extends ReporticoObject
 
             if ($this->target_format == "pdf") {
                 $this->pdf_engine_file = "Report" . strtoupper($this->pdf_engine) . ".php";
+                if ($this->pdf_engine == "chromium") {
+                    require_once "ReportChromium.php";
+                } else
                 if ($this->pdf_engine == "phantomjs") {
                     require_once "ReportPhantomJSPDF.php";
                 } else
@@ -1726,7 +1729,10 @@ class Reportico extends ReporticoObject
 
                 case "pdf":
                 case "PDF":
-                    if ($this->pdf_engine == "phantomjs") {
+                    echo $this->pdf_engine;
+                    if ($this->pdf_engine == "chromium") {
+                        $rep = new ReportChromium();
+                    } else if ($this->pdf_engine == "phantomjs") {
                         $rep = new ReportPhantomJSPDF();
                     } else if ($this->pdf_engine == "tcpdf") {
                         $rep = new ReportTCPDF();
@@ -5747,8 +5753,16 @@ class Reportico extends ReporticoObject
             $this->widgets["criteria-{$v->query_name}"]->prehandleUrlParameters();
             $this->widgets["criteria-{$v->query_name}"]->handleUrlParameters();
             $criteriaRenders[] = $this->widgets["criteria-{$v->query_name}"]->render();
+            if ( $this->widgets["criteria-{$v->query_name}"]->engineCriteria->widget == false ) {
+                echo $v->query_name;
+                continue;
+            }
+            $config = $this->widgets["criteria-{$v->query_name}"]->engineCriteria->widget->getRenderConfig();
+            if ( $config ) {
+                $this->assetManager->manager->appendToCollection($config);
+                $this->assetManager->manager->load($config["name"]);
+            }
         }
-
         foreach ( $criteriaRenders as $key => $render ) {
 
             if ( isset($render["lookup-selection"])) {
@@ -5759,6 +5773,7 @@ class Reportico extends ReporticoObject
                 $this->widgetRenders["lookup-ok"] = preg_replace("/{LOOKUPITEM}/", $render["lookup-criteria-name"], $this->widgetRenders["lookup-ok"]);
             }
         }
+
 
         $this->assetManager->reload($group);
 
