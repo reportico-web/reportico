@@ -51,6 +51,7 @@
 	</div>
 	{% endif %}
 
+	{% if not FLAGS["show-set-admin-password"] %}
 	<div class="container-fluid">
 
         {# Run Project Option #}
@@ -116,9 +117,12 @@
 		{% endif %} {# Admin options #}
 
     </div>
+	{% endif %}
 
 	{# Set Admin Password on first use #}
-	{{ WIDGETS["admin-page"]["admin-password-set"] }}
+	{% if FLAGS["show-set-admin-password"] %}
+	    {{ WIDGETS["admin-page"]["admin-password-set"] }}
+	{% endif %}
 
 	{# Admin menu items #}
 	{# WIDGETS["admin-page"]["admin-menu"]["complete"] #}
