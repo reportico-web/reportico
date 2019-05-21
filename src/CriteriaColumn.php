@@ -777,7 +777,7 @@ class CriteriaColumn extends QueryColumn
             return $cls;
         }
 
-        if (!$this->column_value) {
+        if (!$this->column_value && !$this->column_value_derived) {
             return ($cls);
         }
 

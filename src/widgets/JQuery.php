@@ -28,8 +28,14 @@ class Jquery extends Widget
 
     public function getConfig() {
 
-        if ( $this->engine->jquery_preloaded )
-            return [];
+        if ( $this->engine->jquery_preloaded ) {
+            return
+            [
+                'name' => 'jquery',
+                'order' => 10,
+                'files' => [ ],
+            ];
+        }
 
         return
             [

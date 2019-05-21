@@ -16,6 +16,7 @@ namespace Reportico\Widgets;
  * @version $Id: reportico.php,v 1.68 2014/05/17 15:12:31 peter Exp $
  */
 
+use \Reportico\Engine\ReporticoLocale;
 class Widget
 {
     // Define asset manager
@@ -35,10 +36,22 @@ class Widget
         if ( $engine ) {
             $this->manager = $engine->manager;
             $this->config = $this->getConfig();
+            if ( !$this->config || !isset($this->config["name"] )) {
             $this->name = $this->config["name"];
             if ( $load && $this->config ) {
                 $this->manager->manager->appendToCollection($this->config);
                 $this->added = true;
+            }
+
+            } else {
+                $this->name = $this->config["name"];
+                if ( $load && $this->config ) {
+                if ( $this->name == "core" ) {
+                    //var_dump($this->config);
+                }
+                    $this->manager->manager->appendToCollection($this->config);
+                    $this->added = true;
+                }
             }
         }
     }
@@ -133,6 +146,7 @@ class Widget
         $engine = $this->engine;
         $execute_mode = $this->engine->execute_mode;
         $identified_criteria = false;
+        $sessionClass =\Reportico\Engine\ReporticoSession();
 
         //echo "<PRE>";var_dump($_REQUEST); die;
         // Parameters for criteria with names containing space will come in with underscores
@@ -181,6 +195,56 @@ class Widget
                     $_REQUEST["MANUAL_" . $name] = $criteriaval;
                     if ($sessionClass::getReporticoSessionParam('latestRequest')) {
                         $sessionClass::setReporticoSessionParam("MANUAL_" . $name, $val1, $sessionClass::reporticoNamespace(), "latestRequest");
+                    }
+                }
+            }
+        }
+
+        {
+            // If this is first time into screen and we have defaults then
+            // use these instead
+            if ( $sessionClass::getReporticoSessionParam("firstTimeIn")) {
+                $col->column_value =
+                    $col->defaults;
+                if (is_array($col->column_value)) {
+                    $col->column_value =
+                        implode(",", $col->column_value);
+                }
+
+                // Daterange defaults needs to  eb converted to 2 values
+                if ($col->criteria_type == "DATERANGE" && !$col->defaults) {
+                    $col->defaults = array();
+                    $col->defaults[0] = "TODAY-TODAY";
+                    $col->defaults[1] = "TODAY";
+                    $col->column_value = "TODAY-TODAY";
+                }
+                if ($col->criteria_type == "DATE" && !$col->defaults) {
+                    $col->defaults = array();
+                    $col->defaults[0] = "TODAY";
+                    $col->defaults[1] = "TODAY";
+                    $col->column_value = "TODAY";
+                }
+                $this->defaults = $col->defaults;
+                if (isset($this->defaults)) {
+                    if ($col->criteria_type == "DATERANGE") {
+                        if (!ReporticoLocale::convertDateRangeDefaultsToDates("DATERANGE",
+                            $col->column_value,
+                            $col->column_value,
+                            $col->column_value2)) {
+                            trigger_error("Date default '" . $this->defaults[0] . "' is not a valid3 date range. Should be 2 values separated by '-'. Each one should be in date format (e.g. yyyy-mm-dd, dd/mm/yyyy) or a date type (TODAY, TOMMORROW etc", E_USER_ERROR);
+                        }
+                    }
+                    if ($col->criteria_type == "DATE") {
+                        $dummy = "";
+                        if (!ReporticoLocale::convertDateRangeDefaultsToDates("DATE", $this->defaults[0], $this->range_start, $dummy)) {
+                            if (!ReporticoLocale::convertDateRangeDefaultsToDates("DATE",
+                                $col->column_value,
+                                $col->column_value,
+                                $col->column_value2)) {
+                                trigger_error("Date default '" . $this->defaults[0] . "' is not a valid date. Should be in date format (e.g. yyyy-mm-dd, dd/mm/yyyy) or a date type (TODAY, TOMMORROW etc", E_USER_ERROR);
+                            }
+                        }
+
                     }
                 }
             }

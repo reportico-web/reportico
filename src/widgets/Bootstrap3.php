@@ -30,8 +30,27 @@ class Bootstrap3 extends Widget
 
         $this->engine->css_framework = "bootstrap3";
 
-        if ( $this->engine->bootstrap_preloaded )
-            return [];
+        if ( $this->engine->bootstrap_preloaded ) {
+            return
+            [
+                'name' => 'framework',
+                'autoload' => false,
+                'order' => 100,
+                'files' => [
+                    'events' => [
+                        'runtime' => [
+"
+reportico_css_framework = 'bootstrap3';
+reportico_bootstrap_styles = '3';
+"
+                        ]
+                    ]],
+                'require' => [
+                    'jquery',
+                    'bootstrap'
+                ]
+            ];
+        }
 
         return
             [

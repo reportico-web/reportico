@@ -229,9 +229,10 @@ reportico_jquery(document).on('click', '$triggerTag', function() {
 
             ];
 
+        $type = $this->buttonType ? $this->buttonType : "popup-edit-button";
         return
             [
-                'name' => $this->buttonType,
+                'name' => $type,
                 'order' => 200,
                 'files' => [
                     'css' => [ ],

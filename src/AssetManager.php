@@ -120,6 +120,9 @@ class AssetManager
 
         foreach ( $this->availableAssets as $k => $v ) {
             $v->config = $v->getConfig();
+            if ( !$v->config ) {
+                continue;
+            }
             if ( !$v->added ) {
                 $this->manager->appendToCollection($v->config);
             }

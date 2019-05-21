@@ -95,7 +95,6 @@ ajax_event_handler = '$ajaxHandler';
         }
 
 
-
         if ( $this->engine->reportico_ajax_preloaded )
             return
             [
@@ -115,7 +114,6 @@ ajax_event_handler = '$ajaxHandler';
                     'bootstrap3'
                 ]
             ];
-
 
         return
             [

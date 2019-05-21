@@ -1729,7 +1729,6 @@ class Reportico extends ReporticoObject
 
                 case "pdf":
                 case "PDF":
-                    echo $this->pdf_engine;
                     if ($this->pdf_engine == "chromium") {
                         $rep = new ReportChromium();
                     } else if ($this->pdf_engine == "phantomjs") {
@@ -3559,14 +3558,13 @@ class Reportico extends ReporticoObject
                 //echo "first time def2 = ".$sessionClass::getReporticoSessionParam("firstTimeIn");
                 break;
         }
-        if ( !$this->authenticator ) { echo "NOT AUTH<BR>"; }
 
         // If xml file is used to generate the reportico_query, either by the xmlin session variable
         // or the xmlin request variable then process this before executing
         if ($mode == "MAINTAIN") {
             $_REQUEST['execute_mode'] = "$mode";
-            $runfromcriteriascreen = ReporticoUtility::getRequestItem("user_criteria_entered", false);
-                if ($runfromcriteriascreen || !$sessionClass::issetReporticoSessionParam('latestRequest') || !ReporticoSession::getReporticoSessionParam('latestRequest')) {
+            $lastMode = $sessionClass::getReporticoSessionParam("lastMode");
+            if ($lastMode == "PREPARE" ) {
                     $sessionClass::setReporticoSessionParam('latestRequest', $_REQUEST);
                 }
         } else
@@ -3576,6 +3574,10 @@ class Reportico extends ReporticoObject
             // If executing report then stored the REQUEST parameters unless this
             // is a refresh of the report in which case we want to keep the ones already there
             $runfromcriteriascreen = ReporticoUtility::getRequestItem("user_criteria_entered", false);
+            $lastMode = $sessionClass::getReporticoSessionParam("lastMode");
+            if ($lastMode == "PREPARE" ) {
+                $sessionClass::setReporticoSessionParam('latestRequest', $_REQUEST);
+            }
             $refreshmode = ReporticoUtility::getRequestItem("refreshReport", false);
 
             // HTML2PDF format is called locally and must pick up criteria from prior request
@@ -4033,6 +4035,8 @@ class Reportico extends ReporticoObject
                 //$this->xmlout->generateWebService($this->xmloutfile);
                 break;
         }
+
+        $sessionClass::setReporticoSessionParam("lastMode", $mode);
 
         $this->handledInitialSettings();
 
