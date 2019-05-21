@@ -379,12 +379,16 @@ function splitPage() {
       var putbackheaders = false;
       var putbackfooters = false;
       var putbacktitle = false;
+      var bodyitems=0;
 
       while (long > 0 && children.length > 0) {
 
         var child = children.shift();
         var childheight = reportico_jquery(child).outerHeight();
         var childclass = reportico_jquery(child).prop("className");
+
+        if ( !reportico_jquery(child).hasClass("reportico-page-header-block") )
+                bodyitems++;
 
         // Clone page title
         if ( reportico_jquery(child).hasClass("reportico-title") ) {
@@ -418,6 +422,11 @@ function splitPage() {
             //if ( reportico_jquery(child).hasClass("reportico-page-header-block") ) {
                 //pageheaders = reportico_jquery(child).clone();
             //}
+            if ( !reportico_jquery(child).hasClass("reportico-page") && bodyitems < 2 ) {
+                removed.push(child); 
+                reportico_jquery(child).detach();  // JQuery Method detach() removes the "child" element from DOM for the current page
+            }
+
             if ( reportico_jquery(child).hasClass("reportico-page") ) {
 
                 var th = reportico_jquery(child).find("thead");
