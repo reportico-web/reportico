@@ -5778,7 +5778,6 @@ class Reportico extends ReporticoObject
         foreach ( $this->lookup_queries as $v ) {
             $criteriaRenders[] = $this->widgets["criteria-{$v->query_name}"]->render();
             if ( $this->widgets["criteria-{$v->query_name}"]->engineCriteria->widget == false ) {
-                echo $v->query_name;
                 continue;
             }
             $config = $this->widgets["criteria-{$v->query_name}"]->engineCriteria->widget->getRenderConfig();

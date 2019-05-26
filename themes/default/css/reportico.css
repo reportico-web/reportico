@@ -549,6 +549,7 @@ input.reportico-admin-button2
     /*min-width: 100vw;*/
 }
 
+#reportico-bootstrap-collapse-navmenu,
 #reportico-bootstrap-collapse {
     height: auto;
 }

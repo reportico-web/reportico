@@ -6,7 +6,7 @@
 
 
 
-<div class="nav-collapse collapse in" id="reportico-bootstrap-collapse">
+<div class="nav-collapse collapse in" id="reportico-bootstrap-collapse-show-hide">
    <ul class="nav navbar-nav pull-right navbar-right">
            <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">{{ T_SHOW }}<span class="caret"></span></a>
                <ul class="dropdown-menu reportico-dropdown" style="padding-top:0px; padding-bottom:0px">

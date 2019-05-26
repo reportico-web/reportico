@@ -303,7 +303,7 @@ class Template extends Widget
         $sections = [];
 
         $sections["save-template"] = "
-        <div style='max-width: auto; padding: 5px; float: right;vertical-align: bottom;text-align: right'>
+        <div style='padding: 5px; float: right;vertical-align: bottom;text-align: right'>
         <label style='min-width: auto;border: none;margin-bottom: 0px; margin-left: 10px; width:100px; float: left' class='form-control' aria-label='Text input with checkbox'>Templates:</label>
         <div class='input-group' style='margin-bottom: 0px; margin-left: 10px; width:150px; float: left'>
             <input type='button' class='form-control'  name='submitSaveTemplate' id='submitSaveTemplate' value='Save'>

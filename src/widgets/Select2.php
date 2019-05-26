@@ -54,12 +54,6 @@ class Select2 extends Widget
                 'name' => 'select2',
                 'order' => 200,
                 'files' => [
-                    //'css' => [
-                        //'node_modules/select2/dist/css/select2.min.css',
-                    //],
-                    //'js' => [
-                        //'node_modules/select2/dist/js/select2.min.js',
-                    //],
                     'events' => [
                         'init' => $init,
                         'runtime' => $runtime

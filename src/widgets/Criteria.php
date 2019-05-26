@@ -125,10 +125,6 @@ $criteria
                 }
 
                 if (array_key_exists("EXPANDSELECTALL_" . $name, $_REQUEST)) {
-                    //echo "<PRE>";
-                    //var_dump($_REQUEST);
-                    //echo "</PRE>";
-                    //$this->engine->expand_col = &$this->engine->lookup_queries[$col->query_name];
                     $sections["lookup-selection"] = $this->engineCriteria->renderSelection(true);
                     $sections["lookup-criteria-name"] = $this->engineCriteria->query_name;
                 }
@@ -154,6 +150,7 @@ $criteria
         $sections["tab"] = $tabgroup;
         $sections["id"] = preg_replace("/ /", "_", $tabgroup);
         $sections["tabclass"] = "";
+        $sections["tabhidden"] = true;
         //$sections["open"] = false;
         if ( $tabgroup ) {
             $sections["tabclass"] = "displayGroup{$sections["id"]}";
@@ -161,6 +158,7 @@ $criteria
             if ($openfilters) {
                 if (in_array(preg_replace("/ /", "_", $tabgroup), $openfilters)) {
                     $sections["hidden"] = false;
+                    $sections["tabhidden"] = false;
                 }
             }
         }
@@ -168,7 +166,7 @@ $criteria
         if ($this->engineCriteria->expand_display && $this->engineCriteria->expand_display != "NOINPUT") {
             $name = $this->engineCriteria->query_name;
             $label = ReporticoLang::templateXlate("EXPAND");
-            $sections["lookup"] = "<input class='reportico-prepare-crit-expand-button' id='reportico-lookup-button' type='button' name='EXPAND_$name' value='$label'>";
+            $sections["lookup"] = "<input class='reportico-prepare-crit-expand-button reportico-lookup-button' type='button' name='EXPAND_$name' value='$label'>";
         }
         return $sections;
     }

@@ -61,26 +61,77 @@
 
           <div class="col-lg-12 container">
 
+              {# Tab Menu Headers #}
+
               {# Display each criteria item #}
               {% set last_tab = "" %}
+              {% set tabs_exist = false %}
+              {% set firstCriteria = true %}
+              {% set tab_count = 0 %}
+
+{% for criterion in CRITERIA_BLOCK %}
+{% if criterion.tab and not last_tab and not tabs_exist  %}
+{% set tabs_exist = true %}
+                  <ul class="nav nav-tabs">
+{% endif %}
+{% if tabs_exist and criterion.tab and criterion.tab != last_tab  %}
+{% set tab_count = tab_count + 1 %}
+{% set tab_id = criterion.tab | replace({'\ ': '_'}) %}
+{% if not criterion.tabhidden %}
+                          <li class="active"><a class="reportico-criteria-tab" data-toggle="tab" href="#tab-content-{{ tab_id }}-{{ tab_count }}">{{ criterion.tab }}</a></li>
+{% else %}
+                          <li><a class="reportico-criteria-tab" data-toggle="tab" href="#tab-content-{{ tab_id }}-{{ tab_count }}">{{ criterion.tab }}</a></li>
+{% endif %}
+{% endif %}
+{% set last_tab = criterion.tab %}
+{% set firstCriteria = false %}
+{% endfor %}
+
+              {% if ( tabs_exist )  %}
+                </ul>
+              {% endif %}
+
+              {# Tab Menu Contents #}
+              {# Display each criteria item #}
+              {% set last_tab = "" %}
+              {% set tabs_exist = false %}
+              {% set tab_count = 1 %}
+
+              <div class="tab-content" style="padding-top: 10px">
+
               {% for criterion in CRITERIA_BLOCK %}
+
+              {% set tab_id = criterion.tab | replace({'\ ': '_'}) %}
+              {% if criterion.tab and ( not last_tab )  %}
+                  {% set tabs_exist = true %}
+                  <div id="tab-content-{{ tab_id }}-{{ tab_count }}" class="tab-pane fade in active">
+                      {% set tab_count = tab_count + 1 %}
+              {% else %}
+                  {% if ( last_tab != criterion.tab )  %}
+                  </div>
+                  {% endif %}
+                  {% if ( last_tab != criterion.tab ) and criterion.tab %}
+                  <div id="tab-content-{{ tab_id }}-{{ tab_count }}" class="tab-pane fade">
+                      {% set tab_count = tab_count + 1 %}
+                  {% endif %}
+              {% endif %}
 
               {# Criteria grouped into collapsible tabs #}
               {% if criterion.tab and ( criterion.tab != last_tab )  %}
-              <div class="row reportico-toggleCriteriaDiv" id="reportico-toggleCriteriaDiv{{ criterion.id }}">
+              <!--div class="row reportico-toggleCriteriaDiv" id="reportico-toggleCriteriaDiv{{ criterion.id }}">
                       {% if criterion.hidden  %}
                       <a class="reportico-toggleCriteria" id="reportico-toggleCriteria{{ criterion.id }}" href="javascript:toggleCriteria('{{ criterion.id }}')">+</a>
                       {% else %}
                       <a class="reportico-toggleCriteria" id="reportico-toggleCriteria{{ criterion.id }}" href="javascript:toggleCriteria('{{ criterion.id }}')">-</a>
                       {% endif %}
                       {{ criterion.tab }}
-              </div>
+              </div-->
               {% endif %}
               {% set last_tab = criterion.tab %}
 
               {# Criteria entry selection #}
               {% if criterion.hidden %}
-              <div class='row {{ criterion.tabclass }}' style="padding: 3px 0px; display: none">
+              <div class='row {{ criterion.tabclass }}' style="padding: 3px 0px; display: inline">
               {% else %}
               <div class='row {{ criterion.tabclass }}' style="padding: 3px 0px">
               {% endif %}
@@ -107,12 +158,19 @@
 
               </div>
 
+
+
               {% endfor %}
+{% if  ( last_tab )  %}
+              </div>
+{% endif %}
+
+            </div>
 
           </div>
 
           {% if not FLAGS["admin-report-selected"] and FLAGS["show_hide_prepare_reset_buttons"] %}
-          {{ WIDGETS["submit-reset"] }}
+              {{ WIDGETS["submit-reset"] }}
           {% endif %}
 
       </div>

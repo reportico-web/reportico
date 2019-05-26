@@ -78,6 +78,31 @@ function getFilterGroupState()
     var closedfilters = "";
     
     var arr = [];
+    reportico_jquery(".reportico-criteria-tab").each(function(){
+        filterid = reportico_jquery(this).prop("id");
+        filterid = filterid.replace("reportico-criteria-tab","");
+        filterno = filterid;
+        filterid = ".displayGroup" + filterid;
+
+
+        if ( reportico_jquery(this).parent().hasClass("active") )
+        {
+            if ( !openfilters )
+                openfilters = "&openfilters[]="+filterno;
+            else
+                openfilters += "&openfilters[]="+filterno;
+
+        }
+        else
+        {
+
+            if ( !closedfilters )
+                closedfilters = "&closedfilters[]="+filterno;
+            else
+                closedfilters += "&closedfilters[]="+filterno;
+
+        }
+    });
     reportico_jquery(".reportico-toggleCriteriaDiv").each(function(){
         filterid = reportico_jquery(this).prop("id");
         filterid = filterid.replace("reportico-toggleCriteriaDiv","");
@@ -658,7 +683,7 @@ reportico_jquery(document).on('click', '.reportico-paginate-button-link', functi
     return false;
 });
 
-reportico_jquery(document).on('click', '#reportico-lookup-button', function(event) {
+reportico_jquery(document).on('click', '.reportico-lookup-button', function(event) {
     executeExpand(this);
 })
 

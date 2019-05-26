@@ -100,7 +100,7 @@ $reportico->clear_reportico_session = true;
 // ONEREPORT - limits user to single report, crtieria entry and report execution ( requires initial project/report )
 // REPORTOUTPUT - executes a report and allows to "Return" button to crtieria entry ( requires initial project/report )
 //$reportico->access_mode = "<MODE>";
-$reportico->access_mode = "one-project";
+$reportico->access_mode = "FULL";
 
 //
 // Default initial execute mode to single report output if REPORTOUTPUT mode specified
@@ -263,6 +263,7 @@ $reportico->output_template_parameters["show_hide_prepare_go_buttons"] = "show";
 
 // Required PDF Engine set -- to phantomjs or tcpdf
 $reportico->pdf_engine = "phantomjs";
+$reportico->pdf_engine = "chromium";
 
 // Path to Phantom js executable relative to root
 $reportico->pdf_phantomjs_path = "bin/phantomjs";

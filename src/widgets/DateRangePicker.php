@@ -358,11 +358,11 @@ reportico_jquery(\'.reportico-daterange-field\').daterangepicker({
         $format = preg_replace("/M/i", "MM", $format);
         $format = preg_replace("/D/i", "DD", $format);
 
-        $text .= '<input  type="hidden" name="HIDDEN_' . $name . '_FROMDATE"';
-        $text .= '<input  type="hidden" name="HIDDEN_' . $name . '_TODATE"';
+        //$text .= '<input  type="hidden" name="HIDDEN_' . $name . '_FROMDATE"';
+        //$text .= '<input  type="hidden" name="HIDDEN_' . $name . '_TODATE"';
         //$text .= ' size="' . ($this->criteria->column_length) . '"';
         //$text .= ' maxlength="' . $this->criteria->column_length . '"';
-        $text .= ' value="' . $this->value . '">';
+        //$text .= ' value="' . $this->value . '">';
 
         $this->value = $this->range_start." - ".$this->range_end;
 

@@ -401,9 +401,9 @@ class ReporticoApp
                 "errsource" => self::get("code_source"),
                 "errct" => 1,
                 );
-        echo "<PRE>";
-        var_dump($errors);
-        echo "</PRE>";
+        //echo "<PRE>";
+        //var_dump($errors);
+        //echo "</PRE>";
 
         self::set("error_status", 1);
 

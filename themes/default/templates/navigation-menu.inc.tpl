@@ -3,7 +3,7 @@
 
 <div style='margin-bottom: 0px; navstyle' class='navbar navbar-default' role='navigation'>
 	<div class='container' style='width: 100%'>
-		<button type='button' class='navbar-toggle' data-toggle='collapse' data-target='#reportico-bootstrap-collapse'>
+		<button type='button' class='navbar-toggle' data-toggle='collapse' data-target='#reportico-bootstrap-collapse-navmenu'>
 			<span class='icon-bar'></span>
 			<span class='icon-bar'></span>
 			<span class='icon-bar'></span>
@@ -32,7 +32,7 @@
 		{% endif %}
 
 
-		<div class= 'nav-collapse collapse in' id='reportico-bootstrap-collapse'>
+		<div class= 'nav-collapse collapse in' id='reportico-bootstrap-collapse-navmenu'>
 			<ul style='navstyle' class= 'nav navbar-nav pull-right navbar-right'>
 
 				{# useraccesspanel #}
@@ -79,7 +79,7 @@
 
 				{# Logout button #}
 				{% if PERMISSIONS["admin"] or FLAGS["show-logout-button"] %}
-				{{ WIDGETS["navigation-menu"]["logout-button"] }}
+				<li> {{ WIDGETS["navigation-menu"]["logout-button"] }} </li>
 				{% endif %}
 			</ul>
 		</div>

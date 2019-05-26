@@ -8,7 +8,7 @@
 {% else %}
 <div class="navbar navbar-default" style="margin-bottom: 0px" role="navigation">
         <div class="container" style="width: 100%">
-            <div class="nav-collapse collapse in" id="reportico-bootstrap-collapse">
+            <div class="nav-collapse collapse in" id="reportico-bootstrap-collapse-design-options">
                 <ul class="nav navbar-nav pull-right navbar-right">
                     {% if PERMISSIONS["save"] %}
     				    <li style="margin-right: 40px">

@@ -220,7 +220,6 @@ class CriteriaColumn extends QueryColumn
         }
 
         $manual_params = array();
-        //echo $this->query_name;
         if (!array_key_exists("EXPANDED_" . $this->query_name, $_REQUEST)) {
             if (array_key_exists("MANUAL_" . $this->query_name, $_REQUEST)) {
                 if ( is_array( $_REQUEST["MANUAL_" . $this->query_name] ) ) {
@@ -549,7 +548,6 @@ class CriteriaColumn extends QueryColumn
     // -----------------------------------------------------------------------------
     public function setCriteriaType($criteria_type)
     {
-        echo "set to $criteria_type";
         $this->criteria_type = $criteria_type;
     }
 
@@ -1008,84 +1006,12 @@ class CriteriaColumn extends QueryColumn
                 break;
 
             default:
+                $cls = $this->widget->getCriteriaClause($lhs, $operand, $rhs, $rhs1, $rhs2, $add_del);
                 break;
         }
 
         return ($cls);
     }
-
-    public function &expand_template()
-    {
-        $text = "";
-
-        if ($this->submitted('EXPANDSEARCH_' . $this->query_name)) {
-            $dosearch = true;
-        }
-
-        // Only use then expand value if Search was press
-        $expval = "";
-        if ($this->submitted('EXPANDSEARCH_' . $this->query_name)) {
-            if (array_key_exists("expand_value", $_REQUEST)) {
-                $expval = $_REQUEST["expand_value"];
-            }
-        }
-
-        $type = $this->criteria_type;
-        if ($this->expand_display == "ANYCHAR") {
-            $type = $this->expand_display;
-        }
-
-        if ($this->expand_display == "TEXTFIELD") {
-            $type = $this->expand_display;
-        }
-
-        switch ($type) {
-            case "LIST":
-                $text .= (\Reportico\Widgets\CriteriaList::createCriteriaList($this->parent_reportico, $this, true ))->render();
-                break;
-
-            case "LOOKUP":
-                $this->executeCriteriaLookup(true);
-                $text .= (\Reportico\Widgets\CriteriaLookup::createCriteriaLookup($this->parent_reportico, $this, true ))->render();
-                break;
-
-            case "DATE":
-                //$text .= $this->date_display(true);
-                $this->widgetExpand = new \Reportico\Widgets\DatePicker(false);
-                $this->widgetExpand->criteria = $this;
-                $text .= $this->widgetExpand->render();
-                break;
-
-            case "DATERANGE":
-                //$text .= $this->daterange_display(true);
-                $this->widgetExpand = new \Reportico\Widgets\DateRangePicker(false);
-                $this->widgetExpand->criteria = $this;
-                $text .= $this->widgetExpand->render();
-                break;
-
-            case "ANYCHAR":
-            case "TEXTFIELD":
-                $this->widgetExpand = new \Reportico\Widgets\TextField($this->parent_reportico);
-                $this->widgetExpand->criteria = $this;
-                $this->widgetExpand->expanded = true;
-                $text = $this->widgetExpand->render();
-
-                //$tag = "";
-                //$tag .= '<input  type="text" name="EXPANDED_' . $this->query_name . '"';
-                //$tag .= ' size="' . ($this->column_length) . '"';
-                //$tag .= ' maxlength="' . $this->column_length . '"';
-                //$tag .= ' value="' . $this->column_value . '">';
-                //$text .= $tag;
-
-                break;
-
-            default:
-                break;
-        }
-
-        return $text;
-    }
-
 
     public function createWidget($expanding = false)
     {
@@ -1138,6 +1064,11 @@ class CriteriaColumn extends QueryColumn
                 break;
 
             default:
+                if ( $type ) {
+                    $class = "\\Reportico\\Widgets\\$type";
+                    $this->widget = new $class(false);
+                    $this->widget->criteria = $this;
+                }
                 break;
         }
 
@@ -1207,6 +1138,12 @@ class CriteriaColumn extends QueryColumn
                 break;
 
             default:
+                if ( $type ) {
+                    $class = "\\Reportico\\Widgets\\$type";
+                    $this->widget = new $class(false);
+                    $this->widget->criteria = $this;
+                    $text .= $this->widget->render();
+                }
                 break;
         }
 

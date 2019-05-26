@@ -154,10 +154,10 @@ reportico_jquery('#select2_dropdown_' + jtag + ',#select2_dropdown_expanded_' + 
                 'order' => 200,
                 'files' => [
                     'css' => [
-                        'node_modules/select2/dist/css/select2.min.css',
+                        "{$this->engine->url_path_to_assets}/node_modules/select2/css/select2.min.css",
                     ],
                     'js' => [
-                        'node_modules/select2/dist/js/select2.min.js',
+                        "{$this->engine->url_path_to_assets}/node_modules/select2/js/select2.min.js",
                     ],
                     'events' => [
                         'init' => $init,

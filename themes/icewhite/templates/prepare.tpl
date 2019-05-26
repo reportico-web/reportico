@@ -69,28 +69,23 @@
               {% set firstCriteria = true %}
               {% set tab_count = 0 %}
 
-              {% for criterion in CRITERIA_BLOCK %}
-
-
-                  {% if criterion.tab and ( not last_tab )  %}
-                  {% set tabs_exist = true %}
+{% for criterion in CRITERIA_BLOCK %}
+{% if criterion.tab and not last_tab and not tabs_exist  %}
+{% set tabs_exist = true %}
                   <ul class="nav nav-tabs">
-                  {% endif %}
-
-                  {% if criterion.tab and ( criterion.tab != last_tab )  %}
-                      {% set tab_count = tab_count + 1 %}
-                      {% set tab_id = criterion.tab | replace({'\ ': '_'}) %}
-                      {% if firstCriteria %}
-                          <li class="active"><a data-toggle="tab" href="#tab-content-{{ tab_id }}">{{ criterion.tab }}</a></li>
-                      {% else %}
-                          <li><a data-toggle="tab" href="#tab-content-{{ tab_id }}">{{ criterion.tab }}</a></li>
-                      {% endif %}
-                  {% endif %}
-
-                  {% set last_tab = criterion.tab %}
-                  {% set firstCriteria = false %}
-
-              {% endfor %}
+{% endif %}
+{% if tabs_exist and criterion.tab and criterion.tab != last_tab  %}
+{% set tab_count = tab_count + 1 %}
+{% set tab_id = criterion.tab | replace({'\ ': '_'}) %}
+{% if not criterion.tabhidden %}
+                          <li class="active"><a class="reportico-criteria-tab" data-toggle="tab" href="#tab-content-{{ tab_id }}-{{ tab_count }}">{{ criterion.tab }}</a></li>
+{% else %}
+                          <li><a class="reportico-criteria-tab" data-toggle="tab" href="#tab-content-{{ tab_id }}-{{ tab_count }}">{{ criterion.tab }}</a></li>
+{% endif %}
+{% endif %}
+{% set last_tab = criterion.tab %}
+{% set firstCriteria = false %}
+{% endfor %}
 
               {% if ( tabs_exist )  %}
                 </ul>
@@ -109,11 +104,15 @@
               {% set tab_id = criterion.tab | replace({'\ ': '_'}) %}
               {% if criterion.tab and ( not last_tab )  %}
                   {% set tabs_exist = true %}
-                  <div id="tab-content-{{ tab_id }}" class="tab-pane fade in active">
+                  <div id="tab-content-{{ tab_id }}-{{ tab_count }}" class="tab-pane fade in active">
+                      {% set tab_count = tab_count + 1 %}
               {% else %}
-                  {% if criterion.tab and ( last_tab != criterion.tab )  %}
+                  {% if ( last_tab != criterion.tab )  %}
                   </div>
-                  <div id="tab-content-{{ tab_id }}" class="tab-pane fade">
+                  {% endif %}
+                  {% if ( last_tab != criterion.tab ) and criterion.tab %}
+                  <div id="tab-content-{{ tab_id }}-{{ tab_count }}" class="tab-pane fade">
+                      {% set tab_count = tab_count + 1 %}
                   {% endif %}
               {% endif %}
 
@@ -162,11 +161,11 @@
 
 
               {% endfor %}
+{% if  ( last_tab )  %}
+              </div>
+{% endif %}
 
           </div>
-          {% if  ( last_tab )  %}
-          </div>
-          {% endif %}
 
           </div>
 

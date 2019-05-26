@@ -339,11 +339,11 @@ reportico_jquery(\'.reportico-date-field\').daterangepicker({
         $format = preg_replace("/M/i", "MM", $format);
         $format = preg_replace("/D/i", "DD", $format);
 
-        $text .= '<input  type="hidden" name="HIDDEN_' . $name . '_FROMDATE"';
-        $text .= '<input  type="hidden" name="HIDDEN_' . $name . '_TODATE"';
+        //$text .= '<input  type="hidden" name="HIDDEN_' . $name . '_FROMDATE"';
+        //$text .= '<input  type="hidden" name="HIDDEN_' . $name . '_TODATE"';
         //$text .= ' size="' . ($this->criteria->column_length) . '"';
         //$text .= ' maxlength="' . $this->criteria->column_length . '"';
-        $text .= ' value="' . $this->value . '">';
+        //$text .= ' value="' . $this->value . '">';
 
         $this->value = $this->range_start." - ".$this->range_end;
 
@@ -354,7 +354,7 @@ reportico_jquery(\'.reportico-date-field\').daterangepicker({
                 $presetStyle = "inline";
             else
                 $presetStyle = "none";
-            $text .= '<input  type="text" class="label label-primary" readonly="readonly" style="display: $presetStyle;border:none; position: absolute; right:4px; top:4px" id="reportico-date-label-'.$name.'" name="MANUAL_label_'.$name.'" value="' . $this->range_raw . '">';
+            $text .= '<input  type="text" class="label label-primary" readonly="readonly" style="display: '.$presetStyle.';border:none; position: absolute; right:4px; top:4px" id="reportico-date-label-'.$name.'" name="MANUAL_label_'.$name.'" value="' . $this->range_raw . '">';
             $text .= '</div>';
             $text .= '<input  type="text" readonly="readonly" style="display: none" id="reportico-date-preset-'.$name.'" name="MANUAL_'.$name.'" value="' . $this->range_raw . '">';
         }
