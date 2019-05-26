@@ -526,7 +526,7 @@ function splitPage() {
             }
 
             // Prepend the snipped page before the current but only if there are chidren that were snipped
-            // else weve snipped everything form the main page so delete current, this wil be then the
+            // else we have snipped everything from the main page so delete current, this wil be then the
             // last iteration through
             if ( children.length > 0 ) {
                 reportico_jquery(thispage).before(newpage);
@@ -1283,6 +1283,7 @@ function executeExpand(sourceWidget) {
     ajaxaction += getYiiAjaxURL();
     params +=  getCSRFURLParams();
     headers =  getCSRFHeaders();
+    params += "&reportico_ajax_called=1";
 
 
     reportico_jquery.ajax({

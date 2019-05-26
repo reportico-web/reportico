@@ -166,10 +166,11 @@ reportico_jquery('#select2_dropdown_' + jtag + ',#select2_dropdown_expanded_' + 
             }
         }
 
-        $criteriaName = preg_replace("/ /", " ", $this->criteria->query_name);
-        $tag = "select2_dropdown_static_" . $criteriaName;
+        $tag = "select2_dropdown_" . $this->criteria->query_name;
+        $name = $this->criteria->query_name;
         if ( $this->expanded) {
-            $tag .= "_expanded";
+            $tag = "select2_dropdown_expanded_" . $this->criteria->query_name;
+            $name = "EXPANDED_". $name;
         }
 
         $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : "MANUAL_". $this->criteria->query_name;
@@ -189,8 +190,9 @@ reportico_jquery('#select2_dropdown_' + jtag + ',#select2_dropdown_expanded_' + 
         $selectedFlag = $selected ? "selected" : "";
 
 
-        if ( $lab == "GROUP" )
-            $group = $ret;
+        $group = "";
+        if ( $label == "GROUP" )
+            $group = $value;
         if ( $group != $this->lastgroup )
         {
             if ( $this->lastgroup )
@@ -200,11 +202,11 @@ reportico_jquery('#select2_dropdown_' + jtag + ',#select2_dropdown_expanded_' + 
         }
         else
         {
-            $text .= '<OPTION label="'.$lab.'" value="'.$ret.'" '.$checked.'>'.$lab.'</OPTION>';
+            $text .= '<OPTION label="'.$text.'" value="'.$value.'" '.$selected.'>'.$label.'</OPTION>';
         }
 
 
-        return '<OPTION label="' . $label . '" value="' . $value . '" ' . $selected . '>' . $label . '</OPTION>';
+        return $text;
     }
 
 

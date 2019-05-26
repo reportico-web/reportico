@@ -3608,10 +3608,13 @@ class Reportico extends ReporticoObject
 
                     // If a new report is being run dont bother trying to restore previous
                     // run crtieria
+                    $lastMode = $sessionClass::getReporticoSessionParam("lastMode");
+
                     if (!ReporticoUtility::getRequestItem("xmlin") && !ReporticoUtility::getRequestItem("partialMaintain", false)) {
                         $_REQUEST = $sessionClass::getReporticoSessionParam('latestRequest');
                     }
 
+                    $_REQUEST['partial_template'] = "";
                     foreach ($OLD_REQUEST as $k => $v) {
                         if ($k == 'partial_template') {
                             $_REQUEST[$k] = $v;
@@ -3621,14 +3624,17 @@ class Reportico extends ReporticoObject
                             $_REQUEST[$k] = $v;
                         }
 
+                        if ($k == 'reportico_ajax_called') {
+                            echo "over";
+                            $_REQUEST[$k] = $v;
+                        }
                     }
                     $_REQUEST['execute_mode'] = "$mode";
-                    $_REQUEST['partial_template'] = "";
+                    //$_REQUEST['reportico_ajax_called'] = "";
                 }
             }
             $sessionClass::setReporticoSessionParam('latestRequest', "");
         }
-        if ( !$this->authenticator ) { echo "NOT AUTH<BR>"; }
 
         // Derive URL call of the calling script so it can be recalled in form actions when not running in AJAX mode
         if (!$this->url_path_to_calling_script) {

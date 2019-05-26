@@ -187,20 +187,20 @@ reportico_jquery('#select2_dropdown_' + jtag + ',#select2_dropdown_expanded_' + 
 
         $selectedFlag = $selected ? "selected" : "";
 
+        $group = "";
         if ( $label == "GROUP" )
-            $this->group = $value;
-        if ( $this->group != $this->lastgroup )
+            $group = $value;
+        if ( $group != $this->lastgroup )
         {
             if ( $this->lastgroup )
                 $text .= "</OPTGROUP>";
-            $text .= '<OPTGROUP LABEL="'.$value.'">';
-            $this->lastgroup = $this->group;
+            $text .= '<OPTGROUP LABEL="'.$ret.'">';
+            $this->lastgroup = $group;
         }
         else
         {
-            $text .= '<OPTION label="' . $label . '" value="' . $value . '" ' . $selected . '>' . $label . '</OPTION>';
+            $text .= '<OPTION label="'.$text.'" value="'.$value.'" '.$selected.'>'.$label.'</OPTION>';
         }
-
 
 
         return $text;
