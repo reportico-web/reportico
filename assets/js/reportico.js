@@ -324,6 +324,7 @@ function paginate() {
     page_count = 0;
 
     var paged = false;
+    count = reportico_jquery('.autopaginate.original-page').length;
     reportico_jquery('.autopaginate.original-page').each(function() {
         if ( !reportico_jquery(this).hasClass("already-paginated") )  {
             splitPage.call(this);
@@ -381,7 +382,8 @@ function splitPage() {
 
       var topMargin = reportico_jquery("#reportico-top-margin").outerHeight();
       var bottomMargin = reportico_jquery("#reportico-bottom-margin").outerHeight();
-
+      var leftMargin = parseInt(reportico_jquery(this).css("padding-left"));
+      var rightMargin = parseInt(reportico_jquery(this).css("padding-right"));
 
       var long = reportico_jquery(this)[0].scrollHeight - Math.ceil(reportico_jquery(this).innerHeight());
 
@@ -389,6 +391,7 @@ function splitPage() {
       long = topMargin + bottomMargin;
 
       var pageheight = Math.ceil(reportico_jquery(this).innerHeight());
+      var pagewidth = Math.ceil(reportico_jquery(this).innerWidth());
       var pageclasses = reportico_jquery(this).attr("class");
       var pagestyles = reportico_jquery(this).attr("style");
       var children = reportico_jquery(this).children().toArray(); // Save elements in this page to children[] array
@@ -405,6 +408,7 @@ function splitPage() {
       var putbackfooters = false;
       var putbacktitle = false;
       var bodyitems=0;
+      var maxrowwidth = 0;
 
       while (long > 0 && children.length > 0) {
 
@@ -453,6 +457,8 @@ function splitPage() {
             }
 
             if ( reportico_jquery(child).hasClass("reportico-page") ) {
+
+                maxrowwidth = reportico_jquery(child).width();
 
                 var th = reportico_jquery(child).find("thead");
                 var hf = reportico_jquery(child).find("thead").first();
@@ -509,6 +515,8 @@ function splitPage() {
             // Copy back in the current page headers moved to the new page
             if ( putbackheaders ) 
                 reportico_jquery(thispage).prepend(putbackheaders);
+            if ( putbackheaders )
+                reportico_jquery(thispage).prepend(putbackheaders);
 
             newpage.append(reportico_jquery(removed));
 
@@ -530,9 +538,67 @@ function splitPage() {
             // last iteration through
             if ( children.length > 0 ) {
                 reportico_jquery(thispage).before(newpage);
+                var datawidth = pagewidth - rightMargin - leftMargin;
+                var remaining = maxrowwidth - datawidth;
+                if ( remaining > 0 )
+                    horizontalPageSplit(newpage, thispage, datawidth)
+                /*
+                while ( remaining > 0 ) {
+                    contained = true;
+                    spreadpage = newpage.clone();
+
+                    newpage.find(".reportico-page:first").each(function(){
+                        cols = reportico_jquery(this).find("tbody tr:first td").length;
+                        var colptr = 0;
+                        var contained = 0;
+                        reportico_jquery(thispage).before(spreadpage);
+                        while ( colptr < cols ) {
+                            colwidth = reportico_jquery(this).find("tbody tr td:eq(" + colptr + ")").outerWidth();
+                            contained = spreadpage.find(".reportico-page:first").outerWidth();
+                            if (colptr == 0 || contained > datawidth) {
+                                //spreadpage.find("tr td.eq(" + colptr + "),tr th.eq(" + colptr + ")").remove();
+                                spreadpage.find("tr").find("td:eq(0),th:eq(0)").remove();
+                                //spreadpage.find("tbody tr td:eq(" + colptr + "),thead th:eq(" + colptr + ")").remove();
+                            }
+                            else
+                                break;
+                            colptr++;
+                            //contained += colwidth;
+                        }
+                        spreadcols = spreadpage.find("tbody tr td:first-child").length;
+                        console.log("Chopped " + spreadcols)
+                        remaining = remaining - contained;
+                        contained = 0;
+                        var colremoveptr = colptr;
+                        while ( colremoveptr < cols ) {
+                            colwidth = reportico_jquery(this).find("tbody tr td:eq(" + colptr + ")").outerWidth();
+                            //if ( contained + colwidth < datawidth) {
+                                //newpage.find("tbody tr td:eq(" + colptr + "),thead th:eq(" + colptr + ")").remove();
+                                newpage.find("tr").find("td:eq(" + colptr + "),th:eq(" + colptr + ")").remove();
+                            //}
+                            //else
+                                //break;
+                            colremoveptr++;
+                            //contained += colwidth;
+                        }
+                        spreadcols = spreadpage.find("tbody tr td:first-child").length;
+                        newcols = newpage.find("tbody tr td:first-child").length;
+                        console.log("Chopped and prefixed " + spreadcols + "/" + newcols)
+                        //contained += colwidth
+                        //if ( contained < datawidth ){
+                            //newpage.find("tbody tr:first td").outerWidth();
+                        //}
+                        reportico_jquery(thispage).before(spreadpage);
+                        //reportico_jquery(thispage).before(newpage);
+                    })
+                    contained = newpage.find(".reportico-page:first").outerWidth();
+                    remaining = contained - datawidth;
+                }
+                */
+
             }
             else {
-                if ( removed.length > 0 ) 
+                if ( removed.length > 0 )
                     reportico_jquery(thispage).before(newpage);
                 reportico_jquery(thispage).remove();
             }
@@ -565,12 +631,77 @@ function splitPage() {
         if ( removed.length > nonbody ) {
             // There are report body items
             reportico_jquery(thispage).append(removed);
+
+            //Split to fit horizontally the final block
+            var datawidth = pagewidth - rightMargin - leftMargin;
+            maxrowwidth = thispage.find(".reportico-page:first").width();
+            var remaining = maxrowwidth - datawidth;
+            if ( remaining > 0 )
+                horizontalPageSplit(thispage, thispage, datawidth)
         } else {
             // No report body items remove the last blank page
             reportico_jquery(thispage).remove();
         }
       }
     }
+
+function horizontalPageSplit(newpage, thispage, datawidth) {
+
+        remaining = 1
+        while ( remaining > 0 ) {
+            contained = true;
+            spreadpage = newpage.clone();
+
+            newpage.find(".reportico-page:first").each(function(){
+                cols = reportico_jquery(this).find("tbody tr:first td").length;
+                var colptr = 0;
+                var contained = 0;
+                reportico_jquery(newpage).after(spreadpage);
+                while ( colptr < cols ) {
+                    colwidth = reportico_jquery(this).find("tbody tr td:eq(" + colptr + ")").outerWidth();
+                    contained = spreadpage.find(".reportico-page:first").outerWidth();
+                    if (colptr == 0 || contained > datawidth) {
+                        //spreadpage.find("tr td.eq(" + colptr + "),tr th.eq(" + colptr + ")").remove();
+                        spreadpage.find("tr").find("td:eq(0),th:eq(0)").remove();
+                        //spreadpage.find("tbody tr td:eq(" + colptr + "),thead th:eq(" + colptr + ")").remove();
+                    }
+                    else
+                        break;
+                    colptr++;
+                    //contained += colwidth;
+                }
+                spreadcols = spreadpage.find("tbody tr td:first-child").length;
+                //console.log("Chopped " + spreadcols)
+                //remaining = remaining - contained;
+                contained = 0;
+                var colremoveptr = colptr;
+                while ( colremoveptr < cols ) {
+                    colwidth = reportico_jquery(this).find("tbody tr td:eq(" + colptr + ")").outerWidth();
+                    //if ( contained + colwidth < datawidth) {
+                    //newpage.find("tbody tr td:eq(" + colptr + "),thead th:eq(" + colptr + ")").remove();
+                    newpage.find("tr").find("td:eq(" + colptr + "),th:eq(" + colptr + ")").remove();
+                    //}
+                    //else
+                    //break;
+                    colremoveptr++;
+                    //contained += colwidth;
+                }
+                spreadcols = spreadpage.find("tbody tr td:first-child").length;
+                newcols = newpage.find("tbody tr td:first-child").length;
+                //console.log("Chopped and prefixed " + spreadcols + "/" + newcols)
+                //contained += colwidth
+                //if ( contained < datawidth ){
+                //newpage.find("tbody tr:first td").outerWidth();
+                //}
+                //reportico_jquery(thispage).before(spreadpage);
+                //reportico_jquery(thispage).before(newpage);
+            })
+            contained = newpage.find(".reportico-page:first").outerWidth();
+            remaining = contained - datawidth;
+        }
+
+}
+
 
 /*
 * Where multiple data tables exist due to graphs
