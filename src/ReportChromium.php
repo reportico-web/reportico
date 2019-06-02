@@ -16,7 +16,8 @@
  */
 namespace Reportico\Engine;
 
-use HeadlessChromium\BrowserFactory;
+use Spatie\Browsershot\Browsershot;
+
 
 
 
@@ -30,37 +31,48 @@ class ReportChromium extends Report
 
     public function start($engine = false)
     {
-	    echo "oo";
+        //node "C:\xampp72\htdocs\newarc\vendor\spatie\browsershot\src../bin/browser.js"
+
+
         $sessionClass = ReporticoSession();
-	    echo "oo";
-       $browserFactory = new BrowserFactory("/Program Files (x86)/Google/Chrome/Application/chrome.exe");
-	    echo "oo";
 
-       // starts headless chrome
-       $browser = $browserFactory->createBrowser();
-	    echo "oo";
-	    die;
+        echo "goo";
+        // creates a new page and navigate to an url
+        $chromePath = "/Program Files (x86)/Google/Chrome/Application/chrome.exe";
+        Browsershot::url('http://www.reportico.org')
+                //->setChromePath($chromePath)
+                ->save("peter6.pdf");
+        //sleep(5);
+        //die;
+        Browsershot::html('<h1>Hello world!!</h1>')
+            ->setChromePath($chromePath)
+            //->setNodeBinary('c:/Program\ Files/nodejs/node')
+            ->setNodeBinary('node')
+            //->setNpmBinary('/usr/local/bin/npm')
+            ->save('example.pdf');
+        die;
+        echo "goo";
 
-       // creates a new page and navigate to an url
-       $page = $browser->createPage();
-	    echo "oo";
-       $page->navigate('http://www.google.co.uk')->waitForNavigation();
-	    
-       // get page title
-       $pageTitle = $page->evaluate('document.title')->getReturnValue();
-	    
-       // screenshot - Say "Cheese"! 😄
-       $page->screenshot()->saveToFile('/foo/bar.png');
-	    
-       // pdf
-       $page->pdf(['printBackground'=>false])->saveToFile('/foo/bar.pdf');
-	    
-       // bye
-       $browser->close();
+        //Browsershot::url('http://www.google.co.uk')->setChromePath($chromePath)->save("x.pdf");
+        echo "poo";
 
-       echo "oo";
+        die;
 
-       return;
+        // get page title
+        $pageTitle = $page->evaluate('document.title')->getReturnValue();
+
+        // screenshot - Say "Cheese"! 😄
+        $page->screenshot()->saveToFile('/foo/bar.png');
+
+        // pdf
+        $page->pdf(['printBackground'=>false])->saveToFile('/foo/bar.pdf');
+
+        // bye
+        $browser->close();
+
+        echo "oo";
+
+        return;
 
 
         if ( !$engine->pdf_phantomjs_temp_path )
@@ -80,14 +92,14 @@ class ReportChromium extends Report
                 $path .= ".exe";
             $this->client->getEngine()->setPath("$path");
             if ( !file_exists($this->client->getEngine()->getPath() ) ) {
-                    http_response_code(500);
+                http_response_code(500);
                 header("HTTP/1.0 500 Not Found", true);
                 echo "Failed to produce PDF file error 500 Cannot find phantomjs - <BR>Content:<b><BR>{$response->getContent()}</b> - <BR>";
                 die;
             }
-        } else {        
-        if ( $engine->pdf_phantomjs_path )
-            $this->client->getEngine()->setPath($engine->pdf_phantomjs_path);
+        } else {
+            if ( $engine->pdf_phantomjs_path )
+                $this->client->getEngine()->setPath($engine->pdf_phantomjs_path);
         }
 
         // Build URL - dont include scheme and port if already provided
@@ -101,7 +113,7 @@ class ReportChromium extends Report
         }
 
         // Add in any extra forwarded URL parameters
-        if ($engine->forward_url_get_parameters) 
+        if ($engine->forward_url_get_parameters)
             $url .= "&".$engine->forward_url_get_parameters;
 
         // Generate Request Call
@@ -128,7 +140,7 @@ class ReportChromium extends Report
         // Generate temporary name for pdf file to generate on disk. Since phantomjs must write to a file with pdf extension use tempnam, to create a file
         // without PDF extensiona and then delete this and use the name with etension for phantom generation
         $outputfile = tempnam($engine->pdf_phantomjs_temp_path, "pdf");
-        
+
         unlink($outputfile);
         $outputfile .= ".pdf";
         $outputfile = preg_replace("/\\\/", "/", $outputfile);
@@ -144,7 +156,7 @@ class ReportChromium extends Report
         // Get Response
         $response = $this->client->getMessageFactory()->createResponse();
 
-        // Since we are going to spawn web call to fetch HTML version of report for conversion to PDF, 
+        // Since we are going to spawn web call to fetch HTML version of report for conversion to PDF,
         // we must close current sessions so they can be subsequently opened within the web call
         $sessionClass::closeReporticoSession();
 
