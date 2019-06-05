@@ -2794,6 +2794,13 @@ class Reportico extends ReporticoObject
             $template->assign('PRINTABLE_HTML', true);
         }
 
+        $this->url_path_to_assets = $sessionClass::registerSessionParam("url_path_to_assets", $this->url_path_to_assets);
+        $this->url_path_to_templates = $sessionClass::registerSessionParam("url_path_to_templates", $this->url_path_to_templates);
+        $this->jquery_preloaded = $sessionClass::registerSessionParam("jquery_preloaded", $this->jquery_preloaded);
+        $this->bootstrap_preloaded = $sessionClass::registerSessionParam("bootstrap_preloaded", $this->bootstrap_preloaded);
+        $this->report_from_builder = $sessionClass::registerSessionParam("report_from_builder", $this->report_from_builder);
+
+
         // In frameworks we dont want to load jquery when its intalled once when the module load
         // so flag this unless specified in new_reportico_window
         $template->assign('REPORTICO_STANDALONE_WINDOW', false);
@@ -2802,6 +2809,8 @@ class Reportico extends ReporticoObject
             $this->reportico_ajax_preloaded = false;
             $template->assign('REPORTICO_AJAX_PRELOADED', false);
             $template->assign('REPORTICO_STANDALONE_WINDOW', true);
+            $this->jquery_preloaded = false;
+            $this->bootstrap_preloaded = false;
         }
 
         $template->assign('STATUSMSG', '');
@@ -2819,12 +2828,6 @@ class Reportico extends ReporticoObject
 
         // Force reportico modals or decide based on style?
         $this->force_reportico_mini_maintains = $sessionClass::registerSessionParam("force_reportico_mini_maintains", $this->force_reportico_mini_maintains);
-
-        $this->url_path_to_assets = $sessionClass::registerSessionParam("url_path_to_assets", $this->url_path_to_assets);
-        $this->url_path_to_templates = $sessionClass::registerSessionParam("url_path_to_templates", $this->url_path_to_templates);
-        $this->jquery_preloaded = $sessionClass::registerSessionParam("jquery_preloaded", $this->jquery_preloaded);
-        $this->bootstrap_preloaded = $sessionClass::registerSessionParam("bootstrap_preloaded", $this->bootstrap_preloaded);
-        $this->report_from_builder = $sessionClass::registerSessionParam("report_from_builder", $this->report_from_builder);
 
         //Define the asset dir path
         if ($this->url_path_to_assets) {
@@ -2863,26 +2866,6 @@ class Reportico extends ReporticoObject
 
         }
 
-
-        /*
-        $template->assign('STYLESHEET', $csspath);
-        $template->assign('STYLESHEETDIR', dirname($csspath));
-
-        $template->assign('REPORTICO_JQUERY_PRELOADED', $this->jquery_preloaded);
-        $template->assign('BOOTSTRAP_STYLES', $this->bootstrap_styles);
-        $template->assign('REPORTICO_BOOTSTRAP_PRELOADED', $this->bootstrap_preloaded);
-        $template->assign('BOOTSTRAP_STYLE_GO_BUTTON', $this->getBootstrapStyle('button_go'));
-        $template->assign('BOOTSTRAP_STYLE_PRIMARY_BUTTON', $this->getBootstrapStyle('button_primary'));
-        $template->assign('BOOTSTRAP_STYLE_RESET_BUTTON', $this->getBootstrapStyle('button_reset'));
-        $template->assign('BOOTSTRAP_STYLE_ADMIN_BUTTON', $this->getBootstrapStyle('button_admin'));
-        $template->assign('BOOTSTRAP_STYLE_DROPDOWN', $this->getBootstrapStyle('dropdown'));
-        $template->assign('BOOTSTRAP_STYLE_CHECKBOX_BUTTON', $this->getBootstrapStyle('checkbox_button'));
-        $template->assign('BOOTSTRAP_STYLE_CHECKBOX', $this->getBootstrapStyle('checkbox'));
-        $template->assign('BOOTSTRAP_STYLE_TOOLBAR_BUTTON', $this->getBootstrapStyle('toolbar_button'));
-        $template->assign('BOOTSTRAP_STYLE_MENU_TABLE', $this->getBootstrapStyle('menu_table'));
-        $template->assign('BOOTSTRAP_STYLE_TEXTFIELD', $this->getBootstrapStyle('textfield'));
-        $template->assign('BOOTSTRAP_STYLE_SMALL_BUTTON', $this->getBootstrapStyle('small_button'));
-        */
 
         // Set charting engine
         $template->assign('REPORTICO_CHARTING_ENGINE', $this->charting_engine_html);
@@ -3625,7 +3608,6 @@ class Reportico extends ReporticoObject
                         }
 
                         if ($k == 'reportico_ajax_called') {
-                            echo "over";
                             $_REQUEST[$k] = $v;
                         }
                     }
@@ -3823,7 +3805,7 @@ class Reportico extends ReporticoObject
                 }
 
                 // For PDF output via phantom report will have already been executed so dont rerun it here
-                if ($_REQUEST["target_format"] == "PDF" && $this->pdf_engine == "phantomjs") {
+                if ($_REQUEST["target_format"] == "PDF" && ( $this->pdf_engine == "phantomjs" || $this->pdf_engine == "chromium")) {
                     $target = &$this->targets[0];
                     $target->start($this);
                 } else {
