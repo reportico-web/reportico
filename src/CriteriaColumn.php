@@ -487,6 +487,8 @@ class CriteriaColumn extends QueryColumn
                 }
 
             }
+            $this->criteria_list = $in_list;
+
 
             $this->list_values = [];
             foreach ($choices as $items) {

@@ -25,8 +25,34 @@ class ReportChromium extends Report
 {
     private $client = false;
 
+
+    private $pageSizes = [ 
+        "B5" => array("height" => 709, "width" => 501),
+        "A6" => array("height" => 421, "width" => 297),
+        "A5" => array("height" => 595, "width" => 421),
+        //"A4" => array("height" => 75, "width" => 55),
+        "A4" => array("height" => 29.7, "width" => 21),
+        "A3" => array("height" => 1190, "width" => 842),
+        "A2" => array("height" => 1684, "width" => 1190),
+        "A1" => array("height" => 2380, "width" => 1684),
+        "A0" => array("height" => 3368, "width" => 2380),
+        "US-Letter" => array("height" => 792, "width" => 612),
+        "US-Legal" => array("height" => 1008, "width" => 612),
+        "US-Ledger" => array("height" => 792, "width" => 1224)
+        ];
+
     public function __construct() {
         $this->column_spacing = 0;
+    }
+
+    public function pageWidth($pageSize)
+    {
+        return isset($this->pageSizes[$pageSize]["width"]) ? $this->pageSizes[$pageSize]["width"] : 0; 
+    }
+
+    public function pageHeight($pageSize)
+    {
+        return isset($this->pageSizes[$pageSize]["height"]) ? $this->pageSizes[$pageSize]["height"] : 0; 
     }
 
     public function start($engine = false)
@@ -36,6 +62,7 @@ class ReportChromium extends Report
 
         $sessionClass = ReporticoSession();
 
+/*
         echo "goo";
         Browsershot::url('http://127.0.0.1:8072/newarc/run.php')
             ->save("x.jpg");
@@ -104,6 +131,7 @@ class ReportChromium extends Report
             if ( $engine->pdf_phantomjs_path )
                 $this->client->getEngine()->setPath($engine->pdf_phantomjs_path);
         }
+ */
 
         // Build URL - dont include scheme and port if already provided
         $url = "{$engine->reportico_ajax_script_url}?execute_mode=EXECUTE&target_format=HTML2PDF&reportico_session_name=" . $sessionClass::reporticoSessionName();
@@ -120,10 +148,12 @@ class ReportChromium extends Report
             $url .= "&".$engine->forward_url_get_parameters;
 
         // Generate Request Call
-        $request = $this->client->getMessageFactory()->createPdfRequest($url, 'GET', 4000);
+        //$request = $this->client->getMessageFactory()->createPdfRequest($url, 'GET', 4000);
 
         // Add any CSRF tokens for when Reportico is called inside a framework
         // And retain any cookies too
+        $newHeaders = [];
+
         if ( $engine->csrfToken ) {
 
             // Its Laravel or October
@@ -137,7 +167,7 @@ class ReportChromium extends Report
                 $newHeaders["OCTOBER-REQUEST-PARTIALS"]= $oldHeaders["OCTOBER-REQUEST-PARTIALS"];
             if ( isset($oldHeaders["X-OCTOBER-REQUEST-HANDLER"]) )
                 $newHeaders["OCTOBER-REQUEST-HANDLER"]= $oldHeaders["X-OCTOBER-REQUEST-HANDLER"];
-            $request->setHeaders($newHeaders);
+            //$request->setHeaders($newHeaders);
         }
 
         // Generate temporary name for pdf file to generate on disk. Since phantomjs must write to a file with pdf extension use tempnam, to create a file
@@ -147,32 +177,54 @@ class ReportChromium extends Report
         unlink($outputfile);
         $outputfile .= ".pdf";
         $outputfile = preg_replace("/\\\/", "/", $outputfile);
-        $request->setOutputFile($outputfile);
+        //$request->setOutputFile($outputfile);
+        $outputfile = "test.pdf";
 
-        // Set other PhantomJS parameters
-        $request->setFormat(strtoupper($engine->getAttribute("PageSize")));
-        $request->setOrientation(strtolower($engine->getAttribute("PageOrientation")));
-        $request->setMargin(0);
-        $request->setDelay(2);
+        //Browsershot::html('<h1>Hello world!!</h1>')
+        $x = Browsershot::url($url)
+            //->save($outputfile);
+            ->setExtraHttpHeaders($newHeaders)
+            ->paperSize($this->pageWidth($engine->getAttribute("PageSize")), $this->pageHeight($engine->getAttribute("PageSize")), "cm")
+            //->paperSize($this->pageWidth($engine->getAttribute("PageSize")), $this->pageHeight($engine->getAttribute("PageSize")))
+            //->paperSize("A4")
+            //->setOption('landscape', strtoupper($engine->getAttribute("PageOrientation")) == "LANDSCAPE")
+            ->setOption('args', ['--disable-web-security'])
+            ->emulateMedia('print')
+            //->margins(0,0,0,0)
+            //->showBackground()
+            //->save("peter7.pdf")
+            ->save("$outputfile")
+            ;
+
+            //echo $x;
+//echo $url; die;
+
+
+        // Set otheHttpHeadersr PhantomJS parameters
+        //$request->setFormat(strtoupper($engine->getAttribute("PageSize")));
+        //$request->setOrientation(strtolower($engine->getAttribute("PageOrientation")));
+        //$request->setMargin(0);
+        //$request->setDelay(2);
 
 
         // Get Response
-        $response = $this->client->getMessageFactory()->createResponse();
+        //$response = $this->client->getMessageFactory()->createResponse();
 
         // Since we are going to spawn web call to fetch HTML version of report for conversion to PDF,
         // we must close current sessions so they can be subsequently opened within the web call
         $sessionClass::closeReporticoSession();
 
         // Send the request
-        $this->client->send($request, $response);
-        if( $response->getStatus() !== 200) {
-            header("HTTP/1.0 {$response->getStatus()}", true);
-            echo "Failed to produce PDF file error {$response->getStatus()} - <BR>Content:<b><BR>{$response->getContent()}</b> - <BR>";
-            die;
-        }
+        //$this->client->send($request, $response);
+        //if( $response->getStatus() !== 200) {
+            //header("HTTP/1.0 {$response->getStatus()}", true);
+            //echo "Failed to produce PDF file error {$response->getStatus()} - <BR>Content:<b><BR>{$response->getContent()}</b> - <BR>";
+            //die;
+        //}
 
         //header('content-type: application/pdf');
         //echo file_get_contents('/tmp/document.pdf');
+        //die;
         //die;
 
         $this->reporttitle = $engine->deriveAttribute("ReportTitle", "Set Report Title");

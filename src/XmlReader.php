@@ -4067,6 +4067,9 @@ class XmlReader
                 } else if ($this->query->pdf_engine == "phantomjs"){
                     //$fontdir = "src/tcpdf/fonts";
                     $fontdir = false;
+                } else if ($this->query->pdf_engine == "chromium"){
+                    //$fontdir = "src/tcpdf/fonts";
+                    $fontdir = false;
                 } else {
                     $fontdir = "src/tcpdf/fonts";
                     $fontdir = __DIR__."/../vendor/tecnickcom/tcpdf/fonts";
