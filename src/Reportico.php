@@ -3625,7 +3625,6 @@ class Reportico extends ReporticoObject
                         }
 
                         if ($k == 'reportico_ajax_called') {
-                            echo "over";
                             $_REQUEST[$k] = $v;
                         }
                     }
@@ -5663,7 +5662,14 @@ class Reportico extends ReporticoObject
      */
     function renderWidget($name, $class){
 
-        $class = "\Reportico\Widgets\\$class";
+        $themeclass = "\\Reportico\\Themes\\Widgets\\$class";
+        //echo " ".$themeclass;
+        if ( class_exists($themeclass)) {
+            //echo "exists<BR>";
+            $class = $themeclass;
+        }
+        else
+            $class = "\Reportico\Widgets\\$class";
         if (isset($this->widgets[$name]))
             $widget = $this->widgets["$name"];
         else {
@@ -5767,6 +5773,7 @@ class Reportico extends ReporticoObject
         foreach ( $this->widgets as $k => $v ) {
             $this->widgetRenders[$k] = $v->render();
         }
+
 
         // Set up a widget for each criteria
         $criteriaRenders = [];

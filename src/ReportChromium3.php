@@ -44,7 +44,7 @@ class ReportChromium extends Report
        // creates a new page and navigate to an url
        $page = $browser->createPage();
 	    echo "oo";
-       $page->navigate('http://www.google.co.uk')->waitForNavigation();
+       $page->navigate('http://127.0.0.1:8072/run.php')->waitForNavigation();
 	    
        // get page title
        $pageTitle = $page->evaluate('document.title')->getReturnValue();

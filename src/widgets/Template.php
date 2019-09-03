@@ -302,33 +302,37 @@ class Template extends Widget
 
         $sections = [];
 
+        $sections["label"] = "Templates";
+        $sections["file"] = $templateFile;
         $sections["save-template"] = "
-        <div style='padding: 5px; float: right;vertical-align: bottom;text-align: right'>
-        <label style='min-width: auto;border: none;margin-bottom: 0px; margin-left: 10px; width:100px; float: left' class='form-control' aria-label='Text input with checkbox'>Templates:</label>
-        <div class='input-group' style='margin-bottom: 0px; margin-left: 10px; width:150px; float: left'>
-            <input type='button' class='form-control'  name='submitSaveTemplate' id='submitSaveTemplate' value='Save'>
-            <span class='input-group-addon' style='padding: 0px 5px;'>
-                <input type='text' id='saveTemplate' value='$templateFile' >
-            </span>
-        </div><!-- /input-group -->";
+        <div class='input-group' >
+            <label class='form-control' aria-label='Text input with checkbox'>Templates:</label>
+          <div class='input-group-prepend'>
+                <input type='submit' class='btn btn-outline-secondary'  name='submitSaveTemplate' id='submitSaveTemplate' value='Save'>
+            </div>
+            <input type='text' id='saveTemplate' value='$templateFile' >
+        </div> ";
 
         $sections["load-template"] = "
-        <div class='input-group' style='margin-bottom: 0px; margin-left: 10px; width:150px; float: left'>
-            <input type='submit' class='form-control'  name='submitLoadTemplate' id='submitLoadTemplate' value='Load'>
+        <div class='input-group' >
+          <div class='input-group-prepend'>
+            <input type='submit' class='btn btn-outline-secondary'  name='submitLoadTemplate' id='submitLoadTemplate' value='Load'>
+            </div>
             <span class='input-group-addon' style='padding: 0px 5px;'>
                 <SELECT id='loadTemplate' class='form-control' style='padding: 0px; height: auto;width: auto; height: inherit' name='template_selection'>";
 
 
+        $sections["load-options"] = "";
         foreach ( $this->identifyTemplates() as $template ) {
             $sections["load-template"] .= "<OPTION label='$template' value='$template'>$template</OPTION>";
-            
+            $sections["load-options"] .= "<OPTION label='$template' value='$template'>$template</OPTION>";
         }
 
         $sections["load-template"] .= "
                 </SELECT>
             </span>
             <input type='submit' class='form-control btn btn-danger'  name='submitDeleteTemplate' id='submitDeleteTemplate' value='X'>
-        </div><!-- /input-group -->
+        <!--/div--><!-- /input-group -->
     </div>";
 
         return $sections;

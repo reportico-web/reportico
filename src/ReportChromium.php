@@ -37,17 +37,20 @@ class ReportChromium extends Report
         $sessionClass = ReporticoSession();
 
         echo "goo";
+        Browsershot::url('http://127.0.0.1:8072/newarc/run.php')
+            ->save("x.jpg");
+        die;
         // creates a new page and navigate to an url
-        $chromePath = "/Program Files (x86)/Google/Chrome/Application/chrome.exe";
-        Browsershot::url('http://www.reportico.org')
-                //->setChromePath($chromePath)
+        //$chromePath = "/Program Files (x86)/Google/Chrome/Application/1chrome.exe";
+        Browsershot::url('http://127.0.0.1:8072/newarc/run.php')
                 ->save("peter6.pdf");
         //sleep(5);
-        //die;
+        die;
         Browsershot::html('<h1>Hello world!!</h1>')
-            ->setChromePath($chromePath)
+            //->setChromePath($chromePath)
             //->setNodeBinary('c:/Program\ Files/nodejs/node')
             ->setNodeBinary('node')
+            //->setTimeout(5)
             //->setNpmBinary('/usr/local/bin/npm')
             ->save('example.pdf');
         die;

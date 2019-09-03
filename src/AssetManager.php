@@ -74,10 +74,10 @@ class AssetManager
 
         foreach ( $files as $file) {
 
+            //echo "Load $file<BR>";
             $base = substr(basename($file), 0, -4);
             $load = true;
             if ( $base == "DynamicGrid" ) $load = false;
-            if ( $base == "SubmitExecute" ) continue;
             if ( $base == "Widget" ) {
                 continue;
             }
@@ -85,6 +85,7 @@ class AssetManager
             $class = "\\Reportico\\Themes\\Widgets\\".substr(basename($file), 0, -4);
             include($file);
 
+            if ( $base == "SubmitExecute" ) continue;
             $widget = new $class($this->engine, $load);
             $load = false;
 

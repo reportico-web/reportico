@@ -73,8 +73,9 @@ class DebugLevel extends Widget
                 $selected3 = $debugMode == "3" ? "selected" : "";
 
                 $dropdownstyle = $this->engine->getBootstrapStyle('dropdown');
-                $text = "<li>
-                <div style='margin: 6px 8px 0px 8px'>
+                $text = "
+                <!--div style='margin: 6px 8px 0px 8px'-->
+                <div>
                 ".ReporticoLang::templateXlate("DEBUG_LEVEL")."
                 <SELECT class='span2 $dropdownstyle' style='margin-bottom: 1px; display:inline; width: auto' name='debug_mode'>
                     <OPTION $selected0 label='None' value='0'>".ReporticoLang::templateXlate("DEBUG_NONE" )."</OPTION>
@@ -83,7 +84,7 @@ class DebugLevel extends Widget
                     <OPTION $selected3 label='High' value='3'>".ReporticoLang::templateXlate("DEBUG_HIGH" )."</OPTION>
                 </SELECT>
                 </div>
-                </li>";
+                ";
             }
 
         return $text;

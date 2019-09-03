@@ -121,10 +121,12 @@ ajax_event_handler = '$ajaxHandler';
                 'order' => 1000,
                 'files' => [
                     'css' => [
+                        //"{$this->engine->url_path_to_assets}/css/reportico-bundle.css",
                         "{$this->engine->theme_dir}/{$this->engine->theme}/css/reportico.css"
                     ],
                     'js' => [
                         "{$this->engine->url_path_to_assets}/js/download.js",
+                        "{$this->engine->url_path_to_assets}/js/reportico-bundle.js",
                         "{$this->engine->url_path_to_assets}/js/reportico.js"
                     ],
                     'events' => [

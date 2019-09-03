@@ -3,7 +3,6 @@
 namespace Reportico\Widgets;
 
 /*
-
  * Core
  *
  * Widget representing the Reportico instance
@@ -51,6 +50,8 @@ class DynamicGrid extends Widget
 
         $css = [ "{$this->engine->url_path_to_assets}/node_modules/datatables/css/jquery.dataTables.min.css", ];
         $js = [ "{$this->engine->url_path_to_assets}/node_modules/datatables/js/jquery.dataTables.min.js" ];
+        $css = [ ];
+        $js = [ ];
         if ( $this->engine->reportico_ajax_preloaded ) {
             $css = [];
             $js = [];

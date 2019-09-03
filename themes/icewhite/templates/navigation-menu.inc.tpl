@@ -48,7 +48,7 @@
 
 				    {# debuglevel  select box in admin mode #}
 				    {% if PERMISSIONS["admin"] %}
-                    {{ WIDGETS["navigation-menu"]["debug-level"] }}
+					<li>{{ WIDGETS["navigation-menu"]["debug-level"] }}</li>
 				    {% endif %}
 				    {% endif %}
 

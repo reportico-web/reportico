@@ -247,6 +247,8 @@ reportico_jquery(document).on('click', '$triggerTag', function() {
 
     public function render()
     {
+        $sections = [];
+
         $classes = $this->buttonTypes[$this->buttonType]["classes"];
         if (!$this->engine->bootstrap_styles || $this->engine->force_reportico_mini_maintains)
             $classes = "btn btn-default prepareMiniMaintain reportico-edit-link";
@@ -275,7 +277,14 @@ reportico_jquery(document).on('click', '$triggerTag', function() {
             $text = "<button type='submit' class='$classes' title='$title' id='$id' name='$name'>$icon$label</button>";
         }
 
-        return $text;
+        $sections["id"] = $id;
+        $sections["icon"] = $icon;
+        $sections["label"] = $label;
+        $sections["title"] = $title;
+        $sections["name"] = $name;
+        $sections["classes"] = $classes;
+        $sections["widget"] = $text;
+        return $sections;
     }
 }
 // -----------------------------------------------------------------------------

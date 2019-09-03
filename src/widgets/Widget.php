@@ -343,7 +343,6 @@ class Widget
                         }
                     }
                     $choices = $target_choices;
-                    var_dump($choices);
                     $lq->column_value = implode(",", $choices);
                     //echo "=> $lq->column_value<BR>";
 
