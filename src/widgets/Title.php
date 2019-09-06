@@ -65,6 +65,7 @@ class Title extends Widget
     {
         // For Admin options title should be translatable
         // Also for configureproject.xml
+        $sections = [];
 
         if ( Authenticator::allowed("admin-report-selected")) {
             $title = $this->engine->deriveAttribute("ReportTitle", "");
@@ -79,13 +80,16 @@ class Title extends Widget
         if ($this->engine->execute_mode == "PREPARE" && ( Authenticator::allowed("design") || $this->engine->access_mode == "DEMO")) {
             if ( Authenticator::allowed("admin-report-selected")) {
                 $this->engine->widgets["popup-edit-title"] = new \Reportico\Widgets\PopupEditButton($this->engine, true, "edit-title");
-                $text .= $this->engine->widgets["popup-edit-title"]->render();
+                $text .= ($this->engine->widgets["popup-edit-title"]->render())["widget"];
             }
         }
 
         $text .= "</h1>";
 
-        return $text;
+        $sections["title"] = $title;
+        $sections["widget"] = $text;
+
+        return $sections;
 
     }
 }

@@ -17,7 +17,7 @@
 
 	{# Menu Items #}
 	{% for menuitem in  WIDGETS["menu-page"]["project-menu"]["project-menu-items"]  %}
-	<div class="row" style="text-align: center; padding: 4px">
+	<div class="flex-container" style="text-align: center; padding: 4px">
 			{% if menuitem.url %}
 		    <div style="text-align:center;">
 			    <a class="reportico-menu-item-link" href="{{ menuitem.url }}" class="">{{ menuitem.label }}</a>

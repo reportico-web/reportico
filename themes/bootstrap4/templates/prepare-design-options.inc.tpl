@@ -7,19 +7,15 @@ lll
     {{ WIDGETS["popup-edit-groups"]["widget"] }}
     {{ WIDGETS["popup-edit-charts"]["widget"] }}
 {% else %}
-    <div class="flex-container" style="justify-content: flex-start space-around">
+    <div class="flex-container" style="justify-content: space-between">
         {% if PERMISSIONS["save"] %}
-        <div class="flex-item" id="reportico-bootstrap-collapse-design-options">
-               <div class="input-group">
-                    <div class="flex-widget form-control">
-                        {{ T_REPORT_FILE }}
-                    </div>
-                   <input class="form-control flex-widget" type="text" name="xmlout" id="reportico-prepare-save-file" value="{{ XMLFILE }}">
-                   <input type="submit" class=" flex-widget form-control btn btn-primary reportico-prepare-save-button" type="submit" name="submit_xxx_SAVE" value="{{ T_SAVE }}">
-               </div>
+        <div class="flex-container" style="display:inline" id="reportico-bootstrap-collapse-design-options">
+                   <div class="" style="display:inline"> {{ T_REPORT_FILE }} </div>
+                   <input class="" style="display:inline" type="text" name="xmlout" id="reportico-prepare-save-file" value="{{ XMLFILE }}">
+            <input type="submit" class=" btn btn-primary reportico-prepare-save-button" display="inline" type="submit" name="submit_xxx_SAVE" value="{{ T_SAVE }}">
         </div>
         {% endif %}
-        <div class="flex-widget" >
+        <div class="flex-widget" style="justify-content: flex_end">
     		   <div class="111input-group">
                    <button type='submit' class='flex-widget btn btn-sm btn-outline-secondary reportico-edit-link'
                            title='{{ WIDGETS["popup-edit-sql"]["title"] }}' id='{{ WIDGETS["popup-edit-sql"]["id"] }}'

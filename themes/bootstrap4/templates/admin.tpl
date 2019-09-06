@@ -25,51 +25,16 @@
 		{{ WIDGETS["admin-login"]["current-user"] }}
 	</div>
 	{% endif %}
-	<div class="container mt-3">
-		<h2>Align Items</h2>
-		<p>Control the vertical alignment of single rows of flex items with the .align-content-* classes.</p>
-		<p>.align-items-start:</p>
-		<div class="d-flex align-items-start bg-light" style="height:150px">
-			<div class="p-2 border">Flex item 1</div>
-			<div class="p-2 border">Flex item 2</div>
-			<div class="p-2 border">Flex item 3</div>
-		</div>
-		<br>
-		<p>.align-items-end:</p>
-		<div class="d-flex align-items-end bg-light" style="height:150px">
-			<div class="p-2 border">Flex item 1</div>
-			<div class="p-2 border">Flex item 2</div>
-			<div class="p-2 border">Flex item 3</div>
-		</div>
-		<br>
-		<p>.align-items-center:</p>
-		<div class="d-flex align-items-center bg-light" style="height:150px">
-			<div class="p-2 border">Flex item 1</div>
-			<div class="p-2 border">Flex item 2</div>
-			<div class="p-2 border">Flex item 3</div>
-		</div>
-		<br>
-		<p>.align-items-baseline:</p>
-		<div class="d-flex align-items-baseline bg-light" style="height:150px">
-			<div class="p-2 border">Flex item 1</div>
-			<div class="p-2 border">Flex item 2</div>
-			<div class="p-2 border">Flex item 3</div>
-		</div>
-		<br>
-		<p>.align-items-stretch (default):</p>
-		<div class="d-flex align-items-stretch bg-light" style="height:150px">
-			<div class="p-2 border">Flex item 1</div>
-			<div class="p-2 border">Flex item 2</div>
-			<div class="p-2 border">Flex item 3</div>
-		</div>
-		<br>
-	</div>
 	{% if not PERMISSIONS["design-fiddle"] %}
 	<div class="container mt-3">
-		<div-- class="d-flex align-items-end">
-			<!--div style='text-align:right; margin-right: 30px'-->
-				{{ WIDGETS["admin-page"]["admin-login"]["logout-button"] }}
-			<!--/div-->
+		<div class="flex-widget align-items-end" style="text-align: right">
+			{{ include ('button.inc.tpl', {
+			button_type : 'navbar-button',
+			button_style : 'primary',
+			button_label : WIDGETS["admin-page"]["admin-login"]["logout-button"]["label"],
+			button_name : WIDGETS["admin-page"]["admin-login"]["logout-button"]["name"],
+			button_id : WIDGETS["admin-page"]["admin-login"]["logout-button"]["id"]
+			} ) }}
 		</div>
 		<div class="flex-row row align-content-center">
 			<div class="" style="width: 35%; margin-left: 50%; text-align: right">
@@ -79,7 +44,13 @@
 				{{ WIDGETS["admin-page"]["admin-login"]["login-prompt"] }}
 				</div>
 				<div style="margin: 10px 0px 4px 0px">
-				{{ WIDGETS["admin-page"]["admin-login"]["login-submit"] }}
+					{{ include ('button.inc.tpl', {
+					button_type : 'navbar-button',
+					button_style : 'primary',
+					button_label : WIDGETS["admin-page"]["admin-login"]["login-submit"]["label"],
+					button_name : WIDGETS["admin-page"]["admin-login"]["login-submit"]["name"],
+					button_id : WIDGETS["admin-page"]["admin-login"]["login-submit"]["id"]
+					} ) }}
 			    </div>
 				<br>
 				{% if FLAGS["admin-password-error"] %}
@@ -91,52 +62,76 @@
 	{% endif %}
 
 	{% if not FLAGS["show-set-admin-password"] %}
-	<div class="container-fluid">
+	<div class="flex-container">
 
         {# Run Project Option #}
-		<div class="flex-row row align-content-center" style="text-align: center; padding: 4px">
-				<div style="width: 230px; text-align: right; display: inline-block">{{ T_RUN_SUITE }}</div>
-			    <select class='form-control reportico-drop-select-regular' name='jump_to_menu_project'>
-				    {{ WIDGETS["admin-page"]["admin-menu"]["project-options"] }}
-			    </select>
-		        {{ WIDGETS["admin-page"]["admin-menu"]["run-project-button"] }}
+		<div class="flex-item col" style="text-align: center; padding: 4px">
+			<div style="width: 230px; text-align: right; display: inline-block">{{ T_RUN_SUITE }}</div>
+			<select class='form-control reportico-drop-select-regular' name='jump_to_menu_project'>
+                {{ WIDGETS["admin-page"]["admin-menu"]["project-options"] }}
+			</select>
+			{{ include ('button.inc.tpl', {
+			button_type : 'navbar-button',
+			button_style : 'success',
+			button_label : WIDGETS["admin-page"]["admin-menu"]["run-project-button"]["label"],
+			button_name : WIDGETS["admin-page"]["admin-menu"]["run-project-button"]["name"],
+			button_id : WIDGETS["admin-page"]["admin-menu"]["run-project-button"]["id"]
+			} ) }}
 		</div>
 
 		{% if PERMISSIONS["admin"] %}
 
 		{# Create Report Option #}
-		<div class="flex-row row align-content-center" style="text-align: center; padding: 4px">
+		<div class="flex-item col" style="text-align: center; padding: 4px">
 			<div style="width: 230px; text-align: right; display:inline-block">{{ T_CREATE_REPORT }}</div>
 			<select class='form-control reportico-drop-select-regular' name='jump_to_create_report'>
 				{{ WIDGETS["admin-page"]["admin-menu"]["project-options"] }}
 			</select>
-			{{ WIDGETS["admin-page"]["admin-menu"]["create-report-button"] }}
+			{{ include ('button.inc.tpl', {
+			button_type : 'navbar-button',
+			button_style : 'outline-success',
+			button_label : WIDGETS["admin-page"]["admin-menu"]["create-report-button"]["label"],
+			button_name : WIDGETS["admin-page"]["admin-menu"]["create-report-button"]["name"],
+			button_id : WIDGETS["admin-page"]["admin-menu"]["create-report-button"]["id"]
+			} ) }}
 		</div>
 
 		{# Configure Project Option #}
-		<div class="flex-row row align-content-center" style="text-align: center; padding: 4px">
-				<div style="width: 230px; text-align: right; display:inline-block">{{ T_CONFIG_PARAM }}</div>
-				<select class='form-control reportico-drop-select-regular' name='jump_to_configure_project'>
-					{{ WIDGETS["admin-page"]["admin-menu"]["project-options"] }}
-				</select>
-				{{ WIDGETS["admin-page"]["admin-menu"]["configure-project-button"] }}
+		<div class="flex-item col align-content-center" style="text-align: center; padding: 4px">
+			<div style="width: 230px; text-align: right; display:inline-block">{{ T_CONFIG_PARAM }}</div>
+			<select class='form-control reportico-drop-select-regular' name='jump_to_configure_project'>
+			    {{ WIDGETS["admin-page"]["admin-menu"]["project-options"] }}
+			</select>
+			{{ include ('button.inc.tpl', {
+			button_type : 'navbar-button',
+			button_style : 'outline-success',
+			button_label : WIDGETS["admin-page"]["admin-menu"]["configure-project-button"]["label"],
+			button_name : WIDGETS["admin-page"]["admin-menu"]["configure-project-button"]["name"],
+			button_id : WIDGETS["admin-page"]["admin-menu"]["configure-project-button"]["id"]
+			} ) }}
 		</div>
 
         {# Delete Project Option #}
-		<div class="flex-row row align-content-center" style="text-align: center; padding: 4px">
-				<div style="width: 230px; text-align: right; display:inline-block">{{ T_DELETE_PROJECT }}</div>
-		        <select class='form-control reportico-drop-select-regular' name='jump_to_delete_project'>
-			        {{ WIDGETS["admin-page"]["admin-menu"]["project-options"] }}
-                </select>
-                {{ WIDGETS["admin-page"]["admin-menu"]["delete-project-button"] }}
+		<div class="flex-item col align-content-center" style="text-align: center; padding: 4px">
+			<div style="width: 230px; text-align: right; display:inline-block">{{ T_DELETE_PROJECT }}</div>
+		    <select class='form-control reportico-drop-select-regular' name='jump_to_delete_project'>
+			    {{ WIDGETS["admin-page"]["admin-menu"]["project-options"] }}
+            </select>
+			{{ include ('button.inc.tpl', {
+			button_type : 'navbar-button',
+			button_style : 'danger',
+			button_label : WIDGETS["admin-page"]["admin-menu"]["delete-project-button"]["label"],
+			button_name : WIDGETS["admin-page"]["admin-menu"]["delete-project-button"]["name"],
+			button_id : WIDGETS["admin-page"]["admin-menu"]["delete-project-button"]["id"]
+			} ) }}
 		</div>
 
         {# Menu Items #}
         {% for menuitem in  WIDGETS["admin-page"]["admin-menu"]["project-menu-items"]  %}
-		<div class="flex-row row align-content-center" style="text-align: center; padding: 4px">
+		<div class="flex-item col align-content-center" style="text-align: center; padding: 4px">
                 {% if menuitem.url %}
-			    <div class="reportico-menu-item-link" style='text-align:center;'>
-				    <a href="{{menuitem.url}}" class="">{{menuitem.label}}</a>
+			    <div style='text-align:center;'>
+				    <a href="{{menuitem.url}}"  class="reportico-menu-item-link">{{menuitem.label}}</a>
 				</div>
 				{% else %}
 			         <div style='text-align:center;'>

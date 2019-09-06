@@ -20,7 +20,18 @@
     {% if PERMISSIONS["execute"] %}
 
     <!-- Report Title -->
-    {{ WIDGETS["title"] }}
+    <div class="flex-container" style="justify-content: center">
+            <h4 class="flex-widget" style="width: 100%;border-bottom: solid 1px #aaaaaa">
+            {{ WIDGETS["title"]["title"] }}
+            {% if PERMISSIONS["design"] %}
+            <button type='submit' class='flex-widget btn btn-sm btn-outline-secondary reportico-edit-link'
+               title='{{ WIDGETS["popup-edit-description"]["title"] }}' id='{{ WIDGETS["popup-edit-description"]["id"] }}'
+               name='{{ WIDGETS["popup-edit-description"]["name"] }}' value='{{ WIDGETS["popup-edit-description"]["label"] }}' >
+               <i class="fa fa-pen fa-lg"></i>
+            </button>
+            {% endif %}
+            </h4>
+    </div>
 
     <!-- Report Output options -->
     {% if not FLAGS["admin-report-selected"] %}
@@ -44,45 +55,20 @@
 
                     </div>
 
-                    {# Save Template #}
-                    <!--div class="flex-widget">
-                        <div class='input-group' >
-                            <label class='form-control flex-label' aria-label='Text input with checkbox'>{{ WIDGETS["template"]["label"] }}:</label>
-                        </div>
-                    </div-->
-                {% if PERMISSIONS["save"] %}
-                <div class="flex-widget" id="reportico-bootstrap-collapse-design-options">
-                    <div class="input-group">
-                        <div class="flex-widget form-control">
-                            {{ T_REPORT_FILE }}
-                        </div>
-                        <input class="form-control flex-widget" type="text" name="xmlout" id="reportico-prepare-save-file" value="{{ XMLFILE }}">
-                        <input type="submit" class=" flex-widget form-control btn btn-primary reportico-prepare-save-button" type="submit" name="submit_xxx_SAVE" value="{{ T_SAVE }}">
-                    </div>
-                </div>
-                {% endif %}
-                    <div class="flex-widget">
-                        <div class='input-group' >
-                            <div class='input-group-prepend'>
-                                <input type='submit' class='form-control btn btn-secondary'  name='submitSaveTemplate' id='submitSaveTemplate' value='Save Template'>
-                            </div>
-                            <input type='text' class="form-control btn-outline-secondary" id='saveTemplate' value='{{ WIDGETS["template"]["file"] }}' >
-                        </div>
-                    </div>
-                    {# Load Template #}
-                    <div class="flex-widget">
-                        <div class='input-group' >
-                            <div class='input-group-prepend'>
-                                <input type='submit' class='btn btn-secondary'  name='submitLoadTemplate' id='submitLoadTemplate' value='Load Template'>
-                            </div>
-                            <SELECT id='loadTemplate' class='form-control btn-outline-secondary' style="width: 150px" name='template_selection'>";
-                                {{ WIDGETS["template"]["load-options"] }}
-                            </SELECT>
-                            <button type='submit' class='form-control btn btn-danger'  name='submitDeleteTemplate' id='submitDeleteTemplate'>
-                                <i class="fa fa-trash-alt fa-lg"></i>
-                            </button>
-                            </input>
-                        </div>
+                    <div class="flex-container" style="display:inline" id="reportico-template-options">
+                        {# Save Template #}
+                        <label class='' style="display:inline" aria-label='Text input with checkbox'>{{ WIDGETS["template"]["label"] }}:</label>
+                        <input type='text' class="flex-inline-widget " id='saveTemplate' value='{{ WIDGETS["template"]["file"] }}' >
+                        <input type='submit' class='flex-inline-widget btn btn-sm btn-secondary'  name='submitSaveTemplate' id='submitSaveTemplate' value='Save'>
+                        &nbsp;
+                        {# Load Template #}
+                        <SELECT id='loadTemplate' class='flex-inline-widget btn-outline-secondary' style="width: 150px" name='template_selection'>";
+                            {{ WIDGETS["template"]["load-options"] }}
+                        </SELECT>
+                            <input type='submit' class='btn btn-sm btn-secondary'  name='submitLoadTemplate' id='submitLoadTemplate' value='Load'>
+                        <button type='submit' class='flex-inline-widget btn btn-sm btn-danger'  name='submitDeleteTemplate' id='submitDeleteTemplate'>
+                            <i class="fa fa-trash-alt fa-lg"></i>
+                        </button>
                     </div>
             </div>
         </div>
@@ -244,7 +230,19 @@
 {% include 'prepare-modals.inc.tpl' %}
 
 {# After running inline HTML criteria block hides, this widget allows unhiding of it after running report #}
-{{ WIDGETS["criteria-toggle"] }}
+
+      {# Toggle criteria switch #}
+      <div class='reportico-show-criteria' style='display:none'>
+          <a href='#'>
+              <i class="fa fa-chevron-down fa-lg"></i>
+          </a>
+      </div>
+      <div class='reportico-hide-criteria' style='display:none'>
+          <a href='#'>
+              <i class="fa fa-chevron-up fa-lg"></i>
+          </a>
+      </div>
+      <div id='reportico-report-output'>
 
 {{ WIDGETS["powered-by-banner"] }}
 </div>

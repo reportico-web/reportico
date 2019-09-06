@@ -31,6 +31,9 @@
 .flex-widget {
     text-align: center;
 }
+.flex-inline-widget {
+    display: inline;
+}
 .flex-label {
     border:none;
 }

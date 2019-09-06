@@ -144,7 +144,6 @@
 {{ WIDGETS["criteria-form"]["end"] }}
 
 
-
 </div>
 {% include 'footer.inc.tpl' %}
 {% endautoescape %}

@@ -67,6 +67,8 @@ reportico_jquery(document).on('click', '.reportico-hide-criteria', function(even
 
     public function render()
     {
+        $sections = [];
+
         $text = "
 <div class='reportico-show-criteria' style='display:none'>
     <a href='#'><span class='glyphicon glyphicon-chevron-down icon-chevron-down' aria-hidden='true'></span></a>
@@ -77,7 +79,9 @@ reportico_jquery(document).on('click', '.reportico-hide-criteria', function(even
 <div id='reportico-report-output'>
 </div>
     ";
-        return $text;
+        $sections["widget"] = $text;
+
+        return $sections;
     }
 }
 // -----------------------------------------------------------------------------

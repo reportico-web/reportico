@@ -4160,7 +4160,8 @@ class Reportico extends ReporticoObject
                 // Execute Any Pre Execute Code, if not specified then
                 // attempt to pick up code automatically from a file "projects/project/report.xml.php"
                 $code = $this->getAttribute("PreExecuteCode");
-                if (true || !$code || $code == "NONE" || $code == "XX") {
+                $source_path = false;
+                if (!$code || $code == "NONE" || $code == "XX") {
                     if (preg_match("/.xml$/", $sessionClass::getReporticoSessionParam("xmlin"))) {
                         $source_path = ReporticoUtility::findBestLocationInIncludePath($this->projects_folder . "/" . ReporticoApp::getConfig("project") . "/" . $sessionClass::getReporticoSessionParam("xmlin") . ".php");
                     } else {
@@ -4172,9 +4173,10 @@ class Reportico extends ReporticoObject
                         $code = false;
                     }
                 }
+
                 if ($code) {
                     ReporticoApp::set("code_area", "");
-                    $code = "";
+                    //$code = "";
                     $code = "\$lk =& \$this->lookup_queries;" . $code;
                     $code = "\$ds =& \$this->datasource->ado_connection;" . $code;
                     $code = "\$_criteria =& \$this->lookup_queries;" . $code;
@@ -4184,7 +4186,7 @@ class Reportico extends ReporticoObject
                     $code = "set_include_path(get_include_path().'".PATH_SEPARATOR.__DIR__."/..".PATH_SEPARATOR.$this->admin_projects_folder."/admin/');" . $code;
                     $code = "\$_connection =& \$this->datasource->ado_connection;" . $code;
                     $code = "namespace Reportico\Engine;" . $code;
-                    $code .= "include '$source_path';";
+                    //$code .= "include '$source_path';";
 
                     // set to the user defined error handler
                     ReporticoApp::set("eval_code", $code);

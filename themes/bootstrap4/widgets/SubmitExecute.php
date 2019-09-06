@@ -330,7 +330,19 @@ reportico_jquery(document).on('click', '$triggerTag', function() {
         else
             $text = "<input type='submit' id='$id' class='$classes' style='$styles' name='$name' value='$value'>";
         $this->manager->availableAssets[$this->buttonType] = $this;
-        return $text;
+
+        $sections = [];
+        $sections["widget"] = $text;
+        $sections["id"] = $id;
+        $sections["classes"] = $classes;
+        $sections["styles"] = $styles;
+        $sections["title"] = $label;
+        $sections["label"] = $label;
+        $sections["name"] = $name;
+        $sections["value"] = $value;
+        $sections["type"] = $this->buttonTypes[$this->buttonType]["type"];
+
+        return $sections;
     }
 }
 // -----------------------------------------------------------------------------
