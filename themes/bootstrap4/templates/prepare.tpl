@@ -25,8 +25,8 @@
             {{ WIDGETS["title"]["title"] }}
             {% if PERMISSIONS["design"] %}
             <button type='submit' class='flex-widget btn btn-sm btn-outline-secondary reportico-edit-link'
-               title='{{ WIDGETS["popup-edit-description"]["title"] }}' id='{{ WIDGETS["popup-edit-description"]["id"] }}'
-               name='{{ WIDGETS["popup-edit-description"]["name"] }}' value='{{ WIDGETS["popup-edit-description"]["label"] }}' >
+               title='{{ WIDGETS["popup-edit-title"]["title"] }}' id='{{ WIDGETS["popup-edit-title"]["id"] }}'
+               name='{{ WIDGETS["popup-edit-title"]["name"] }}' value='{{ WIDGETS["popup-edit-title"]["label"] }}' >
                <i class="fa fa-pen fa-lg"></i>
             </button>
             {% endif %}
@@ -78,10 +78,10 @@
 
 
   {# Criteria Midsection Main Selection Block #}
-  <div id="criteria-block" class="row" style="padding: 8px; border-top: 1px solid #d0ccc9;">
+  <div id="criteria-block" class="flex-container" style="padding: 8px; border-top: 1px solid #d0ccc9;">
 
       {# Left hand side Criteria Entry Blocks #}
-      <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6" >
+      <div class="col-6" >
 
           {% if FLAGS["admin-report-selected"] or FLAGS["show_hide_prepare_go_buttons"] %}
           {{ WIDGETS["submit-go"] }}
@@ -100,7 +100,51 @@
           </button>
           {% endif %}
 
-          <div class="col-lg-12 container">
+          <!-div class="d-flex bg-secondary"-->
+
+          {# Tab Menu Contents #}
+          {# Display each criteria item #}
+          {% set last_tab = "" %}
+          {% set tabs_exist = false %}
+          {% set tab_count = 1 %}
+
+              {% for criterion in CRITERIA_BLOCK %}
+
+                  {% if not criterion.tab %}
+
+                      {# Criteria entry selection #}
+                      {% if criterion.hidden %}
+                          <div class='d-flex' style="padding: 3px 0px;">
+                      {% else %}
+                          <div class='d-flex' style="padding: 3px 0px;">
+                      {% endif %}
+
+                      {# Criteria Title and Tooltip #}
+                          <div class="d-inline-block col-3 p-0">
+                              {% if criterion.tooltip %}
+                              <a class='reportico_tooltip' data-toggle="tooltip" data-placement="right" title="{{ criterion.tooltip }}">
+                                  <span class="fas fa-question-circle"></span>
+                              </a>
+                              {% endif %}
+                              {{ criterion.title }}
+                          </div>
+
+                          {# Criteria Selection Widget - text field, datepicker etc #}
+                          <div class="d-inline-block flex-grow-1" >
+                              {{ criterion.selection }}
+                          </div>
+
+                          {# Criteria Expand Button #}
+                          <div class="d-inline-block col-1 ml-auto">
+                              {{ criterion.lookup }}
+                          </div>
+
+                      </div>
+
+                  {% endif %}
+
+
+                  {% endfor %}
 
               {# Tab Menu Headers #}
 
@@ -108,23 +152,25 @@
               {% set last_tab = "" %}
               {% set tabs_exist = false %}
               {% set firstCriteria = true %}
+              {% set tabActive = "active" %}
               {% set tab_count = 0 %}
 {% for criterion in CRITERIA_BLOCK %}
 {% if criterion.tab and not last_tab and not tabs_exist  %}
 {% set tabs_exist = true %}
-                  <ul class="nav nav-tabs">
+                  <ul class="nav nav-tabs" role="tablist">
 {% endif %}
 {% if tabs_exist and criterion.tab and criterion.tab != last_tab  %}
 {% set tab_count = tab_count + 1 %}
 {% set tab_id = criterion.tab | replace({'\ ': '_'}) %}
 {% if not criterion.tabhidden %}
-                          <li class="active"><a class="reportico-criteria-tab" data-toggle="tab" href="#tab-content-{{ tab_id }}-{{ tab_count }}">{{ criterion.tab }}</a></li>
+                          <li class="nav-item"><a class="nav-link reportico-criteria-tab {{ tabActive }}" data-toggle="tab" href="#tab-content-{{ tab_id }}-{{ tab_count }}">{{ criterion.tab }}</a></li>
 {% else %}
-                          <li><a class="reportico-criteria-tab" data-toggle="tab" href="#tab-content-{{ tab_id }}-{{ tab_count }}">{{ criterion.tab }}</a></li>
+                          <li class="nav-item"><a class="nav-link reportico-criteria-tab {{ tabActive }}" data-toggle="tab" href="#tab-content-{{ tab_id }}-{{ tab_count }}">{{ criterion.tab }}</a></li>
 {% endif %}
 {% endif %}
 {% set last_tab = criterion.tab %}
 {% set firstCriteria = false %}
+{% set tabActive = "" %}
 {% endfor %}
 
               {% if ( tabs_exist )  %}
@@ -140,6 +186,7 @@
               <div class="tab-content" style="padding-top: 10px">
 
               {% for criterion in CRITERIA_BLOCK %}
+              {% if criterion.tab %}
 
               {% set tab_id = criterion.tab | replace({'\ ': '_'}) %}
               {% if criterion.tab and ( not last_tab )  %}
@@ -171,13 +218,13 @@
 
               {# Criteria entry selection #}
               {% if criterion.hidden %}
-              <div class='row {{ criterion.tabclass }}' style="padding: 3px 0px; display: inline">
+              <div class='d-flex {{ criterion.tabclass }}' style="padding: 3px 0px; display: inline">
               {% else %}
-              <div class='row {{ criterion.tabclass }}' style="padding: 3px 0px">
+              <div class='d-flex {{ criterion.tabclass }}' style="padding: 3px 0px">
               {% endif %}
 
                   {# Criteria Title and Tooltip #}
-                  <div class='col-xs-3 col-sm-3 col-lg-3 col-md-3' style='font-weight: bold'>
+                  <div class="d-inline-block col-3 p-0">
                       {% if criterion.tooltip %}
                       <a class='reportico_tooltip' data-toggle="tooltip" data-placement="right" title="{{ criterion.tooltip }}">
                           <span class="fas fa-question-circle"></span>
@@ -187,12 +234,12 @@
                   </div>
 
                   {# Criteria Selection Widget - text field, datepicker etc #}
-                  <div class="col-xs-8 col-sm-8 col-lg-8 col-md-8">
+                  <div class="d-inline-block flex-grow-1" >
                       {{ criterion.selection }}
                   </div>
 
                   {# Criteria Expand Button #}
-                  <div class="col-xs-1 col-sm-1 col-lg-1 col-md-1">
+                  <div class="d-inline-block ml-auto col-1">
                       {{ criterion.lookup }}
                   </div>
 
@@ -200,12 +247,13 @@
 
 
 
+                  {% endif %}
               {% endfor %}
 {% if  ( last_tab )  %}
               </div>
 {% endif %}
 
-          </div>
+          <!--/div--->
 
           </div>
 
