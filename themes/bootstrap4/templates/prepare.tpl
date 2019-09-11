@@ -226,8 +226,47 @@
 
 {{ WIDGETS["criteria-form"]["end"] }}
 <!-- End Form -->
+          <!-- Button trigger modal -->
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#reporticoModal">
+              Launch demo modal
+          </button>
 
-{% include 'prepare-modals.inc.tpl' %}
+          <div class="modal fade show" id="reporticoModal" tabindex="-1" role="dialog" aria-labelledby="reporticoModal" aria-hidden="true">
+              <div class="modal-dialog modal-lg" role="document">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                          <button type="button" class="close reportico-bootstrap-modal-close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                          </button>
+                      </div>
+                      <div class="modal-body" style="overflow-y: auto; padding: 0px" id="reporticoModalBody">
+                          <h3>Modal Body</h3>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" data-dismiss="modal" class="btn btn-primary reportico-edit-linkSubmit" >Close</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <a id="a_reporticoNoticeModal" href="#reporticoNoticeModal" role="button" class="btn" data-target="#reporticoNoticeModal" data-toggle="modal" style="display:none">B2</a>
+          <div class="modal fade show" id="reporticoNoticeModal" tabindex="-1" role="dialog" aria-labelledby="reporticoNoticeModal" aria-hidden="true">
+              <div class="modal-dialog modal-lg">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <button type="button" data-dismiss="modal" class="close" aria-hidden="true">&times;</button>
+                          <h4 class="modal-title reportico-notice-modal-title" id="reporticoNoticeModalLabel">'.$notice.'</h4>
+                      </div>
+                      <div class="modal-body" style="overflow-y: auto; padding: 0px" id="reporticoNoticeModalBody">
+                          <h3>Modal Body</h3>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+{# include 'prepare-modals.inc.tpl' #}
 
 {# After running inline HTML criteria block hides, this widget allows unhiding of it after running report #}
 

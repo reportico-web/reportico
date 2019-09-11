@@ -2843,10 +2843,12 @@ class Reportico extends ReporticoObject
 
         //Define the template dir where we could find specific template css js and template files
         // if not already provided
-        $theme_dir = $this->url_path_to_templates;
-        if (!$this->url_path_to_templates)
-            $theme_dir = ReporticoUtility::findBestUrlInIncludePath('themes');
-        $this->theme_dir = $theme_dir;
+        if ( !$this->theme_dir ) {
+            $theme_dir = $this->url_path_to_templates;
+            if (!$this->url_path_to_templates)
+                $theme_dir = ReporticoUtility::findBestUrlInIncludePath('themes');
+            $this->theme_dir = $theme_dir;
+        }
 
         /*@todo Must be in the theme and not in the code*/
         if (!$this->bootstrap_styles) {
@@ -4175,6 +4177,13 @@ class Reportico extends ReporticoObject
                 }
 
                 if ($code) {
+                    set_include_path(get_include_path().
+                        PATH_SEPARATOR.__DIR__."/..".
+                        PATH_SEPARATOR.$this->admin_projects_folder."/admin/".
+                        PATH_SEPARATOR.$this->projects_folder."/../".
+                        PATH_SEPARATOR.$this->projects_folder."/".ReporticoApp::getConfig("project")
+                    );
+                    //$source_path = ig("project") . "/" . $sessionClass::getReporticoSessionParam("xmlin") . ".xml.php";
                     ReporticoApp::set("code_area", "");
                     //$code = "";
                     $code = "\$lk =& \$this->lookup_queries;" . $code;
@@ -4183,9 +4192,11 @@ class Reportico extends ReporticoObject
                     $code = "\$_pdo =& \$_connection->_connectionID;" . $code;
                     $code = "if ( \$_connection )" . $code;
                     $code = "\$_pdo = false;" . $code;
-                    $code = "set_include_path(get_include_path().'".PATH_SEPARATOR.__DIR__."/..".PATH_SEPARATOR.$this->admin_projects_folder."/admin/');" . $code;
+                    //$code = "set_include_path(get_include_path().'".PATH_SEPARATOR.__DIR__."/..".PATH_SEPARATOR.$this->admin_projects_folder."/admin/'.);" . $code;
                     $code = "\$_connection =& \$this->datasource->ado_connection;" . $code;
                     $code = "namespace Reportico\Engine;" . $code;
+                    //echo get_include_path()."<BR>";
+                    //echo "<PRE>".htmlspecialchars($code); //die;
                     //$code .= "include '$source_path';";
 
                     // set to the user defined error handler

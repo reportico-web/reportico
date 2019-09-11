@@ -275,7 +275,7 @@ function formatState (state) {
 
 function setupModals()
 {
-    var options = { } 
+    var options = { show: true }
     if ( typeof(reportico_jquery('#reporticoModal').modal) != "undefined" )
     reportico_jquery('#reporticoModal').modal(options);
 }
@@ -860,7 +860,7 @@ function reportico_initialise_page()
 
 reportico_jquery(document).on('click', '.reportico-notice-modal-close,.reportico-notice-modal-button', function(event) 
 {
-    reportico_jquery("#reportico-edit-link").html("");
+    reportico_jquery("#reporticoModalBody").html("");
     reportico_jquery('#reporticoNoticeModal').hide();
 });
 
@@ -916,7 +916,7 @@ reportico_jquery(document).on('click', '.reportico-edit-linkSubmit,.reportico-bo
           else
             reportico_jquery('#reporticoModal').hide();
 
-          reportico_jquery("#reportico-edit-link").html("");
+          reportico_jquery("#reporticoModalBody").html("");
 
           criteriabodyshowing = reportico_jquery("#criteria-block").is(":visible");
 
@@ -930,7 +930,7 @@ reportico_jquery(document).on('click', '.reportico-edit-linkSubmit,.reportico-bo
           }
         },
         error: function(xhr, desc, err) {
-          reportico_jquery("#reportico-edit-link").html("");
+          reportico_jquery("#reporticoModalBody").html("");
           reportico_jquery('#reporticoModal').modal('hide');
           reportico_jquery('.modal-backdrop').remove();
           reportico_jquery(loadpanel).removeClass("modal-loading");
@@ -990,7 +990,7 @@ function popupEditLink(sourceWidget) {
                 setupModals();
             else
                 reportico_jquery("#reporticoModal").show();
-            reportico_jquery("#reportico-edit-link").html(data);
+            reportico_jquery("#reporticoModalBody").html(data);
             x = reportico_jquery(".reportico-maintain-button").prop("name");
             reportico_jquery(".reportico-edit-linkSubmit").prop("id", x);
         },
@@ -1073,7 +1073,7 @@ function submitAjaxLink(sourceWidget, url = false)
         return false;
     }
 
-    if ( reportico_jquery(sourceWidget).parents("#reportico-edit-link").length == 1 )
+    if ( reportico_jquery(sourceWidget).parents("#reporticoModalBody").length == 1 )
     {
 	    var expandpanel = reportico_jquery(sourceWidget).closest('#reportico-form').find('#reportico-prepare-expand-cell');
 	    //var expandpanel = reportico_jquery(sourceWidget).closest('#reportico-form').find('.reportico-prepare-crit-output-options');
@@ -1117,7 +1117,7 @@ function submitAjaxLink(sourceWidget, url = false)
               reportico_jquery(loadpanel).removeClass("modal-loading");
               if ( reportico_bootstrap_modal )
                 setupModals();
-              reportico_jquery("#reportico-edit-link").html(data);
+              reportico_jquery("#reporticoModalBody").html(data);
               x = reportico_jquery(".reportico-maintain-button").prop("name");
               reportico_jquery(".reportico-edit-linkSubmit").prop("id", x);
             },

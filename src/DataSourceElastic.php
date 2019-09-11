@@ -157,7 +157,6 @@ class DataSourceElastic
             $this->results[] = $line;
             
         }
-        //var_dump($x["aggregations"]); die;
         if ( isset ( $x["aggregations"] ) )
         foreach ( $x["aggregations"] as $k => $row )
         {

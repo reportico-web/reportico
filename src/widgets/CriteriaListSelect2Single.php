@@ -80,6 +80,7 @@ ajaxaction +=  getCSRFURLParams();
 headers =  getCSRFHeaders();
 
 reportico_jquery('#select2_dropdown_' + jtag + ',#select2_dropdown_expanded_' + jtag).select2({
+          width: '100%',
           escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
           minimumInputLength: 1
         })

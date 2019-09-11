@@ -78,6 +78,7 @@ ajaxaction +=  getCSRFURLParams();
 headers =  getCSRFHeaders();
 
 reportico_jquery('#select2_dropdown_' + jtag + ',#select2_dropdown_expanded_' + jtag).select2({
+          width: '100%',
           ajax: {
     url: ajaxaction,
             headers: headers,

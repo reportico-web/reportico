@@ -80,6 +80,7 @@ headers =  getCSRFHeaders();
 
 reportico_jquery('#select2_dropdown_' + jtag + ',#select2_dropdown_expanded_' + jtag).select2({
           ajax: {
+          width: '100%',
     url: ajaxaction,
             headers: headers,
             type: 'POST',
@@ -143,7 +144,6 @@ reportico_jquery('#select2_dropdown_' + jtag + ',#select2_dropdown_expanded_' + 
     }();
 
 " ];
-
         return
             [
                 'name' => 'criteria-lookup-select2-single',
