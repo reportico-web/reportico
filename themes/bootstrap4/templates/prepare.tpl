@@ -275,10 +275,6 @@
 {{ WIDGETS["criteria-form"]["end"] }}
 <!-- End Form -->
           <!-- Button trigger modal -->
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#reporticoModal">
-              Launch demo modal
-          </button>
-
           <div class="modal fade show" id="reporticoModal" tabindex="-1" role="dialog" aria-labelledby="reporticoModal" aria-hidden="true">
               <div class="modal-dialog modal-lg" role="document">
                   <div class="modal-content">

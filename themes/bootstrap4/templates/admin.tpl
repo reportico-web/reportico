@@ -155,7 +155,35 @@
 
 	{# Set Admin Password on first use #}
 	{% if FLAGS["show-set-admin-password"] %}
-	    {{ WIDGETS["admin-page"]["admin-password-set"] }}
+	<div style='text-align:center;'>
+
+		{% if WIDGETS["admin-page"]["admin-password-set"]["set-admin-password-status-message"] %}
+		<div style='color: #ff0000;'>
+		{{ WIDGETS["admin-page"]["admin-password-set"]["set-admin-password-status-message"] }}
+		</div>
+		{% endif %}
+	<br><br>
+	{{ WIDGETS["admin-page"]["admin-password-set"]["set-admin-password-info"] }}
+	<br>
+	<br>
+	{{ WIDGETS["admin-page"]["admin-password-set"]["set-admin-password-prompt"] }}
+	<br>
+	<input type='password' name='new_admin_password' value=''><br>
+	<br>
+	{{ WIDGETS["admin-page"]["admin-password-set"]["set-admin-password-reenter"] }}
+	<br>
+	<input type='password' name='new_admin_password2' value=''>
+	<br><br>
+	{{ WIDGETS["admin-page"]["admin-password-set"]["set-language-selector"] }}
+	<br><br>
+	{{ include ('button.inc.tpl', {
+	button_type : 'navbar-button',
+	button_style : 'primary',
+	button_label : WIDGETS["admin-page"]["admin-password-set"]["set-admin-password-button"]["label"],
+	button_name : WIDGETS["admin-page"]["admin-password-set"]["set-admin-password-button"]["name"],
+	button_id : WIDGETS["admin-page"]["admin-password-set"]["set-admin-password-button"]["id"]
+	} ) }}
+	</div>
 	{% endif %}
 
 	{# Admin menu items #}

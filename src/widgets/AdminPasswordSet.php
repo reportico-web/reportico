@@ -79,9 +79,19 @@ class AdminPasswordSet extends Widget
 		$text .= "<br><br>";
         $text .= $this->engine->renderWidget("language-selector", "LanguageSelector");
 		$text .= "<br><br>";
-        $text .= $this->engine->renderWidget("set-admin-password-button", "SubmitExecute");
+        $text .= ($this->engine->renderWidget("set-admin-password-button", "SubmitExecute"))["widget"];
 
-        return $text;
+        $sections = [];
+        $sections["widget"] = $text;
+        $sections["set-admin-password-status-message"] = $status_message;
+        $sections["set-admin-password-info"] = ReporticoLang::templateXlate("SET_ADMIN_PASSWORD_INFO");
+        $sections["set-admin-password-prompt"] = ReporticoLang::templateXlate("SET_ADMIN_PASSWORD_PROMPT");
+        $sections["set-admin-password-reenter"] = ReporticoLang::templateXlate("SET_ADMIN_PASSWORD_REENTER");
+        $sections["set-language-selector"] = $this->engine->renderWidget("language-selector", "LanguageSelector");
+        $sections["set-admin-password-button"] = $this->engine->renderWidget("set-admin-password-button", "SubmitExecute");
+
+
+        return $sections;
     }
 
     /**
