@@ -2,6 +2,9 @@
 
 namespace Reportico\Engine;
 
+global $gLastTrace;
+$gLastTrace = false;
+
 class ReporticoUtility
 {
     static function getQueryColumnValue($name, &$arr)
@@ -478,5 +481,20 @@ class ReporticoUtility
         }
 
         return $retstring;
+    }
+
+    static function trace($txt){
+
+        $f = microtime();
+        $arr = preg_split("/ /", $f);
+        $ms = $arr[0];
+        $secs = $arr[1];
+        $millis = $ms + $secs;
+        global $gLastTrace;
+        $dur = $millis - $gLastTrace;
+        $gLastTrace = false;
+        if ( $txt != "RESET" )
+            echo("$txt " . $dur . "<BR>");
+        $gLastTrace = $millis;
     }
 }

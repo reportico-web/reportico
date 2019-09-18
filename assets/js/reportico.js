@@ -85,7 +85,8 @@ function getFilterGroupState()
         filterid = ".displayGroup" + filterid;
 
 
-        if ( reportico_jquery(this).parent().hasClass("active") )
+        if ( reportico_jquery(this).parent().hasClass("active") ||
+            reportico_jquery(this).hasClass("active") )
         {
             if ( !openfilters )
                 openfilters = "&openfilters[]="+filterno;
@@ -319,6 +320,8 @@ var page_count = 0;
 
 function paginate() {
 
+    loadSpinner(false, true);
+
     // Set pageno so we can do things just on first page
     pagination_page_no = 1;
     page_count = 0;
@@ -333,6 +336,8 @@ function paginate() {
     });
     if ( paged )
         postPagination();
+
+    loadSpinner(false, false);
 
 }
 
@@ -467,15 +472,23 @@ function splitPage() {
                 var headers = reportico_jquery(child).find("thead").clone();
 
                 var hheight = reportico_jquery(hf).outerHeight();
-
+                if ( hheight == null )
+                    hheight = 0;
+                    
                 var hf = reportico_jquery(child).find("tfoot").first();
                 var fheight = reportico_jquery(hf).outerHeight();
+                if ( fheight == null )
+                    fheight = 0;
                 
                 var body = reportico_jquery(child).find("tbody");
                 var rows = reportico_jquery(child).find("tr");
 
+                var pfheight = firstfooter.outerHeight();
+                if ( pfheight == null )
+                    pfheight = 0;
                 var rheight = 0;
 
+                var rlong = long + pfheight + hheight + fheight + 70 ;
                 var rlong = long;
                 var sliceAt = 0;
 
@@ -873,7 +886,7 @@ reportico_jquery(document).on('click', '.reportico-edit-linkSubmit,.reportico-bo
 
 	var expandpanel = reportico_jquery('#reportico-prepare-expand-cell');
 	//var expandpanel = reportico_jquery('.reportico-prepare-crit-output-options');
-    reportico_jquery(loadpanel).addClass("modal-loading");
+    loadSpinner(false, true);
 
     forms = reportico_jquery(this).closest('#reportico-container').find(".reportico-form");
     if (    reportico_jquery.type(reportico_ajax_script) === 'undefined' )
@@ -903,6 +916,7 @@ reportico_jquery(document).on('click', '.reportico-edit-linkSubmit,.reportico-bo
         dataType: 'html',
         success: function(data, status) 
         {
+          loadSpinner(false, false);
           reportico_jquery(loadpanel).removeClass("modal-loading");
           if ( reportico_bootstrap_modal && typeof(reportico_jquery('#reporticoModal').modal) != "undefined" )
           {
@@ -920,7 +934,6 @@ reportico_jquery(document).on('click', '.reportico-edit-linkSubmit,.reportico-bo
 
           criteriabodyshowing = reportico_jquery("#criteria-block").is(":visible");
 
-          //reportico_jquery(reportico_container).removeClass("loading");
           fillDialog(data, cont);
 
           if ( !criteriabodyshowing ) {
@@ -933,6 +946,7 @@ reportico_jquery(document).on('click', '.reportico-edit-linkSubmit,.reportico-bo
           reportico_jquery("#reporticoModalBody").html("");
           reportico_jquery('#reporticoModal').modal('hide');
           reportico_jquery('.modal-backdrop').remove();
+          loadSpinner(false, false);
           reportico_jquery(loadpanel).removeClass("modal-loading");
           reportico_jquery(loadpanel).prop('innerHTML',"Ajax Error: " + xhr + "\nTextStatus: " + desc + "\nErrorThrown: " + err);
         }
@@ -952,7 +966,7 @@ function popupEditLink(sourceWidget) {
     //var expandpanel = reportico_jquery(sourceWidget).closest('#reportico-form').find('.reportico-prepare-crit-output-options');
     var reportico_container = reportico_jquery(sourceWidget).closest("#reportico-container");
 
-    reportico_jquery(expandpanel).addClass("loading");
+    loadSpinner(sourceWidget, true);
     forms = reportico_jquery(sourceWidget).closest('.reportico-form,.reportico-prepare-save-form,form');
     if (    reportico_jquery.type(reportico_ajax_script) === 'undefined' )
     {
@@ -964,6 +978,7 @@ function popupEditLink(sourceWidget) {
     }
 
     reportico_jquery(".reportico-modal-title").html(reportico_jquery(sourceWidget).prop("title"));
+    reportico_jquery("#reporticoModalLabel").html(reportico_jquery(sourceWidget).prop("title"));
 
     var maintainButton = reportico_jquery(sourceWidget).prop("name");
     var bits = maintainButton.split("_");
@@ -984,8 +999,7 @@ function popupEditLink(sourceWidget) {
         dataType: 'html',
         success: function(data, status)
         {
-            reportico_jquery(expandpanel).removeClass("loading");
-            reportico_jquery(reportico_container).removeClass("loading");
+            loadSpinner(sourceWidget, false);
             if ( reportico_bootstrap_modal && typeof(reportico_jquery('#reporticoModal').modal) != "undefined" )
                 setupModals();
             else
@@ -995,8 +1009,7 @@ function popupEditLink(sourceWidget) {
             reportico_jquery(".reportico-edit-linkSubmit").prop("id", x);
         },
         error: function(xhr, desc, err) {
-            reportico_jquery(expandpanel).removeClass("loading");
-            reportico_jquery(reportico_container).removeClass("loading");
+            loadSpinner(sourceWidget, false);
             reportico_jquery(expandpanel).prop('innerHTML',"Ajax Error: " + xhr + "\nTextStatus: " + desc + "\nErrorThrown: " + err);
         }
     });
@@ -1010,7 +1023,7 @@ function saveReport(sourceWidget)
 	var expandpanel = reportico_jquery(sourceWidget).closest('#reportico-form').find('#reportico-prepare-expand-cell');
     var reportico_container = reportico_jquery(sourceWidget).closest("#reportico-container");
 
-    reportico_jquery(expandpanel).addClass("loading");
+    loadSpinner(sourceWidget, true);
     if (    reportico_jquery.type(reportico_ajax_script) === 'undefined' )
     {
         var ajaxaction = reportico_jquery(forms).prop("action");
@@ -1038,13 +1051,11 @@ function saveReport(sourceWidget)
         dataType: 'html',
         success: function(data, status) 
         {
-          reportico_jquery(expandpanel).removeClass("loading");
-          reportico_jquery(reportico_container).removeClass("loading");
+          loadSpinner(sourceWidget, false);
           //alert(data);
         },
         error: function(xhr, desc, err) {
-          reportico_jquery(expandpanel).removeClass("loading");
-          reportico_jquery(reportico_container).removeClass("loading");
+          loadSpinner(sourceWidget, false);
           showNoticeModal(xhr.responseText);
         }
       });
@@ -1083,7 +1094,8 @@ function submitAjaxLink(sourceWidget, url = false)
             var loadpanel = reportico_jquery("#reporticoModal .reportico-modal-dialog .reportico-modal-content .reportico-modal-header");
         var reportico_container = reportico_jquery(sourceWidget).closest("#reportico-container");
 
-        reportico_jquery(loadpanel).addClass("modal-loading");
+        loadSpinner(sourceWidget);
+
         forms = reportico_jquery(sourceWidget).closest('.reportico-edit-link-form');
         if (    reportico_jquery.type(reportico_ajax_script) === 'undefined' )
         {
@@ -1114,7 +1126,8 @@ function submitAjaxLink(sourceWidget, url = false)
             dataType: 'html',
             success: function(data, status) 
             {
-              reportico_jquery(loadpanel).removeClass("modal-loading");
+              loadSpinner(sourceWidget, false);
+              //reportico_jquery(loadpanel).removeClass("modal-loading");
               if ( reportico_bootstrap_modal )
                 setupModals();
               reportico_jquery("#reporticoModalBody").html(data);
@@ -1122,7 +1135,8 @@ function submitAjaxLink(sourceWidget, url = false)
               reportico_jquery(".reportico-edit-linkSubmit").prop("id", x);
             },
             error: function(xhr, desc, err) {
-              reportico_jquery(loadpanel).removeClass("modal-loading");
+              loadSpinner(sourceWidget, false);
+              //reportico_jquery(loadpanel).removeClass("modal-loading");
               reportico_jquery(expandpanel).prop('innerHTML',"Ajax Error: " + xhr + "\nTextStatus: " + desc + "\nErrorThrown: " + err);
             }
           });
@@ -1152,9 +1166,7 @@ function submitAjaxLink(sourceWidget, url = false)
 
     if ( !url )
     {
-            reportico_jquery(expandpanel).addClass("loading");
-            reportico_jquery(reportico_container).addClass("loading");
-
+            loadSpinner(sourceWidget, true);
             forms = reportico_jquery(sourceWidget).closest('.reportico-form,form');
             if (    reportico_jquery.type(reportico_ajax_script) === 'undefined' )
             {
@@ -1192,8 +1204,7 @@ function submitAjaxLink(sourceWidget, url = false)
                     || !reportico_pdf_delivery_mode || reportico_pdf_delivery_mode != "DOWNLOAD_SAME_WINDOW" 
                     )
                 {
-                    reportico_jquery(expandpanel).removeClass("loading");
-                    reportico_jquery(reportico_container).removeClass("loading");
+                    loadSpinner(sourceWidget, false);
                     var windowSizeArray = [ "width=200,height=200",
                           "width=300,height=400,scrollbars=yes" ];
 
@@ -1202,13 +1213,13 @@ function submitAjaxLink(sourceWidget, url = false)
                     var windowName = "popUp";//reportico_jquery(sourceWidget).prop("name");
                     var windowSize = windowSizeArray[reportico_jquery(sourceWidget).prop("rel")];
                     window.open(url, windowName, "width=400,height=400").focus();
-                    reportico_jquery(expandpanel).removeClass("loading");
+                    loadSpinner(sourceWidget, false);
                     window.focus();
                 }
                 else
                 {
 
-                    reportico_jquery(expandpanel).removeClass("loading");
+                    loadSpinner(sourceWidget, false);
                     var buttonName = reportico_jquery(sourceWidget).prop("name");
                     var formparams = forms.serializeObject();
                     formparams['reportico_ajax_called'] = '1';
@@ -1231,13 +1242,11 @@ function submitAjaxLink(sourceWidget, url = false)
                 dataType: 'html',
                 success: function(data, status) 
                 {
-                  reportico_jquery(expandpanel).removeClass("loading");
-                  reportico_jquery(reportico_container).removeClass("loading");
+                  loadSpinner(sourceWidget, false);
                   fillDialog(data, reportico_container);
                 },
                 error: function(xhr, desc, err) {
-                  reportico_jquery(expandpanel).removeClass("loading");
-                  reportico_jquery(reportico_container).removeClass("loading");
+                  loadSpinner(sourceWidget, false);
                   reportico_jquery(expandpanel).prop('innerHTML',"Ajax Error: " + xhr + "\nTextStatus: " + desc + "\nErrorThrown: " + err);
                 }
               });
@@ -1274,8 +1283,7 @@ function ajaxFileDownload(url, data, expandpanel, reportico_container) {
       data: data,
       dataType: 'html',
       success: function(data, status, request) {
-        reportico_jquery(expandpanel).removeClass("loading");
-        reportico_jquery(reportico_container).removeClass("loading");
+        loadSpinner(sourceWidget, false);
 
         // PDF and CSV files are received in base64
         var contenttype = request.getResponseHeader('Content-Type');
@@ -1296,8 +1304,7 @@ function ajaxFileDownload(url, data, expandpanel, reportico_container) {
         }
       },
        error: function(xhr, desc, err) {
-        reportico_jquery(expandpanel).removeClass("loading");
-        reportico_jquery(reportico_container).removeClass("loading");
+        loadSpinner(sourceWidget, false);
          try {
             // a try/catch is recommended as the error handler
             // could occur in many events and there might not be
@@ -1354,7 +1361,8 @@ reportico_jquery(document).on('click', '#returnFromExpand', function() {
 	var critform = reportico_jquery(this).closest('#reportico-form');
 	var expandpanel = reportico_jquery(this).closest('#reportico-form').find('#reportico-prepare-expand-cell');
 	var expandpanel = reportico_jquery(this).closest('#reportico-form').find('.reportico-prepare-crit-output-options');
-    reportico_jquery(expandpanel).addClass("loading");
+
+    loadSpinner(sourceWidget, true);
 
     var params = reportico_jquery(critform).serialize();
     params += "&execute_mode=PREPARE";
@@ -1378,7 +1386,7 @@ reportico_jquery(document).on('click', '#returnFromExpand', function() {
       data: params,
       dataType: 'html',
       success: function(data, status) {
-        reportico_jquery(expandpanel).removeClass("loading");
+        loadSpinner(sourceWidget, false);
         reportico_jquery(fillPoint).html(data);
         setupWidgets();
         //setupDatePickers();
@@ -1388,7 +1396,7 @@ reportico_jquery(document).on('click', '#returnFromExpand', function() {
         setupCheckboxes();
         },
         error: function(xhr, desc, err) {
-        reportico_jquery(expandpanel).removeClass("loading");
+        loadSpinner(sourceWidget, false);
         reportico_jquery(fillPoint).prop('innerHTML',"Ajax Error: " + xhr + "\nTextStatus: " + desc + "\nErrorThrown: " + err);
       }
     });
@@ -1409,7 +1417,7 @@ function executeExpand(sourceWidget) {
     params += getFilterGroupState();
 
 	var fillPoint = reportico_jquery(sourceWidget).closest('#reportico-form').find('#reportico-prepare-expand-cell');
-    reportico_jquery(fillPoint).addClass("loading");
+    loadSpinner(sourceWidget, true);
 
     ajaxaction += getYiiAjaxURL();
     params +=  getCSRFURLParams();
@@ -1424,7 +1432,7 @@ function executeExpand(sourceWidget) {
         data: params,
         dataType: 'html',
         success: function(data, status) {
-          reportico_jquery(fillPoint).removeClass("loading");
+          loadSpinner(sourceWidget, false);
           reportico_jquery(fillPoint).html(data);
           setupWidgets();
           //setupDatePickers();
@@ -1434,7 +1442,7 @@ function executeExpand(sourceWidget) {
           setupCheckboxes();
         },
         error: function(xhr, desc, err) {
-          reportico_jquery(fillPoint).removeClass("loading");
+          loadSpinner(sourceWidget, false);
           reportico_jquery(fillPoint).prop('innerHTML',"Ajax Error: " + xhr + "\nTextStatus: " + desc + "\nErrorThrown: " + err);
         }
       });
@@ -1449,7 +1457,7 @@ function executeReport(sourceWidget, format ) {
     var expandpanel = reportico_jquery(sourceWidget).closest('#reportico-form').find('#reportico-prepare-expand-cell');
     //var expandpanel = reportico_jquery(sourceWidget).closest('#reportico-form').find('.reportico-prepare-crit-output-options');
     var critform = reportico_jquery(sourceWidget).closest('#reportico-form');
-    reportico_jquery(expandpanel).addClass("loading");
+    loadSpinner(sourceWidget, true);
 
     params = reportico_jquery(critform).serialize();
     params += "&execute_mode=EXECUTE";
@@ -1492,8 +1500,7 @@ function executeReport(sourceWidget, format ) {
             var windowName = "popUp";//reportico_jquery(sourceWidget).prop("name");
             var windowSize = windowSizeArray[reportico_jquery(sourceWidget).prop("rel")];
             window.open(url, windowName, "width=400,height=400").focus();
-            reportico_jquery(expandpanel).removeClass("loading");
-            reportico_jquery(reportico_container).removeClass("loading");
+            loadSpinner(sourceWidget, false);
             window.focus();
         }
         else
@@ -1533,7 +1540,7 @@ function executeReport(sourceWidget, format ) {
         data: params,
         dataType: 'html',
         success: function(data, status) {
-            reportico_jquery(expandpanel).removeClass("loading");
+            loadSpinner(sourceWidget, false);
             if ( format == "html-new-window" )
             {
                 html_print(reportico_report_title, data);
@@ -1542,7 +1549,7 @@ function executeReport(sourceWidget, format ) {
                 fillReportOutputArea(data);
         },
         error: function(xhr, desc, err) {
-            reportico_jquery(expandpanel).removeClass("loading");
+            loadSpinner(sourceWidget, false);
             try {
                 // a try/catch is recommended as the error handler
                 // could occur in many events and there might not be
@@ -1603,7 +1610,9 @@ function runreport(url, container)
 
     url += "&reportico_template=";
     url += "&reportico_ajax_called=1";
-    reportico_jquery(container).closest("#reportico-container").addClass("loading");
+
+    sourceWidget = container;
+    loadSpinner(sourceWidget, true);
     reportico_jquery.ajax({
         type: "POST",
         contentType: "application/json; charset=utf-8",
@@ -1615,7 +1624,7 @@ function runreport(url, container)
             alert ("Ajax Error: " + XMLHttpRequest.responseText + "\nTextStatus: " + textStatus + "\nErrorThrown: " + errorThrown);
         },
         success: function(data, status) {
-            reportico_jquery(container).closest("#reportico-container").removeClass("loading");
+            loadSpinner(sourceWidget, false);
             fillDialog(data,container);
         }
     });
@@ -1799,6 +1808,43 @@ function getCSRFURLParams() {
     }
 
     return params;
+}
+
+function showSpinner(widget, show = true){
+
+    if ( widget && reportico_jquery(widget).is("button")) {
+        if ( show ) {
+            reportico_jquery(widget).prop("disabled", true);
+            reportico_jquery(widget).append(
+                "<span id=\"reportico-inline-spinner\" class=\"spinner-border spinner-border-sm\" style=\"color: #0a0\" role=\"status\" aria-hidden=\"true\"></span>"
+            )
+        } else {
+            reportico_jquery(widget).prop("disabled", false);
+            reportico_jquery("#reportico-inline-spinner").remove();
+        }
+    } else {
+        if (show) {
+            reportico_jquery("#reportico-full-page-spinner").html(
+                "<div class=\"spinner-border\" role=\"status\"><span class=\"sr-only\">Loading...</span></div>"
+            )
+            reportico_jquery("#reportico-spinner-overlay").show();
+        }
+        else {
+            reportico_jquery("#reportico-full-page-spinner").html("");
+            reportico_jquery("#reportico-spinner-overlay").hide();
+        }
+
+
+    }
+}
+
+function loadSpinner(widget, show = true){
+
+    if (typeof  showSpinner === "function") {
+        // safe to use the function
+        showSpinner(widget, show)
+    }
+
 }
 
 // For Yii with nonclean URLs add the reportico ajax call as a separate URP Param

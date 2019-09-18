@@ -39,14 +39,13 @@
         <div class="col">
             <div class="flex-container">
                     <div class="flex-item">
-                        {% if FLAGS["show_hide_prepare_print_html_button"] %} {{ WIDGETS["output-html-new-window"] }} {% endif %}
-                        {% if FLAGS["show_hide_prepare_html_button"] %} {{ WIDGETS["output-html-inline"] }} {% endif %}
-                        {% if FLAGS["show_hide_prepare_pdf_button"] %} {{ WIDGETS["output-pdf"] }} {% endif %}
-                        {% if FLAGS["show_hide_prepare_csv_button"] %} {{ WIDGETS["output-csv"] }} {% endif %}
+                        {% if FLAGS["show_hide_prepare_print_html_button"] %} {{ WIDGETS["output-html-new-window"]["widget"] }} {% endif %}
+                        {% if FLAGS["show_hide_prepare_html_button"] %} {{ WIDGETS["output-html-inline"]["widget"] }} {% endif %}
+                        {% if FLAGS["show_hide_prepare_pdf_button"] %} {{ WIDGETS["output-pdf"]["widget"] }} {% endif %}
+                        {% if FLAGS["show_hide_prepare_csv_button"] %} {{ WIDGETS["output-csv"]["widget"] }} {% endif %}
 
-                            {# {{ WIDGETS["popup-page-setup"]["widget"] }} #}
                         <input type='submit'
-                                class='flex-widget btn btn-primary reportico-edit-link'
+                                class='flex-widget btn btn-sm btn-outline-secondary reportico-edit-link'
                                 title='{{ WIDGETS["popup-page-setup"]["title"] }}'
                                 id='{{ WIDGETS["popup-page-setup"]["id"] }}'
                                 name='{{ WIDGETS["popup-page-setup"]["name"] }}'
@@ -59,13 +58,13 @@
                         {# Save Template #}
                         <label class='' style="display:inline" aria-label='Text input with checkbox'>{{ WIDGETS["template"]["label"] }}:</label>
                         <input type='text' class="flex-inline-widget " id='saveTemplate' value='{{ WIDGETS["template"]["file"] }}' >
-                        <input type='submit' class='flex-inline-widget btn btn-sm btn-secondary'  name='submitSaveTemplate' id='submitSaveTemplate' value='Save'>
+                        <input type='submit' class='flex-inline-widget btn btn-sm btn-outline-secondary'  name='submitSaveTemplate' id='submitSaveTemplate' value='Save'>
                         &nbsp;
                         {# Load Template #}
-                        <SELECT id='loadTemplate' class='flex-inline-widget btn-outline-secondary' style="width: 150px" name='template_selection'>";
+                        <SELECT id='loadTemplate' class='flex-inline-widget ' style="width: 150px" name='template_selection'>";
                             {{ WIDGETS["template"]["load-options"] }}
                         </SELECT>
-                            <input type='submit' class='btn btn-sm btn-secondary'  name='submitLoadTemplate' id='submitLoadTemplate' value='Load'>
+                            <input type='submit' class='btn btn-sm btn-outline-secondary'  name='submitLoadTemplate' id='submitLoadTemplate' value='Load'>
                         <button type='submit' class='flex-inline-widget btn btn-sm btn-danger'  name='submitDeleteTemplate' id='submitDeleteTemplate'>
                             <i class="fa fa-trash-alt fa-lg"></i>
                         </button>
@@ -152,25 +151,35 @@
               {% set last_tab = "" %}
               {% set tabs_exist = false %}
               {% set firstCriteria = true %}
-              {% set tabActive = "active" %}
+              {% set tabActive = "show active" %}
               {% set tab_count = 0 %}
+{% set activeTab = "XXX" %}
 {% for criterion in CRITERIA_BLOCK %}
 {% if criterion.tab and not last_tab and not tabs_exist  %}
 {% set tabs_exist = true %}
-                  <ul class="nav nav-tabs" role="tablist">
+                  <ul class="nav nav-pills" role="tablist">
 {% endif %}
 {% if tabs_exist and criterion.tab and criterion.tab != last_tab  %}
+
+{% if tab_count == 0  %}
+{% set activeTab = criterion.tab %}
+{% for criterion2 in CRITERIA_BLOCK %}
+{% if not criterion2.tabhidden %}
+                      {% set activeTab = criterion2.tab %}
+{% endif %}
+{% endfor %}
+{% endif %}
+
 {% set tab_count = tab_count + 1 %}
 {% set tab_id = criterion.tab | replace({'\ ': '_'}) %}
-{% if not criterion.tabhidden %}
-                          <li class="nav-item"><a class="nav-link reportico-criteria-tab {{ tabActive }}" data-toggle="tab" href="#tab-content-{{ tab_id }}-{{ tab_count }}">{{ criterion.tab }}</a></li>
+{% if criterion.tab == activeTab %}
+                          <li class="nav-item"><a id="{{ criterion.tab }}" class="nav-link reportico-criteria-tab {{ tabActive }}" data-toggle="tab" href="#tab-content-{{ tab_id }}-{{ tab_count }}">{{ criterion.tab }}</a></li>
 {% else %}
-                          <li class="nav-item"><a class="nav-link reportico-criteria-tab {{ tabActive }}" data-toggle="tab" href="#tab-content-{{ tab_id }}-{{ tab_count }}">{{ criterion.tab }}</a></li>
+                          <li class="nav-item" ><a id="{{ criterion.tab }}" class="nav-link reportico-criteria-tab " data-toggle="tab" href="#tab-content-{{ tab_id }}-{{ tab_count }}">{{ criterion.tab }}</a></li>
 {% endif %}
 {% endif %}
 {% set last_tab = criterion.tab %}
 {% set firstCriteria = false %}
-{% set tabActive = "" %}
 {% endfor %}
 
               {% if ( tabs_exist )  %}
@@ -189,31 +198,24 @@
               {% if criterion.tab %}
 
               {% set tab_id = criterion.tab | replace({'\ ': '_'}) %}
+              {% set tabActive = "" %}
+              {% if criterion.tab and criterion.tab == activeTab %}
+                  {% set tabActive = "active show" %}
+              {% endif %}
               {% if criterion.tab and ( not last_tab )  %}
                   {% set tabs_exist = true %}
-                  <div id="tab-content-{{ tab_id }}-{{ tab_count }}" class="tab-pane fade in active">
+                  <div id="tab-content-{{ tab_id }}-{{ tab_count }}" class="tab-pane fade {{ tabActive }}">
                       {% set tab_count = tab_count + 1 %}
               {% else %}
                   {% if ( last_tab != criterion.tab )  %}
                   </div>
                   {% endif %}
                   {% if ( last_tab != criterion.tab ) and criterion.tab %}
-                  <div id="tab-content-{{ tab_id }}-{{ tab_count }}" class="tab-pane fade">
+                  <div id="tab-content-{{ tab_id }}-{{ tab_count }}" class="tab-pane fade {{ tabActive }}">
                       {% set tab_count = tab_count + 1 %}
                   {% endif %}
               {% endif %}
 
-              {# Criteria grouped into collapsible tabs #}
-              {% if criterion.tab and ( criterion.tab != last_tab )  %}
-              <!--div class="row reportico-toggleCriteriaDiv" id="reportico-toggleCriteriaDiv{{ criterion.id }}">
-                      {% if criterion.hidden  %}
-                      <a class="reportico-toggleCriteria" id="reportico-toggleCriteria{{ criterion.id }}" href="javascript:toggleCriteria('{{ criterion.id }}')">+</a>
-                      {% else %}
-                      <a class="reportico-toggleCriteria" id="reportico-toggleCriteria{{ criterion.id }}" href="javascript:toggleCriteria('{{ criterion.id }}')">-</a>
-                      {% endif %}
-                      {{ criterion.tab }}
-              </div-->
-              {% endif %}
               {% set last_tab = criterion.tab %}
 
               {# Criteria entry selection #}
@@ -279,7 +281,7 @@
               <div class="modal-dialog modal-lg" role="document">
                   <div class="modal-content">
                       <div class="modal-header">
-                          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                          <h4 class="modal-title reportico-modal-title" id="reporticoModalLabel">Edit Parameter</h4>
                           <button type="button" class="close reportico-bootstrap-modal-close" data-dismiss="modal" aria-label="Close">
                               <span aria-hidden="true">&times;</span>
                           </button>

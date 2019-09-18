@@ -263,7 +263,9 @@ reportico_jquery(document).on('click', '$triggerTag', function() {
         //$id = $this->buttonTypes[$this->buttonType]["id"];
         $id = "reportico-popup-".$this->buttonType;
         $label = ReporticoLang::templateXlate($this->buttonTypes[$this->buttonType]["label"]);
-        $title = ReporticoLang::templateXlate($this->buttonTypes[$this->buttonType]["title"]);
+        $title =
+            ReporticoLang::templateXlate("EDIT"). " ".
+            ReporticoLang::templateXlate($this->buttonTypes[$this->buttonType]["title"]);
         $name = $this->buttonTypes[$this->buttonType]["name"];
         $this->manager->availableAssets[$this->buttonType] = $this;
 

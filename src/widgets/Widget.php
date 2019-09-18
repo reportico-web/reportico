@@ -37,7 +37,11 @@ class Widget
             $this->manager = $engine->manager;
             $this->config = $this->getConfig();
             if ( !$this->config || !isset($this->config["name"] )) {
-            $this->name = $this->config["name"];
+		    if ( !isset($this->config["name"] )) {
+	    //echo get_class($this)."<BR>";
+                $this->config["name"] = get_class($this);
+		    }
+                $this->name = $this->config["name"];
             if ( $load && $this->config ) {
                 $this->manager->manager->appendToCollection($this->config);
                 $this->added = true;
@@ -250,12 +254,23 @@ class Widget
             }
         }
 
+        // IGNORE (ALL) parameters
+        $thereishidden = false;
+        if(array_key_exists("HIDDEN_" . $name, $_REQUEST)){
+            $thereishidden = true;
+            $hidden = $_REQUEST["HIDDEN_".$name];
+            if ( is_array($hidden) && count($hidden) == 1 && isset($hidden[0])){
+                if ( $hidden[0] == "(ALL)")
+                    $thereishidden = false;
+            }
+        }
+
         // Fetch the criteria value summary if required for displaying
         // the criteria entry summary at top of report
         if ($execute_mode && $execute_mode != "MAINTAIN" && $engine->target_show_criteria &&
             ((array_key_exists($name, $_REQUEST) && !(is_array($_REQUEST[$name]) && $_REQUEST[$name][0] == ""))
                 || array_key_exists("MANUAL_" . $name, $_REQUEST)
-                || array_key_exists("HIDDEN_" . $name, $_REQUEST)
+                || $thereishidden
             )) {
             $lq = &$engine->lookup_queries[$col->query_name];
             if ($lq->criteria_type == "LOOKUP") {

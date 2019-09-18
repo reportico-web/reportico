@@ -91,6 +91,7 @@ class Template extends Widget
 
     fillPoint = reportico_jquery(this).closest('#reportico-container');
 
+    loadSpinner(false, true);
     reportico_jquery(expandpanel).addClass('loading');
     reportico_jquery.ajax({
         type: 'POST',
@@ -100,6 +101,7 @@ class Template extends Widget
         dataType: 'html',
         success: function(data, status)
         {
+            loadSpinner(false, false);
             reportico_jquery(expandpanel).removeClass('loading');
             reportico_jquery('#saveTemplate').val(templatename) ;
             //if ( id == 'submitLoadTemplate' )
@@ -112,6 +114,7 @@ class Template extends Widget
             }
         },
         error: function(xhr, desc, err) {
+            loadSpinner(false, false);
             reportico_jquery(expandpanel).removeClass('loading');
             reportico_jquery(reportico_container).removeClass('loading');
             try {

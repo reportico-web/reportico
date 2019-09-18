@@ -25,11 +25,39 @@ and not WIDGETS["status-message-block"]["debug"]
 <p>
     {% if WIDGETS["criteria-lookup"] %}
 
-        {{ WIDGETS["lookup-search"] }} <BR>
+        {{ include ('button.inc.tpl', {
+        button_type : 'navbar-button',
+        button_style : 'outline-secondary',
+        button_label : WIDGETS["lookup-search"]["label"],
+        button_name : WIDGETS["lookup-search"]["name"],
+        button_id : WIDGETS["lookup-search"]["id"]
+        } ) }}
+
         {{ WIDGETS["criteria-lookup"] }} <BR>
-        {{ WIDGETS["lookup-clear"] }}
-        {{ WIDGETS["lookup-select-all"] }}
-        {{ WIDGETS["lookup-ok"] }}
+
+        {{ include ('button.inc.tpl', {
+        button_type : 'navbar-button',
+        button_style : 'outline-secondary',
+        button_label : WIDGETS["lookup-clear"]["label"],
+        button_name : WIDGETS["lookup-clear"]["name"],
+        button_id : WIDGETS["lookup-clear"]["id"]
+        } ) }}
+
+        {{ include ('button.inc.tpl', {
+        button_type : 'navbar-button',
+        button_style : 'outline-secondary',
+        button_label : WIDGETS["lookup-select-all"]["label"],
+        button_name : WIDGETS["lookup-select-all"]["name"],
+        button_id : WIDGETS["lookup-select-all"]["id"]
+        } ) }}
+
+        {{ include ('button.inc.tpl', {
+        button_type : 'navbar-button',
+        button_style : 'outline-success',
+        button_label : WIDGETS["lookup-ok"]["label"],
+        button_name : WIDGETS["lookup-ok"]["name"],
+        button_id : WIDGETS["lookup-ok"]["id"]
+        } ) }}
 
     {% else %}
 

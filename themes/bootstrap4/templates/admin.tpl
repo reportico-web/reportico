@@ -6,7 +6,6 @@
 <!-- Begin Form -->
 {{ WIDGETS["criteria-form"]["begin"] }}
 
-
     {# Header Banner #}
 	<div class="container-fluid">
 		<div style="float: right;">

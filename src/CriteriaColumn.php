@@ -1028,7 +1028,7 @@ class CriteriaColumn extends QueryColumn
                 break;
 
             case "LOOKUP":
-                $this->widget = \Reportico\Widgets\CriteriaLookup::createCriteriaLookup($this->parent_reportico, $this, $expanding ); 
+                $this->widget = \Reportico\Widgets\CriteriaLookup::createCriteriaLookup($this->parent_reportico, $this, $expanding );
                 $this->widget->criteria = $this;
                 break;
 
@@ -1088,18 +1088,32 @@ class CriteriaColumn extends QueryColumn
                 break;
 
             case "LOOKUP":
+                //var_dump($_REQUEST);
+                //ReporticoUtility::trace("RENDER $type $this->criteria_display");
+                $thereishidden = false;
+                if(array_key_exists("HIDDEN_" . $this->query_name, $_REQUEST)){
+                    $thereishidden = true;
+                    $hidden = $_REQUEST["HIDDEN_".$this->query_name];
+                    if ( is_array($hidden) && count($hidden) == 1 && isset($hidden[0])){
+                        if ( $hidden[0] == "(ALL)")
+                            $thereishidden = false;
+                    }
+                }
+
                 if (
                     ($this->criteria_display !== "TEXTFIELD" && $this->criteria_display !== "ANYCHAR" && $this->criteria_display != "NOINPUT")
                     ||
                     (
                         array_key_exists("EXPANDED_" . $this->query_name, $_REQUEST) ||
-                        array_key_exists("HIDDEN_" . $this->query_name, $_REQUEST) ||
+                        $thereishidden ||
                         $this->column_value
                     )
                 ) {
 
                     // Dont bother running select for criteria lookup if criteria item is a dynamic
+                    //ReporticoUtility::trace("RENDEREDa $type");
                     $this->executeCriteriaLookup();
+                    ////ReporticoUtility::trace("RENDEREDb $type");
                 }
                 //$text .= $this->lookup_display(false);
                 $text .= (\Reportico\Widgets\CriteriaLookup::createCriteriaLookup($this->parent_reportico, $this, $expanding ))->render();

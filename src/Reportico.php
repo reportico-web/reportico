@@ -5770,7 +5770,6 @@ class Reportico extends ReporticoObject
             $this->widgetRenders[$k] = $v->render();
         }
 
-
         // Set up a widget for each criteria
         $criteriaRenders = [];
         foreach ( $this->lookup_queries as $v ) {
@@ -5826,7 +5825,6 @@ class Reportico extends ReporticoObject
         $this->template->assign('REPORTICO_SITE', $this->url_site);
         $this->template->assign('REPORTICO_CSRF_TOKEN', $this->csrfToken);
         $this->template->assign('REPORTICO_AJAX_HANDLER', $this->ajaxHandler);
-
 
         $translations = ReporticoApp::get("translations");
         //Authenticator::show("end");
