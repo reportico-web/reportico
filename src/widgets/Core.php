@@ -126,7 +126,7 @@ ajax_event_handler = '$ajaxHandler';
                     ],
                     'js' => [
                         "{$this->engine->url_path_to_assets}/js/download.js",
-                        "{$this->engine->url_path_to_assets}/js/reportico-bundle.js",
+                        //"{$this->engine->url_path_to_assets}/js/reportico-bundle.js",
                         "{$this->engine->url_path_to_assets}/js/reportico.js"
                     ],
                     'events' => [

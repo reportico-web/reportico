@@ -1,10 +1,10 @@
 {% autoescape false %}
 {% if not REPORTICO_BOOTSTRAP_MODAL %}
-    {{ WIDGETS["popup-edit-sql"] }}
-    {{ WIDGETS["popup-edit-columns"] }}
-    {{ WIDGETS["popup-edit-assignments"] }}
-    {{ WIDGETS["popup-edit-groups"] }}
-    {{ WIDGETS["popup-edit-charts"] }}
+    {{ WIDGETS["popup-edit-sql"]["widget"] }}
+    {{ WIDGETS["popup-edit-columns"]["widget"] }}
+    {{ WIDGETS["popup-edit-assignments"]["widget"] }}
+    {{ WIDGETS["popup-edit-groups"]["widget"] }}
+    {{ WIDGETS["popup-edit-charts"]["widget"] }}
 {% else %}
 <div class="navbar navbar-default" style="margin-bottom: 0px" role="navigation">
     <div class="container" style="width: 100%">
@@ -17,20 +17,20 @@
                 <li>
                     <div class="btn-group" role="group">
                         {% endif %}
-                        {{ WIDGETS["popup-edit-sql"] }}
-                        {{ WIDGETS["popup-edit-columns"] }}
-                        {{ WIDGETS["popup-edit-assignments"] }}
-                        {{ WIDGETS["popup-edit-groups"] }}
-                        {{ WIDGETS["popup-edit-charts"] }}
+                        {{ WIDGETS["popup-edit-sql"]["widget"] }}
+                        {{ WIDGETS["popup-edit-columns"]["widget"] }}
+                        {{ WIDGETS["popup-edit-assignments"]["widget"] }}
+                        {{ WIDGETS["popup-edit-groups"]["widget"] }}
+                        {{ WIDGETS["popup-edit-charts"]["widget"] }}
                         <div class="btn btn-default reportico-edit-linkGroupWithDropDown" role="group">
                             <div class="dropdown"><a class="btn dropdown-toggle reportico-edit-linkGroupDropDown" data-toggle="dropdown" href="#">{{ T_MORE }}<span class="caret"></span></a>
                                 <ul class="dropdown-menu reportico-dropdown">
-                                    {{ WIDGETS["popup-edit-page-headers"] }}
-                                    {{ WIDGETS["popup-edit-page-footers"] }}
-                                    {{ WIDGETS["popup-edit-display-order"] }}
-                                    {{ WIDGETS["popup-edit-pre-sqls"] }}
-                                    {{ WIDGETS["popup-edit-grid"] }}
-                                    {{ WIDGETS["popup-edit-code"] }}
+                                    {{ WIDGETS["popup-edit-page-headers"]["widget"] }}
+                                    {{ WIDGETS["popup-edit-page-footers"]["widget"] }}
+                                    {{ WIDGETS["popup-edit-display-order"]["widget"] }}
+                                    {{ WIDGETS["popup-edit-pre-sqls"]["widget"] }}
+                                    {{ WIDGETS["popup-edit-grid"]["widget"] }}
+                                    {{ WIDGETS["popup-edit-code"]["widget"] }}
                                 </ul>
                             </div>
                         </div>

@@ -99,7 +99,7 @@ if (!$this->engine->bootstrap_styles || $this->engine->force_reportico_mini_main
             <button type="button" class="reportico-modal-close">&times;</button>
             <h4 class="reportico-modal-title" id="reporticoModalLabel">$notice</h4>
             </div>
-            <div class="reportico-modal-body" style="padding: 0px" id="reportico-edit-link">
+            <div class="reportico-modal-body" style="padding: 0px" id="reporticoModalBody">
                 <h3>Modal Body</h3>
             </div>
             <div class="reportico-modal-footer">
@@ -148,7 +148,7 @@ else {
             <button type="button" class="close reportico-bootstrap-modal-close" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h4 class="modal-title reportico-modal-title" id="reporticoModalLabel">Set Parameter</h4>
             </div>
-            <div class="modal-body" style="padding: 0px; overflow-y: auto" id="reportico-edit-link">
+            <div class="modal-body" style="padding: 0px; overflow-y: auto" id="reporticoModalBody">
                 <h3>Modal Body</h3>
             </div>
             <div class="modal-footer">

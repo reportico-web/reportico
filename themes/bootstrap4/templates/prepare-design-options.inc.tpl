@@ -1,6 +1,5 @@
 {% autoescape false %}
 {% if not REPORTICO_BOOTSTRAP_MODAL %}
-lll
     {{ WIDGETS["popup-edit-sql"]["widget"] }}
     {{ WIDGETS["popup-edit-columns"]["widget"] }}
     {{ WIDGETS["popup-edit-assignments"]["widget"] }}

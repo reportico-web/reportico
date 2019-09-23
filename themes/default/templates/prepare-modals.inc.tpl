@@ -19,7 +19,7 @@
             <button type="button" class="reportico-modal-close">&times;</button>
             <h4 class="reportico-modal-title" id="reporticoModalLabel">{{ T_NOTICE }}</h4>
             </div>
-            <div class="reportico-modal-body" style="padding: 0px" id="reportico-edit-link">
+            <div class="reportico-modal-body" style="padding: 0px" id="reporticoModalBody">
                 <h3>Modal Body</h3>
             </div>
             <div class="reportico-modal-footer">

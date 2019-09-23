@@ -10,7 +10,7 @@
 	{% include 'navigation-menu.inc.tpl' %}
 
 	<!-- Report Title -->
-	{{ WIDGETS["title"] }}
+	{{ WIDGETS["title"]["widget"] }}
 
 	{% if WIDGETS["status-message-block"]["status"] %}
 	<div class="reportico-status-block">
@@ -25,10 +25,10 @@
 			{% if PERMISSIONS["save"] %}
 			    {{ WIDGETS["save-report"] }}
 			{% endif %}
-			{{ WIDGETS["run-report"] }}
+			{{ WIDGETS["run-report"]["widget"] }}
 			{% if PERMISSIONS["save"] %}
-			    {{ WIDGETS["new-report"] }}
-			    {{ WIDGETS["delete-report"] }}
+			    {{ WIDGETS["new-report"]["widget"] }}
+			    {{ WIDGETS["delete-report"]["widget"] }}
 			{% endif %}
 		</div>
 		<!--div class="col-sm-6 col-md-6 col-xl-6 col-lg-6 col-xs-6">

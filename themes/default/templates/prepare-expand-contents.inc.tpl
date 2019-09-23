@@ -34,7 +34,7 @@ and not WIDGETS["status-message-block"]["debug"]
     {% else %}
 
         {% if PERMISSIONS["design"] %}
-        {{ WIDGETS["popup-edit-description"] }} <BR>
+        {{ WIDGETS["popup-edit-description"]["widget"] }} <BR>
         {% endif %}
         {{ WIDGETS["description"] }}
 

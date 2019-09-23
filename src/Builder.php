@@ -44,6 +44,8 @@ class Builder implements \ArrayAccess, \Iterator, \Serializable
         $engine->session($session);
         $engine->initialize_on_execute = false;
         $engine->report_from_builder = true;
+        $engine->url_path_to_assets = "assets";
+        $engine->url_path_to_templates = "themes";
         $engine->report_from_builder_first_call = true;
         return new \Reportico\Engine\Builder($engine);
 

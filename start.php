@@ -228,6 +228,7 @@ $reportico->output_template_parameters["show_hide_prepare_go_buttons"] = "show";
 // Use the specified folder under the themes folder to identify which templates, stylesheets and js to use for the instance
 //$reportico->theme = "default";
 $reportico->theme = "bootstrap4";
+$reportico->url_path_to_templates = "themes";
 
 // Set this to true to allow changes to edits to theme templates to be reflected immediately, otherwise
 // you will need to clear out the themes/cache folder to register any changes

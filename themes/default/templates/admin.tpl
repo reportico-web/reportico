@@ -3,21 +3,11 @@
 
 <div id="reportico-container">
 
-
-
-
-	<ul class="nav nav-tabs">
-		<li class="active"><a href="#">Home</a></li>
-		<li><a href="#">Menu 1</a></li>
-		<li><a href="#">Menu 2</a></li>
-		<li><a href="#">Menu 3</a></li>
-	</ul>
-
 <!-- Begin Form -->
 {{ WIDGETS["criteria-form"]["begin"] }}
 
     {# Header Banner #}
-	<div class="container-fluid">
+	<div class="container-fluid col">
 		<div style="float: right;">
 			<img height="78px" src="{{ WIDGETS["admin-page"]["admin-header"]["logo"] }}">
 			<div class="smallbanner">Version <a href="http://www.reportico.org/" target="_blank">6.0.10</a></div>
@@ -38,8 +28,8 @@
 	{% if not PERMISSIONS["design-fiddle"] %}
 	<div class="container-fluid">
 		<div class="row">
-			<div style='text-align:right; margin-right: 30px'>
-				{{ WIDGETS["admin-page"]["admin-login"]["logout-button"] }}
+			<div class="col" style='text-align:right; margin-right: 30px'>
+				{{ WIDGETS["admin-page"]["admin-login"]["logout-button"]["widget"] }}
 			</div>
 		</div>
 		<div class="row">
@@ -50,7 +40,7 @@
 				{{ WIDGETS["admin-page"]["admin-login"]["login-prompt"] }}
 				</div>
 				<div style="margin: 10px 0px 4px 0px">
-				{{ WIDGETS["admin-page"]["admin-login"]["login-submit"] }}
+				{{ WIDGETS["admin-page"]["admin-login"]["login-submit"]["widget"] }}
 			    </div>
 				<br>
 				{% if FLAGS["admin-password-error"] %}
@@ -65,46 +55,46 @@
 	<div class="container-fluid">
 
         {# Run Project Option #}
-		<div class="row" style="text-align: center; padding: 4px">
-				<div style="width: 230px; text-align: right; display: inline-block">{{ T_RUN_SUITE }}</div>
-			    <select class='form-control reportico-drop-select-regular' name='jump_to_menu_project'>
-				    {{ WIDGETS["admin-page"]["admin-menu"]["project-options"] }}
-			    </select>
-		        {{ WIDGETS["admin-page"]["admin-menu"]["run-project-button"] }}
+		<div class="flex-item col" style="text-align: center; padding: 4px">
+			<div style="width: 230px; text-align: right; display: inline-block">{{ T_RUN_SUITE }}</div>
+			<select class='form-control reportico-drop-select-regular' name='jump_to_menu_project'>
+                {{ WIDGETS["admin-page"]["admin-menu"]["project-options"] }}
+			</select>
+			{{ WIDGETS["admin-page"]["admin-menu"]["run-project-button"]["widget"] }}
 		</div>
 
 		{% if PERMISSIONS["admin"] %}
 
 		{# Create Report Option #}
-		<div class="row" style="text-align: center; padding: 4px">
+		<div class="col" style="text-align: center; padding: 4px">
 			<div style="width: 230px; text-align: right; display:inline-block">{{ T_CREATE_REPORT }}</div>
 			<select class='form-control reportico-drop-select-regular' name='jump_to_create_report'>
 				{{ WIDGETS["admin-page"]["admin-menu"]["project-options"] }}
 			</select>
-			{{ WIDGETS["admin-page"]["admin-menu"]["create-report-button"] }}
+			{{ WIDGETS["admin-page"]["admin-menu"]["create-report-button"]["widget"] }}
 		</div>
 
 		{# Configure Project Option #}
-		<div class="row" style="text-align: center; padding: 4px">
+		<div class="col" style="text-align: center; padding: 4px">
 				<div style="width: 230px; text-align: right; display:inline-block">{{ T_CONFIG_PARAM }}</div>
 				<select class='form-control reportico-drop-select-regular' name='jump_to_configure_project'>
 					{{ WIDGETS["admin-page"]["admin-menu"]["project-options"] }}
 				</select>
-				{{ WIDGETS["admin-page"]["admin-menu"]["configure-project-button"] }}
+				{{ WIDGETS["admin-page"]["admin-menu"]["configure-project-button"]["widget"] }}
 		</div>
 
         {# Delete Project Option #}
-		<div class="row" style="text-align: center; padding: 4px">
+		<div class="col" style="text-align: center; padding: 4px"["widget"]>
 				<div style="width: 230px; text-align: right; display:inline-block">{{ T_DELETE_PROJECT }}</div>
 		        <select class='form-control reportico-drop-select-regular' name='jump_to_delete_project'>
 			        {{ WIDGETS["admin-page"]["admin-menu"]["project-options"] }}
                 </select>
-                {{ WIDGETS["admin-page"]["admin-menu"]["delete-project-button"] }}
+                {{ WIDGETS["admin-page"]["admin-menu"]["delete-project-button"]["widget"] }}
 		</div>
 
         {# Menu Items #}
         {% for menuitem in  WIDGETS["admin-page"]["admin-menu"]["project-menu-items"]  %}
-		<div class="row" style="text-align: center; padding: 4px">
+		<div class="col" style="text-align: center; padding: 4px">
                 {% if menuitem.url %}
 			    <div class="reportico-menu-item-link" style='text-align:center;'>
 				    <a href="{{menuitem.url}}" class="">{{menuitem.label}}</a>
@@ -118,7 +108,7 @@
         {% endfor %}
 
 		{# Delete Project Option #}
-		<div class="row" style="text-align: center; padding: 4px">
+		<div class="col" style="text-align: center; padding: 4px">
 			<div style='text-align:center;'>
 				{{ WIDGETS["admin-page"]["admin-menu"]["documentation"] }}
 			</div>

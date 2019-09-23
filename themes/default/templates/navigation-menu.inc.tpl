@@ -79,7 +79,7 @@
 
 				{# Logout button #}
 				{% if PERMISSIONS["admin"] or FLAGS["show-logout-button"] %}
-				<li> {{ WIDGETS["navigation-menu"]["logout-button"] }} </li>
+				<li> {{ WIDGETS["navigation-menu"]["logout-button"]["widget"] }} </li>
 				{% endif %}
 			</ul>
 		</div>

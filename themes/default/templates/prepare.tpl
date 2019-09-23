@@ -1,6 +1,9 @@
 {% autoescape false %}
 {% include 'header.inc.tpl' %}
 
+
+{% if true %}
+
 <div id="reportico-container">
 
 <!-- Widget Initialisation -->
@@ -20,7 +23,7 @@
     {% if PERMISSIONS["execute"] %}
 
     <!-- Report Title -->
-    {{ WIDGETS["title"] }}
+    {{ WIDGETS["title"]["widget"] }}
 
     <!-- Report Output options -->
     {% if not FLAGS["admin-report-selected"] %}
@@ -28,16 +31,30 @@
 
         <div class="col-lg-12 col-md-12 col-sm-12">
 
-            {% if FLAGS["show_hide_prepare_print_html_button"] %} {{ WIDGETS["output-html-new-window"] }} {% endif %}
-            {% if FLAGS["show_hide_prepare_html_button"] %} {{ WIDGETS["output-html-inline"] }} {% endif %}
-            {% if FLAGS["show_hide_prepare_pdf_button"] %} {{ WIDGETS["output-pdf"] }} {% endif %}
-            {% if FLAGS["show_hide_prepare_csv_button"] %} {{ WIDGETS["output-csv"] }} {% endif %}
+            {% if FLAGS["show_hide_prepare_print_html_button"] %} {{ WIDGETS["output-html-new-window"]["widget"] }} {% endif %}
+            {% if FLAGS["show_hide_prepare_html_button"] %} {{ WIDGETS["output-html-inline"]["widget"] }} {% endif %}
+            {% if FLAGS["show_hide_prepare_pdf_button"] %} {{ WIDGETS["output-pdf"]["widget"] }} {% endif %}
+            {% if FLAGS["show_hide_prepare_csv_button"] %} {{ WIDGETS["output-csv"]["widget"] }} {% endif %}
 
             <div style="display: inline; border-left: dotted 1px">
-            {{ WIDGETS["popup-page-setup"] }}
+            {{ WIDGETS["popup-page-setup"]["widget"] }}
+                    <div class="pull-right" style="display:inline" id="reportico-template-options">
+                        {# Save Template #}
+                        <label class='' style="display:inline" aria-label='Text input with checkbox'>{{ WIDGETS["template"]["label"] }}:</label>
+                        <input type='text' class="flex-inline-widget " id='saveTemplate' value='{{ WIDGETS["template"]["file"] }}' >
+                        <input type='submit' class='flex-inline-widget btn btn-sm btn-outline-secondary'  name='submitSaveTemplate' id='submitSaveTemplate' value='Save'>
+                        &nbsp;
+                        {# Load Template #}
+                        <SELECT id='loadTemplate' class='flex-inline-widget ' style="width: 150px" name='template_selection'>";
+                            {{ WIDGETS["template"]["load-options"] }}
+                        </SELECT>
+                            <input type='submit' class='btn btn-sm btn-outline-secondary'  name='submitLoadTemplate' id='submitLoadTemplate' value='Load'>
+                        <button type='submit' class='flex-inline-widget btn btn-sm btn-danger'  name='submitDeleteTemplate' id='submitDeleteTemplate'>
+                            <i class="fa fa-trash-alt fa-lg"></i>
+                          <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+                    </div>
             </div>
-            {{ WIDGETS["template"]["save-template"] }}
-            {{ WIDGETS["template"]["load-template"] }}
         </div>
 
     </div>
@@ -51,12 +68,12 @@
       <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6" >
 
           {% if FLAGS["admin-report-selected"] or FLAGS["show_hide_prepare_go_buttons"] %}
-          {{ WIDGETS["submit-go"] }}
+          {{ WIDGETS["submit-go"]["widget"] }}
           {% endif %}
 
           {% if PERMISSIONS["design"] %}
           {# Criteria Edit Button #}
-          {{ WIDGETS["popup-edit-criteria"] }}
+          {{ WIDGETS["popup-edit-criteria"]["widget"] }}
           {% endif %}
 
           <div class="col-lg-12 container">
@@ -190,11 +207,12 @@
 {% include 'prepare-modals.inc.tpl' %}
 
 {# After running inline HTML criteria block hides, this widget allows unhiding of it after running report #}
-{{ WIDGETS["criteria-toggle"] }}
+{{ WIDGETS["criteria-toggle"]["widget"] }}
 
 {{ WIDGETS["powered-by-banner"] }}
 </div>
 
 {% include 'footer.inc.tpl' %}
+    {% endif %}
 
 {% endautoescape %}
