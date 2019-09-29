@@ -9,8 +9,10 @@
 
 <style>
 @media print {
-    html {
-        zoom: {{ ZOOM_FACTOR }};
+    body { min-width: initial !important }
+    html { zoom: {{ ZOOM_FACTOR }}; }
+    @page {
+        size: {{ PAGE_SIZE }} {{ PAGE_ORIENTATION }};
     }
 }
 </style>

@@ -32,7 +32,7 @@ and not WIDGETS["status-message-block"]["debug"]
         button_name : WIDGETS["lookup-search"]["name"],
         button_id : WIDGETS["lookup-search"]["id"]
         } ) }}
-
+        <br>
         {{ WIDGETS["criteria-lookup"] }} <BR>
 
         {{ include ('button.inc.tpl', {

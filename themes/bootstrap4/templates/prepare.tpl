@@ -83,7 +83,7 @@
       <div class="col-6" >
 
           {% if FLAGS["admin-report-selected"] or FLAGS["show_hide_prepare_go_buttons"] %}
-          {{ WIDGETS["submit-go"] }}
+          {{ WIDGETS["submit-go"]["widget"] }}
           {% endif %}
 
           {% if PERMISSIONS["design"] %}
@@ -301,7 +301,7 @@
                   <div class="modal-content">
                       <div class="modal-header">
                           <button type="button" data-dismiss="modal" class="close" aria-hidden="true">&times;</button>
-                          <h4 class="modal-title reportico-notice-modal-title" id="reporticoNoticeModalLabel">'.$notice.'</h4>
+                          <h4 class="modal-title reportico-notice-modal-title" id="reporticoNoticeModalLabel"></h4>
                       </div>
                       <div class="modal-body" style="overflow-y: auto; padding: 0px" id="reporticoNoticeModalBody">
                           <h3>Modal Body</h3>

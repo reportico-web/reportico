@@ -351,7 +351,10 @@ class Report extends ReporticoObject
                 } else if (ReporticoUtility::getRequestItem("EXPANDED_" . $name, "")) {
                     $label = $crit->deriveAttribute("column_title", $crit->query_name);
                     $label = ReporticoLang::translate($label);
-                    $value .= implode(ReporticoUtility::getRequestItem("EXPANDED_" . $name, ""), ",");
+                    if ( is_array (ReporticoUtility::getRequestItem("EXPANDED_" . $name, "")))
+                        $value .= implode(ReporticoUtility::getRequestItem("EXPANDED_" . $name, ""), ",");
+                    else
+                        $value .= ReporticoUtility::getRequestItem("EXPANDED_" . $name, "");
                 } else if (ReporticoUtility::getRequestItem("MANUAL_" . $name, "")) {
                     $label = $crit->deriveAttribute("column_title", $crit->query_name);
                     $label = ReporticoLang::translate($label);
@@ -415,7 +418,10 @@ class Report extends ReporticoObject
                     } else if (ReporticoUtility::getRequestItem("EXPANDED_" . $name, "")) {
                         $label = $crit->deriveAttribute("column_title", $crit->query_name);
                         $label = ReporticoLang::translate($label);
-                        $value .= implode(ReporticoUtility::getRequestItem("EXPANDED_" . $name, ""), ",");
+                        if ( is_array (ReporticoUtility::getRequestItem("EXPANDED_" . $name, "")))
+                            $value .= implode(ReporticoUtility::getRequestItem("EXPANDED_" . $name, ""), ",");
+                        else
+                            $value .= ReporticoUtility::getRequestItem("EXPANDED_" . $name, "");
                     } else if (ReporticoUtility::getRequestItem("MANUAL_" . $name, "")) {
                         $label = $crit->deriveAttribute("column_title", $crit->query_name);
                         $label = ReporticoLang::translate($label);

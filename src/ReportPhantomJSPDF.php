@@ -107,7 +107,6 @@ class ReportPhantomJSPDF extends Report
         $request->setMargin(0);
         $request->setDelay(2);
 
-
         // Get Response
         $response = $this->client->getMessageFactory()->createResponse();
 

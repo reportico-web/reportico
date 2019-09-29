@@ -564,7 +564,11 @@ class ReporticoDataSource extends ReporticoObject
 
         }
 
+        $sessionClass = ReporticoSession();
+        $this->connection_string = $sessionClass::registerSessionParam("passedDatabaseConnectionString", $this->connection_string);
         if ( $this->connection_string ) {
+            $this->user_name = $sessionClass::registerSessionParam("passedDatabaseUserName", $this->user_name);
+            $this->password = $sessionClass::registerSessionParam("passedDatabasePassword", $this->password);
 
             $connected = false;
             if (class_exists('PDO', false)) {

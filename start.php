@@ -263,8 +263,7 @@ $reportico->url_path_to_templates = "themes";
 // To hide the static report menu
 //$reportico->static_menu = array ();
 
-// Required PDF Engine set -- to phantomjs or tcpdf
-$reportico->pdf_engine = "phantomjs";
+// Required PDF Engine set -- to phantomjs, chromium or tcpdf
 $reportico->pdf_engine = "chromium";
 
 // Path to Phantom js executable relative to root

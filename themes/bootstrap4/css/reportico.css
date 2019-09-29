@@ -1239,11 +1239,11 @@ input.reportico-admin-button2
   /*height: 100vh !important;*/
 }
 
-.page-size-A3.page-orientation-portrait.autopaginate { width: 29.7; height: 42.0cm; }
+.page-size-A3.page-orientation-portrait.autopaginate { width: 29.7cm; height: 42.0cm; }
 .page-size-A3.page-orientation-landscape.autopaginate { width: 42.0cm; height: 29.7cm; }
 .page-size-A4.page-orientation-portrait.autopaginate { width: 21cm; height: 29.7cm; }
 .page-size-A4.page-orientation-landscape.autopaginate { width: 29.7cm; height: 21cm; }
-.page-size-A5.page-orientation-portrait.autopaginate { width: 14.8cm; height: 15.0cm; }
+.page-size-A5.page-orientation-portrait.autopaginate { width: 14.8cm; height: 21.0cm; }
 .page-size-A5.page-orientation-landscape.autopaginate { width: 21.0cm; height: 14.8cm; }
 .page-size-US-Letter.page-orientation-portrait.autopaginate { width: 216mm; height: 279mm; }
 .page-size-US-Letter.page-orientation-landscape.autopaginate { width: 279mm; height: 216mm; }
@@ -1258,12 +1258,13 @@ input.reportico-admin-button2
 
     .reportico-paginated {
         overflow:hidden !important;
+        margin: 0px !important;
     }
 
     .reportico-report-form
     {
         /*border: solid 1px #AAAAAA;*/
-        background-color: #999;
+        background-color: #faa;
         overflow: visible;
         /*min-width: 100vw;*/
     }
@@ -1295,9 +1296,9 @@ input.reportico-admin-button2
         page-break-inside: avoid;
     }
 
-    .reportico-paginated {
+    /*.reportico-paginated {
        page-break-after: always;
-    }
+    }*/
 
 }
 
