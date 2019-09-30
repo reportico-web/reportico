@@ -315,7 +315,7 @@ function setupCheckboxes()
 /*
 ** Pagination in HTML
 */
-var max_pages = 100;
+var max_pages = 1000;
 var page_count = 0;
 
 function paginate() {
@@ -415,7 +415,7 @@ function splitPage() {
       var bodyitems=0;
       var maxrowwidth = 0;
 
-      while (long > 0 && children.length > 0) {
+      while (long > 0 && children.length > 1) {
 
         var child = children.shift();
         var childheight = reportico_jquery(child).outerHeight();
@@ -488,7 +488,7 @@ function splitPage() {
                     pfheight = 0;
                 var rheight = 0;
 
-                var rlong = long + pfheight + hheight + fheight + 70 ;
+                //var rlong = long + pfheight + hheight + fheight + 70 ;
                 var rlong = long;
                 var sliceAt = 0;
 
