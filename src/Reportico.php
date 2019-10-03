@@ -3674,7 +3674,8 @@ class Reportico extends ReporticoObject
         $this->targets = array();
         $this->assignment = array();
         $this->criteria_links = array();
-        $this->user_parameters = array();
+        // http://www.reportico.org/forum/d/53993-how-to-pass-a-parameter-to-a-criteria-in-an-embedded-project/4
+        // $this->user_parameters = array();
         // an array of available databases to connect ot
         $this->available_connections = array();
         $this->plugins = array();
@@ -3739,6 +3740,9 @@ class Reportico extends ReporticoObject
         $this->pdf_phantomjs_path = $sessionClass::registerSessionParam("pdf_phantomjs_path", $this->pdf_phantomjs_path);
         $this->pdf_delivery_mode = $sessionClass::registerSessionParam("pdf_delivery_mode", $this->pdf_delivery_mode);
         $this->user_parameters = $sessionClass::registerSessionParam("user_parameters", $this->user_parameters);
+        // http://www.reportico.org/forum/d/53993-how-to-pass-a-parameter-to-a-criteria-in-an-embedded-project/4
+        $this->initial_execution_parameters = $sessionClass::registerSessionParam("initial_execution_parameters", $this->initial_execution_parameters);
+        
         $this->dropdown_menu = $sessionClass::registerSessionParam("dropdown_menu", $this->dropdown_menu);
         $this->static_menu = $sessionClass::registerSessionParam("static_menu", $this->static_menu);
         $this->charting_engine = $sessionClass::registerSessionParam("charting_engine", $this->charting_engine);
