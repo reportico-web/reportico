@@ -2271,12 +2271,12 @@ class ReportTCPDF extends Report
 
         $tmpnam = tempnam(ReporticoApp::getConfig("tmp_dir"), "gph");
 
-        if (ReporticoApp::getConfig("graph_engine") == "PCHART") {
+        if (ReporticoApp::getConfig("graph_engine", "PCHART") == "PCHART") {
             unlink($tmpnam);
             $img = $graph->generateGraphImage($tmpnam . ".png");
         } else /* If jpgraph */
         {
-            $handle = $graph->generateGraphImage();
+            $handle = $graph->generateGraphImage($tmpnam . ".png");
             unlink($tmpnam);
             $img = imagepng($handle, $tmpnam . ".png");
         }

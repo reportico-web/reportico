@@ -35,7 +35,7 @@ class ReportPhantomJSPDF extends Report
 
         // Instantiate PhantomJS
         $this->client = Client::getInstance();
-        //$this->client->isLazy();
+        $this->client->isLazy();
         $this->client->getProcedureCompiler()->disableCache();
 
 
@@ -105,7 +105,7 @@ class ReportPhantomJSPDF extends Report
         $request->setFormat(strtoupper($engine->getAttribute("PageSize")));
         $request->setOrientation(strtolower($engine->getAttribute("PageOrientation")));
         $request->setMargin(0);
-        $request->setDelay(2);
+        $request->setDelay(5);
 
         // Get Response
         $response = $this->client->getMessageFactory()->createResponse();
@@ -121,6 +121,11 @@ class ReportPhantomJSPDF extends Report
             echo "Failed to produce PDF file error {$response->getStatus()} - <BR>Content:<b><BR>{$response->getContent()}</b> - <BR>";
             die;
         }
+
+        //echo $url."<BR>";
+        //echo "<PRE>";
+        //var_dump($response->getConsole());
+        //die;
 
         //header('content-type: application/pdf');
         //echo file_get_contents('/tmp/document.pdf');

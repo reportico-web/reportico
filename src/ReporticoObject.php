@@ -36,7 +36,8 @@ class ReporticoObject
                     $ct++;
                     if (isset($v["options"]))                    {
                         if (!isset($v["options"][$args[$ct-1]])) {
-                            trigger_error("$level()->$method parameter $ct - $k must be one of ".implode("|", array_keys($v["options"])).".<BR>".$this->builderMethodUsage($level, $method), E_USER_ERROR);
+                            trigger_error("$level()->$method parameter $ct invalid value {$args[$ct-1]} - $k must be one of ".implode("|", array_keys($v["options"])).".<BR>".$this->builderMethodUsage($level, $method), E_USER_ERROR);
+                            echo "$level()->$method parameter $ct value {$args[$ct-1]} - $k must be one of ".implode("|", array_keys($v["options"])).".<BR>".$this->builderMethodUsage($level, $method);
                             return false;
                         }
                     }
@@ -45,6 +46,61 @@ class ReporticoObject
         }
 
         return true;
+    }
+
+    public function builderUsage($level) {
+
+
+        $text .= "<PRE>Usage: $level()<BR>";
+        $mct = 0;
+        foreach ($this->usage["methods"] as $method => $properties){
+            $ct = 0;
+            if ( $mct )
+                $text .= "    )->$method(<BR>";
+            else
+                $text .= "    ->$method(<BR>";
+            $mct++;
+
+            foreach ($properties["parameters"] as $k => $v) {
+                if ( $ct )
+                    $text .= ",";
+                if ( !is_array($v) ) {
+                    $text .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$k : $v<BR>";
+                } else {
+                    $text .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$k";
+                    $last = false;
+                    if ( isset($v["options"])){
+                        $text .=  " [";
+                        foreach ( $v["options"] as $k1 => $v1 ) {
+                            if ( $last ) $text .= "|";
+                            $text .=  "$k1";
+                            $last = $k1;
+                        }
+                        $text .=  "]";
+                    } else {
+                        foreach ( $v as $k1 => $v1 ) {
+                            if ( isset($v1["options"])){
+                                $text .=  " options ";
+                                foreach ( $v1["options"] as $k2 => $v2 ) {
+                                    if ( $last ) $text .= "|";
+                                    $text .=  "$k2";
+                                    $last = $k2;
+                                }
+                            } else {
+                                $text .= " - $k1: $v1<BR>";
+                            }
+                        }
+                    }
+                    $text .= "<BR>";
+                }
+                $ct++;
+            }
+        }
+        if ( $mct )
+            $text .= "&nbsp;&nbsp;&nbsp;&nbsp;)<BR>";
+
+        $text .= ")<BR>";
+        return $text;
     }
 
     public function builderMethodUsage($level, $method) {

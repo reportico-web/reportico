@@ -301,7 +301,7 @@ class Builder implements \ArrayAccess, \Iterator, \Serializable
                 return $this;
             }
 
-            echo "FAIL $method<BR>";
+            echo "<BR>Error in call to method '$method'<BR>";
             if ($steppedOutOf)
                 trigger_error("Method '$method' specified during construction of $steppedOutOf().<BR>This method is not known for $steppedOutOf() or as a code builder method.", E_USER_ERROR);
             else

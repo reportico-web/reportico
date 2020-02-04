@@ -51,7 +51,7 @@
 
                 {# Page Footer on group change ============================================= #}
                 {% include 'execute-content-page-footers.inc.tpl' %}
-                
+
                 </div>
                 <div class="reportico-paginated {{ AUTOPAGINATE }} original-page page-size-{{ PAGE_SIZE }} page-orientation-{{ PAGE_ORIENTATION }}" style="zoom1: {{ ZOOM_FACTOR }}; padding-top: 0px; padding-bottom: {{ PAGE_BOTTOM_MARGIN }}; padding-right: {{ PAGE_RIGHT_MARGIN }}; padding-left: {{ PAGE_LEFT_MARGIN }};">
 
@@ -150,7 +150,7 @@
             {% endif %}
         </table>
 
-        <!--/div--> 
+        <!--/div-->
 
         {# Custom group tailers ======================================== #}
         <div class="reportico-custom-trailer-block" >

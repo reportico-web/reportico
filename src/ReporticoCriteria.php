@@ -30,8 +30,7 @@ class ReporticoCriteria extends ReporticoObject
                                             "sqlcommand" => "Text box where user can enter free SQL query")
                                 )
                             )
-                        )
-            ),
+                        ),
             "widget" => array( "description" => "Type of browser control to present criteria options",
                 "parameters" => array(
                     "type" => array( "description" => "The type of browser control",
@@ -63,7 +62,8 @@ class ReporticoCriteria extends ReporticoObject
                 )
             ),
             "sql" => array( "description" => "SQL to generate lookup list", "parameters" => array( "sql" => "SQL query") ),
-        );
+        )
+    );
 
     public $query = false;
     public $type = false;
@@ -120,6 +120,10 @@ class ReporticoCriteria extends ReporticoObject
         // PPP echo "<BR>============ crit $method <BR>";
         switch ( strtolower($method) ) {
 
+            case "usage":
+                echo $this->builderUsage("criteria");
+                break;
+
             case "title":
                 $this->builder->value->setAttribute("column_title", $args[0]);
                 break;
@@ -171,7 +175,6 @@ class ReporticoCriteria extends ReporticoObject
             case "widget":
                 $this->type = $args[0];
                 $this->builder->value->criteriaItem->criteria_display = strtoupper($args[0]);
-                //$this->builder->value->criteriaItem->expand_display = strtoupper($args[0]);
                 break;
 
             case "expandwidget":

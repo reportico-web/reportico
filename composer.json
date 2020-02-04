@@ -15,7 +15,7 @@
     "require": {
         "php": ">=5.4.0",
         "adodb/adodb-php": "^5.20",
-        "monolog/monolog": "^1.23",
+        "monolog/monolog": "^2.0",
         "twig/twig": "~1.16",
         "tecnickcom/tcpdf": "^6.2",
         "szymach/c-pchart": "^3.0",

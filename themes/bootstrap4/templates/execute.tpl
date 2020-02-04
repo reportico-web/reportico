@@ -35,6 +35,7 @@ background-color: #900;
 </style>
 
 {{ASSETS_JS}}
+
 {{ASSETS_INIT}}
 
 {% endif %}
@@ -42,6 +43,7 @@ background-color: #900;
 {% if not REPORTICO_AJAX_CALLED %}
 <div id="reportico-container">
 {% endif %}
+
 
 <div id="reportico-top-margin" style="z-index: 1; display: none;left: 80px;float: left; border: solid; height: {{ PAGE_TOP_MARGIN }}; width: {{ PAGE_LEFT_MARGIN }};">t</div>
 <div id="reportico-bottom-margin" style="z-index: 1; display: none;left: 160;float: right; border: solid; height: {{ PAGE_BOTTOM_MARGIN }}; width: {{ PAGE_RIGHT_MARGIN }};">b</div>
@@ -75,7 +77,7 @@ background-color: #900;
                 </TR>
             </TABLE>
 {% endif %}
-{% if STATUSMSG|length>0 %} 
+{% if STATUSMSG|length>0 %}
 			<TABLE class="reportico-status-block">
 				<TR>
 					<TD>{{ STATUSMSG|raw }}</TD>
