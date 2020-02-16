@@ -1,9 +1,9 @@
 {% autoescape false %}
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light reportico-top-menu">
 
 	{# brand #}
-	<a href='#' class='navbar-brand'>{{ WIDGETS["navigation-menu"]["dropdown-menu"]["brand"] }}</a>
+	<a href='#' class='navbar-brand'>&emsp;{{ WIDGETS["navigation-menu"]["dropdown-menu"]["brand"] }}</a>
 	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#reportico-bootstrap-collapse-navmenu" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 		<span class="navbar-toggler-icon"></span>
 	</button>

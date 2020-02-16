@@ -88,14 +88,14 @@ reportico_bootstrap_modal = $bootstrapModal;
 
         if (!$this->engine->bootstrap_styles || $this->engine->force_reportico_mini_maintains)
 
-            $test =
+            $text =
                 '    
 <div id="reporticoModal" tabindex="-1" class="reportico-modal">
     <div class="reportico-modal-dialog">
         <div class="reportico-modal-content">
             <div class="reportico-modal-header">
             <button type="button" class="reportico-modal-close">&times;</button>
-            <h4 class="reportico-modal-title" id="reporticoModalLabel">$notice</h4>
+            <h4 class="reportico-modal-title" id="reporticoModalLabel">'.$notice.'</h4>
             </div>
             <div class="reportico-modal-body" style="padding: 0px" id="reportico-edit-link">
                 <h3>Modal Body</h3>
@@ -167,7 +167,7 @@ reportico_bootstrap_modal = $bootstrapModal;
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-            <button type="button" data-dismiss="modal" class="close" aria-hidden="true">&times;</button>
+            <button type="button" data-dismiss="modal" class="close reportico-notice-modal-close" aria-hidden="true">&times;</button>
             <h4 class="modal-title reportico-notice-modal-title" id="reporticoNoticeModalLabel">'.$notice.'</h4>
             </div>
             <div class="modal-body" style="overflow-y: auto; padding: 0px" id="reporticoNoticeModalBody">

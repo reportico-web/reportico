@@ -463,7 +463,7 @@ class ReporticoDataSource extends ReporticoObject
         }
 
 
-        if (false && $this->external_connection) {
+        if ($this->external_connection) {
             $this->ado_connection = NewADOConnection("pdo");
             $this->ado_connection->_connectionID = $this->external_connection;
             if ($this->ado_connection->_connectionID) {

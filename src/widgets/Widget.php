@@ -332,7 +332,7 @@ class Widget
                 // Parameters from a POSTED criteria are assumed to be values related to the return column
                 // so dont perform a lookup mapping to the return column .. also dont do this if the return
                 // column is the summary column
-                if ($abb && $ret && $abb->query_name != $ret->query_name && isset($_GET["MANUAL_$name"])) {
+                if ($abb && $ret && $abb->query_name != $ret->query_name && isset($_REQUEST["MANUAL_$name"])) {
                     if (!$identified_criteria) {
                        $lq->executeCriteriaLookup();
                     }

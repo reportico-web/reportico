@@ -21,7 +21,7 @@
 
     <!-- Report Title -->
     <div class="flex-container" style="justify-content: center">
-            <h4 class="flex-widget" style="width: 100%;border-bottom: solid 1px #aaaaaa">
+            <h2 class="flex-widget" style="width: 100%;border-bottom: solid 1px #aaaaaa">
             {{ WIDGETS["title"]["title"] }}
             {% if PERMISSIONS["design"] %}
             <button type='submit' class='flex-widget btn btn-sm btn-outline-secondary reportico-edit-link'
@@ -30,7 +30,7 @@
                <i class="fa fa-pen fa-lg"></i>
             </button>
             {% endif %}
-            </h4>
+            </h2>
     </div>
 
     <!-- Report Output options -->
@@ -300,14 +300,14 @@
               <div class="modal-dialog modal-lg">
                   <div class="modal-content">
                       <div class="modal-header">
-                          <button type="button" data-dismiss="modal" class="close" aria-hidden="true">&times;</button>
+                          <button type="button" data-dismiss="modal" class="close reportico-notice-modal-close" aria-hidden="true">&times;</button>
                           <h4 class="modal-title reportico-notice-modal-title" id="reporticoNoticeModalLabel"></h4>
                       </div>
                       <div class="modal-body" style="overflow-y: auto; padding: 0px" id="reporticoNoticeModalBody">
                           <h3>Modal Body</h3>
                       </div>
                       <div class="modal-footer">
-                          <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-primary reportico-notice-modal-button" data-dismiss="modal">Close</button>
                       </div>
                   </div>
               </div>

@@ -672,8 +672,9 @@ function horizontalPageSplit(newpage, thispage, datawidth) {
                 reportico_jquery(newpage).after(spreadpage);
                 while ( colptr < cols ) {
                     colwidth = reportico_jquery(this).find("tbody tr td:eq(" + colptr + ")").outerWidth();
-                    contained = spreadpage.find(".reportico-page:first").outerWidth();
-                    if (colptr == 0 || contained > datawidth) {
+                    //contained = spreadpage.find(".reportico-page:first").outerWidth();
+                    contained += colwidth;
+                    if (colptr == 0 || contained < datawidth) {
                         //spreadpage.find("tr td.eq(" + colptr + "),tr th.eq(" + colptr + ")").remove();
                         spreadpage.find("tr").find("td:eq(0),th:eq(0)").remove();
                         //spreadpage.find("tbody tr td:eq(" + colptr + "),thead th:eq(" + colptr + ")").remove();
