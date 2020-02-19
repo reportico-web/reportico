@@ -137,7 +137,6 @@ class ReporticoSession
             $session_name = session_id();
         }
 
-        ReporticoLog::debug("Final session name : $session_name");
     }
 
     /**
