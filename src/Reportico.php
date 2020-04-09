@@ -19,10 +19,6 @@ if ( !function_exists("get_magic_quotes_gpc") ) {
     } 
 }
 
-echo  get_magic_quotes_gpc();
-die;
-
-
 // Set Session handling based on framework
 
 /*
