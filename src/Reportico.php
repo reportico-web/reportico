@@ -13,6 +13,15 @@ function ReporticoSession() {
     return REPORTICO_SESSION_CLASS;
 } 
 
+if ( !function_exists("get_magic_quotes_gpc") ) {
+    function get_magic_quotes_gpc() {
+        return false;
+    } 
+}
+
+echo  get_magic_quotes_gpc();
+die;
+
 
 // Set Session handling based on framework
 
