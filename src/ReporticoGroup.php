@@ -31,13 +31,42 @@ class ReporticoGroup extends ReporticoObject
             "on" => array(
                 "description" => "Group By a Column",
                 "parameters" => array( "column" => "column name to group on")
-            )
+            ),
+            "throwPageBefore" => array(
+                "description" => "Throw a new page at the start of the group",
+            ),
+            "header" => array(
+                "description" => "Move a column to the group header section",
+                "parameters" => array( "column" => "name of the column to display in the group header")
+            ),
+            "customHeader" => array(
+                "description" => "Add a custom text block before the group section",
+                "parameters" => array(
+                    "header text" => "A block of text which can contain column values using the {} notation",
+                    "header style" => "A CSS string or array of CSS style pairs indicating how to style and position the header",
+                    )
+            ),
+            "trailer" => array(
+                "description" => "A column value to show at the end of report or group",
+                "parameters" => array( "column" => "name of the column to display in the group trailer")
+            ),
+            "below" => array(
+                "description" => "Used with the trailer option, indicates under which column to show the trailer, for a total of rolling average value, for example",
+                "parameters" => array( "column" => "At the bottom of which column display trailer value for example a group sum or average")
+            ),
+            "customTrailer" => array(
+                "description" => "Add a custom text block after the group section",
+                "parameters" => array(
+                    "header text" => "A block of text which can contain column values using the {} notation",
+                    "header style" => "A CSS string or array of CSS style pairs indicating how to style and position the trailer",
+                )
+            ),
         )
     );
 
     public $change_triggered = false;
 
-    public function __construct($in_name, &$in_query)
+    public function __construct($in_name = false, &$in_query = null)
     {
         ReporticoObject::__construct();
 
@@ -90,6 +119,10 @@ class ReporticoGroup extends ReporticoObject
         }
 
         switch ( $method ) {
+
+            case "usage":
+                echo $this->builderUsage("group");
+                break;
 
             case "on":
                 $this->levelRef = $args[0];

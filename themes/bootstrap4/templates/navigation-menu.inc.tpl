@@ -54,13 +54,19 @@
 				{% endif %}
 
 				{# Project password prompt  only if project password in effect and user is not logged and user is not admin #}
-				{% if not PERMISSIONS["project"] %}
+				{% if not PERMISSIONS["access"] %}
 				{% if FLAGS["project-password-error"] %}
 				<div style='color: #ff0000;'>{{ T_PASSWORD_ERROR }}</div>
 				{% endif %}
 				<li class="nav-item">
 					<div style='inline-block; margin-top: 6px'>{{ T_ENTER_PROJECT_PASSWORD }}<input type='password' name='project_password' value=''>
-						<input class='span2 reportico-submit btn btn' type='submit' name='login' value='{{ T_LOGIN }}'>
+						{{ include ('button.inc.tpl', {
+						    button_type : 'navbar-button',
+						    button_style : 'outline-success',
+						    button_label : WIDGETS["navigation-menu"]["login-button"]["label"],
+						    button_name : WIDGETS["navigation-menu"]["login-button"]["name"],
+						    button_id : WIDGETS["navigation-menu"]["login-button"]["id"]
+						} ) }}
 					</div>
 				</li>
 				{% endif %}
@@ -77,6 +83,7 @@
 				{% endif %}
 
 				{# Logout button #}
+				{% if PERMISSIONS["project"] %}
 				{% if PERMISSIONS["admin"] or FLAGS["show-logout-button"] %}
 				{{ include ('button.inc.tpl', {
 				    button_type : 'navbar-button',
@@ -85,6 +92,7 @@
 				    button_name : WIDGETS["navigation-menu"]["logout-button"]["name"],
 				    button_id : WIDGETS["navigation-menu"]["logout-button"]["id"]
 				} ) }}
+				{% endif %}
 				{% endif %}
 			</ul>
 

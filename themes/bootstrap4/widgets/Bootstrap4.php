@@ -44,6 +44,7 @@ class Bootstrap4 extends \Reportico\Widgets\Widget
                         "{$this->engine->url_path_to_assets}/font-awesome/font-awesome.css"
                     ],
                     'js' => [
+                        //"{$this->engine->url_path_to_assets}/bootstrap4/popper.js",
                         "{$this->engine->url_path_to_assets}/bootstrap4/bootstrap.js"
                     ],
                     'events' => [

@@ -66,6 +66,7 @@ function setupDatePickers()
 
 function setupTooltips()
 {
+    return;
     reportico_jquery(".reportico_tooltip").each(function(){
         if ( typeof(reportico_jquery(this).tooltip) != "undefined" )
         reportico_jquery(this).tooltip();

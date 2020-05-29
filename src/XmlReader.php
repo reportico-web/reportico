@@ -46,7 +46,7 @@ class XmlReader
     public $wizard_linked_to = false;
     public $partial_apply_drawn = false;
 
-    public function __construct(&$query, $filename, $xmlstring = false, $search_tag = false)
+    public function __construct(&$query, $filename, $xmlstring = false, $search_tag = false, $debug = false)
     {
         $this->query = &$query;
 
@@ -443,10 +443,23 @@ class XmlReader
         $this->ends_record = array('book' => true);
 
         $x = false;
+        if ( $debug ) {
+            echo "LOAD FILE $filename STRING ".strlen($xmlstring)."<BR>";
+        }
         if ($xmlstring) {
+            if ( $debug ) {
+                echo "STRING " . strlen($xmlstring) . "<BR> " . htmlspecialchars($xmlstring);
+            }
             $x = &$xmlstring;
         } else {
             if ($filename) {
+                if ( $debug ) {
+                    echo "LOAD $filename<BR>";
+                    echo "<PRE>";
+                    debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+                    echo "</PRE>";
+                    echo "XML $filename<BR>";
+                }
                 if ($this->query) {
                     $readfile = $this->query->projects_folder . "/" . ReporticoApp::getConfig("project") . "/" . $filename;
                     $adminfile = $this->query->admin_projects_folder . "/admin/" . $filename;
@@ -2053,6 +2066,7 @@ class XmlReader
     // Processes the HTML get/post paramters passed through on the maintain screen
     public function handleUserEntry()
     {
+        echo "HANDLEUSERENTRY<BR>";
         $sessionClass = ReporticoSession();
 
         // First look for a parameter beginning "submit_". This will identify
@@ -2263,6 +2277,7 @@ class XmlReader
 
         $xml = $xmlout->getXmldata();
         $this->query->xmlintext = $xml;
+        echo "XMLREADER TEXT SET TO ".strlen($xml)."<BR>";
 
         $this->query->xmlin = new XmlReader($this->query, false, $xml);
         $this->query->xmlin->show_area = $show_area;

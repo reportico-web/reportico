@@ -33,6 +33,8 @@ class Authenticator extends ReporticoObject
             "design-page",
             "design",
             "project",
+            "report",
+            "report-output",
             "criteria",
             "execute",
             "save",
@@ -41,6 +43,8 @@ class Authenticator extends ReporticoObject
         "all-projects" => [
             "admin-page",
             "project",
+            "report",
+            "report-output",
             "criteria",
             "execute",
             "project-menu-page",
@@ -59,6 +63,7 @@ class Authenticator extends ReporticoObject
             "project-menu-page",
             "criteria",
             "execute",
+            "report",
             "access",
         ],
         "report" => [
@@ -224,13 +229,15 @@ class Authenticator extends ReporticoObject
 
         if ( $permissions )
             self::grant($permissions);
-
     }
 
     public static function _grant( $permissions ) {
 
 
         //echo "GGGGGGGGGGRANT            ".$permissions."!!!<BR>";
+        //echo "<PRE>";
+        //debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+        //echo "</PRE>";
         $instance = self::getInstance();
 
         $instance->_permissions = false;
@@ -397,13 +404,13 @@ class Authenticator extends ReporticoObject
         foreach( $instance->_permissions as $permission ) {
             echo $permission.",";
         }
-        echo ") ";
+        echo ")<BR>";
 
         echo "Revokes (";
         foreach( $instance->revokes as $permission ) {
             echo $permission.",";
         }
-        echo ") ";
+        echo ")<BR>";
 
         echo "Flags (";
         foreach( $instance->flags as $permission ) {
@@ -454,7 +461,6 @@ class Authenticator extends ReporticoObject
     public static function getInstance()
     {
         if (true === is_null(self::$_instance)) {
-            ReporticoUtility::backtrace();
             echo "Class Authenticator not initialized";
             die;
         }
@@ -478,7 +484,6 @@ class Authenticator extends ReporticoObject
 
     public function _login () {
 
-        ReporticoUtility::backtrace();
         $this->role = self::ADMIN_ROLE;
         return true;
 

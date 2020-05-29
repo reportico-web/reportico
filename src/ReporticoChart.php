@@ -24,17 +24,28 @@ class ReporticoChart extends ReporticoObject
                 "description" => "Specify a column value to plot in Y-Axis",
                 "parameters" => array( "column" => "Column to Plot")
             ),
-            "bar" => array( "description" => "Plot a bar chart" ),
-            "line" => array( "description" => "Plot a line chart" ),
             "plotType" => array( "description" => "How present the plot ( e.g. Bar Chart, Line Chart, Pie Chart )",
                 "parameters" => array( "column" => [ "description" => "Type of plot",
-                                            "options" => [
-                                                "bar" => "Bar Chart",
-                                                "pie" => "Pie Chart",
-                                                "line" => "Line Chart",
-                                                "stackedbar" => "Stacked Bar"]
-                                    ]
+                    "options" => [
+                        "bar" => "Bar Chart",
+                        "pie" => "Pie Chart",
+                        "line" => "Line Chart",
+                        "stackedbar" => "Stacked Bar"]
+                ]
                 )
+            ),
+            "legend" => array(
+                "description" => "Text description of plot to show in the legend",
+                "parameters" => array( "legend" => "Text label of the plot column to place in the legend box")
+            ),
+            "xlabels" => array(
+                "parameters" => array( "column" => "Name of column containing the labels for the X axis")
+            ),
+            "xtitle" => array(
+                "parameters" => array( "title" => "X Axis Title")
+            ),
+            "ytitle" => array(
+                "parameters" => array( "title" => "Y Axis Title")
             ),
         )
     );
@@ -86,8 +97,7 @@ class ReporticoChart extends ReporticoObject
         switch ( strtolower($method) ) {
 
             case "usage":
-                $this->usage();
-                die;
+                echo $this->builderUsage("chart");
                 break;
 
             case "title":

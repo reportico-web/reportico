@@ -77,6 +77,16 @@ class SubmitExecute extends \Reportico\Widgets\Widget
                 "type" => "text-button",
                 "name" => "logout",
             ],
+            "login" => [
+                "id" => "reportico-login",
+                "classes" => $engine->getBootstrapStyle('small_button')."",
+                "calls" => "submitAjaxLink(this);",
+                "styles" => "",
+                "label" => ReporticoLang::templateXlate("LOGIN"),
+                "triggerTag" => "#reportico-login",
+                "type" => "text-button",
+                "name" => "login",
+            ],
             "output-html-new-window" => [
                 "id" => "reportico-printhtml-box",
                 "classes" => $engine->getBootstrapStyle('toolbar_button')." reportico-printhtml-box reportico-run-report",

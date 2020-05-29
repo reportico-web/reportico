@@ -92,8 +92,45 @@ class QueryColumn extends ReporticoObject
                 "description" => "Hide a Column from the body of the report",
                 "parameters" => array( "column" => "Column to hide")
             ),
+            "order" => array(
+                "description" => "Set the display order of the column in the report output",
+                "parameters" => array( "order" => "The sequence of the column in the report output")
+            ),
+            "label" => array(
+                "description" => "Override the default label for display in the colymn header",
+                "parameters" => array( "label" => "The label to show in the column header")
+            ),
+            "columnwidth" => array(
+                "description" => "Force default column width in HTML output",
+                "parameters" => array( "label" => "The width of the column in HTML output in CSS format eg 5px")
+            ),
+            "columnwidthpdf" => array(
+                "description" => "Force default column width in PDF output",
+                "parameters" => array( "label" => "The width of the column in HTML output in CSS format eg 5px")
+            ),
+            "groupheaderlabel" => array(
+                "description" => "Force the label to show when the column is displayed in the group header",
+                "parameters" => array( "label" => "The group header label")
+            ),
+            "grouptrailerlabel" => array(
+                "description" => "Force the label to show when the column is displayed under a column as a total/average",
+                "parameters" => array( "label" => "The column trailer label")
+            ),
+            "justify" => array(
+                "description" => "Display the column left,right or centered",
+                "parameters" => array(
+                    "type" => array( "description" => "Alignment/Justification",
+                        "options" => array(
+                            "left" => "Left justified",
+                            "right" => "Right justified",
+                            "center" => "Center justified",
+                        )
+                    )
+                )
+            ),
         )
     );
+
 
     public function __construct
     (
@@ -155,6 +192,10 @@ class QueryColumn extends ReporticoObject
 
         switch ( $method ) {
 
+            case "usage":
+                echo $this->builderUsage("column");
+                break;
+
             case "properties":
 
                 foreach ( $args[0] as $key => $val ) {
@@ -197,6 +238,14 @@ class QueryColumn extends ReporticoObject
                 }
                 break;
 
+            case "label": $this->setAttribute("column_title", $args[0], true); break;
+            case "title": $this->setAttribute("column_title", $args[0], true); break;
+            case "justify": $this->setAttribute("justify", $args[0], true); break;
+            case "columnwidth": $this->setAttribute("ColumnWidthHTML", $args[0], true); break;
+            case "columnwidthpdf": $this->setAttribute("ColumnWidthPDF", $args[0], true); break;
+            case "groupheaderlabel": $this->setAttribute("group_header_label", $args[0], true); break;
+            case "grouptrailerlabel": $this->setAttribute("group_trailer_label", $args[0], true); break;
+
             case "sequence":
             case "order":
                 $this->engine->setColumnOrder($this->query_name, $args[0], true);
@@ -225,7 +274,7 @@ class QueryColumn extends ReporticoObject
     public function getValueDelimiter()
     {
         if (strtoupper($this->column_type) == "CHAR") {
-            return ("'");
+            return ("\"");
         }
 
         return ("");

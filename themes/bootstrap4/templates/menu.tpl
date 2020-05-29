@@ -4,7 +4,7 @@
 <div id="reportico-container">
 
 	<!-- Begin Form -->
-	{# WIDGETS["criteria-form"]["begin"] #}
+	{{ WIDGETS["criteria-form"]["begin"] }}
 
 	<!-- Menu Bar -->
     {% include 'navigation-menu.inc.tpl' %}

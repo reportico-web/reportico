@@ -33,7 +33,103 @@ class Assignment extends ReporticoObject
     // Indicates an operation which causes an action rather than setting a value
     public $non_assignment_operation = false;
 
-    public function __construct($query_name, $expression = "", $criteria = "", $else = "")
+    public $usage = array(
+        "description" => "Assign the result of an expression to a report column",
+        "methods" => array(
+            "expression" => array(
+                "description" => "Create an expression to assign to a column",
+                "parameters" => array( "column" => "Name of column (existing or new) to assign an expression to")
+            ),
+            "set" => array(
+                "description" => "The expression value to assign to the column. Can include {} notation to include other volumn values.",
+                "parameters" => array( "expression" => "Assignment value can include {} botation")
+            ),
+            "if" => array(
+                "description" => "Only apply the expression if the passed condition is true",
+                "parameters" => array( "condition" => "If the passed condition (as a PHP expression) is true the expression is set")
+            ),
+            "else" => array(
+                "description" => "Set this expression if the condition is false",
+                "parameters" => array( "expression" => "Set to this expression (as a PHP expression) if the condition results is not true")
+            ),
+            "imageurl" => array( "description" => "Assign to the column the url of an image",
+                "parameters" => array(
+                    "url" => "The url thats points to an image (the url can contain report column values using the {} notation.",
+                    "width" => "(Optional) The width in pixels of the displayed image, default is actual image width",
+                    "height" => "(Optional) The height in pixels of the displayed image, default is actual image height",
+                )
+            ),
+            "section" => array( "description" => "Select an area of a report to apply a style to, using the style() option",
+                "parameters" => array( "section" => array( "description" => "Element/area of the report to style",
+                    "options" => [
+                        "CELL" => "Apply the style to the cell of the expression column",
+                        "ALLCELLS" => "Apply the style to all cells of the current report row",
+                        "COLUMNHEADERS" => "Apply the style to the report column header cells",
+                        "ROW" => "Apply the style to the whole report row",
+                        "PAGE" => "Apply the style to the current report cell/group section block",
+                        "BODY" => "Apply the style to block containing the report detail, group headers and charts",
+                        "GROUPHEADERLABEL" => "Aply the style to the group label",
+                        "GROUPHEADERVALUE" => "Aply the style to the group value",
+                        "GROUPTRAILER" => "Aply the style to the group trailer",
+                    ]
+                ),
+            )),
+            "style" => array( "description" => "Set a CSS style of report element specified by the seciton() method or to the cell of the specified expression column",
+                "parameters" => array(
+                    "CSS style" => "A string containing CSS styles to apply to the column cell or section" ,
+                )
+            ),
+
+            "drill" => array( "description" => "Generate a report link to drill down to another report",
+                "parameters" => array(
+                    "drillDownReport" => "The name of the report (without the xml extension) to drill down to" ,
+                )
+            ),
+            "where" => array( "description" => "The criteria items from the selected row to pass to a drill down report",
+                "parameters" => array(
+                    "parameters" => "An array mapping target report criteria items with the columns in the report row pass in. So the keys are target report items and the values are the column names to pass to those criteria items"
+                    )
+            ),
+            "link" => array( "description" => "Assign to a column a url link. The url can contain column values by using the {} notation",
+                "parameters" => array(
+                    "label" => "The label to display for the url link. This can include the actuial values of columns using the {} notation",
+                    "url" => "The URL to go to when clicked. This can pass columns columns through using the {} notation",
+                )
+            ),
+            "skip" => array( "description" => "Do not output the report row. Use in conjunction with the if() method to selectively ignore outputting data"),
+            "sum" => array( "description" => "Sets the column to a running total optionally grouped by a column",
+                "parameters" => array(
+                    "sum column" => "The column to sum on",
+                    "group column" => "(Optional) The column to base the group sum on. When this value changes the sum is reset to zero.",
+                )
+            ),
+            "avg" => array( "description" => "Sets the column to a running average optionally grouped by a column",
+                "parameters" => array(
+                    "average column" => "The column to average on",
+                    "group column" => "(Optional) The column to base the group average on. When this value changes the average is reset to zero.",
+                )
+            ),
+            "min" => array( "description" => "Sets the column to a minimum value of a column",
+                "parameters" => array(
+                    "average column" => "The column to calculate the minimum from on",
+                    "group column" => "(Optional) The column to base the group minimum on. When this value changes the minimum is reset",
+                )
+            ),
+            "max" => array( "description" => "Sets the column to a maximum value of a column",
+                "parameters" => array(
+                    "average column" => "The column to calculate the maximum from on",
+                    "group column" => "(Optional) The column to base the group maximum on. When this value changes the maximum is reset",
+                )
+            ),
+            "old" => array( "description" => "Sets the column to the value of source column from the previous report row",
+                "parameters" => array(
+                    "average column" => "The column to take the previous value from",
+                )
+            ),
+        )
+    );
+
+    public function __construct($query_name = false, $expression = "", $criteria = "", $else = "")
     {
         $this->raw_expression = $expression;
         $this->raw_criteria = $criteria;
@@ -99,6 +195,11 @@ class Assignment extends ReporticoObject
         $exitLevel = false;
         switch ( $method ) {
 
+            case "usage":
+                echo $this->builderUsage("expression");
+                break;
+
+            case "imageurl":
             case "url":
                 $width = isset($args[1]) ? $args[1] : false;
                 $height = isset($args[2]) ? $args[2] : false;
@@ -121,9 +222,9 @@ class Assignment extends ReporticoObject
                 $this->builder->store["drilldownToReport"] = $args[0];
                 break;
 
-            case "target":
-            case "targetid":
-                break;
+            //case "target":
+            //case "targetid":
+                //break;
 
             case "where":
 
@@ -204,7 +305,7 @@ class Assignment extends ReporticoObject
             case "skipline":
                 $method = "skipline";
                 $this->setExpression( "$method()" );
-                $this->builder->engine->getColumn($this->query_name)->setAttribute("column_display", "hide");
+                //$this->builder->engine->getColumn($this->query_name)->setAttribute("column_display", "hide");
                 break;
 
             case "prev": $method = "old";

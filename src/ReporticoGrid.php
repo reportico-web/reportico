@@ -13,7 +13,24 @@ class ReporticoGrid extends ReporticoObject
     public $usage = array(
         "description" => "Dynamic Grid Control",
         "methods" => array(
-            //"searchable" => array( "searchable" => "Landscape or Portrait?", "parameters" => array())
+            "grid" => array(
+                "description" => "Enable Dynamic Grid",
+            ),
+            "searchable" => array(
+                "description" => "Make the grid searchable",
+                "parameters" => array( "searchable" => "set to true if grid should be searchable")
+            ),
+            "sortable" => array(
+                "description" => "Make the grid sortable",
+                "parameters" => array( "sortable" => "set to true if grid should have sortable columns")
+            ),
+            "pageable" => array(
+                "description" => "Enable paginated output in the grid ",
+                "parameters" => array(
+                    "pageable" => "set to true if grid should be paginated",
+                    "page size" => "The number of rows to show in the paginated grid",
+                )
+            ),
         ));
 
     public $query = false;
@@ -29,6 +46,7 @@ class ReporticoGrid extends ReporticoObject
      */
     public static function __callStatic($method, $args)
     {
+
         switch ( $method ) {
 
             case "build":
@@ -63,6 +81,10 @@ class ReporticoGrid extends ReporticoObject
 
         //echo "<BR>============ page $method <BR>";
         switch ( strtolower($method) ) {
+
+            case "usage":
+                echo $this->builderUsage("grid");
+                break;
 
             case 'sortable':
                 $val = isset($args[0]) ? $args[0] : true;

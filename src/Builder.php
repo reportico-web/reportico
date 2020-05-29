@@ -17,7 +17,7 @@ function reporticoPipe($value) {
 $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
 
 
-class Builder implements \ArrayAccess, \Iterator, \Serializable
+class Builder extends ReporticoObject implements \ArrayAccess, \Iterator, \Serializable
 {
     public $value;
     public $engine;
@@ -32,9 +32,88 @@ class Builder implements \ArrayAccess, \Iterator, \Serializable
     public function __construct($value)
     {
         $this->engine = $value;
+
+        // Defaults for builder initiated access
+        $this->engine->access_mode = "guest";
+
         $this->stepInto("base", $value);
     }
-    
+
+    public $usage = array(
+        "description" => "Reportico core methods",
+        "methods" => array(
+            "project" => array(
+                "description" => "Select an existing project to work in.",
+                "parameters" => array(
+                    "project" => array( "description" => "The name of the project to work in." ),
+                )
+            ),
+            "load" => array(
+                "description" => "Select an existing report file to work in. Requires the project to have been selected",
+                "parameters" => array(
+                    "file name" => array( "description" => "The name of the report to run" ),
+                )
+            ),
+            "run" => array(
+                "description" => "Run the report and generate output",
+            ),
+            "prepare" => array(
+                "description" => "Display a project menu where reports can be selected from (only useful when a project is specified)",
+            ),
+            "menu" => array(
+                "description" => "Display a project menu where reports can be selected from (only useful when a project is specified)",
+            ),
+            "accessLevel" => array(
+                "description" => "What level of access is granted to the user",
+                "parameters" => array(
+                    "type" => array( "description" => "What level of access is granted to the user",
+                        "options" => array(
+                            "admin" => "Full design mode, ability to edit reports",
+                            "all-projects" => "Gives access to all the report projects and to allow execution of all reports in those projects",
+                            "project" => "Gives access to all the reports in a single project - the project must be specified",
+                            "report" => "Gives access to a single report in a one project - thre project and report name must be specified",
+                            "report-output" => "Only runs the specified report without any access to the criteria entry screen",
+                            "design-fiddle" => "Allows modifuying report parameters without the ability to save",
+                            "EXECUTE" => "Run the report and show the output",
+                        )
+                    )
+                )
+            ),
+            "render" => array(
+                "description" => "Displays reportico to the user  specifying whether to show a project menu, report criteria screen or report output",
+                "parameters" => array(
+                            "type" => array( "description" => "The type of output to show",
+                                "options" => array(
+                                    "MENU" => "Show a report project menu",
+                                    "PREPARE" => "Show a report screen",
+                                    "EXECUTE" => "Run the report and show the output",
+                                )
+                        )
+                    )
+                ),
+            "to" => array(
+                "description" => "Report output format ( HTML, CSV or PDF )",
+                "parameters" => array(
+                    "type" => array( "description" => "The output to render the report in",
+                        "options" => array(
+                            "HTML" => "(the default))Render and HTML report",
+                            "PDF" => "PDF output",
+                            "CSV" => "CSV output",
+                        )
+                    )
+                )
+            ),
+            "save" => array(
+                "description" => "When using the framework builder you can save the resulting report definition as anamed report in the slected project",
+                "parameters" => array(
+                    "type" => array( "file name" => "The name of the xml file to save to (withut the xml extension)" )
+                )
+            ),
+            "newSession" => array(
+                "description" => "By default when refreshed in the browser, the existing user selections will be maintained, use the newSession method to restart the report from scratch",
+            ),
+        ));
+
     /*
      * Instantiate an instance of Reportico for building with
      */
@@ -157,9 +236,24 @@ class Builder implements \ArrayAccess, \Iterator, \Serializable
             }
         }
 
-        if ( $method == "page" ) {
-            $this->value->setAttribute ("AutoPaginate", "PDF+HTML" );
+        //if ( $method == "page" ) {
+            //$this->value->setAttribute ("AutoPaginate", "PDF+HTML" );
+        //}
+        if ( $method == "fullusage" ) {
+            echo $this->builderUsage("base");
+            foreach ($methodObjectMap as $classmethod => $class){
+                //echo $classmethod."<BR>";
+                $classObject = new $class();
+                $classObject->usage("$class");
+            }
+            die;
         }
+
+        if ( $method == "usage" ) {
+            echo $this->builderUsage("reportico");
+            return $this;
+        }
+
 
         if ( $method == "save" ) {
 
@@ -177,46 +271,46 @@ class Builder implements \ArrayAccess, \Iterator, \Serializable
             return $this;
         }
 
-            if ( strtolower($method) == "page" ) {
+        if ( strtolower($method) == "grid" ) {
 
-                $this->value->setAttribute ("gridDisplay", "show" );
-                $this->value->setAttribute ("AutoPaginate", "NONE" );
+            $this->value->setAttribute ("gridDisplay", "show" );
+            $this->value->setAttribute ("AutoPaginate", "NONE" );
 
-                $attributes = $args[0];
+            $attributes = $args[0];
 
-                foreach ( $attributes as $key => $val ) {
-                    switch ( $key ) {
+            foreach ( $attributes as $key => $val ) {
+                switch ( $key ) {
 
-                        case 'sortable':
-                            if ( $val )
-                                $this->value->setAttribute ("gridSortable", "yes" );
-                            else
-                                $this->value->setAttribute ("gridSortable", "no" );
-                            break;
+                    case 'sortable':
+                        if ( $val )
+                            $this->value->setAttribute ("gridSortable", "yes" );
+                        else
+                            $this->value->setAttribute ("gridSortable", "no" );
+                        break;
 
-                        case 'searchable':
-                            if ( $val )
-                                $this->value->setAttribute ("gridSearchable", "yes" );
-                            else
-                                $this->value->setAttribute ("gridSearchable", "no" );
-                            break;
+                    case 'searchable':
+                        if ( $val )
+                            $this->value->setAttribute ("gridSearchable", "yes" );
+                        else
+                            $this->value->setAttribute ("gridSearchable", "no" );
+                        break;
 
-                        case 'paginated':
-                            if ( $val )
-                                $this->value->setAttribute ("gridPageable", "yes" );
-                            else
-                                $this->value->setAttribute ("gridPageable", "no" );
-                            break;
+                    case 'paginated':
+                        if ( $val )
+                            $this->value->setAttribute ("gridPageable", "yes" );
+                        else
+                            $this->value->setAttribute ("gridPageable", "no" );
+                        break;
 
-                        case 'pageSize':
-                            if ( $val )
-                                $this->value->setAttribute ("gridPageSize", $val );
-                            break;
+                    case 'pageSize':
+                        if ( $val )
+                            $this->value->setAttribute ("gridPageSize", $val );
+                        break;
 
-                    }
                 }
-                return $this;
             }
+            return $this;
+        }
         /*
         if ( $method == "column" ) {
 
@@ -253,14 +347,52 @@ class Builder implements \ArrayAccess, \Iterator, \Serializable
                     return $this;
             }
 
+            if ( $method == "project" ) {
+                $this->value->initial_project = $args[0];
+                return $this;
+            }
+
+            if ( $method == "password" ) {
+                $this->value->initial_project_password = $args[0];
+                return $this;
+            }
+
+            if ( $method == "load" ) {
+                $this->value->initial_report = $args[0];
+                //echo "HAVE A REPORT {$this->value->initial_report} <BR>";
+                return $this;
+            }
+
+            if ( $method == "accessLevel" ) {
+                $this->value->access_mode = $args[0];
+                $this->value->initial_role = $args[0];
+                return $this;
+            }
+
+            if ( $method == "prepare" ) {
+                $this->value->initial_execute_mode = "PREPARE";
+                $this->value->render("PREPARE");
+                $method = "execute";
+                return $this;
+            }
+
+            if ( $method == "run" || $method == "execute" ) {
+                $this->value->initial_execute_mode = "EXECUTE";
+                $this->value->render("EXECUTE");
+                $method = "execute";
+                return $this;
+            }
+
             if ( $method == "menu" ) {
-                    $this->value->initial_execute_mode = "MENU";
-                    $method = "execute";
+                $this->value->initial_execute_mode = "MENU";
+                $this->value->render("MENU");
+                $method = "execute";
+                return $this;
             }
 
             if ( $method == "to" ) {
-                    $this->value->initial_output_format = $args[0];
-                    return $this;
+                $this->value->initial_output_format = $args[0];
+                return $this;
             }
 
             // Process sql
@@ -281,6 +413,7 @@ class Builder implements \ArrayAccess, \Iterator, \Serializable
                 if ( $ct == 0 ) {
                     echo ("sql requires a parameter"); die;
                 }
+
                 return $this;
             }
 

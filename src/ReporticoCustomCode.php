@@ -65,43 +65,6 @@ class ReporticoCustomCode extends ReporticoObject
         //echo "<BR>============ page $method <BR>";
         switch ( strtolower($method) ) {
 
-            case 'sortable':
-                $val = isset($args[0]) ? $args[0] : true;
-                if ( $val )
-                    $this->builder->engine->setAttribute ("gridSortable", "yes" );
-                else
-                    $this->builder->engine->setAttribute ("gridSortable", "no" );
-                break;
-
-            case 'searchable':
-                $val = isset($args[0]) ? $args[0] : true;
-                if ( $val )
-                    $this->builder->engine->setAttribute ("gridSearchable", "yes" );
-                else
-                    $this->builder->engine->setAttribute ("gridSearchable", "no" );
-                break;
-
-            case 'pageable':
-            case 'paginated':
-            case 'paging':
-                $val = isset($args[0]) ? $args[0] : true;
-                if ( $val )
-                    $this->builder->engine->setAttribute ("gridPageable", "yes" );
-                else
-                    $this->builder->engine->setAttribute ("gridPageable", "no" );
-                $val = isset($args[1]) ? $args[1] : false;
-                if ( $val )
-                    $this->builder->engine->setAttribute ("gridPageSize", $val );
-                break;
-
-            case 'pagesize':
-                $this->builder->engine->setAttribute ("gridPageable", "yes" );
-                $val = isset($args[0]) ? $args[0] : true;
-                if ( $val ) {
-                    $this->builder->engine->setAttribute ("gridPageSize", $val );
-                }
-                break;
-
             case "end":
             default:
                 $this->levelRef = false;

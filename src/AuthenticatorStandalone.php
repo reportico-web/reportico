@@ -114,10 +114,10 @@ class AuthenticatorStandalone extends Authenticator
         }
 
         // For builder initiated reports, default to project access and automatically login
-        if ($this->engine->report_from_builder) {
-            self::_grant("project");
-            return true;
-        }
+        //if ($this->engine->report_from_builder) {
+            //self::_grant("project");
+            //return true;
+        //}
 
         $loggedon = false;
 
@@ -154,9 +154,12 @@ class AuthenticatorStandalone extends Authenticator
             }
         }
 
+        //var_dump($_REQUEST);
         $project_password = ReporticoApp::getConfig("project_password");
         if ( $project_password )
             self::_flag("project-password-protected");
+        //echo "LOGON AS USER ." .$sessionClass::getReporticoSessionParam('project_password')."<BR>";
+        //echo "PROJECT PASSWORD $project_password <BR>";
 
         //($this->engine->execute_mode != "MAINTAIN" && $sessionClass::sessionRequestItem('project_password') == $project_password)
         // Access to project if no project password set or correct password entered or admin logged in
@@ -173,11 +176,14 @@ class AuthenticatorStandalone extends Authenticator
             self::_grant("project");
         }
         else {
+            echo "rrr";
             // User has attempted to login .. allow access to report PREPARE and MENU modes if user has entered either project
             // or design password or project password is set to blank. Allow access to Design mode if design password is entered
             // or design mode password is blank
+            //echo "try proj password with mode {$this->engine->access_mode} pw {$this->engine->initial_project_password} <BR>";
             if (isset($_REQUEST['project_password']) || $this->engine->initial_project_password) {
 
+                echo "ooop";
                 // Password may have come from external call
                 if ($this->engine->initial_project_password) {
                     $testpassword = $this->engine->initial_project_password;
@@ -186,8 +192,13 @@ class AuthenticatorStandalone extends Authenticator
                 }
 
                 if ($testpassword == $project_password) {
-                    self::_grant("project");
-                    self::_grant("admin-page");
+                    echo "here";
+                    echo "we have ".$this->engine->access_mode."<BR>";
+                    echo "we have ".$this->engine->initial_role."<BR>";
+                    if ( $this->engine->initial_role == "guest" ) {
+                        self::_grant("project");
+                    }
+                    //self::_grant("admin-page");
                 } else {
                     self::_reset("guest");
                     self::_flag("project-password-error");
@@ -221,7 +232,7 @@ class AuthenticatorStandalone extends Authenticator
         }
 
         // If admin mode or logged on with project password we can show a logout button
-        if ( self::_allowed("admin") || ( !self::_allowed("design-fiddle" ) && self::_allowed("project") && $project_password))
+        if ( self::_allowed("admin") || ( !self::_allowed("design-fiddle" ) || ( self::_allowed("project") && $project_password )))
             self::_flag("show-logout-button");
 
         self::saveToSession();

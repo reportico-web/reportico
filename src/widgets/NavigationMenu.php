@@ -122,6 +122,7 @@ class NavigationMenu extends Widget
 
         //echo "ooo";
         $sections["logout-button"] = $this->engine->renderWidget("logout", "SubmitExecute");
+        $sections["login-button"] = $this->engine->renderWidget("login", "SubmitExecute");
         //echo "ppp";
 
         $useraccess = $this->engine->renderWidget("user-access", "UserAccess");

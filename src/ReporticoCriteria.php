@@ -61,7 +61,17 @@ class ReporticoCriteria extends ReporticoObject
                     )
                 )
             ),
-            "sql" => array( "description" => "SQL to generate lookup list", "parameters" => array( "sql" => "SQL query") ),
+            "sql" => array( "description" => "For lookup criteria items, the sql used to fetch the criteria selection items", "parameters" => array( "sql" => "The sql to return the relevant items") ),
+            "tab" => array( "description" => "Places the criteria widget into a tab group named with the specifed tab label. In reports with many crtieria grouping criteria under tabs can unclutter the screen", "parameters" => array( "tab title" => "The tab name to group the crtieria under.") ),
+            "tooltip" => array( "description" => "A help box describing the criteria item which appears when hovering over the widget", "parameters" => array( "tooltip" => "The criteria help text") ),
+            "return" => array( "description" => "The column from the criteria sql query that is used to return to the main query for filtering on", "parameters" => array( "column" => "The name of the column to return to the main query") ),
+            "display" => array( "description" => "The column from the criteria sql query that the user can select from in the chosen widget",
+                "parameters" => array(
+                    "widget display column" => "The name of the column to show for selection in the selection widget",
+                    "summary column" => "The name of the column to use for displaying the selected item(s) in the criteria widget summary box"
+                )
+            ),
+            "match" => array( "description" => "The column from the criteria sql query that the user can match on in the search box", "parameters" => array( "column" => "The name of the column to match on") ),
         )
     );
 

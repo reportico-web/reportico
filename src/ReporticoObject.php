@@ -25,6 +25,10 @@ class ReporticoObject
 
         if ( isset($this->usage["methods"]["$method"])) {
             //echo "<PRE>"; var_dump($this->usage["methods"][$method]); var_dump($args);echo "</PRE>";
+            if ( !isset($this->usage["methods"][$method]["parameters"])){
+                $this->usage["methods"][$method]["parameters"] = [];
+            }
+
             if ( count($args) != count($this->usage["methods"][$method]["parameters"]))  {
                 trigger_error("$level()->$method requires ".count($this->usage["methods"][$method]["parameters"]). " parameters.<BR>".$this->builderMethodUsage($level, $method), E_USER_ERROR);
                 return false;

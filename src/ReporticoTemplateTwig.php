@@ -55,8 +55,8 @@ class ReporticoTemplateTwig
             }
         }
 
-        $loader = new \Twig_Loader_Filesystem($this->viewDir);
-        $this->twig = new \Twig_Environment($loader, array(
+        $loader = new \Twig\Loader\FilesystemLoader($this->viewDir);
+        $this->twig = new \Twig\Environment($loader, array(
             'cache' => $this->cacheDir
             ));
     }

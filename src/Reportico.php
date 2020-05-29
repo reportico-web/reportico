@@ -10,6 +10,12 @@ if (!defined("REPORTICO_SESSION_CLASS"))
 function ReporticoSession()
 {
     return REPORTICO_SESSION_CLASS;
+} 
+
+if ( !function_exists("get_magic_quotes_gpc") ) {
+    function get_magic_quotes_gpc() {
+        return false;
+    } 
 }
 
 
@@ -55,7 +61,7 @@ class Reportico extends ReporticoObject
     public $delete_project_url;
     public $create_report_url;
 
-    public $version = "6.0.11";
+    public $version = "7.x.x";
     public $doc_version = "6.0.0";
 
     public $name;
@@ -2786,8 +2792,11 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function handleXmlQueryInput($mode = false)
     {
+        global $gcalled;
+        if ( $gcalled )
+            return;
+        $gcalled = true;
         $sessionClass = ReporticoSession();
-        //echo "first time handle = ".$sessionClass::getReporticoSessionParam("firstTimeIn");
 
         if ($mode == "MENU" && $sessionClass::issetReporticoSessionParam("xmlin")) //if ( $mode == "MENU" && array_key_exists("xmlin", $_SESSION[$sessionClass::reporticoNamespace()]) )
         {
@@ -2823,7 +2832,9 @@ class Reportico extends ReporticoObject
             $sessionClass::setReporticoSessionParam("xmlin", $this->xmlinput);
             $sessionClass::setReporticoSessionParam("xmlout", $this->xmlinput);
         }
-        //echo "first time xmlin = ".$sessionClass::getReporticoSessionParam("firstTimeIn");
+        //echo "<BR>======================================================<BR><PRE>"; var_dump($_SESSION);echo "</PRE>";
+        //echo "<BR>REPORT ".$this->initial_report."<BR>";
+
 
         if ($this->initial_report) {
             $this->xmlinput = $this->initial_report;
@@ -2907,6 +2918,7 @@ class Reportico extends ReporticoObject
         // apply default customized reportico actions if not using xml text in session
         $do_defaults = true;
 
+        $this->report_from_builder_first_call = false;
         if ( !$this->report_from_builder_first_call ) {
             if ($this->sqlinput) {
                 $this->importSQL($this->sqlinput);
@@ -2917,17 +2929,16 @@ class Reportico extends ReporticoObject
                 //else if ( $this->xmlintext )
                 //$do_defaults = false;
 
-                $this->xmlin = new XmlReader($this, $this->xmlinput, $this->xmlintext);
+                $this->xmlin = new XmlReader($this, $this->xmlinput, $this->xmlintext, false, false);
                 $this->xmlin->xml2query();
             } else {
                 if ($this->getExecuteMode() == "MAINTAIN") {
                     $do_defaults = false;
                 }
 
-                $this->xmlin = new XmlReader($this, false, "");
+                $this->xmlin = new XmlReader($this, false, "", false, true);
                 $this->xmlin->xml2query();
             }
-
         }
 
         // Custom query stuff loaded from project config.php.
@@ -3092,15 +3103,16 @@ class Reportico extends ReporticoObject
     {
         $sessionClass = ReporticoSession();
 
-        if ( !$sessionClass::issetReporticoSessionParam("xmlintext") ) {
+        // If running with just a query ( and no project report ) then we need to generate an XML report equivalent
+        // to work with the on the fly query. There force an XML regeneration
+        if ( !$sessionClass::issetReporticoSessionParam("xmlintext") && !$this->initial_report ) {
             $xmlout = new XmlWriter($this);
             $xmlout->prepareXmlData();
-            //$sessionClass::registerSessionParam("reportConfig", htmlspecialchars($xmlout->getXmldata()));
+            $sessionClass::registerSessionParam("reportConfig", htmlspecialchars($xmlout->getXmldata()));
             $this->reportDefinitionLoaded = true;
             $sessionClass::registerSessionParam("xmlintext", $xmlout->getXmldata());
         }
 
-        // PPP echo "ISSET?2 ".$sessionClass::issetReporticoSessionParam("reportConfig")."<BR>";
         $this->clear_reportico_session = false;
         ReporticoApp::setConfig('allow_output', true);
 
@@ -3587,7 +3599,7 @@ class Reportico extends ReporticoObject
                 if ( count(ReporticoApp::getSystemErrors()) > 0 ||
                       ReporticoApp::get("debug_mode") ||
                       count(ReporticoApp::getSystemDebug()) > 0 ||
-                      !Authenticator::allowed("project") )
+                      !Authenticator::allowed("execute") )
                 {
 
                     // If errors and this is an ajax request return json ajax response for first message
@@ -3742,7 +3754,10 @@ class Reportico extends ReporticoObject
                 }
 
                 // Avoid url manipulation by only allowing maintain mode in design or demo mode
+
+                echo "PREMAINTAIN $this->xmlinput ".strlen($this->xmlintext)."<BR>";
                 $this->handleXmlQueryInput($mode);
+                echo "POSTMAINTAIN $this->xmlinput ".strlen($this->xmlintext)."<BR>";
                 $this->initializePanels($mode);
 
                 ReporticoLang::loadModeLanguagePack("maintain", $this->output_charset);

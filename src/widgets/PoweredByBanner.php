@@ -55,7 +55,7 @@ class PoweredByBanner extends Widget
         $version = $this->engine->version;
 
         $text = "
-<div class='smallbanner non-printable'>Powered by <a href='http://www.reportico.org/' target='_blank'>reportico $version</a></div>
+<div class='smallbanner non-printable'><a href='http://www.reportico.org/' target='_blank'>reportico $version</a></div>
 ";
 
         return $text;

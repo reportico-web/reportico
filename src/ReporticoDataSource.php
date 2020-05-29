@@ -56,6 +56,32 @@ class ReporticoDataSource extends ReporticoObject
     public $external_connection = false;
     public $available_connections = false;
 
+    public $usage = array(
+        "description" => "Select data source",
+        "methods" => array(
+            "datasource" => array(
+                "description" => "Select source database",
+            ),
+            "database" => array(
+                "description" => "Connection String",
+                "parameters" => array(
+                    "connection string" => "PDO connection stringmysql:host=localhost; dbname=mydb",
+                ),
+            ),
+            "user" => array(
+                "description" => "Database user",
+                "parameters" => array(
+                    "username" => "Username for the connection",
+                ),
+            ),
+            "password" => array(
+                "description" => "Database pasword",
+                "parameters" => array(
+                    "password" => "Password for the connection",
+                )
+            )
+        ));
+
     public function __construct(&$pdo = false, $connections = false)
     {
         $this->_conn_host_name = ReporticoApp::getConfig("db_host");
@@ -100,6 +126,10 @@ class ReporticoDataSource extends ReporticoObject
     {
         $exitLevel = false;
         switch ( $method ) {
+
+            case "usage":
+                echo $this->builderUsage("datasource");
+                break;
 
             case "array":
                 $this->builder->engine->datasource->driver = "array";

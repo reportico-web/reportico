@@ -13,6 +13,10 @@ class ReporticoPage extends ReporticoObject
     public $usage = array(
         "description" => "Page Formatting",
         "methods" => array(
+            "leftmargin" => array( "description" => "Size of margin on left of page, specify Css value e.g 10px,2cm", "parameters" => array( "value" => "Margin size in CSS value 10px,2cm") ),
+            "rightmargin" => array( "description" => "Size of margin on right of page, specify Css value e.g 10px,2cm", "parameters" => array( "value" => "Margin size in CSS value 10px,2cm") ),
+            "topmargin" => array( "description" => "Size of margin on right of page, specify Css value e.g 10px,2cm", "parameters" => array( "value" => "Margin size in CSS value 10px,2cm") ),
+            "bottommargin" => array( "description" => "Size of margin on right of page, specify Css value e.g 10px,2cm", "parameters" => array( "value" => "Margin size in CSS value 10px,2cm") ),
             "orientation" => array( "description" => "Landscape or Portrait?",
                 "parameters" => array(
                     "type" => array( "description" => "Orientation Type",
@@ -23,7 +27,7 @@ class ReporticoPage extends ReporticoObject
                     )
                 )
             ),
-            "pagetitledisplay" => array( "description" => "Landscape or Portrait?",
+            "pagetitledisplay" => array( "description" => "Page Title Display",
                 "parameters" => array(
                     "type" => array( "description" => "Orientation Type",
                         "options" => array(
@@ -112,6 +116,10 @@ class ReporticoPage extends ReporticoObject
 
         //echo "<BR>============ page $method <BR>";
         switch ( strtolower($method) ) {
+
+            case "usage":
+                echo $this->builderUsage("page");
+                break;
 
             case "size":
                 $this->builder->engine->setAttribute("PageSize", strtoupper($args[0]));
