@@ -71,7 +71,7 @@ class Core extends Widget
             $reporttitle = ReporticoLang::translate($this->engine->deriveAttribute("ReportTitle", "Set Report Title"));
 
 
-        $themedir = $this->engine->theme_dir;
+        $themedir = $this->engine->url_path_to_templates."/".$this->engine->theme;
 
         $runtime = [
             "

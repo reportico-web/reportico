@@ -2066,7 +2066,6 @@ class XmlReader
     // Processes the HTML get/post paramters passed through on the maintain screen
     public function handleUserEntry()
     {
-        echo "HANDLEUSERENTRY<BR>";
         $sessionClass = ReporticoSession();
 
         // First look for a parameter beginning "submit_". This will identify
@@ -2277,7 +2276,6 @@ class XmlReader
 
         $xml = $xmlout->getXmldata();
         $this->query->xmlintext = $xml;
-        echo "XMLREADER TEXT SET TO ".strlen($xml)."<BR>";
 
         $this->query->xmlin = new XmlReader($this->query, false, $xml);
         $this->query->xmlin->show_area = $show_area;

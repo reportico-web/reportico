@@ -3755,9 +3755,7 @@ class Reportico extends ReporticoObject
 
                 // Avoid url manipulation by only allowing maintain mode in design or demo mode
 
-                echo "PREMAINTAIN $this->xmlinput ".strlen($this->xmlintext)."<BR>";
                 $this->handleXmlQueryInput($mode);
-                echo "POSTMAINTAIN $this->xmlinput ".strlen($this->xmlintext)."<BR>";
                 $this->initializePanels($mode);
 
                 ReporticoLang::loadModeLanguagePack("maintain", $this->output_charset);
