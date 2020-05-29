@@ -2936,7 +2936,7 @@ class Reportico extends ReporticoObject
                     $do_defaults = false;
                 }
 
-                $this->xmlin = new XmlReader($this, false, "", false, true);
+                $this->xmlin = new XmlReader($this, false, "", false, false);
                 $this->xmlin->xml2query();
             }
         }
