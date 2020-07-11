@@ -331,13 +331,21 @@ class Widget
 
                 // Parameters from a POSTED criteria are assumed to be values related to the return column
                 // so dont perform a lookup mapping to the return column .. also dont do this if the return
-                // column is the summary column
-                if ($abb && $ret && $abb->query_name != $ret->query_name && isset($_REQUEST["MANUAL_$name"])) {
+                // column is the summary column as specified by the indivisual widget
+
+                if ( $lq->widget->selection_match_element == "return" )
+                    $post_match_column = $ret->query_name;
+                else
+                    $post_match_column = $abb->query_name;
+
+                if ($abb && $ret && $post_match_column != $ret->query_name && isset($_REQUEST["MANUAL_$name"])) {
                     if (!$identified_criteria) {
                        $lq->executeCriteriaLookup();
                     }
 
                     $res = &$lq->lookup_query->targets[0]->results;
+                    //echo "<PRE> $col->query_name ";var_dump($res); //die;
+                    //echo "<PRE> $col->query_name ";var_dump($_REQUEST["MANUAL_$name"]); //die;
                     $choices = $lq->column_value;
                     if (!is_array($choices)) {
                         $choices = explode(',', $choices);
@@ -347,19 +355,19 @@ class Widget
                     $choices = array_unique($choices);
                     $target_choices = array();
                     foreach ($choices as $k => $v) {
-                        if (isset($res[$abb->query_name])) {
-                            foreach ($res[$abb->query_name] as $k1 => $v1) {
-                                //echo "$v1 / $v<br>";
+                        if (isset($res[$post_match_column])) {
+                            foreach ($res[$post_match_column] as $k1 => $v1) {
+                                echo "$post_match_column $v1 / $ret->query_name $v<br>";
                                 if ($v1 == $v) {
                                     $target_choices[] = $res[$ret->query_name][$k1];
-                                    //echo "$k -> ".$choices[$k]."<BR>";
+                                    echo "$k -> ".$choices[$k]."<BR>";
                                 }
                             }
                         }
                     }
                     $choices = $target_choices;
                     $lq->column_value = implode(",", $choices);
-                    //echo "=> $lq->column_value<BR>";
+                    echo "=> $lq->column_value<BR>";
 
                     if (!$choices) {
                         // Need to set the column value to a arbitrary value when no data found

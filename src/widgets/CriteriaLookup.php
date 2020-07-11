@@ -25,6 +25,7 @@ class CriteriaLookup extends Widget
     public $value = false;
     public $expanded = false;
     public $check_text = "selected";
+    public $selection_match_element = "return";
 
     public function __construct($engine, $criteria = false, $expanded = false)
     {

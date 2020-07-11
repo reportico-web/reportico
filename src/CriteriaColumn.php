@@ -100,7 +100,6 @@ class CriteriaColumn extends QueryColumn
         $this->lookup_query->addTarget($rep);
         $this->lookup_query->buildQuery($in_is_expanding, $this->query_name, false, $no_warnings);
         $this->lookup_query->executeQuery($this->query_name);
-        ReporticoApp::set("code_area", "");
     }
 
     // -----------------------------------------------------------------------------

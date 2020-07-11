@@ -28,6 +28,7 @@ class CriteriaLookupCheckbox extends CriteriaLookup
         $this->check_text = "checked";
         $this->criteria = $criteria;
         $this->expanded = $expanded;
+        $this->post_match_column = "summary";
 
         parent::__construct($engine, $criteria, $expanded);
     }

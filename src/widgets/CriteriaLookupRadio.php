@@ -28,6 +28,7 @@ class CriteriaLookupRadio extends CriteriaLookup
         $this->criteria = $criteria;
         $this->expanded = $expanded;
         $this->check_text = "checked";
+        $this->post_match_column = "return";
 
         parent::__construct($engine, $criteria, $expanded);
     }
