@@ -1228,7 +1228,7 @@ function submitAjaxLink(sourceWidget, url = false)
                     formparams[buttonName] = '1';
 
                     // Download pdf/csv from within current window
-                    ajaxFileDownload(ajaxaction, formparams, expandpanel, reportico_container);
+                    ajaxFileDownload(ajaxaction, formparams, expandpanel, sourceWidget);
                 }
 
                 return false;
@@ -1265,7 +1265,7 @@ function submitAjaxLink(sourceWidget, url = false)
  * Use ajax to return pdf or csv output and download to file.
  * For pdf, output is received in base64. 
  */
-function ajaxFileDownload(url, data, expandpanel, reportico_container) {
+function ajaxFileDownload(url, data, expandpanel, sourceWidget) {
 
     ajaxextra = getYiiAjaxURL();
     if ( ajaxextra != "" ) {
@@ -1518,7 +1518,7 @@ function executeReport(sourceWidget, format ) {
             formparams['execute_mode'] = 'EXECUTE';
             formparams[buttonName] = '1';
             formparams['reportico_ajax_called'] = '1';
-            ajaxFileDownload(ajaxaction, formparams, expandpanel, reportico_container);
+            ajaxFileDownload(ajaxaction, formparams, expandpanel, sourceWidget);
         }
 
         return false;
