@@ -220,6 +220,8 @@ class CriteriaLookup extends Widget
             $selectall = true;
         }
 
+        if ( !isset($this->criteria->lookup_query->targets[0]) )
+            return;
         $res = &$this->criteria->lookup_query->targets[0]->results;
         if (!$res) {
             $res = array();

@@ -343,7 +343,11 @@ class Widget
                        $lq->executeCriteriaLookup();
                     }
 
+                    if ( !isset($this->lookup_query->targets[0]) ){
+                        return;
+                    }
                     $res = &$lq->lookup_query->targets[0]->results;
+
                     //echo "<PRE> $col->query_name ";var_dump($res); //die;
                     //echo "<PRE> $col->query_name ";var_dump($_REQUEST["MANUAL_$name"]); //die;
                     $choices = $lq->column_value;

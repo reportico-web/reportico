@@ -40,7 +40,7 @@
     <!-- End Form -->
     {{ WIDGETS["criteria-form"]["end"] }}
 
-	{{ WIDGETS["powered-by-banner"] }}
+	{# WIDGETS["powered-by-banner"] #}
 </div>
 {% include 'footer.inc.tpl' %}
 {% endautoescape %}

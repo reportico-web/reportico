@@ -329,7 +329,7 @@
       </div>
       <div id='reportico-report-output'>
 
-{{ WIDGETS["powered-by-banner"] }}
+{# WIDGETS["powered-by-banner"] #}
 </div>
 
 {% include 'footer.inc.tpl' %}

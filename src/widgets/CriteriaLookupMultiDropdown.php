@@ -57,6 +57,10 @@ class CriteriaLookupMultiDropdown extends CriteriaLookup
 
     public function renderWidgetStart()
     {
+        if ( !isset($this->criteria->lookup_query->targets[0]) ){
+            return;
+        }
+
         $res = &$this->criteria->lookup_query->targets[0]->results;
         $k = key($res);
         $multisize = 4;

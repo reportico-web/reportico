@@ -61,7 +61,7 @@ class Reportico extends ReporticoObject
     public $delete_project_url;
     public $create_report_url;
 
-    public $version = "7.x.x";
+    public $version = "7.1.19";
     public $doc_version = "6.0.0";
 
     public $name;
@@ -4051,7 +4051,7 @@ class Reportico extends ReporticoObject
                     ReporticoApp::set("error_status", 1);
                 }
             }
-            if ($conn && !$recordSet) {
+            if ($conn && !$recordSet && !ReporticoApp::get("error_status") && $this->execute_mode != "MAINTAIN" ) {
                 if ($errorMessage) {
                     ReporticoApp::handleError("Query Failed<BR><BR>" . $this->query_statement . "<br><br>" .
                         $errorMessage);
@@ -5532,7 +5532,6 @@ class Reportico extends ReporticoObject
 
         $this->widgets["title"] = new \Reportico\Widgets\Title($this, true);
         $this->widgets["description"] = new \Reportico\Widgets\Description($this, true);
-        $this->widgets["status-message-block"] = new \Reportico\Widgets\StatusMessageBlock($this, true);
         $this->widgets["user-access"] = new \Reportico\Widgets\UserAccess($this, true);
         $this->widgets["admin-page"] = new \Reportico\Widgets\AdminPage($this, true);
         $this->widgets["design-page"] = new \Reportico\Widgets\DesignPage($this, true);
@@ -5572,6 +5571,7 @@ class Reportico extends ReporticoObject
                 $this->assetManager->manager->load($config["name"]);
             }
         }
+
         foreach ( $criteriaRenders as $key => $render ) {
             if ( isset($render["lookup-selection"])) {
                 $this->widgetRenders["criteria-lookup"] = $render["lookup-selection"];
@@ -5582,6 +5582,9 @@ class Reportico extends ReporticoObject
             }
         }
 
+        $this->widgets["status-message-block"] = new \Reportico\Widgets\StatusMessageBlock($this, true);
+        $this->widgetRenders["status-message-block"] = $this->widgets["status-message-block"]->render();
+        
 
         $this->assetManager->reload($group);
 

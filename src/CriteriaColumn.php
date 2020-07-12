@@ -288,6 +288,8 @@ class CriteriaColumn extends QueryColumn
         }
 
         $txt = "";
+        if ( !isset($this->lookup_query->targets[0]) )
+            return;
         $res = &$this->lookup_query->targets[0]->results;
         if (!$res) {
             $res = array();
@@ -689,6 +691,8 @@ class CriteriaColumn extends QueryColumn
 
         $text .= '{"items": [';
 
+        if ( !isset($this->lookup_query->targets[0]) )
+            return;
         $res = &$this->lookup_query->targets[0]->results;
         if ($res) {
 
@@ -1104,15 +1108,14 @@ class CriteriaColumn extends QueryColumn
                     ||
                     (
                         array_key_exists("EXPANDED_" . $this->query_name, $_REQUEST) ||
+                        array_key_exists("EXPAND_" . $this->query_name, $_REQUEST) ||
                         $thereishidden ||
                         $this->column_value
                     )
                 ) {
 
                     // Dont bother running select for criteria lookup if criteria item is a dynamic
-                    //ReporticoUtility::trace("RENDEREDa $type");
                     $this->executeCriteriaLookup();
-                    ////ReporticoUtility::trace("RENDEREDb $type");
                 }
                 //$text .= $this->lookup_display(false);
                 $text .= (\Reportico\Widgets\CriteriaLookup::createCriteriaLookup($this->parent_reportico, $this, $expanding ))->render();

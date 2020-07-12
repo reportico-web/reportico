@@ -1,7 +1,7 @@
 {% autoescape false %}
 {# Status Message #}
 {% if WIDGETS["status-message-block"]["error"] %}
-<div class="reportico-status-block" style="color: #ff000">
+<div class="reportico-status-block" style="color: #ff0000">
     {{ WIDGETS["status-message-block"]["error"] }}
 </div>
 {% endif %}

@@ -10,7 +10,7 @@
 	<div class="container-fluid col">
 		<div style="float: right;">
 			<img height="78px" src="{{ WIDGETS["admin-page"]["admin-header"]["logo"] }}">
-			<div class="smallbanner">Version <a href="http://www.reportico.org/" target="_blank">6.0.10</a></div>
+			<div class="smallbanner">Version <a href="http://www.reportico.org/" target="_blank">{{ WIDGETS["admin-page"]["admin-header"]["version"] }}</a></div>
 		</div>
 		<div style="height: 78px">
 			<h1 class="reportico-title-bar" style="text-align: center; padding-top: 30px; padding-left: 200px;">Reportico Administration Page</h1>

@@ -268,7 +268,7 @@ class Template extends Widget
             mkdir($templatefolder,0755, true );
         }
         if ( !is_dir($templatefolder)) {
-            echo "Cannot create $templatefolder";
+            echo "Cannot create $templatefolder - check permissions";
             die;
         }
         $this->engine->template_files = array();
