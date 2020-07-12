@@ -277,6 +277,8 @@ class CriteriaColumn extends QueryColumn
         }
 
         $txt = "";
+        if ( !isset($this->lookup_query->targets[0]) )
+            return;
         $res = &$this->lookup_query->targets[0]->results;
         if (!$res) {
             $res = array();
@@ -1170,6 +1172,8 @@ class CriteriaColumn extends QueryColumn
 
             case "MULTI":
                 $multisize = 12;
+                if ( !isset($this->lookup_query->targets[0]) )
+                    return $text;
                 $res = &$this->lookup_query->targets[0]->results;
                 $k = key($res);
                 $multisize = 4;
@@ -1225,6 +1229,8 @@ class CriteriaColumn extends QueryColumn
             $selectall = true;
         }
 
+        if ( !isset($this->lookup_query->targets[0]) )
+            return $text;
         $res = &$this->lookup_query->targets[0]->results;
         if (!$res) {
             $res = array();
@@ -1471,6 +1477,8 @@ class CriteriaColumn extends QueryColumn
 
             case "MULTI":
                 $multisize = 12;
+                if ( !isset($this->lookup_query->targets[0]) )
+                    return $text;
                 $res = &$this->lookup_query->targets[0]->results;
                 $k = key($res);
                 $multisize = 4;
@@ -1526,6 +1534,8 @@ class CriteriaColumn extends QueryColumn
             $selectall = true;
         }
 
+        if ( !isset($this->lookup_query->targets[0]) )
+            return $text;
         $res = &$this->lookup_query->targets[0]->results;
         if (!$res) {
             $res = array();
