@@ -3679,7 +3679,7 @@ class Reportico extends ReporticoObject
         $this->targets = array();
         $this->assignment = array();
         $this->criteria_links = array();
-        $this->user_parameters = array();
+        //$this->user_parameters = array();
         // an array of available databases to connect ot
         $this->available_connections = array();
         $this->plugins = array();
