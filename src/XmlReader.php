@@ -1477,18 +1477,10 @@ class XmlReader
         foreach ($_REQUEST as $k => $v) {
             if (preg_match($match_key, $k, $matches)) {
                 if ($k == "set_mainquerform_PreExecuteCode") {
-                    if (get_magic_quotes_gpc()) {
-                        $updates[$matches[1]] = stripslashes($v);
-                    } else {
-                        $updates[$matches[1]] = $v;
-                    }
+                    $updates[$matches[1]] = $v;
 
                 } else {
-                    if (get_magic_quotes_gpc()) {
-                        $updates[$matches[1]] = stripslashes($v);
-                    } else {
-                        $updates[$matches[1]] = $v;
-                    }
+                    $updates[$matches[1]] = $v;
 
                 }
             }
