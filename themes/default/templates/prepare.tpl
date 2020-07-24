@@ -77,7 +77,6 @@
 <div id="reportico-report-output">
 </div>
 
-{% include 'reportico-banner.inc.tpl' %}
 </div>
 
 {% include 'footer.inc.tpl' %}

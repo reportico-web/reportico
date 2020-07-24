@@ -254,7 +254,7 @@ if ( $reportico->access_mode == "REPORTOUTPUT" )
 //$reportico->static_menu = array ();
 
 // Required PDF Engine set -- to phantomjs or tcpdf
-$reportico->pdf_engine = "phantomjs";
+$reportico->pdf_engine = "tcpdf";
 
 // Path to Phantom js executable relative to root
 $reportico->pdf_phantomjs_path = "bin/phantomjs";

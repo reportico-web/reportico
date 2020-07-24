@@ -70,7 +70,6 @@
 			</TABLE>
 {% endif %}
 </FORM>
-{% include 'reportico-banner.inc.tpl' %}
 </div>
 {% include 'footer.inc.tpl' %}
 {% endautoescape %}
