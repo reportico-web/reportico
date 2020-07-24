@@ -16,6 +16,7 @@
 
 
 	{# Menu Items #}
+    {% if PERMISSIONS["access"] %}
 	{% for menuitem in  WIDGETS["menu-page"]["project-menu"]["project-menu-items"]  %}
 	<div class="flex-container" style="text-align: center; padding: 4px">
 			{% if menuitem.url %}
@@ -28,6 +29,7 @@
 		</div>
 	</div>
 	{% endfor %}
+	{% endif %}
 
 {% if ERRORMSG|length>0 %}
 			<TABLE class="reportico-error-box">

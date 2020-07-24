@@ -103,6 +103,12 @@ class NavigationMenu extends Widget
             $admin_menu_url .= "&" . $forward;
         }
 
+        $create_report_url = $this->engine->create_report_url;
+        $forward = $sessionClass::sessionRequestItem('forward_url_get_parameters', '');
+        if ($forward) {
+            $create_report_url .= "&" . $forward;
+        }
+
         $sections = [];
 
         if ( $this->engine->output_template_parameters["show_hide_navigation_menu"] == "hide" )
@@ -116,6 +122,7 @@ class NavigationMenu extends Widget
         $sections ["debug-level"] = $this->engine->renderWidget("debug-level", "DebugLevel");
 
         $sections["admin_menu_url"] = $admin_menu_url;
+        $sections["create_report_url"] = $create_report_url;
         $sections["prepare_url"] = $prepare_url;
         $sections["menu_url"] = $menu_url;
         $sections["mode"] = $this->engine->execute_mode;

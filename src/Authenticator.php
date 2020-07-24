@@ -234,7 +234,7 @@ class Authenticator extends ReporticoObject
     public static function _grant( $permissions ) {
 
 
-        //echo "GGGGGGGGGGRANT            ".$permissions."!!!<BR>";
+        //echo "GRANT            ".$permissions."!!!<BR>";
         //echo "<PRE>";
         //debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
         //echo "</PRE>";
@@ -261,6 +261,7 @@ class Authenticator extends ReporticoObject
 
     public static function _revoke ( $permissions ) {
 
+        //echo "======================== REVOKE $permissions <BR>";
         $instance = self::getInstance();
 
         $instance->_permissions = false;
@@ -276,6 +277,7 @@ class Authenticator extends ReporticoObject
                 unset($instance->permissions[$permission]);
             }
         }
+        //echo "<BR><<<<<<<<<<<<<<<<<<<<<<<<<REVOKED $permissions <BR>";
     }
 
     public static function resumeFromSession ($allowed = [], $revoked = []) {
@@ -289,11 +291,13 @@ class Authenticator extends ReporticoObject
 
     }
 
-    public function flattenPermissions ()
+    public function flattenPermissions ($reset = false)
     {
 
         $instance = self::getInstance();
 
+        if ( $reset )
+            $instance->_permissions = false;
         if (!$instance->_permissions) {
             $instance->_permissions = [];
             foreach ($instance->permissions as $kp => $permission) {
@@ -309,6 +313,10 @@ class Authenticator extends ReporticoObject
                     if (is_array($role)) {
 
                         if ($kr == $permission) {
+
+                            if ( isset($instance->revokes[$permission])) {
+                                continue;
+                            }
                             $instance->_permissions[$permission] = $permission;
                             $matched = true;
                             $found = true;
@@ -322,6 +330,9 @@ class Authenticator extends ReporticoObject
                             // Second Level of roles to flatten
                             if (is_array($role1)) {
                                 if ($kr1 === $permission) {
+                                    if ( isset($instance->revokes[$permission])) {
+                                        continue;
+                                    }
                                     $instance->_permissions[$permission] = $permission;
                                     $matched1 = true;
                                     $found = true;
@@ -330,6 +341,9 @@ class Authenticator extends ReporticoObject
                                 $matched2 = false;
                                 foreach ($role1 as $kr2 => $role2) {
 
+                                    if ( isset($instance->revokes[$role2])) {
+                                        continue;
+                                    }
                                     if (is_string($role2)) {
 
                                         if ($kr2 == $permission) {
@@ -337,8 +351,12 @@ class Authenticator extends ReporticoObject
                                             $found = true;
                                         }
 
-                                        if ($matched || $matched1 || $matched2)
+                                        if ($matched || $matched1 || $matched2){
+                                            if ( isset($instance->revokes[$role2])) {
+                                                continue;
+                                            }
                                             $instance->_permissions[$role2] = $role2;
+                                        }
                                     } else {
                                         echo "Max 3 levels of permissions";
                                         die;
@@ -350,7 +368,10 @@ class Authenticator extends ReporticoObject
                                     $matched2 = true;
                                 }
                             if ($matched || $matched2) {
-                                $instance->_permissions[$role1] = $role1;
+                                if ( !isset($instance->revokes[$role1])){
+                                    $instance->_permissions[$role1] = $role1;
+                                } else {
+                                }
                             }
                         }
                         $matched1 = false;
@@ -358,8 +379,9 @@ class Authenticator extends ReporticoObject
                         if ($kr === $permission) {
                             $matched = true;
                         }
-                    if ($matched)
+                    if ($matched){
                         $instance->_permissions[$kr] = $kr;
+                    }
                 }
 
                 //if ( $matched )
@@ -392,7 +414,7 @@ class Authenticator extends ReporticoObject
         }
     }
 
-    public function show ($msg = "")
+    public static function show ($msg = "")
     {
 
         $instance = self::getInstance();
@@ -424,6 +446,8 @@ class Authenticator extends ReporticoObject
     public static function widgetRenders ($type = false)
     {
 
+        //echo "<BR><BR>RENDERS<BR>";
+        //self::show();
         $instance = self::getInstance();
         $instance->flattenPermissions();
 
@@ -433,6 +457,14 @@ class Authenticator extends ReporticoObject
         foreach( $instance->_permissions as $permission ) {
             $renders["permissions"][$permission] = $permission;
         }
+
+        //foreach( $instance->revokes as $permission ) {
+            //echo "REVOKE $permission<BR>";
+            //if ( isset($renders["permissions"][$permission])) {
+                //unset($renders["permissions"][$permission]);
+                //echo "UNSET $permission<BR>";
+            //}
+        //}
 
         foreach( $instance->flags as $flag ) {
             $renders["flags"][$flag] = $flag;

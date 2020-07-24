@@ -43,6 +43,7 @@
 {
     background-color: #ffffff;
     position: relative;
+    font-size: 14px;
 }
 
 /*#reportico-container .row {
@@ -302,17 +303,10 @@ a:visited
 */
 
 /* Style for Menu Header */
-/*
 .reportico-menu-item-link
 {
-    color: #000000 !important;
-    color: inherit;
-    font-size: 12pt;
-    border: none;
-    font-weight: 200;
-    text-decoration: none;
+    font-size: 1rem;
 }
-*/
 
 .reportico-menu-item-link:hover 
 {
@@ -533,6 +527,15 @@ input.reportico-admin-button2
     text-align: left;
     background-color: #FFFFFF;
     font-size: 10pt;
+}
+
+.reportico-drop-select-200
+{
+    text-align: left;
+    background-color: #FFFFFF;
+    font-size: 10pt;
+    width: 200px !important;
+    display: inline !important;
 }
 
 .reportico-drop-select-regular

@@ -61,7 +61,7 @@ and not WIDGETS["status-message-block"]["debug"]
 
     {% else %}
 
-        {% if PERMISSIONS["design"] %}
+        {% if PERMISSIONS["design"] and WIDGETS["popup-edit-description"]["id"] %}
         <button type='submit' class='flex-widget btn btn-sm btn-outline-secondary reportico-edit-link'
             title='{{ WIDGETS["popup-edit-description"]["title"] }}' id='{{ WIDGETS["popup-edit-description"]["id"] }}'
             name='{{ WIDGETS["popup-edit-description"]["name"] }}' value='{{ WIDGETS["popup-edit-description"]["label"] }}' >

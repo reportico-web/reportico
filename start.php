@@ -100,7 +100,7 @@ $reportico->clear_reportico_session = true;
 // ONEREPORT - limits user to single report, crtieria entry and report execution ( requires initial project/report )
 // REPORTOUTPUT - executes a report and allows to "Return" button to crtieria entry ( requires initial project/report )
 //$reportico->access_mode = "<MODE>";
-$reportico->access_mode = "FULL";
+$reportico->access_mode = "ALLPROJECTS";
 
 //
 // Default initial execute mode to single report output if REPORTOUTPUT mode specified

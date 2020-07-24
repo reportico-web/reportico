@@ -47,7 +47,7 @@
 
 				    {# debuglevel  select box in admin mode #}
 				    {% if PERMISSIONS["admin"] %}
-				<li>{{ WIDGETS["navigation-menu"]["debug-level"] }}</li>
+				    <li>{{ WIDGETS["navigation-menu"]["debug-level"] }}</li>
 				    {% endif %}
 				    {% endif %}
 
@@ -74,6 +74,10 @@
 				{# Admin Menu button #}
 				{% if PERMISSIONS["admin-page"] %}
 				<li class="nav-item"> <a class='reportico-submit nav-link' href='{{ WIDGETS["navigation-menu"]["admin_menu_url"] }}'>{{ T_ADMIN_MENU }}</a> </li>
+				{% endif %}
+				{% if PERMISSIONS["admin"] %}
+                {# Create Report Option #}
+				<li class="nav-item"> <a class='reportico-submit nav-link' href='{{ WIDGETS["navigation-menu"]["create_report_url"] }}'>{{ T_CREATE_REPORT }}</a> </li>
 				{% endif %}
 
 

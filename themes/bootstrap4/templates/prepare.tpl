@@ -23,7 +23,7 @@
     <div class="flex-container" style="justify-content: center">
             <h2 class="flex-widget" style="width: 100%;border-bottom: solid 1px #aaaaaa">
             {{ WIDGETS["title"]["title"] }}
-            {% if PERMISSIONS["design"] %}
+            {% if PERMISSIONS["design"] and WIDGETS["popup-edit-title"]["id"] %}
             <button type='submit' class='flex-widget btn btn-sm btn-outline-secondary reportico-edit-link'
                title='{{ WIDGETS["popup-edit-title"]["title"] }}' id='{{ WIDGETS["popup-edit-title"]["id"] }}'
                name='{{ WIDGETS["popup-edit-title"]["name"] }}' value='{{ WIDGETS["popup-edit-title"]["label"] }}' >
@@ -82,22 +82,28 @@
       {# Left hand side Criteria Entry Blocks #}
       <div class="col-6" >
 
-          {% if FLAGS["admin-report-selected"] or FLAGS["show_hide_prepare_go_buttons"] %}
-          {{ WIDGETS["submit-go"]["widget"] }}
-          {% endif %}
+          <div class="d-flex" style="width: 100%">
 
-          {% if PERMISSIONS["design"] %}
-          {# Criteria Edit Button #}
-          <button type='submit'
+              {% if PERMISSIONS["design"] and WIDGETS["popup-edit-criteria"]["id"] %}
+              {# Criteria Edit Button #}
+              <div >
+              <button type='submit'
                  class='flex-widget btn btn-sm btn-outline-primary reportico-edit-link'
                  title='{{ WIDGETS["popup-edit-criteria"]["title"] }}'
                  id='{{ WIDGETS["popup-edit-criteria"]["id"] }}'
                  name='{{ WIDGETS["popup-edit-criteria"]["name"] }}'
                  value='{{ WIDGETS["popup-edit-criteria"]["label"] }}'
-          >
+              >
               {{ WIDGETS["popup-edit-criteria"]["label"] }} <i class="fa fa-pen fa-lg"></i>
-          </button>
-          {% endif %}
+              </button>
+              </div>
+              {% endif %}
+              <div class="ml-auto ">
+              {% if FLAGS["admin-report-selected"] or FLAGS["show_hide_prepare_go_buttons"] %}
+              {{ WIDGETS["submit-go"]["widget"] }}
+              {% endif %}
+              </div>
+          </div>
 
           <!-div class="d-flex bg-secondary"-->
 
@@ -113,7 +119,7 @@
 
                       {# Criteria entry selection #}
                       {% if criterion.hidden %}
-                          <div class='d-flex' style="padding: 3px 0px;">
+                          <div class='d-flex' style="padding: 3px 0px; display: none !important">
                       {% else %}
                           <div class='d-flex' style="padding: 3px 0px;">
                       {% endif %}

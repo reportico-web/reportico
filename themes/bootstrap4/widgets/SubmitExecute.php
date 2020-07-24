@@ -21,6 +21,7 @@ use \Reportico\Engine\ReporticoApp;
 use \Reportico\Engine\ReporticoUtility;
 use \Reportico\Engine\ReporticoSession;
 
+
 class SubmitExecute extends \Reportico\Widgets\Widget
 {
     public $rawvalue = false;
@@ -32,7 +33,6 @@ class SubmitExecute extends \Reportico\Widgets\Widget
     public function __construct($engine, $load = false, $type = false )
     {
 
-        //echo "oopydo"; die;
         $this->buttonType = $type;
 
         $this->buttonTypes = [

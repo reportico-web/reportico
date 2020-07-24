@@ -10,7 +10,9 @@
 	{% include 'navigation-menu.inc.tpl' %}
 
 	<!-- Report Title -->
-	{{ WIDGETS["title"] }}
+    <h2 class="flex-widget" style="width: 100%;border-bottom: solid 1px #aaaaaa">
+	{{ WIDGETS["title"]["title"] }}
+    </h2>
 
 	{% if WIDGETS["status-message-block"]["status"] %}
 	<div class="reportico-status-block">
@@ -25,10 +27,28 @@
 			{% if PERMISSIONS["save"] %}
 			    {{ WIDGETS["save-report"] }}
 			{% endif %}
-			{{ WIDGETS["run-report"] }}
+            <input type='submit'
+                class='flex-widget btn btn-sm btn-outline-secondary reportico-edit-link'
+                title='{{ WIDGETS["run-report"]["title"] }}'
+                id='{{ WIDGETS["run-report"]["id"] }}'
+                name='{{ WIDGETS["run-report"]["name"] }}'
+                value='{{ WIDGETS["run-report"]["label"] }}'
+            >
 			{% if PERMISSIONS["save"] %}
-			    {{ WIDGETS["new-report"] }}
-			    {{ WIDGETS["delete-report"] }}
+            <input type='submit'
+                class='flex-widget btn btn-sm btn-outline-secondary reportico-edit-link'
+                title='{{ WIDGETS["new-report"]["title"] }}'
+                id='{{ WIDGETS["new-report"]["id"] }}'
+                name='{{ WIDGETS["new-report"]["name"] }}'
+                value='{{ WIDGETS["new-report"]["label"] }}'
+            >
+            <input type='submit'
+                class='flex-widget btn btn-sm btn-outline-danger reportico-edit-link'
+                title='{{ WIDGETS["delete-report"]["title"] }}'
+                id='{{ WIDGETS["delete-report"]["id"] }}'
+                name='{{ WIDGETS["delete-report"]["name"] }}'
+                value='{{ WIDGETS["delete-report"]["label"] }}'
+            >
 			{% endif %}
 		</div>
 		<!--div class="col-sm-6 col-md-6 col-xl-6 col-lg-6 col-xs-6">

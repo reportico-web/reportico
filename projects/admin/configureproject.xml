@@ -324,6 +324,36 @@
                 </CriteriaItem>
 
                 <CriteriaItem>
+                    <Name>language</Name>
+                    <Title>Project Language</Title>
+                    <QueryTableName></QueryTableName>
+                    <QueryColumnName></QueryColumnName>
+                    <CriteriaHelp>HELP_LANGUAGE</CriteriaHelp>
+                    <CriteriaType>LIST</CriteriaType>
+                    <CriteriaDisplay>DROPDOWN</CriteriaDisplay>
+                    <ExpandDisplay>NOINPUT</ExpandDisplay>
+                    <ReturnColumn></ReturnColumn>
+                    <DisplayColumn></DisplayColumn>
+                    <OverviewColumn></OverviewColumn>
+                    <MatchColumn></MatchColumn>
+                    <CriteriaDefaults>{constant,SW_LANGUAGE}</CriteriaDefaults>
+                    <CriteriaList>{languages}</CriteriaList>
+                    <Query>
+                        <TableSql></TableSql>
+                        <WhereSql></WhereSql>
+                        <GroupSql></GroupSql>
+                        <RowSelection></RowSelection>
+                        <SQL>
+                            <QuerySql></QuerySql>
+                        </SQL>
+                        <QueryColumns></QueryColumns>
+                        <OrderColumns></OrderColumns>
+                        <Assignments></Assignments>
+                    </Query>
+                    <CriteriaLinks></CriteriaLinks>
+                </CriteriaItem>
+
+                <CriteriaItem>
                     <Name>protocol</Name>
                     <Title>Protocol (Informix Only)</Title>
                     <QueryTableName></QueryTableName>

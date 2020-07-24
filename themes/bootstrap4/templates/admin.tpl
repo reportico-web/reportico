@@ -63,27 +63,30 @@
 	{% if not FLAGS["show-set-admin-password"] %}
 	<div class="flex-container">
 
-        {# Run Project Option #}
-		<div class="flex-item col" style="text-align: center; padding: 4px">
-			<div style="width: 230px; text-align: right; display: inline-block">{{ T_RUN_SUITE }}</div>
-			<select class='form-control reportico-drop-select-regular' name='jump_to_menu_project'>
-                {{ WIDGETS["admin-page"]["admin-menu"]["project-options"] }}
-			</select>
-			{{ include ('button.inc.tpl', {
-			button_type : 'navbar-button',
-			button_style : 'success',
-			button_label : WIDGETS["admin-page"]["admin-menu"]["run-project-button"]["label"],
-			button_name : WIDGETS["admin-page"]["admin-menu"]["run-project-button"]["name"],
-			button_id : WIDGETS["admin-page"]["admin-menu"]["run-project-button"]["id"]
-			} ) }}
-		</div>
+	    {% if WIDGETS["admin-page"]["admin-menu"]["project-options"] %}
+            {# Run Project Option #}
+		    <div class="flex-item col" style="text-align: center; padding: 4px">
+			    <div style="width: 230px; text-align: right; display: inline-block">{{ T_RUN_SUITE }}</div>
+			    <select class='form-control reportico-drop-select-200' name='jump_to_menu_project'>
+                    {{ WIDGETS["admin-page"]["admin-menu"]["project-options"] }}
+			    </select>
+			    {{ include ('button.inc.tpl', {
+			    button_type : 'navbar-button',
+			    button_style : 'success',
+			    button_label : WIDGETS["admin-page"]["admin-menu"]["run-project-button"]["label"],
+			    button_name : WIDGETS["admin-page"]["admin-menu"]["run-project-button"]["name"],
+			    button_id : WIDGETS["admin-page"]["admin-menu"]["run-project-button"]["id"]
+			    } ) }}
+		    </div>
+	    {% endif %}
 
 		{% if PERMISSIONS["admin"] %}
 
+	    {% if WIDGETS["admin-page"]["admin-menu"]["project-options"] %}
 		{# Create Report Option #}
 		<div class="flex-item col" style="text-align: center; padding: 4px">
 			<div style="width: 230px; text-align: right; display:inline-block">{{ T_CREATE_REPORT }}</div>
-			<select class='form-control reportico-drop-select-regular' name='jump_to_create_report'>
+			<select class='form-control reportico-drop-select-200' name='jump_to_create_report'>
 				{{ WIDGETS["admin-page"]["admin-menu"]["project-options"] }}
 			</select>
 			{{ include ('button.inc.tpl', {
@@ -98,7 +101,7 @@
 		{# Configure Project Option #}
 		<div class="flex-item col align-content-center" style="text-align: center; padding: 4px">
 			<div style="width: 230px; text-align: right; display:inline-block">{{ T_CONFIG_PARAM }}</div>
-			<select class='form-control reportico-drop-select-regular' name='jump_to_configure_project'>
+			<select class='form-control reportico-drop-select-200' name='jump_to_configure_project'>
 			    {{ WIDGETS["admin-page"]["admin-menu"]["project-options"] }}
 			</select>
 			{{ include ('button.inc.tpl', {
@@ -113,7 +116,7 @@
         {# Delete Project Option #}
 		<div class="flex-item col align-content-center" style="text-align: center; padding: 4px">
 			<div style="width: 230px; text-align: right; display:inline-block">{{ T_DELETE_PROJECT }}</div>
-		    <select class='form-control reportico-drop-select-regular' name='jump_to_delete_project'>
+		    <select class='form-control reportico-drop-select-200' name='jump_to_delete_project'>
 			    {{ WIDGETS["admin-page"]["admin-menu"]["project-options"] }}
             </select>
 			{{ include ('button.inc.tpl', {
@@ -124,6 +127,8 @@
 			button_id : WIDGETS["admin-page"]["admin-menu"]["delete-project-button"]["id"]
 			} ) }}
 		</div>
+	    {% endif %}
+
 
         {# Menu Items #}
         {% for menuitem in  WIDGETS["admin-page"]["admin-menu"]["project-menu-items"]  %}

@@ -1,4 +1,5 @@
 {% autoescape false %}
+{% if not IS_ADMIN_SCREEN %}
 {% if not REPORTICO_BOOTSTRAP_MODAL %}
     {{ WIDGETS["popup-edit-sql"]["widget"] }}
     {{ WIDGETS["popup-edit-columns"]["widget"] }}
@@ -15,48 +16,70 @@
         </div>
         {% endif %}
         <div class="flex-widget" style="justify-content: flex_end">
-    		   <div class="111input-group">
+    		   <div class="input-group">
+                   <div class="btn-group" role="group" aria-label="">
                    <button type='submit' class='flex-widget btn btn-sm btn-outline-secondary reportico-edit-link'
                            title='{{ WIDGETS["popup-edit-sql"]["title"] }}' id='{{ WIDGETS["popup-edit-sql"]["id"] }}'
                            name='{{ WIDGETS["popup-edit-sql"]["name"] }}' value='{{ WIDGETS["popup-edit-sql"]["label"] }}' >
-                            {{ WIDGETS["popup-edit-sql"]["label"] }} <i class="fa fa-pen fa-lg"></i>
+                            <i class="fa fa-pen fa-lg"></i>{{ WIDGETS["popup-edit-sql"]["label"] }}
                    </button>
                    <button type='submit' class='flex-widget btn btn-sm btn-outline-secondary reportico-edit-link'
                            title='{{ WIDGETS["popup-edit-columns"]["title"] }}' id='{{ WIDGETS["popup-edit-columns"]["id"] }}'
                            name='{{ WIDGETS["popup-edit-columns"]["name"] }}' value='{{ WIDGETS["popup-edit-columns"]["label"] }}' >
-                       {{ WIDGETS["popup-edit-columns"]["label"] }} <i class="fa fa-pen fa-lg"></i>
+                       {{ WIDGETS["popup-edit-columns"]["label"] }} 
                    </button>
                    <button type='submit' class='flex-widget btn btn-sm btn-outline-secondary reportico-edit-link'
                            title='{{ WIDGETS["popup-edit-assignments"]["title"] }}' id='{{ WIDGETS["popup-edit-assignments"]["id"] }}'
                            name='{{ WIDGETS["popup-edit-assignments"]["name"] }}' value='{{ WIDGETS["popup-edit-assignments"]["label"] }}' >
                        {{ WIDGETS["popup-edit-assignments"]["label"] }}
-                       <i class="fa fa-pen fa-lg"></i>
                    </button>
                    <button type='submit' class='flex-widget btn btn-sm btn-outline-secondary reportico-edit-link'
                            title='{{ WIDGETS["popup-edit-groups"]["title"] }}' id='{{ WIDGETS["popup-edit-groups"]["id"] }}'
                            name='{{ WIDGETS["popup-edit-groups"]["name"] }}' value='{{ WIDGETS["popup-edit-groups"]["label"] }}' >
-                       {{ WIDGETS["popup-edit-groups"]["label"] }} <i class="fa fa-pen fa-lg"></i>
+                       {{ WIDGETS["popup-edit-groups"]["label"] }} 
                    </button>
                    <button type='submit' class='flex-widget btn btn-sm btn-outline-secondary reportico-edit-link'
-                           title='{{ WIDGETS["popup-edit-charts"]["title"] }}' id='{{ WIDGETS["popup-edit-charts"]["id"] }}'
-                           name='{{ WIDGETS["popup-edit-charts"]["name"] }}' value='{{ WIDGETS["popup-edit-charts"]["label"] }}' >
-                       {{ WIDGETS["popup-edit-charts"]["label"] }} <i class="fa fa-pen fa-lg"></i>
+                           title='{{ WIDGETS["popup-edit-pre-sqls"]["title"] }}' id='{{ WIDGETS["popup-edit-pre-sqls"]["id"] }}'
+                           name='{{ WIDGETS["popup-edit-pre-sqls"]["name"] }}' value='{{ WIDGETS["popup-edit-pre-sqls"]["label"] }}' >
+                       {{ WIDGETS["popup-edit-pre-sqls"]["label"] }} 
                    </button>
-                    <div class="btn btn-default reportico-edit-linkGroupWithDropDown" role="group">
-                        <li class="dropdown"><a class="btn dropdown-toggle reportico-edit-linkGroupDropDown" data-toggle="dropdown" href="#">{{ T_MORE }}<span class="caret"></span></a>
-                            <ul class="dropdown-menu reportico-dropdown">
-                                {{ WIDGETS["popup-edit-page-headers"]["widget"] }}
-                                {{ WIDGETS["popup-edit-page-footers"]["widget"] }}
-                                {{ WIDGETS["popup-edit-display-order"]["widget"] }}
-                                {{ WIDGETS["popup-edit-pre-sqls"]["widget"] }}
-                                {{ WIDGETS["popup-edit-grid"]["widget"] }}
-                                {{ WIDGETS["popup-edit-code"]["widget"] }}
-                            </ul>
-                        </li>
-                    </div>
+                   </div>
+                   <div class="btn-group" role="group" aria-label="">
+                   <button type='submit' class='flex-widget ml-5 btn btn-sm btn-outline-secondary reportico-edit-link'
+                           title='{{ WIDGETS["popup-edit-page-headers"]["title"] }}' id='{{ WIDGETS["popup-edit-page-headers"]["id"] }}'
+                           name='{{ WIDGETS["popup-edit-page-headers"]["name"] }}' value='{{ WIDGETS["popup-edit-page-headers"]["label"] }}' >
+                       <i class="fa fa-pen fa-lg"></i>
+                       {{ WIDGETS["popup-edit-page-headers"]["label"] }} 
+                   </button>
+                   <button type='submit' class='flex-widget btn btn-sm btn-outline-secondary reportico-edit-link'
+                           title='{{ WIDGETS["popup-edit-page-footers"]["title"] }}' id='{{ WIDGETS["popup-edit-page-footers"]["id"] }}'
+                           name='{{ WIDGETS["popup-edit-page-footers"]["name"] }}' value='{{ WIDGETS["popup-edit-page-footers"]["label"] }}' >
+                       {{ WIDGETS["popup-edit-page-footers"]["label"] }}
+                   </button>
+                   <button type='submit' class='flex-widget btn btn-sm btn-outline-secondary reportico-edit-link'
+                           title='{{ WIDGETS["popup-edit-display-order"]["title"] }}' id='{{ WIDGETS["popup-edit-display-order"]["id"] }}'
+                           name='{{ WIDGETS["popup-edit-display-order"]["name"] }}' value='{{ WIDGETS["popup-edit-display-order"]["label"] }}' >
+                       {{ WIDGETS["popup-edit-display-order"]["label"] }}
+                   </button>
+                   </div>
+                   <div class="btn-group" role="group" aria-label="">
+                   <button type='submit' class='flex-widget ml-5 btn btn-sm btn-outline-secondary reportico-edit-link'
+                           title='{{ WIDGETS["popup-edit-grid"]["title"] }}' id='{{ WIDGETS["popup-edit-grid"]["id"] }}'
+                           name='{{ WIDGETS["popup-edit-grid"]["name"] }}' value='{{ WIDGETS["popup-edit-grid"]["label"] }}' >
+                       <i class="fa fa-pen fa-lg"></i>
+                       {{ WIDGETS["popup-edit-grid"]["label"] }} 
+                   </button>
+                   <button type='submit' class='flex-widget btn btn-sm btn-outline-secondary reportico-edit-link'
+                           title='{{ WIDGETS["popup-edit-code"]["title"] }}' id='{{ WIDGETS["popup-edit-code"]["id"] }}'
+                           name='{{ WIDGETS["popup-edit-code"]["name"] }}' value='{{ WIDGETS["popup-edit-code"]["label"] }}' >
+                       {{ WIDGETS["popup-edit-code"]["label"] }}
+                   </button>
+                   <input class='reportico-submit btn btn-outline-secondary' type='submit' name='submit_design_mode' value='{{ T_DESIGN_REPORT }}'>
+                   </div>
                 </div>
         </div>
 </div>
+{% endif %}
 {% endif %}
 {% endautoescape %}
 

@@ -265,7 +265,7 @@ class Reportico extends ReporticoObject
     public $initial_sql = false;
 
     // Access mode - one of FULL, ALLPROJECTS, ONEPROJECT, REPORTOUTPUT
-    public $access_mode = "FULL";
+    public $access_mode = "ALLPROJECTS";
 
     // Whether to show refresh button on report output
     public $show_refresh_button = false;
@@ -2956,7 +2956,7 @@ class Reportico extends ReporticoObject
 
             Authenticator::flag("admin-report-selected");
         }
-
+        //Authenticator::show();
     }
 
     // -----------------------------------------------------------------------------
@@ -5500,6 +5500,7 @@ class Reportico extends ReporticoObject
 
         if ( !$this->reportico_ajax_called || ( Authenticator::allowed("design") ) ) {
 
+            if ( !Authenticator::allowed("admin-report-selected")) {
             $this->widgets["save-report"] = new \Reportico\Widgets\SaveReport($this, true);
             $this->widgets["run-report"] = new \Reportico\Widgets\SubmitExecute($this, true, "run-report");
             $this->widgets["delete-report"] = new \Reportico\Widgets\SubmitExecute($this, true, "delete-report");
@@ -5519,6 +5520,7 @@ class Reportico extends ReporticoObject
             $this->widgets["popup-edit-code"] = new \Reportico\Widgets\PopupEditButton($this, true, "edit-code");
             $this->widgets["popup-edit-pre-sqls"] = new \Reportico\Widgets\PopupEditButton($this, true, "edit-pre-sqls");
             $this->widgets["popup-edit-display-order"] = new \Reportico\Widgets\PopupEditButton($this, true, "edit-display-order");
+            }
         }
 
         $this->widgets["navigation-menu"] = new \Reportico\Widgets\NavigationMenu($this, true, "navigation-menu");
