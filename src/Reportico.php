@@ -3494,29 +3494,6 @@ class Reportico extends ReporticoObject
                 $this->handleXmlQueryInput($mode);
                 $this->setRequestColumns();
 
-                // load widgets
-
-                // Set Grid display options based on report and session defaults
-                if ($this->attributes["gridDisplay"] != ".DEFAULT") {
-                    $this->dynamic_grids = ($this->attributes["gridDisplay"] == "show");
-                }
-
-                if ($this->attributes["gridSortable"] != ".DEFAULT") {
-                    $this->dynamic_grids_sortable = ($this->attributes["gridSortable"] == "yes");
-                }
-
-                if ($this->attributes["gridSearchable"] != ".DEFAULT") {
-                    $this->dynamic_grids_searchable = ($this->attributes["gridSearchable"] == "yes");
-                }
-
-                if ($this->attributes["gridPageable"] != ".DEFAULT") {
-                    $this->dynamic_grids_paging = ($this->attributes["gridPageable"] == "yes");
-                }
-
-                if ($this->attributes["gridPageSize"] != ".DEFAULT" && $this->attributes["gridPageSize"]) {
-                    $this->dynamic_grids_page_size = $this->attributes["gridPageSize"];
-                }
-
                 if ($this->xmlinput == "deleteproject.xml" || $this->xmlinput == "configureproject.xml" || $this->xmlinput == "createtutorials.xml" || $this->xmlinput == "createproject.xml" || $this->xmlinput == "generate_tutorial.xml") {
                     // If configuring project then use project language strings from admin project
                     // found in projects/admin/lang.php
@@ -5459,6 +5436,27 @@ class Reportico extends ReporticoObject
     function loadWidgets($group){
 
         $this->initialiseAssetManager();
+
+        // Set Grid display options based on report and session defaults
+        if ($this->attributes["gridDisplay"] != ".DEFAULT") {
+            $this->dynamic_grids = ($this->attributes["gridDisplay"] == "show");
+        }
+
+        if ($this->attributes["gridSortable"] != ".DEFAULT") {
+            $this->dynamic_grids_sortable = ($this->attributes["gridSortable"] == "yes");
+        }
+
+        if ($this->attributes["gridSearchable"] != ".DEFAULT") {
+            $this->dynamic_grids_searchable = ($this->attributes["gridSearchable"] == "yes");
+        }
+
+        if ($this->attributes["gridPageable"] != ".DEFAULT") {
+            $this->dynamic_grids_paging = ($this->attributes["gridPageable"] == "yes");
+        }
+
+        if ($this->attributes["gridPageSize"] != ".DEFAULT" && $this->attributes["gridPageSize"]) {
+            $this->dynamic_grids_page_size = $this->attributes["gridPageSize"];
+        }
 
         $this->assetManager->setOptions("dynamicgrid",
                 [

@@ -50,8 +50,8 @@ class DynamicGrid extends Widget
 
         $css = [ "{$this->engine->url_path_to_assets}/node_modules/datatables/css/jquery.dataTables.min.css", ];
         $js = [ "{$this->engine->url_path_to_assets}/node_modules/datatables/js/jquery.dataTables.min.js" ];
-        $css = [ ];
-        $js = [ ];
+        //$css = [ ];
+        //$js = [ ];
         if ( $this->engine->reportico_ajax_preloaded ) {
             $css = [];
             $js = [];
@@ -69,7 +69,7 @@ class DynamicGrid extends Widget
                         'runtime' =>
                             [
                                 "
-//alert('set runtime'); 
+//alert('set runtime $enabled'); 
 reportico_dynamic_grids = $enabled;
 reportico_dynamic_grids_sortable = $sortable;
 reportico_dynamic_grids_searchable = $searchable;
@@ -80,6 +80,12 @@ reportico_dynamic_grids_page_size = $pagesize;
                         'init' =>
                             [
 "
+//alert('set init $enabled'); 
+reportico_dynamic_grids = $enabled;
+reportico_dynamic_grids_sortable = $sortable;
+reportico_dynamic_grids_searchable = $searchable;
+reportico_dynamic_grids_paging = $paging;
+reportico_dynamic_grids_page_size = $pagesize;
         if ( reportico_dynamic_grids )
         {
             reportico_jquery('.reportico-page').each(function(){
