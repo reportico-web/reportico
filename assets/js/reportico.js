@@ -1068,7 +1068,7 @@ function saveReport(sourceWidget)
 
 
 /*reportico_jquery(document).on('click', '.reportico-admin-button, .reportico-admin-button2, .reportico-menu-item-link, .reportico-prepare-submit, .reportico-ajax-link, .reportico-ajax-link2, .reportico-link-menu2, .reportico-submit', function(event) */
-reportico_jquery(document).on('click', '.reportico-menu-item-link, .reportico-submit', function(event) {
+reportico_jquery(document).on('click', '.reportico-menu-item-link, .reportico-submit, .reportico-ajax-link', function(event) {
     submitAjaxLink(this)
     return false;
 })
