@@ -40,9 +40,11 @@ class CriteriaToggle extends Widget
 "
 reportico_jquery(document).on('click', '.reportico-show-criteria', function(event) {
     showCriteriaBlock();
+    return false;
 })
 reportico_jquery(document).on('click', '.reportico-hide-criteria', function(event) {
     hideCriteriaBlock();
+    return false;
 })
 "
         ];

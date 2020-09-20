@@ -82,40 +82,46 @@ class QueryColumn extends ReporticoObject
     }
 
     public $usage = array(
+        "summary" => "Each column in the report output can be configured in a number of ways using the builder.
+        Use the column method passing the name of the column and apply one of the following options :-",
         "description" => "",
         "methods" => array(
-            "properties" => array(
-                "description" => "Properties of the column",
-                "parameters" => array( "properties" => "Array of properties")
+            //"properties" => array(
+                //"description" => "Properties of the column",
+                //"parameters" => array( "properties" => "Array of properties")
+            //),
+            "column" => array(
+                "description" => "Name of column (based on name/alias from query results set)",
+                "parameters" => array( "column" => "Name of column (based on name/alias from query results set)")
             ),
             "hide" => array(
                 "description" => "Hide a Column from the body of the report",
-                "parameters" => array( "column" => "Column to hide")
+                //"parameters" => array( "column" => "Column to hide")
             ),
             "order" => array(
                 "description" => "Set the display order of the column in the report output",
-                "parameters" => array( "order" => "The sequence of the column in the report output")
+                "parameters" => array( "order" => "The sequence of the column in the report output. Overrides the sequence from the query")
             ),
             "label" => array(
-                "description" => "Override the default label for display in the colymn header",
+                "description" => "Override the default label for display in the colymn header. Overrides the column name from the query",
                 "parameters" => array( "label" => "The label to show in the column header")
             ),
             "columnwidth" => array(
                 "description" => "Force default column width in HTML output",
                 "parameters" => array( "label" => "The width of the column in HTML output in CSS format eg 5px")
             ),
-            "columnwidthpdf" => array(
-                "description" => "Force default column width in PDF output",
-                "parameters" => array( "label" => "The width of the column in HTML output in CSS format eg 5px")
-            ),
-            "groupheaderlabel" => array(
-                "description" => "Force the label to show when the column is displayed in the group header",
-                "parameters" => array( "label" => "The group header label")
-            ),
-            "grouptrailerlabel" => array(
-                "description" => "Force the label to show when the column is displayed under a column as a total/average",
-                "parameters" => array( "label" => "The column trailer label")
-            ),
+            //"columnwidthpdf" => array(
+                //"description" => "Force default column width in PDF output",
+                //"parameters" => array( "label" => "The width of the column in HTML output in CSS format eg 5px")
+            //),
+            //"groupheaderlabel" => array(
+                //"description" => "Force the label to show when the column is displayed in the group header",
+                //"parameters" => array( "label" => "The group header label")
+            //),
+            //"grouptrailerlabel" => array(
+                //"description" => "Force the label to show when the column is displayed under a column as a total/average",
+                //"parameters" => array( "label" => "The column trailer label")
+            //),
             "justify" => array(
                 "description" => "Display the column left,right or centered",
                 "parameters" => array(

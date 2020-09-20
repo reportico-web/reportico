@@ -101,10 +101,11 @@ ReporticoApp::setConfig('pdf_pdfFontSize','10');
 
 // Pagination and Zoom default
 ReporticoApp::setConfig('AutoPaginate','None');
-if (stripos(PHP_OS, "WIN") !== false) 
-	ReporticoApp::setConfig('PdfZoomFactor','0.98');
-else
-	ReporticoApp::setConfig('PdfZoomFactor','0.74');
+//if (stripos(PHP_OS, "WIN") !== false) 
+	//ReporticoApp::setConfig('PdfZoomFactor','0.98');
+//else
+	//ReporticoApp::setConfig('PdfZoomFactor','0.74');
+ReporticoApp::setConfig('PdfZoomFactor','1.0');
 ReporticoApp::setConfig('HtmlZoomFactor','1');
 ReporticoApp::setConfig('PageTitleDisplay','TopOfFirstPage');
 

@@ -11,9 +11,9 @@
 </HEAD>
 
 {% if REPORTICO_STANDALONE_WINDOW %}
-<BODY class="reportico-body reportico-bodyStandalone" style="{{ REPORT_PAGE_STYLE }}">
+<BODY class="reportico-body reportico-bodyStandalone" style="">
 {% else %}
-<BODY class="reportico-body" style="{{ REPORT_PAGE_STYLE }}">
+<BODY class="reportico-body" style="">
 
 
 

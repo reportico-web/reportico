@@ -493,6 +493,7 @@ class Authenticator extends ReporticoObject
     public static function getInstance()
     {
         if (true === is_null(self::$_instance)) {
+            ReporticoApp::backtrace();
             echo "Class Authenticator not initialized";
             die;
         }

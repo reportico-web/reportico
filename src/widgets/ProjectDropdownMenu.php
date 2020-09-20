@@ -82,7 +82,8 @@ class ProjectDropdownMenu extends Widget
 
         $menu = '';
 
-        if ( Authenticator::allowed("project") && $this->engine->dropdown_menu && $this->engine->output_template_parameters["show_hide_dropdown_menu"] == "show" ) {
+        //if ( Authenticator::allowed("project") && $this->engine->dropdown_menu && $this->engine->output_template_parameters["show_hide_dropdown_menu"] == "show" ) {
+        if ( $this->engine->dropdown_menu && $this->engine->output_template_parameters["show_hide_dropdown_menu"] == "show" ) {
 
             $this->engine->generateDropdownMenu($this->engine->dropdown_menu);
             $brand = "<a href='#' class='navbar-brand'>".ReporticoApp::get('menu_title')." :</a>";

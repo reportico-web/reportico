@@ -46,7 +46,7 @@ class XmlReader
     public $wizard_linked_to = false;
     public $partial_apply_drawn = false;
 
-    public function __construct(&$query, $filename, $xmlstring = false, $search_tag = false, $debug = false)
+    public function __construct(&$query, $filename, $xmlstring = false, $search_tag = false, $debug = false, $no_authentication = false)
     {
         $this->query = &$query;
 
@@ -453,6 +453,9 @@ class XmlReader
             $x = &$xmlstring;
         } else {
             if ($filename) {
+                if (!preg_match("/\.xml$/", $filename)) {
+                    $filename = $filename . ".xml";
+                }
                 if ( $debug ) {
                     echo "LOAD $filename<BR>";
                     echo "<PRE>";
@@ -468,6 +471,7 @@ class XmlReader
                     $adminfile = false;
                 }
 
+                if ( !$no_authentication )
                 if ($query) {
                     if (!Authenticator::allowed("admin")) {
                         if (ReporticoApp::getConfig("project") == "admin") {
@@ -500,6 +504,9 @@ class XmlReader
                 if ($readfile) {
                     //if ( $use_admin_xml )
                         //Authenticator::flag("admin-report-selected");
+                    if ( !file_exists($readfile) ) {
+                        ReporticoApp::backtrace();
+                    }
                     $x = join("", file($readfile));
                 } else {
                     trigger_error("Report Definition File  " . $this->query->reports_path . "/" . $filename . " Not Found", E_USER_ERROR);

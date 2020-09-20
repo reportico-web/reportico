@@ -12,6 +12,15 @@ function ReporticoSession()
     return REPORTICO_SESSION_CLASS;
 } 
 
+// Do the same to allow different ways if invoking Builder
+if (!defined("REPORTICO_BUILDER_CLASS"))
+    define("REPORTICO_BUILDER_CLASS", "\Reportico\Engine\Builder");
+
+function ReporticoBuilder()
+{
+    return REPORTICO_BUILDER_CLASS;
+} 
+
 if ( !function_exists("get_magic_quotes_gpc") ) {
     function get_magic_quotes_gpc() {
         return false;
@@ -356,7 +365,7 @@ class Reportico extends ReporticoObject
     public $ajaxHandler;
 
     // Template Engine
-    public $theme = "default";
+    public $theme = "bootstrap4";
     public $templateEngine = false;
     public $templateViewPath = false;
     public $templateCachePath = false;
@@ -389,6 +398,12 @@ class Reportico extends ReporticoObject
         $this->tmp_folder = __DIR__ . "/../tmp";
         $this->parent_query = &$this;
     }
+
+    // Method to return the framework specific builder method
+    public static function ReporticoBuilder()
+    {
+        return REPORTICO_BUILDER_CLASS;
+    } 
 
     // Dummy functions for yii to work with Reportico
     public function init()
@@ -448,6 +463,20 @@ class Reportico extends ReporticoObject
     {
         if ($this->reportico_ajax_mode) {
             $calling_script = $this->reportico_ajax_script_url;
+            ReporticoApp::set("session_namespace", $this->session_namespace);
+        }
+
+        return $calling_script;
+    }
+
+    /*
+     ** Get a url to the Reportico start script 
+     ** which may be required by drilldowns call reportico and initialise it
+     */
+    public function getStartActionUrl()
+    {
+        if ($this->reportico_ajax_mode) {
+            $calling_script = preg_replace("/run.php/", "start.php", $this->reportico_ajax_script_url);
             ReporticoApp::set("session_namespace", $this->session_namespace);
         }
 
@@ -2832,9 +2861,6 @@ class Reportico extends ReporticoObject
             $sessionClass::setReporticoSessionParam("xmlin", $this->xmlinput);
             $sessionClass::setReporticoSessionParam("xmlout", $this->xmlinput);
         }
-        //echo "<BR>======================================================<BR><PRE>"; var_dump($_SESSION);echo "</PRE>";
-        //echo "<BR>REPORT ".$this->initial_report."<BR>";
-
 
         if ($this->initial_report) {
             $this->xmlinput = $this->initial_report;
@@ -3104,13 +3130,30 @@ class Reportico extends ReporticoObject
         $sessionClass = ReporticoSession();
 
         // If running with just a query ( and no project report ) then we need to generate an XML report equivalent
-        // to work with the on the fly query. There force an XML regeneration
+        // to work with the on the fly query. Therefore force an XML regeneration
         if ( !$sessionClass::issetReporticoSessionParam("xmlintext") && !$this->initial_report ) {
             $xmlout = new XmlWriter($this);
             $xmlout->prepareXmlData();
             $sessionClass::registerSessionParam("reportConfig", htmlspecialchars($xmlout->getXmldata()));
             $this->reportDefinitionLoaded = true;
             $sessionClass::registerSessionParam("xmlintext", $xmlout->getXmldata());
+        }
+
+        // Override the passed execute mode if specified in url params
+        if ( $mode = ReporticoUtility::getRequestItem("execute_mode", $mode) ) {
+            $this->initial_execute_mode = $mode;
+        }
+
+        // As this has come from a builder session, if there is no project then the access mode
+        // has to be either REPORTOUTPUT for execute or ONEREPORT if its prepare
+        if ( !$this->initial_project ) {
+            if ( $mode == "EXECUTE" ){
+                $this->access_mode = "REPORTOUTPUT";
+                $this->initial_role = "report-output";
+            } else {
+                $this->access_mode = "report";
+                $this->initial_role = "report";
+            }
         }
 
         $this->clear_reportico_session = false;
@@ -3325,12 +3368,6 @@ class Reportico extends ReporticoObject
         if ($mode == "EXECUTE") {
             $_REQUEST['execute_mode'] = "$mode";
 
-            //echo "LATEST PARAMETERS<BR>";
-            //var_dump($sessionClass::getReporticoSessionParam('latestRequest'));
-            //echo "<BR><BR>";
-            //echo "LATEST REQUEST<BR>";
-            //var_dump($_REQUEST);
-
             // If executing report then stored the REQUEST parameters unless this
             // is a refresh of the report in which case we want to keep the ones already there
             $runfromcriteriascreen = ReporticoUtility::getRequestItem("user_criteria_entered", false);
@@ -3540,6 +3577,9 @@ class Reportico extends ReporticoObject
                 ReporticoLang::loadModeLanguagePack("languages", $this->output_charset);
                 $this->initializePanels($mode);
 
+                // Dont interpret XML input if report is not related to a project.
+                // In this case the reprt has already been built
+                if ( !Authenticator::allowed("non-project-operation"))
                 $this->handleXmlQueryInput($mode);
 
                 ReporticoLang::loadModeLanguagePack("execute", $this->output_charset);
@@ -3646,7 +3686,7 @@ class Reportico extends ReporticoObject
                                 $this->template->assign('AUTOPAGINATE', "autopaginate");
                             else
                                 $this->template->assign('AUTOPAGINATE', "");
-                            $this->template->assign('ZOOM_FACTOR', strtolower($this->getAttribute("PdfZoomFactor")));
+                            $this->template->assign('ZOOM_FACTOR', strtolower($this->getAttribute("PdfZoomFactor"), "100%"));
                         } else {
                             $this->template->assign('PRINT_FORMAT', "reportico-print-html");
 
@@ -3661,11 +3701,11 @@ class Reportico extends ReporticoObject
                         $this->template->assign('EMBEDDED_REPORT', $this->embedded_report);
 
                         $this->template->assign('PAGE_SIZE', $this->getAttribute("PageSize"));
-                        $this->template->assign('PAGE_ORIENTATION', strtolower($this->getAttribute("PageOrientation")));
-                        $this->template->assign('PAGE_TOP_MARGIN', strtolower($this->getAttribute("TopMargin")));
-                        $this->template->assign('PAGE_BOTTOM_MARGIN', strtolower($this->getAttribute("BottomMargin")));
-                        $this->template->assign('PAGE_LEFT_MARGIN', strtolower($this->getAttribute("LeftMargin")));
-                        $this->template->assign('PAGE_RIGHT_MARGIN', strtolower($this->getAttribute("RightMargin")));
+                        $this->template->assign('PAGE_ORIENTATION', strtolower($this->getAttribute("PageOrientation", "portrait")));
+                        $this->template->assign('PAGE_TOP_MARGIN', strtolower($this->getAttribute("TopMargin", "1cm")));
+                        $this->template->assign('PAGE_BOTTOM_MARGIN', strtolower($this->getAttribute("BottomMargin", "1cm")));
+                        $this->template->assign('PAGE_LEFT_MARGIN', strtolower($this->getAttribute("LeftMargin", "1cm")));
+                        $this->template->assign('PAGE_RIGHT_MARGIN', strtolower($this->getAttribute("RightMargin", "1cm")));
                         //$this->template->assign('PAGE_TOP_MARGIN', "100px");
                         //$this->template->assign('PAGE_BOTTOM_MARGIN', "50px");
 
@@ -4016,12 +4056,10 @@ class Reportico extends ReporticoObject
             if (is_object($conn) && preg_match("/DataSourceArray/", get_class($conn)) ) {
                 $recordSet = $conn;
             } else {
-
                 try {
                     if (!ReporticoApp::get("error_status") && $conn != false) {
                         $recordSet = $conn->Execute($this->query_statement);
                     }
-
                 } catch (PDOException $ex) {
                     $errorCode = $ex->getCode();
                     $errorMessage = $ex->getMessage();
@@ -4271,11 +4309,18 @@ class Reportico extends ReporticoObject
                     $a = '$col->column_value = ' . $assign->expression . ';';
                 }
 
-                $r = eval($a);
+                if ( $assign->expression ) {
+                    try{
+                        $r = eval($a);
+                    } catch ( \ParseError $ex ) {
+                        $error = "Syntax error in expression. Expression must be valid PHP syntax: <PRE>".$a."</PRE> - {$ex->getMessage()}";
+                        ReporticoApp::ErrorLogger(E_USER_ERROR, $error);
+                    }
 
-                if (ReporticoApp::get("debug_mode")) {
-                    ReporticoApp::handleDebug("Assignment " . $assign->query_name . " = " . $assign->expression .
-                        " => " . $col->column_value, ReporticoApp::DEBUG_HIGH);
+                    if (ReporticoApp::get("debug_mode")) {
+                        ReporticoApp::handleDebug("Assignment " . $assign->query_name . " = " . $assign->expression .
+                            " => " . $col->column_value, ReporticoApp::DEBUG_HIGH);
+                    }
                 }
 
             } else {
@@ -4287,7 +4332,12 @@ class Reportico extends ReporticoObject
                         $a = '$col->column_value = ' . $assign->else . ';';
                     }
 
-                    $r = eval($a);
+                    try{
+                        $r = eval($a);
+                    } catch ( \ParseError $ex ) {
+                        $error = "Syntax error in expression else clause. Expression must be valid PHP syntax: <PRE>".$a."</PRE> - {$ex->getMessage()}";
+                        ReporticoApp::ErrorLogger(E_USER_ERROR, $error);
+                    }
 
                     if (ReporticoApp::get("debug_mode")) {
                         ReporticoApp::handleDebug("Assignment " . $assign->query_name . " = " . $assign->else .
@@ -4317,11 +4367,21 @@ class Reportico extends ReporticoObject
                     $bits[1] = "VALUE";
                 }
 
+                $bits[1] = strtoupper($bits[1]);
+
                 if (!isset($bits[2])) {
                     $bits[2] = false;
                 }
 
-                if ($bits[1] != "RANGE1" && $bits[1] != "RANGE2" && $bits[1] != "FULL" && $bits[1] != "VALUE") {
+                if ($bits[1] != "RANGE1" 
+                    && $bits[1] != "RANGE2" 
+                    && $bits[1] != "FULL" 
+                    && $bits[1] != "VALUE"
+                    && $bits[1] != "LOWER" 
+                    && $bits[1] != "UPPER" 
+                    && $bits[1] != "FROM" 
+                    && $bits[1] != "TO"
+                    ) {
                     $bits[1] = "VALUE";
                 }
 
@@ -4344,7 +4404,13 @@ class Reportico extends ReporticoObject
         }
 
         $test_string = 'if ( ' . $criteria . ' ) $test_result = true;';
-        eval($test_string);
+        try{
+            eval($test_string);
+            $r = eval($test_string);
+        } catch ( \ParseError $ex ) {
+            $error = "Syntax error in expression else clause. Expression must be valid PHP syntax: <PRE>".$test_string."</PRE> - {$ex->getMessage()}";
+            ReporticoApp::ErrorLogger(E_USER_ERROR, $error);
+        }
         return $test_result;
     }
 
@@ -5391,7 +5457,6 @@ class Reportico extends ReporticoObject
             ReporticoApp::set("session_namespace_key", "reportico_" . ReporticoApp::get("session_namespace"));
             $sessionClass::initializeReporticoNamespace(ReporticoApp::get("session_namespace_key"));
         }
-        // PPP echo "ISSETB?EXE ".$sessionClass::issetReporticoSessionParam("reportConfig")."<BR>";
 
         if ($namespace)
             $this->session_namespace = $namespace;
@@ -5611,6 +5676,5 @@ class Reportico extends ReporticoObject
         //Authenticator::show("end");
 
     }
-
 }
 // -----------------------------------------------------------------------------

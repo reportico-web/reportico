@@ -58,10 +58,16 @@ class Builder extends ReporticoObject implements \ArrayAccess, \Iterator, \Seria
                 "description" => "Run the report and generate output",
             ),
             "prepare" => array(
-                "description" => "Display a project menu where reports can be selected from (only useful when a project is specified)",
+                "description" => "Shows the criteria selection and configuration screen for a report",
             ),
             "menu" => array(
                 "description" => "Display a project menu where reports can be selected from (only useful when a project is specified)",
+            ),
+            "relay" => array(
+                "description" => "Pass on parameter values onto Reportico, so they can be picked up in the report query",
+            ),
+            "relayCriteria" => array(
+                "description" => "Pass on parameter values as filter values for existing Reportico criteria items",
             ),
             "accessLevel" => array(
                 "description" => "What level of access is granted to the user",
@@ -75,6 +81,21 @@ class Builder extends ReporticoObject implements \ArrayAccess, \Iterator, \Seria
                             "report-output" => "Only runs the specified report without any access to the criteria entry screen",
                             "design-fiddle" => "Allows modifuying report parameters without the ability to save",
                             "EXECUTE" => "Run the report and show the output",
+                        )
+                    )
+                )
+            ),
+            "hideSections" => array(
+                "description" => "Turn off elements of the report output",
+                "parameters" => array(
+                    "type" => array( "description" => "The report sections to hide from the report output",
+                        "options" => array(
+                            "criteria" => "Hide the selected criteria summary section",
+                            "detail" => "Hide the main report body so you are just left with page headers/trailers, group headers/trailers and charts",
+                            "charts" => "Hide charts from the report",
+                            "groupheaders" => "Hide the group header labels at the top of each report sections",
+                            "grouptrailers" => "Hide the column trailers and group trailers",
+                            "columnheaders" => "Hide the header labels at the top of the report body",
                         )
                     )
                 )
@@ -119,7 +140,18 @@ class Builder extends ReporticoObject implements \ArrayAccess, \Iterator, \Seria
      */
     static public function build($session = "") {
 
+        $builderClass = \Reportico\Engine\Reportico::ReporticoBuilder();
+        return $builderClass::_build($session);
+
+    }
+
+    /*
+     * Instantiate an instance of Reportico Builder in standalone mode
+     */
+    static function _build($session = "") {
         $engine = new Reportico();
+        if (!$session)
+            $engine->clear_reportico_session = 1;
         $engine->session($session);
         $engine->initialize_on_execute = false;
         $engine->report_from_builder = true;
@@ -127,7 +159,6 @@ class Builder extends ReporticoObject implements \ArrayAccess, \Iterator, \Seria
         $engine->url_path_to_templates = "themes";
         $engine->report_from_builder_first_call = true;
         return new \Reportico\Engine\Builder($engine);
-
     }
 
     /*
@@ -205,6 +236,7 @@ class Builder extends ReporticoObject implements \ArrayAccess, \Iterator, \Seria
             "page" => "\Reportico\Engine\ReporticoPage",
             "column" => "\Reportico\Engine\QueryColumn",
             "grid" => "\Reportico\Engine\ReporticoGrid",
+            "dynamicTable" => "\Reportico\Engine\ReporticoGrid",
             "datasource" => "\Reportico\Engine\ReporticoDataSource",
             "customCode" => "\Reportico\Engine\ReporticoCustomCode",
             "theme" => "\Reportico\Engine\ReporticoTheme",
@@ -226,7 +258,10 @@ class Builder extends ReporticoObject implements \ArrayAccess, \Iterator, \Seria
         }
 
         if ( $this->builderClass ) {
-            if ( $this->value->$method(...$args) ){
+            if ( $method == "usage" ){
+                return $this->value->$method(...$args);
+            }
+            else if ( $this->value->$method(...$args) ){
                 return ($this);
             }
             else {
@@ -250,7 +285,13 @@ class Builder extends ReporticoObject implements \ArrayAccess, \Iterator, \Seria
         }
 
         if ( $method == "usage" ) {
-            echo $this->builderUsage("reportico");
+
+            $asString = isset ($args[0]) ? $args[0] : false;
+            if ( $asString )
+                return $this->builderUsage("reportico");
+            else
+                echo $this->builderUsage("reportico");
+            
             return $this;
         }
 
@@ -271,7 +312,80 @@ class Builder extends ReporticoObject implements \ArrayAccess, \Iterator, \Seria
             return $this;
         }
 
-        if ( strtolower($method) == "grid" ) {
+        // Relay user parameters
+        if ( $method == "relay" ) {
+            if ( is_array($args[0]) ){
+                foreach($args[0] as $key => $value){
+                    $this->value->user_parameters[$key] = $value;
+                }
+            }
+            else
+            {
+               if ( isset($args[0]) && isset($args[1]) ){
+                    $this->value->user_parameters[$args[0]] = $args[1];
+               } else
+                    trigger_error("relay: Must be array of key value pairs or two parameters - one for key and one for value", E_USER_ERROR);
+            }
+            return $this;
+        }
+
+        // Relay user parameters
+        if ( $method == "relayCriteria" ) {
+            if ( is_array($args[0]) ){
+                foreach($args[0] as $key => $value){
+                    $_REQUEST["MANUAL_$key"] = $value;
+                }
+            } else {
+               if ( isset($args[0]) && isset($args[1]) ){
+                    $_REQUEST["MANUAL_".$args[0]] = $args[1];
+               } else
+                    trigger_error("relay: Must be array of key value pairs or two parameters - one for key and one for value", E_USER_ERROR);
+            }
+            return $this;
+        }
+
+
+        if ( $method == "hideSection" || $method == "hideSections" ) {
+            if ( !$args ) {
+                trigger_error("hideSections: Section not provided - provide one of criteria, detail, graph", E_USER_ERROR);
+                return $this;
+            }
+            foreach ( $args as $key => $section ) {
+                switch ( strtolower($section) ) {
+
+                    case "criteria":
+                        $this->value->initial_show_criteria = "hide";
+                        break;
+
+                    case "detail":
+                        $this->value->initial_show_detail = "hide";
+                        break;
+
+                    case "charts":
+                        $this->value->initial_show_graph = "hide";
+                        break;
+
+                    case "groupheaders":
+                        $this->value->initial_show_group_headers = "hide";
+                        break;
+
+                    case "grouptrailers":
+                        $this->value->initial_show_group_trailers = "hide";
+                        break;
+
+                    case "columnheaders":
+                        $this->value->initial_show_column_headers = "hide";
+                        break;
+
+                    default:
+                        trigger_error("hideSections: Section '$section' doesn't exist valid options are criteria, detail, graph", E_USER_ERROR);
+
+                }
+            }
+            return $this;
+        }
+
+        if ( strtolower($method) == "grid" || strtolower($method) == "dynamictable" ) {
 
             $this->value->setAttribute ("gridDisplay", "show" );
             $this->value->setAttribute ("AutoPaginate", "NONE" );
@@ -311,40 +425,15 @@ class Builder extends ReporticoObject implements \ArrayAccess, \Iterator, \Seria
             }
             return $this;
         }
-        /*
-        if ( $method == "column" ) {
-
-                $colname = $args[0];
-                $attributes = $args[1];
-
-                if ( !$this->value->getColumn($colname) ) {
-                    die ("Column $colname not found");
-                }
-
-                foreach ( $attributes as $key => $val ) {
-                    switch ( $key ) {
-
-                        case 'justify':
-                            $this->value->getColumn($colname)->setAttribute("justify", $val);
-                            break;
-
-                        case 'label':
-                            $this->value->getColumn($colname)->setAttribute("column_title", $val);
-                            break;
-
-                        case 'visible':
-                            if ( !$val )
-                                $this->value->getColumn($colname)->setAttribute("column_display", "hide");
-                            break;
-                    }
-                }
-                return $this;
-        }
-        */
 
             if ( isset($this->value->usage["attributes"][$method] )) {
                     $this->value->setAttribute ($this->value->usage["attributes"][$method], $args[0] );
                     return $this;
+            }
+
+            if ( $method == "dropdownMenu" || $method == "dropdown_menu") {
+                $this->value->dropdown_menu = $args[0];
+                return $this;
             }
 
             if ( $method == "project" ) {
@@ -354,6 +443,12 @@ class Builder extends ReporticoObject implements \ArrayAccess, \Iterator, \Seria
 
             if ( $method == "password" ) {
                 $this->value->initial_project_password = $args[0];
+                return $this;
+            }
+
+            if ( strtolower($method) == "pdfengine" ) {
+                $this->value->pdf_engine = $args[0];
+                $this->value->pdf_delivery_mode = "DOWNLOAD_SAME_WINDOW";
                 return $this;
             }
 
@@ -378,6 +473,7 @@ class Builder extends ReporticoObject implements \ArrayAccess, \Iterator, \Seria
 
             if ( $method == "run" || $method == "execute" ) {
                 $this->value->initial_execute_mode = "EXECUTE";
+                $this->value->access_mode = "REPORTOUTPUT";
                 $this->value->render("EXECUTE");
                 $method = "execute";
                 return $this;

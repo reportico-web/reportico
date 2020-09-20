@@ -80,8 +80,14 @@ class Assignment extends ReporticoObject
                 )
             ),
 
-            "drill" => array( "description" => "Generate a report link to drill down to another report",
+            "drilldownToUrl" => array( "description" => "Generate a report link to drill down to another url script, which could be a reportico script that can accept the passed criteria or another script that does something else",
                 "parameters" => array(
+                    "drillDownUrl" => "The url to drilldown to" ,
+                )
+            ),
+            "drilldownToReport" => array( "description" => "Generate a report link to drill down to another Reportico report deinfed in a project",
+                "parameters" => array(
+                    "drillDownProject" => "The name of the project to drilldown to" ,
                     "drillDownReport" => "The name of the report (without the xml extension) to drill down to" ,
                 )
             ),
@@ -176,7 +182,7 @@ class Assignment extends ReporticoObject
                 }
                 if ( !$builder->engine->getColumn($colname))
                     $builder->engine->createQueryColumn($colname, "", "", "", "", '####.###', false);
-                $assignment = $builder->engine->addAssignment($colname, "''", "");
+                $assignment = $builder->engine->addAssignment($colname, false, "");
                 $assignment->builder = $builder;
                 $assignment->styletype = $styletype;
                 $builder->stepInto("expression", $assignment, "\Reportico\Engine\Assignment");
@@ -216,10 +222,20 @@ class Assignment extends ReporticoObject
                     $this->builder->engine->applyStyleset($this->styletype, $styles, $column, false, false, $this);
                 break;
 
+            case "drilldownToReport":
+                $drilldownToProject = isset($args[0]) ? $args[0] : false;
+                $drilldownToReport = isset($args[1]) ? $args[1] : false;
+                if ( !$drilldownToProject || !$drilldownToReport ) {
+                    trigger_error("Drill down to report specified without specifying project and report as parameters", E_USER_ERROR);
+                }
+                $this->builder->store["drilldownToProject"] = $args[0];
+                $this->builder->store["drilldownToReport"] = $args[1];
+                break;
+
             case "drill":
             case "drilldown":
-            case "drilldownTo":
-                $this->builder->store["drilldownToReport"] = $args[0];
+            case "drilldownToUrl":
+                $this->builder->store["drilldownToUrl"] = $args[0];
                 break;
 
             //case "target":
@@ -229,49 +245,72 @@ class Assignment extends ReporticoObject
             case "where":
 
                 $params = $args[0];
-                $drilldownTo = $this->builder->retrieve("drilldownToReport");
+                $drilldownToReport = $this->builder->retrieve("drilldownToReport");
+                $drilldownToProject = $this->builder->retrieve("drilldownToProject");
+                $drilldownToUrl = $this->builder->retrieve("drilldownToUrl");
 
-                if ( !$drilldownTo ) {
-                    trigger_error("Drill parameters specified without drilldown defined", E_USER_ERROR);
+
+
+                if ( !$drilldownToUrl && !$drilldownToReport) {
+                    trigger_error("Drill parameters specified without drilldown defined by drilldownToUrl() or drilldownToReport()", E_USER_ERROR);
                 }
-
-                $this->builder->engine->setProjectEnvironment($this->builder->engine->initial_project, $this->builder->engine->projects_folder, $this->builder->engine->admin_projects_folder);
-
-                $q = new Reportico();
-
-                $q->projects_folder = $this->builder->engine->projects_folder;
-
-
-                $q->reports_path = $q->projects_folder . "/" . ReporticoApp::getConfig("project");
-
-
-                $reader = new XmlReader($q, $drilldownTo, false);
-                $reader->xml2query();
 
                 $content = $this->raw_expression;
                 if ( !$content )
-                    $content = "Drill";
+                    $content = "'Drill'";
 
-                $this->builder->engine->deriveAjaxOperation();
-                $url = $this->builder->engine->getActionUrl() . "?xmlin=" . $drilldownTo . "&execute_mode=EXECUTE&target_format=HTML&project=" . ReporticoApp::getConfig("project");
-                $midbit = "";
+                echo $this->builder->engine->initial_project;
+                //if ( !preg_match("/^\//", $drilldownTo ) || preg_match("/^http/", $drilldownTo ) ) {
+                if ( $drilldownToUrl ) {
+                    $url = $drilldownToUrl . "?execute_mode=EXECUTE&project=" . ReporticoApp::getConfig("project");
+                    echo $url."<BR>";
 
-                foreach ($q->lookup_queries as $k => $v) {
+                    $midbit = "";
 
-                    if ( isset($params[$v->query_name]) && $params[$v->query_name]) {
-
-                        if ($v->criteria_type == "DATERANGE") {
-                            $midbit .= "&MANUAL_" . $v->query_name . "_FROMDATE='.{" . $params[$v->query_name] . "}.'&" .
-                            "MANUAL_" . $v->query_name . "_TODATE='.{" . $params[$v->query_name] . "}.'";
-                        } else {
-                            $midbit .= "&MANUAL_" . $v->query_name . "='.{" . $params[$v->query_name] . "}.'";
-                        }
-
+                    foreach ($params as $k => $v) {
+                        $midbit .= "&MANUAL_" . $k . "='.{" . $params[$v] . "}.'";
                     }
-                }
-                if ($midbit) {
-                    $url .= $midbit;
-                    $this->setExpression("embed_hyperlink('" . $content . "', '" . $url . "', true, true)");
+                
+                    if ($midbit) {
+                        $url .= $midbit;
+                        $this->setExpression("embed_hyperlink($content, '" . $url . "', true, true)");
+                    }
+
+                } else {
+
+                    //echo "Report: $drilldownToProject/$drilldownToReport Url: $drilldownToUrl <Br>";
+
+                    $this->builder->engine->setProjectEnvironment($drilldownToProject, $this->builder->engine->projects_folder, $this->builder->engine->admin_projects_folder);
+
+                    $q = new Reportico();
+                    $q->projects_folder = $this->builder->engine->projects_folder;
+                    $q->reports_path = $q->projects_folder . "/" . ReporticoApp::getConfig("project");
+    
+                    $reader = new XmlReader($q, $drilldownToReport, false, false, false, true);
+                    $reader->xml2query();
+
+                    $this->builder->engine->deriveAjaxOperation();
+                    $url = $this->builder->engine->getStartActionUrl() . "?xmlin=" . $drilldownToReport . "&execute_mode=EXECUTE&project=" . $drilldownToProject;
+                    $midbit = "";
+
+                    foreach ($q->lookup_queries as $k => $v) {
+
+                        if ( isset($params[$v->query_name]) && $params[$v->query_name]) {
+
+                            if ($v->criteria_type == "DATERANGE") {
+                                $midbit .= "&MANUAL_" . $v->query_name . "_FROMDATE='.{" . $params[$v->query_name] . "}.'&" .
+                                "MANUAL_" . $v->query_name . "_TODATE='.{" . $params[$v->query_name] . "}.'";
+                            } else {
+                                $midbit .= "&MANUAL_" . $v->query_name . "='.{" . $params[$v->query_name] . "}.'";
+                            }
+    
+                        }
+                    }
+                
+                    if ($midbit) {
+                        $url .= $midbit;
+                        $this->setExpression("embed_hyperlink($content, '" . $url . "', true, true)");
+                    }
                 }
 
                 break;
@@ -318,7 +357,7 @@ class Assignment extends ReporticoObject
                 $agg = isset($args[0]) ? $args[0] : false;
                 $on = isset($args[1]) ? $args[1] : false;
                 //echo $on ? "\$this->$method({{$agg}},\"{{$on}}\")" : "$method({{$agg}})<BR>";
-                $this->setExpression($on ? "$method({{$agg}},\"{{$on}}\")" : "$method({{$agg}})");
+                $this->setExpression($on ? "$method({{$agg}},{{$on}})" : "$method({{$agg}})");
                 break;
 
             case "end":
@@ -503,15 +542,19 @@ class Assignment extends ReporticoObject
                     }
 
                     if (array_key_exists($crit, $in_query->lookup_queries)) {
-                        switch ($eltype) {
+                        switch (strtoupper($eltype)) {
                             case "FULL":
                                 $clause = $in_query->lookup_queries[$crit]->getCriteriaClause(true, true, true, false, false, $showquotes);
                                 break;
 
+                            case "LOWER":
+                            case "FROM":
                             case "RANGE1":
                                 $clause = $in_query->lookup_queries[$crit]->getCriteriaClause(false, false, false, true, false, $showquotes);
                                 break;
 
+                            case "UPPER":
+                            case "TO":
                             case "RANGE2":
                                 $clause = $in_query->lookup_queries[$crit]->getCriteriaClause(false, false, false, false, true, $showquotes);
                                 break;

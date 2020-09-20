@@ -237,9 +237,9 @@ class ReporticoApp
     public static function show()
     {
         $instance = self::getInstance();
-        echo "<PRE>";
-        var_dump($instance->variables);
-        echo "</PRE>";
+        //echo "<PRE>";
+        //var_dump($instance->variables);
+        //echo "</PRE>";
     }
 
 // error handler function
@@ -334,10 +334,18 @@ class ReporticoApp
     // exception handler function
     static function ExceptionHandler($exception)
     {
-        echo "<PRE>";
-        echo $exception->getMessage();
-        echo $exception->getTraceAsString();
-        echo "</PRE>";
+        self::ErrorHandler(E_USER_ERROR, $exception, false, false);
+        //echo "<PRE>";
+        //echo $exception->getMessage();
+        //echo $exception->getTraceAsString();
+        //echo "</PRE>";
+    }
+
+    // error handler function
+    static function ErrorLogger($errno, $errstr, $errfile = false, $errline = false)
+    {
+        self::ErrorHandler($errno, $errstr, $errfile, $errline);
+        return true;
     }
 
     // error handler function
@@ -411,7 +419,9 @@ class ReporticoApp
 
     static function backtrace()
     {
+        echo "<PRE>";
         debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+        echo "</PRE>";
     }
 
 

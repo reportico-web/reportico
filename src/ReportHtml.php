@@ -1031,7 +1031,7 @@ class ReportHtml extends Report
 //echo "<BR>";
 
         $tx = $this->reporticoStringToPhp($tx);
-        $tx = Assignment::reporticoMetaSqlCriteria($this->query, $tx, false, true);
+        $tx = Assignment::reporticoMetaSqlCriteria($this->query, $tx, true, true);
         $tx = preg_replace("/<\/*u>/", "", $tx);
 
         return $styles;

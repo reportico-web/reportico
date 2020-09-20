@@ -737,11 +737,15 @@ class CriteriaColumn extends QueryColumn
 
         $cls = "";
 
-        switch ($in_type) {
+        switch (strtoupper($in_type)) {
+            case "LOWER":
+            case "FROM":
             case "RANGE1":
                 $cls = $this->getCriteriaClause(false, false, false, true, false, $use_del);
                 break;
 
+            case "UPPER":
+            case "TO":
             case "RANGE2":
                 $cls = $this->getCriteriaClause(false, false, false, false, true, $use_del);
                 break;

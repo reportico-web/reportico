@@ -1194,13 +1194,16 @@ input.reportico-admin-button2
   display: block;
   margin: 0 auto;
   padding: 0px 0px;
-  box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
   overflow-y: hidden;
   box-sizing: border-box;
   font-size: 12pt;
   position: relative;
   /*zoom: 0.68;*/
   /*height: 100vh !important;*/
+}
+
+.reportico-paginated.autopaginate{
+  box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
 }
 
 .page-size-A3.page-orientation-portrait.autopaginate { width: 29.7; height: 42.0cm; }

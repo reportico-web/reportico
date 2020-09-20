@@ -140,18 +140,21 @@ class ReporticoDataSource extends ReporticoObject
                 if ( !is_array($args[0]) )
                     $invalid = true;
                 else
+                    $ct = 0;
                     foreach ( $args[0] as $k => $columns ){
                         if (!is_array($columns))
                             $invalid = true;
                         else{
+                            if ( $ct == 0 )
                             foreach ($columns as $columnkey => $column) {
                                 $this->builder->engine->createQueryColumn($columnkey, "", "", "", "", '####.###', true);
                             }
                         }
+                        break;
                     }
 
                 if ($invalid)
-                    trigger_error("Array datasource requires array parameter in form [ [ 'col1' => 'val1', 'col2' => 'val2' [ 'col1' => 'val3', 'col2' => 'val4' ], ], ", E_USER_ERROR);
+                    trigger_error("Array datasource requires array parameter in form [ [ 'col1' => 'val1', 'col2' => 'val2' ], [ 'col1' => 'val3', 'col2' => 'val4'  ], ", E_USER_ERROR);
                 break;
 
             case "database":

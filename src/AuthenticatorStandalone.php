@@ -56,7 +56,6 @@ class AuthenticatorStandalone extends Authenticator
             $this->engine->allow_maintain = "DEMO";
         }
 
-        //echo "Acces mode {$this->engine->access_mode}<BR>";
         switch ($this->engine->access_mode) {
 
             case "FULL":
@@ -94,8 +93,16 @@ class AuthenticatorStandalone extends Authenticator
 
             case "ONEREPORT":
             case "one-report":
+            case "REPORT":
             case "report":
                  self::_reset("report");
+                 break;
+
+            case "REPORTOUTPUT":
+            case "REPORT-OUTPUT":
+            case "report-output":
+            case "reportoutput":
+                 self::_reset("report-output");
                  break;
 
         }
@@ -121,11 +128,12 @@ class AuthenticatorStandalone extends Authenticator
             }
         }
 
-        // For builder initiated reports, default to project access and automatically login
-        //if ($this->engine->report_from_builder) {
+        // For builder initiated reports, automatically login 
+        if ($this->engine->report_from_builder && !$this->engine->initial_project) {
             //self::_grant("project");
-            //return true;
-        //}
+            self::_flag("non-project-operation");
+            return true;
+        }
 
         $loggedon = false;
 

@@ -14,10 +14,15 @@ class ReporticoChart extends ReporticoObject
     public $currentPlot = false;
 
     public $usage = array(
-        "description" => "Chart Builder",
+        "summary" => "Generate charts inside your output",
+        "description" => "The chart method() allows you to place a chart visualising the data for the report or for each group section. You are able to set the chart tiele, axes titles, legend title.",
         "methods" => array(
+            "chart" => array(
+                "description" => "Start a chart",
+                "parameters" => array( "groupcolumn" => "If specified the group column after which to add a chart")
+            ),
             "title" => array(
-                "description" => "Chart By a Column",
+                "description" => "Chart Title",
                 "parameters" => array( "title" => "Title Of Chart")
             ),
             "plot" => array(
@@ -70,8 +75,10 @@ class ReporticoChart extends ReporticoObject
                     $chart->renderer = $builder->engine->createGraph();
                     $chart->renderer->setGraphColumn($args[1]);
                 } else {
+                    $builder->engine->createGroup("REPORT_BODY", $builder->engine);
                     $chart = new \Reportico\Engine\ReporticoChart();
                     $chart->renderer = $builder->engine->createGraph();
+                    $chart->renderer->setGraphColumn("REPORT_BODY");
                 }
                 $chart->builder = $builder;
                 $builder->stepInto("chart", $chart, "\Reportico\Engine\ReportChart");

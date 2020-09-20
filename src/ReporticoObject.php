@@ -55,55 +55,100 @@ class ReporticoObject
     public function builderUsage($level) {
 
 
-        $text .= "<PRE>Usage: $level()<BR>";
+        $text = "";
+        $nextline = "<BR>";
+        $nextline = "\n";
+        $space = "&nbsp;";
+        $space = " ";
+        if ( isset($this->usage["summary"] ))
+            $text .= "<BR><div>".$this->usage["summary"]."</div><BR>";
+        if ( isset($this->usage["description"] ))
+            $text .= "<div>".$this->usage["description"]."</div><BR>";
+        $text .= "{$nextline}{$nextline}Usage: {$nextline}";
         $mct = 0;
+        $methodct = count($this->usage["methods"]);
+        $syntax = "";
+        $syntax = "\Reportico\Engine\Builder\build()\n";
         foreach ($this->usage["methods"] as $method => $properties){
             $ct = 0;
             if ( $mct )
-                $text .= "    )->$method(<BR>";
+                $syntax .= "){$nextline}";
+            if ( $method == $level ) 
+                $syntax .= "{$space}{$space}->$method(";
             else
-                $text .= "    ->$method(<BR>";
+                $syntax .= "{$space}{$space}{$space}{$space}->$method(";
             $mct++;
 
+            if ( isset($properties["parameters"]) ) {
+            $parameterct = count($properties["parameters"]);
+            $pct = 0;
             foreach ($properties["parameters"] as $k => $v) {
-                if ( $ct )
-                    $text .= ",";
+                $pct ++;
                 if ( !is_array($v) ) {
-                    $text .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$k : $v<BR>";
+                    if ( $parameterct > 1 )
+                        $syntax .= "{$nextline}{$space}{$space}{$space}{$space}{$space}{$space}{$space}{$space}";
+                    $syntax .= "$k :";
+                    if ( strlen($v) > 100 ) {
+                        $ptr = 100;
+                        $char = substr($v,$ptr,1);
+                        while ( $ptr < strlen($v) && $char != " " && $char != "," ){
+                            $ptr++;
+                            $char = substr($v,$ptr,1);
+                        }
+                        $syntax .= substr($v, 0, $ptr);
+                        $syntax .= "{$nextline}{$space}{$space}{$space}{$space}{$space}{$space}{$space}{$space}";
+                        $syntax .= substr($v, $ptr);
+                    }
+                    else
+                        $syntax .= "$v";
+                    if ( $pct < $parameterct )
+                        $syntax .= ",";
                 } else {
-                    $text .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$k";
+                    if ( $parameterct > 1 )
+                        $syntax .= "{$nextline}{$space}{$space}{$space}{$space}{$space}{$space}{$space}{$space}";
+                    $syntax .= "$k";
                     $last = false;
                     if ( isset($v["options"])){
-                        $text .=  " [";
+                        $syntax .=  " [";
                         foreach ( $v["options"] as $k1 => $v1 ) {
-                            if ( $last ) $text .= "|";
-                            $text .=  "$k1";
+                            if ( $last ) $syntax .= "|";
+                            $syntax .=  "$k1";
                             $last = $k1;
                         }
-                        $text .=  "]";
+                        $syntax .=  "]";
                     } else {
                         foreach ( $v as $k1 => $v1 ) {
                             if ( isset($v1["options"])){
-                                $text .=  " options ";
+                                $syntax .=  " options ";
                                 foreach ( $v1["options"] as $k2 => $v2 ) {
-                                    if ( $last ) $text .= "|";
-                                    $text .=  "$k2";
+                                    if ( $last ) $syntax .= "|";
+                                    $syntax .=  "$k2";
                                     $last = $k2;
                                 }
                             } else {
-                                $text .= " - $k1: $v1<BR>";
+                                $syntax .= " - $k1: $v1 {$nextline}";
                             }
                         }
                     }
-                    $text .= "<BR>";
+                    $syntax .= "";
                 }
                 $ct++;
+                $pct++;
+            }
             }
         }
         if ( $mct )
-            $text .= "&nbsp;&nbsp;&nbsp;&nbsp;)<BR>";
+            $syntax .= "){$nextline}";
+            //$syntax .= "{$space}{$space}{$space}{$space}){$nextline}";
 
-        $text .= ")<BR>";
+
+        $syntax = "\n<?php \n".$syntax."\n?>";
+        $syntax = highlight_string($syntax, true);
+        $syntax = preg_replace("/....\?php/", "", $syntax);
+        $syntax = preg_replace("/\?.*>/", "", $syntax);
+        $text .= $syntax;
+
+        //$text .= ")<BR>";
         return $text;
     }
 
@@ -151,7 +196,7 @@ class ReporticoObject
         trigger_error($in_text, E_USER_ERROR);
     }
 
-    public function &getAttribute($attrib_name)
+    public function &getAttribute($attrib_name, $default = false)
     {
         $val = false;
 
@@ -161,6 +206,9 @@ class ReporticoObject
                 return $val;
             } else {
                 $val = ReporticoApp::getDefaultConfig($attrib_name, $this->attributes[$attrib_name]);
+                if ( ( !$val || $val == ".DEFAULT" ) && $default ){
+                    $val = $default;
+                }
                 return $val;
             }
         } else {

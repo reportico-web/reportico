@@ -1226,6 +1226,7 @@ input.reportico-admin-button2
 }*/
 
 .reportico-paginated.autopaginate {
+  box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
   margin-bottom: 0.5cm;
 }
 
@@ -1234,7 +1235,6 @@ input.reportico-admin-button2
   display: block;
   margin: 0 auto;
   padding: 0px 0px;
-  box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
   overflow-y: hidden;
   box-sizing: border-box;
   font-size: 12pt;

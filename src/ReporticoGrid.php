@@ -11,24 +11,25 @@ namespace Reportico\Engine;
 class ReporticoGrid extends ReporticoObject
 {
     public $usage = array(
-        "description" => "Dynamic Grid Control",
+        "summary" => "Generates the report as a searchable, sortable, paging table. ",
+        "description" => "Where report output is split using the group option each table group is converted to its own dynamic table. The searchable, sortable and pageable parameters are on by default so do not need to be specified unless you are turning them off.",
         "methods" => array(
-            "grid" => array(
+            "dynamicTable" => array(
                 "description" => "Enable Dynamic Grid",
             ),
             "searchable" => array(
-                "description" => "Make the grid searchable",
-                "parameters" => array( "searchable" => "set to true if grid should be searchable")
+                "description" => "Make the table searchable",
+                "parameters" => array( "searchable" => "set to true if table should be searchable")
             ),
             "sortable" => array(
-                "description" => "Make the grid sortable",
-                "parameters" => array( "sortable" => "set to true if grid should have sortable columns")
+                "description" => "Make the table sortable",
+                "parameters" => array( "sortable" => "set to true if table should have sortable columns")
             ),
             "pageable" => array(
-                "description" => "Enable paginated output in the grid ",
+                "description" => "Enable paginated output in the table ",
                 "parameters" => array(
-                    "pageable" => "set to true if grid should be paginated",
-                    "page size" => "The number of rows to show in the paginated grid",
+                    "pageable" => "set to true if table should be paginated",
+                    "page size" => "The number of rows to show in the paginated table",
                 )
             ),
         ));
@@ -55,7 +56,7 @@ class ReporticoGrid extends ReporticoObject
                 $object->query = $builder->engine;
                 $object->value = $builder->engine;
 
-                $builder->stepInto("grid", $object, "\Reportico\Engine\ReportGrid");
+                $builder->stepInto("dynamicTable", $object, "\Reportico\Engine\ReportGrid");
 
                 $builder->engine->setAttribute ("gridDisplay", "show" );
                 //$builder->engine->setAttribute ("AutoPaginate", "NONE" );
@@ -83,7 +84,12 @@ class ReporticoGrid extends ReporticoObject
         switch ( strtolower($method) ) {
 
             case "usage":
-                echo $this->builderUsage("grid");
+                $asString = isset ($args[0]) ? $args[0] : false;
+                if ( $asString ) {
+                    return $this->builderUsage("dynamicTable");
+                }
+                else
+                    echo $this->builderUsage("dynamicTable");
                 break;
 
             case 'sortable':

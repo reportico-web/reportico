@@ -11,7 +11,8 @@ namespace Reportico\Engine;
 class ReporticoCriteria extends ReporticoObject
 {
     public $usage = array(
-        "description" => "Lookup Criteria Item",
+        "summary" => "Adds criteria selection widgets to the report front end which are passed to the main report query to return just the results the user has selected",
+        "description" => "Gives the ability to select from, for example,  checkboxes, dropdowns, date pickers and build them into the where clause of the query. The name passed to the criteria method is then referred to in the main sql using the {} notation.",
         "methods" => array(
             "criteria" => array(
                 "description" => "criteria item",
@@ -61,6 +62,7 @@ class ReporticoCriteria extends ReporticoObject
                     )
                 )
             ),
+            "default" => array( "description" => "Set initial values for the criteria. For example you might want to default dates to today or ", "parameters" => array( "default" => "Set initial values for the criteria. Use comma notation for multiselections and use FROM-TO notation for ranges") ),
             "sql" => array( "description" => "For lookup criteria items, the sql used to fetch the criteria selection items", "parameters" => array( "sql" => "The sql to return the relevant items") ),
             "tab" => array( "description" => "Places the criteria widget into a tab group named with the specifed tab label. In reports with many crtieria grouping criteria under tabs can unclutter the screen", "parameters" => array( "tab title" => "The tab name to group the crtieria under.") ),
             "tooltip" => array( "description" => "A help box describing the criteria item which appears when hovering over the widget", "parameters" => array( "tooltip" => "The criteria help text") ),
@@ -96,11 +98,13 @@ class ReporticoCriteria extends ReporticoObject
                 $builder = $args[0];
                 if (isset($args[1]))  {
                     $object = new \Reportico\Engine\ReporticoCriteria();
-                    $object->query = new Reportico();
 
-                    $builder->engine->setProjectEnvironment($builder->engine->initial_project, $builder->engine->projects_folder, $builder->engine->admin_projects_folder);
-                    $builder->engine->datasource = new ReporticoDataSource($builder->engine->external_connection, $builder->engine->available_connections);
-                    $builder->engine->datasource->connect();
+                    $object->query = new Reportico();
+                    if ( !$builder->engine->datasource ) {
+                        $builder->engine->setProjectEnvironment($builder->engine->initial_project, $builder->engine->projects_folder, $builder->engine->admin_projects_folder);
+                        $builder->engine->datasource = new ReporticoDataSource($builder->engine->external_connection, $builder->engine->available_connections);
+                        $builder->engine->datasource->connect();
+                    }
                     $object->criteriaItem = $builder->engine->setCriteriaLookup($args[1], $object->query);
                     $object->criteriaItem->datasource = $builder->engine->datasource;
 
@@ -135,7 +139,7 @@ class ReporticoCriteria extends ReporticoObject
                 break;
 
             case "title":
-                $this->builder->value->setAttribute("column_title", $args[0]);
+                $this->builder->value->criteriaItem->setAttribute("column_title", $args[0]);
                 break;
 
             case "type":
@@ -179,6 +183,11 @@ class ReporticoCriteria extends ReporticoObject
 
             case "tooltip":
                 $this->builder->value->criteriaItem->setCriteriaHelp($args[0]);
+                break;
+
+            case "defaults":
+            case "default":
+                $this->builder->value->criteriaItem->setCriteriaDefaults($args[0]);
                 break;
 
             case "input":

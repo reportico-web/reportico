@@ -235,10 +235,10 @@ class ReportTCPDF extends Report
         // Set default page size, margins, fonts etc
         $this->page_line_count = 0;
         $this->fontName = $this->query->getAttribute("pdfFont");
-        $this->fontSize = $this->query->getAttribute("pdfFontSize");
+        $this->fontSize = $this->query->getAttribute("pdfFontSize", "6pt");
         $this->vsize = $this->fontSize + $this->vspace;
-        $this->orientation = $this->query->getAttribute("PageOrientation");
-        $this->page_type = $this->query->getAttribute("PageSize");
+        $this->orientation = $this->query->getAttribute("PageOrientation", "Landscape");
+        $this->page_type = $this->query->getAttribute("PageSize", "A4");
 
         if ($this->orientation == "Portrait") {
             $this->abs_page_width = $this->page_types[$this->page_type]["width"];
@@ -247,12 +247,12 @@ class ReportTCPDF extends Report
             $this->abs_page_width = $this->page_types[$this->page_type]["height"];
             $this->abs_page_height = $this->page_types[$this->page_type]["width"];
         }
-        $this->abs_top_margin = $this->absPagingHeight($this->query->getAttribute("TopMargin"));
+        $this->abs_top_margin = $this->absPagingHeight($this->query->getAttribute("TopMargin", "1cm"));
         $this->abs_bottom_margin = $this->abs_page_height -
-        $this->absPagingHeight($this->query->getAttribute("BottomMargin"));
+        $this->absPagingHeight($this->query->getAttribute("BottomMargin", "1cm"));
         $this->abs_right_margin = $this->abs_page_width -
-        $this->absPagingWidth($this->query->getAttribute("RightMargin"));
-        $this->abs_left_margin = $this->absPagingWidth($this->query->getAttribute("LeftMargin"));
+        $this->absPagingWidth($this->query->getAttribute("RightMargin", "1cm"));
+        $this->abs_left_margin = $this->absPagingWidth($this->query->getAttribute("LeftMargin", "1cm"));
         $this->abs_print_width = $this->abs_right_margin - $this->abs_left_margin;
         $this->abs_row_left_margin = $this->abs_left_margin;
         $this->abs_col_left_margin = $this->abs_left_margin;

@@ -107,12 +107,13 @@ class ReportChromium extends Report
         // we must close current sessions so they can be subsequently opened within the web call
         $sessionClass::closeReporticoSession();
 
+        //try {
         $x = Browsershot::url($url)
             //->save($outputfile);
             ->setExtraHttpHeaders($newHeaders)
             ->paperSize($this->pageWidth($engine->getAttribute("PageSize")), $this->pageHeight($engine->getAttribute("PageSize")), "mm")
             ->setOption('args', ['--disable-web-security'])
-            ->emulateMedia('print')
+            //->emulateMedia('print')
             ->noSandbox()
             ->landscape()
             ->showBackground()
@@ -120,6 +121,18 @@ class ReportChromium extends Report
             ->setDelay(1000)
             ->save("$outputfile")
             ;
+        /*
+        } catch ( \Exception $ex ) {
+            header("HTTP/1.0 500 Server Error", true);
+            echo '<div class="reportico-error-box">Unable to generate PDF report. The pdf engine is configured within Reportico as \'chromium\' and it is likely that either of the node/npm or puppeteers packages are not installed. This functionality may not be available if Reportico is installed on a public hosting service as some hosting providers do not allow third party executables to be installed. 
+            <p><p>
+            If you are running Reportico on a system under your control or your hosting provider will allow node/npm and puppeteer to operate, then you will need to set up npm and install puppeteer. If you are using just standalone Reportico then this is a case of running \'npm install\' in the Reportico folder, this will download the necessary Chrome application for PDF generation. For using Reportico as a package embedded in your own application, for example a Laravel system, you will need to setup the package.json in your own root folder and run npm there.
+            <p><p>
+            Alternative if you change your pdf_engine configuration to "tcpdf" you can get a more basic pdf output without this setup.
+            </div>';
+            die;
+        }
+        */
 
         $this->reporttitle = $engine->deriveAttribute("ReportTitle", "Set Report Title");
         if (isset($engine->user_parameters["custom_title"])) {

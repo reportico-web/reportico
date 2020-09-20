@@ -290,10 +290,18 @@ class XmlWriter
                         $val2["GroupHeaderCustom"] = false;
                     }
 
+                    if ( !is_object($val2["GroupHeaderColumn"])  ) {
+                        trigger_error("Unable to generate group header for unknown column ".$val->group_name, E_USER_ERROR) ;
+                        $el = &$gphi->add_xmlval("GroupHeaderColumn", false );
+                    }
+                    else
+                    {
                     $el = &$gphi->add_xmlval("GroupHeaderColumn", $val2["GroupHeaderColumn"]->query_name);
+                    }
                     $el = &$gphi->add_xmlval("GroupHeaderCustom", $val2["GroupHeaderCustom"]);
                     $el = &$gphi->add_xmlval("ShowInHTML", $val2["ShowInHTML"]);
                     $el = &$gphi->add_xmlval("ShowInPDF", $val2["ShowInPDF"]);
+                    
                 }
 
                 $gpt = &$gpi->add_xmlval("GroupTrailers");

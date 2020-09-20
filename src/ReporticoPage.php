@@ -13,6 +13,7 @@ class ReporticoPage extends ReporticoObject
     public $usage = array(
         "description" => "Page Formatting",
         "methods" => array(
+            "page" => array( "description" => "Begin pagination" ),
             "leftmargin" => array( "description" => "Size of margin on left of page, specify Css value e.g 10px,2cm", "parameters" => array( "value" => "Margin size in CSS value 10px,2cm") ),
             "rightmargin" => array( "description" => "Size of margin on right of page, specify Css value e.g 10px,2cm", "parameters" => array( "value" => "Margin size in CSS value 10px,2cm") ),
             "topmargin" => array( "description" => "Size of margin on right of page, specify Css value e.g 10px,2cm", "parameters" => array( "value" => "Margin size in CSS value 10px,2cm") ),
@@ -38,36 +39,33 @@ class ReporticoPage extends ReporticoObject
                     )
                 )
             ),
-            "layout" => array( "description" => "Layout",
-                "parameters" => array(
-                    "type" => array( "description" => "Layout",
-                        "options" => array(
-                            "Table" => "Tabular Format",
-                            "Form" => "One section per row",
-                        )
-                    )
-                )
-            ),
-            "paginate" => array( "paginate" => "Whether to generate continuous output or with page throws",
-                "parameters" => array(
-                    "type" => array( "description" => "The type of criteria item",
-                        "options" => array(
-                            1 => "Pagination On",
-                            0 => "Continuous Output"
-                        )
-                    )
-                )
-            ),
+            "formLayout" => array( "description" => "Produces form style out with each set of result data presented vertically in a page block" ),
+            "paginate" => array( "description" => "Generates output split into pages and shows in a print preview style"),
             "size" => array( "description" => "Type of criteria",
-                        "parameters" => array(
+                "parameters" => array(
                                     "type" => array( "description" => "The type of criteria item",
-                                        "options" => array(
+                        "options" => array(
                                             "A5" => "A5",
                                             "A4" => "A4",
                                             "A3" => "A3",
                                             "US-Letter" => "US-Letter",
-                                )
-                            )
+                                            "US-Ledger" => "US-Ledger",
+                        )
+                    )
+                )
+            ),
+            "header" => array(
+                "description" => "Add a custom text block at the top of the page styled according to the passed css definition. ",
+                "parameters" => array(
+                    "header text" => "A block of text which can contain column values using the {} notation",
+                    "header style" => "A CSS string or array of CSS style pairs indicating how to style and position the header",
+                )
+            ),
+            "footer" => array(
+                "description" => "Add a custom text block at the bottom of the page styled according to the passed css definition. ",
+                        "parameters" => array(
+                    "footer text" => "A block of text which can contain column values using the {} notation",
+                    "footer style" => "A CSS string or array of CSS style pairs indicating how to style and position the footer",
                         )
             ),
         ));
@@ -149,8 +147,8 @@ class ReporticoPage extends ReporticoObject
                 $this->builder->engine->setAttribute("PageTitleDisplay", $args[0]);
                 break;
 
-            case "layout":
-                $this->builder->engine->setAttribute("PageLayout", $args[0]);
+            case "formlayout":
+                $this->builder->engine->setAttribute("PageLayout", "Form");
                 break;
 
             case "pdfzoomfactor":

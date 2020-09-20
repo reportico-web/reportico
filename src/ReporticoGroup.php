@@ -28,10 +28,14 @@ class ReporticoGroup extends ReporticoObject
     public $usage = array(
         "description" => "",
         "methods" => array(
-            "on" => array(
+            "group" => array(
                 "description" => "Group By a Column",
                 "parameters" => array( "column" => "column name to group on")
             ),
+            //"on" => array(
+                //"description" => "Group By a Column",
+                //"parameters" => array( "column" => "column name to group on")
+            //),
             "throwPageBefore" => array(
                 "description" => "Throw a new page at the start of the group",
             ),
@@ -49,6 +53,10 @@ class ReporticoGroup extends ReporticoObject
             "trailer" => array(
                 "description" => "A column value to show at the end of report or group",
                 "parameters" => array( "column" => "name of the column to display in the group trailer")
+            ),
+            "label" => array(
+                "description" => "The label to display against a column header or trailer",
+                "parameters" => array( "label" => "The label to display against a column header or trailer")
             ),
             "below" => array(
                 "description" => "Used with the trailer option, indicates under which column to show the trailer, for a total of rolling average value, for example",
@@ -137,11 +145,14 @@ class ReporticoGroup extends ReporticoObject
                 break;
 
             case "header":
+                $this->builder->buffer = [];
                 $headerColumn = $args[0];
+                $this->builder->buffer[$method] = $args[0];
                 if ( $headerColumn ) {
-                    //$x = new Reportico();
                     $this->builder->engine->createGroupHeader($this->levelRef, $headerColumn);
+                    if ( $this->builder->engine->getColumn($this->levelRef) ) {
                     $this->builder->engine->getColumn($this->levelRef)->setAttribute("column_display", "hide");
+                }
                 }
                 break;
 
@@ -184,7 +195,31 @@ class ReporticoGroup extends ReporticoObject
                 break;
 
 
+            case "label":
+                $trailer = isset($args[0]) && $args[0] ? $args[0] : "BLANK";
+                if ( isset($this->builder->buffer["trailer"]) ) {
+                    if ( $col = $this->builder->engine->getColumn($this->builder->buffer["trailer"]) ) {
+                        $this->builder->engine->getColumn($this->builder->buffer["trailer"])->setAttribute("group_trailer_label", $trailer);
+                    //$this->builder->buffer = [];
+                    }
+                    else {
+                        trigger_error("below() applied to unknown column ".$this->builder->buffer["trailer"].". This is not present as a column in the results set and is not a custom expression", E_USER_ERROR);
+                        return $this;
+                    }
+                } else {
+                    if ( isset($this->builder->buffer["header"]) ) {
+                        $this->builder->engine->getColumn($this->builder->buffer["header"])->setAttribute("group_header_label", $trailer);
+                        //$this->builder->buffer = [];
+                    } else {
+                        die("Label can only be used within header or trailer context<BR>");
+                    }
+                }
+                break;
+
             case "trailer":
+                $this->builder->buffer = [];
+                // continue to below...
+
             case "below":
                 $this->builder->buffer[$method] = $args[0];
                 if ( isset($this->builder->buffer["trailer"]) && isset($this->builder->buffer["below"]) ) {
@@ -195,8 +230,14 @@ class ReporticoGroup extends ReporticoObject
                         "yes",
                         "yes"
                     );
+                    if ( $col = $this->builder->engine->getColumn($this->builder->buffer["trailer"]) ) {
                     $this->builder->engine->getColumn($this->builder->buffer["trailer"])->setAttribute("column_display", "hide");
-                    $this->builder->buffer = [];
+                    }
+                    else {
+                        trigger_error("below() applied to unknown column ".$this->builder->buffer["trailer"].". This is not present as a column in the results set and is not a custom expression", E_USER_ERROR);
+                        return $this;
+                    }
+                    //$this->builder->buffer = [];
                 }
                 break;
 
