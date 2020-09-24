@@ -2,7 +2,6 @@
 
 namespace Reportico\Themes\Widgets;
 
-
 /*
 
  * Core
@@ -30,7 +29,6 @@ class Bootstrap4 extends \Reportico\Widgets\Widget
     public function getConfig() {
 
         $this->engine->css_framework = "bootstrap4";
-
 
         if ( $this->engine->bootstrap_preloaded )
             return [];

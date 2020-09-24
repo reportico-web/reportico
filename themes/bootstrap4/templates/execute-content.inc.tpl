@@ -109,7 +109,7 @@
 
             {# Column Headers #}
             <THEAD>
-            <TR>
+            <TR class="reportico-row">
             {% for columnHeader in page.headers %}
                 <TH style="{{columnHeader.styles}}">
                 {{ columnHeader.content }}
@@ -137,7 +137,7 @@
 
             {% for group in row.groupends %}
                 {% for trailer in group.trailers %}
-                    <tr class="trailer">
+                    <tr class="trailer reportico-row reportico-trailer">
                         {% for column in trailer %}
                             <td style="{{ column.styles }}">{{ column.content }}</td>
                         {% endfor %}

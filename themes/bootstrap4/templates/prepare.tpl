@@ -54,6 +54,7 @@
 
                     </div>
 
+                    {% if not FLAGS["non-project-operation"] %}
                     <div class="flex-container" style="display:inline" id="reportico-template-options">
                         {# Save Template #}
                         <label class='' style="display:inline" aria-label='Text input with checkbox'>{{ WIDGETS["template"]["label"] }}:</label>
@@ -69,6 +70,7 @@
                             <i class="fa fa-trash-alt fa-lg"></i>
                         </button>
                     </div>
+                    {% endif %}
             </div>
         </div>
 
@@ -323,12 +325,12 @@
 {# After running inline HTML criteria block hides, this widget allows unhiding of it after running report #}
 
       {# Toggle criteria switch #}
-      <div class='reportico-show-criteria' style='display:none'>
+      <div class='reportico-show-criteria non-printable' style='display:none'>
           <a href='#'>
               <i class="fa fa-chevron-down fa-lg"></i>
           </a>
       </div>
-      <div class='reportico-hide-criteria' style='display:none'>
+      <div class='reportico-hide-criteria non-printable' style='display:none'>
           <a href='#'>
               <i class="fa fa-chevron-up fa-lg"></i>
           </a>

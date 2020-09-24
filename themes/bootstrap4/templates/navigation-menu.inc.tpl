@@ -1,5 +1,4 @@
 {% autoescape false %}
-
 <nav class="navbar navbar-expand-lg navbar-light bg-light reportico-top-menu">
 
 	{# brand #}

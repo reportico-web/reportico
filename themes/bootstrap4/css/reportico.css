@@ -636,7 +636,7 @@ input.reportico-admin-button2
 }
 
 /* Container for Group Headers  */
-.reportico-row td, .reportico-row div
+.reportico-row td, .reportico-row th, .reportico-row div
 {
     padding: 2px 2px 1px 2px;
 }
@@ -1274,7 +1274,14 @@ input.reportico-admin-button2
     }
 
 
-    .non-printable { display: none; }
+    .compact-printable { 
+        padding: 0px !important; 
+        margin: 0px !important; 
+        border: none !important;
+    }
+    .non-printable { 
+        display: none; 
+    }
     .reportico-page-header { display: block; }
     .reportico-ajax-link { display: none; }
     .reportico-back-button { display: none; }
@@ -1537,7 +1544,8 @@ border-top: 1px solid #e5e5e5;
     margin: 2px 4px;
     padding: 2px 4px;
 }
-.nav-pills > li > a.active {
+/*.nav-pills > li > a.active {*/
+.reportico-criteria-tab.active {
     background-color: #008800!important;
 }
 /* -------- END STYLES FOR PDF CHARTS --------*/

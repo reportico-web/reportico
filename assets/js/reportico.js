@@ -1067,8 +1067,25 @@ function saveReport(sourceWidget)
 }
 
 
+/*
+ * For printing reports hide everything surrounding the report container
+ * so only the report output container is visible
+ */
+function hideSurroundingBlocks(block)
+ {
+    parent = block.parent();
+    if ( parent && parent.length > 0 ){
+        parent.addClass('compact-printable');
+        parent.siblings().addClass('non-printable');
+        hideSurroundingBlocks(parent)
+    }
+}
+
 /*reportico_jquery(document).on('click', '.reportico-admin-button, .reportico-admin-button2, .reportico-menu-item-link, .reportico-prepare-submit, .reportico-ajax-link, .reportico-ajax-link2, .reportico-link-menu2, .reportico-submit', function(event) */
 reportico_jquery(document).on('click', '.reportico-menu-item-link, .reportico-submit, .reportico-ajax-link', function(event) {
+    
+    // For print button hide surrounding text
+    hideSurroundingBlocks(reportico_jquery("#reportico-container"));
     submitAjaxLink(this)
     return false;
 })
