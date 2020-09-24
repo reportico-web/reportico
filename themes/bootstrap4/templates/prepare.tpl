@@ -1,7 +1,7 @@
 {% autoescape false %}
 {% include 'header.inc.tpl' %}
 
-<div id="reportico-container">
+<div id="reportico-container" class="flex-container">
 
 <!-- Widget Initialisation -->
 {{ASSETS_INIT}}
@@ -35,7 +35,7 @@
 
     <!-- Report Output options -->
     {% if not FLAGS["admin-report-selected"] %}
-    <div class="row" >
+    <div class="flex-row" >
         <div class="col">
             <div class="flex-container">
                     <div class="flex-item">

@@ -46,6 +46,7 @@ class AssetManager
 
         foreach ( $files as $file) {
 
+            //echo "$file<BR>";
             $base = substr(basename($file), 0, -4);
             $load = true;
             if ( $base == "DynamicGrid" ) $load = false;
@@ -70,8 +71,8 @@ class AssetManager
         /*
          * Autoload assets from theme widgets folder
          */
+        
         $files = glob("{$this->engine->theme_dir}/{$this->engine->theme}/widgets/*");
-
         foreach ( $files as $file) {
 
             //echo "Load $file<BR>";

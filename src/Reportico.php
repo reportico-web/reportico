@@ -2508,7 +2508,7 @@ class Reportico extends ReporticoObject
         $sessionClass = ReporticoSession();
 
         // Fetch URL path to reportico and set URL path to the runner
-        $this->reportico_url_path = ReporticoUtility::getReporticoUrlPath();
+        $this->reportico_url_path = $sessionClass::registerSessionParam("reportico_url_path",  ReporticoUtility::getReporticoUrlPath());
         if (!$this->url_path_to_reportico_runner) {
             $this->url_path_to_reportico_runner = $this->reportico_url_path . "run.php";
         }
@@ -2621,25 +2621,26 @@ class Reportico extends ReporticoObject
         // Force reportico modals or decide based on style?
         $this->force_reportico_mini_maintains = $sessionClass::registerSessionParam("force_reportico_mini_maintains", $this->force_reportico_mini_maintains);
 
-        //Define the asset dir path
-        if ($this->url_path_to_assets) {
-            $asset_path = $this->url_path_to_assets;
-        } else {
-            $asset_path = ReporticoUtility::findBestUrlInIncludePath("assets/notes.txt");
-            if ($asset_path) {
-                $asset_path = dirname($asset_path);
-            }
-
-            $this->url_path_to_assets = $asset_path;
+        // If the url to the public theme/template folder is not set, assume we are in standalone Reportico
+        // add set it to be in the base folder of reportico
+        if (!$this->url_path_to_assets) {
+            $this->url_path_to_assets = $this->reportico_url_path . "assets";
         }
 
         //Define the template dir where we could find specific template css js and template files
         // if not already provided
         if ( !$this->theme_dir ) {
-            $theme_dir = $this->url_path_to_templates;
-            if (!$this->url_path_to_templates)
-                $theme_dir = ReporticoUtility::findBestUrlInIncludePath('themes');
+            $theme_dir = __DIR__."/../themes";
+            $theme_dir = realpath($theme_dir);
+            //if (!$this->url_path_to_templates)
+                //$theme_dir = ReporticoUtility::findBestUrlInIncludePath('themes');
             $this->theme_dir = $theme_dir;
+        }
+
+        // If the url to the public theme/template folder is not set, assume we are in standalone Reportico
+        // add set it to be in the base folder of reportico
+        if ( !$this->url_path_to_templates ) {
+            $this->url_path_to_templates = $this->reportico_url_path . "themes";
         }
 
         /*@todo Must be in the theme and not in the code*/

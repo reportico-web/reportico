@@ -159,11 +159,20 @@ class ReportChromium extends Report
         else if ($engine->pdf_delivery_mode == "DOWNLOAD_SAME_WINDOW" /*&& $engine->reportico_ajax_called*/) {
             header('Content-Disposition: attachment;filename=' . $attachfile);
             header("Content-Type: application/pdf");
-            $buf = base64_encode(file_get_contents($outputfile));
-            unlink($outputfile);
-            //$buf = file_get_contents($outputfile);
-            $len = strlen($buf);
-            echo $buf;
+
+            // Dont encode to browser media format if called from a builder session
+            // Without the front end being involved
+            if ( $engine->report_from_builder_first_call ){
+                echo file_get_contents($outputfile);
+                unlink($outputfile);
+            } else {
+                // Dont encode if called from builder session
+                $buf = base64_encode(file_get_contents($outputfile));
+                unlink($outputfile);
+                //$buf = file_get_contents($outputfile);
+                $len = strlen($buf);
+                echo $buf;
+            }
             die;
         }
         // DOWNLOAD_NEW_WINDOW new browser window is opened to download file

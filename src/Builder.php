@@ -69,6 +69,29 @@ class Builder extends ReporticoObject implements \ArrayAccess, \Iterator, \Seria
             "relayCriteria" => array(
                 "description" => "Pass on parameter values as filter values for existing Reportico criteria items",
             ),
+            "pdfEngine" => array(
+                "description" => "",
+                "parameters" => array(
+                    "engine" => array( 
+                        "description" => "The name of the report to run",
+                        "options" => array(
+                            "chromium" => "Use the headleass chromium browser to generate attractive reports as they look in the browser",
+                            "tcpdf" => "Default simple PDF generator"
+                        )
+                    )
+                )
+            ),
+            "pdfDownloadMethod" => array(
+                "description" => "",
+                "parameters" => array(
+                    "engine" => array( "description" => "How the browser provides the pdf output as a download or inline in the browser",
+                        "options" => array(
+                            "inline" => "Renders the PDF within a new browser tab",
+                            "same_window" => "The default option. Downloads to the local system from the window the report was called from",
+                            "new_window" => "Opens a new browser window to process the PDF and then download to local machine"
+                        ))
+                )
+            ),
             "accessLevel" => array(
                 "description" => "What level of access is granted to the user",
                 "parameters" => array(
@@ -155,8 +178,8 @@ class Builder extends ReporticoObject implements \ArrayAccess, \Iterator, \Seria
         $engine->session($session);
         $engine->initialize_on_execute = false;
         $engine->report_from_builder = true;
-        $engine->url_path_to_assets = "assets";
-        $engine->url_path_to_templates = "themes";
+        //$engine->url_path_to_assets = "assets";
+        //$engine->url_path_to_templates = "themes";
         $engine->report_from_builder_first_call = true;
         return new \Reportico\Engine\Builder($engine);
     }
@@ -448,7 +471,20 @@ class Builder extends ReporticoObject implements \ArrayAccess, \Iterator, \Seria
 
             if ( strtolower($method) == "pdfengine" ) {
                 $this->value->pdf_engine = $args[0];
-                $this->value->pdf_delivery_mode = "DOWNLOAD_SAME_WINDOW";
+                return $this;
+            }
+
+            if ( strtolower($method) == "pdfdownloadmethod" ) {
+                $mode = $args[0];
+                if ( strtoupper($mode) == "INLINE" ) {
+                    $this->value->pdf_delivery_mode = "INLINE";
+                } 
+                else if ( preg_match("/SAME/", strtoupper($mode) ) ) {
+                    $this->value->pdf_delivery_mode = "DOWNLOAD_SAME_WINDOW";
+                }
+                else if ( preg_match("/NEW/", strtoupper($mode) ) ) {
+                    $this->value->pdf_delivery_mode = "DOWNLOAD_NEW_WINDOW";
+                }
                 return $this;
             }
 
