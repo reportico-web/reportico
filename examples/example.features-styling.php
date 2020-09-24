@@ -5,8 +5,6 @@
       error_reporting(E_ALL);
 
       \Reportico\Engine\Builder::build()
-          ->properties(["url_path_to_assets" => "../assets"])
-          ->properties(["url_path_to_templates" => "../themes"])
           ->datasource()->database("mysql:host=localhost; dbname=reportico")->user("peter")->password("pN0stalr!")
           ->title     ("Product Stock")
           ->description     ("Produces a list of our employees")
