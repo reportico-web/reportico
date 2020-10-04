@@ -34,6 +34,7 @@
                 "pages" => [ "usage_method" => "page" ],
                 "dynamic-tables" => [ "usage_method" => "dynamic-tables", "title" => "Dynamic Tables" ],
                 "themes" => [ "usage_method" => "themes", "title" => "Themes" ],
+                "embedding" => [ "usage_method" => "themes", "title" => "Embedding in a Page" ],
             ]
         ],
         "output-formats" => [

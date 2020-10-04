@@ -584,7 +584,7 @@ input.reportico-admin-button2
 {
     /*border: solid 1px #AAAAAA;*/
     background-color: #999;
-    overflow: scroll;
+    /*overflow: scroll;*/
     /*min-width: 100vw;*/
 }
 
