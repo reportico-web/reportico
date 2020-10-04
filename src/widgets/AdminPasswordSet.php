@@ -133,7 +133,7 @@ class AdminPasswordSet extends Widget
 
         // If projects area different to source admin, create admin project in projects folder to store config.php
         if ($this->engine->admin_projects_folder != $this->engine->projects_folder) {
-            $target_parent = ReporticoUtility::findBestLocationInIncludePath($this->engine->projects_folder);
+            $target_parent = $this->engine->admin_projects_folder;
             $target_dir = $target_parent . "/admin";
             $target_conf = $target_dir . "/config.php";
         }

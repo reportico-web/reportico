@@ -265,10 +265,8 @@ class Template extends Widget
         $templatefolder = $projpath."/".$user."/".$this->engine->xmloutfile;
         $templatefolder = preg_replace("/\.xml/", "", $templatefolder);
         if ( !is_dir($templatefolder)) {
-            mkdir($templatefolder,0755, true );
-        }
-        if ( !is_dir($templatefolder)) {
-            echo "Cannot create $templatefolder - check permissions";
+            $this->engine->template_files = array();
+            return $this->engine->template_files;
             die;
         }
         $this->engine->template_files = array();

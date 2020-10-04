@@ -70,7 +70,7 @@ class Reportico extends ReporticoObject
     public $delete_project_url;
     public $create_report_url;
 
-    public $version = "7.1.21-beta";
+    public $version = "7.1.24-beta";
     public $doc_version = "6.0.0";
 
     public $name;
@@ -3208,6 +3208,7 @@ class Reportico extends ReporticoObject
         // Fetch project config
         $this->setProjectEnvironment($this->initial_project, $this->projects_folder, $this->admin_projects_folder);
 
+        $this->admin_projects_folder = $sessionClass::registerSessionParam("admin_projects_folder", $this->admin_projects_folder);
         $this->external_user = $sessionClass::registerSessionParam("external_user", $this->external_user);
         $this->external_param1 = $sessionClass::registerSessionParam("external_param1", $this->external_param1);
         $this->external_param2 = $sessionClass::registerSessionParam("external_param2", $this->external_param2);
@@ -4960,111 +4961,6 @@ class Reportico extends ReporticoObject
             return $x . " ";
         }
     }
-
-    /**
-     * Function save_admin_password
-     *
-     * Writes new admin password to the admin project config.php. If the projects area is in a different location
-     * than the admin area, then place the config.php in the projects area
-     */
-    /*
-    public function saveAdminPassword($password1, $password2, $language)
-    {
-        $sessionClass = ReporticoSession();
-
-        if ($language) {
-            ReporticoApp::setConfig("language", $language);
-        }
-
-        if ($password1 != $password2) {
-            return ReporticoLang::translate("The passwords are not identical please reenter");
-        }
-
-        if (strlen($password1) == 0) {
-            return ReporticoLang::translate("The password may not be blank");
-        }
-
-        $source_parent = ReporticoUtility::findBestLocationInIncludePath($this->admin_projects_folder);
-        $source_dir = $source_parent . "/admin";
-        $source_conf = $source_dir . "/config.php";
-        $source_template = $source_dir . "/adminconfig.template";
-
-        $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler", 0);
-        if (!@file_exists($source_parent)) {
-            $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
-            return "Projects area $source_parent does not exist - cannot write project";
-        }
-
-        $target_parent = $source_parent;
-        $target_dir = $source_dir;
-        $target_conf = $source_conf;
-
-        // If projects area different to source admin, create admin project in projects folder to store config.php
-        if ($this->admin_projects_folder != $this->projects_folder) {
-            $target_parent = ReporticoUtility::findBestLocationInIncludePath($this->projects_folder);
-            $target_dir = $target_parent . "/admin";
-            $target_conf = $target_dir . "/config.php";
-        }
-
-        if (!@is_dir($target_dir)) {
-            @mkdir($target_dir, 0755, true);
-            if (!is_dir($target_dir)) {
-                $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
-                return "Could not create admin config folder $target_conf - check permissions and continue";
-            }
-        }
-
-        if (@file_exists($target_conf)) {
-            if (!is_writeable($target_conf)) {
-                $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
-                return "Admin config file $target_conf is not writeable - cannot write config file - change permissions to continue";
-            }
-        }
-
-        if (!is_writeable($target_dir)) {
-            $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
-            return "Projects area $target_dir is not writeable - cannot write project password in config.php - change permissions to continue";
-        }
-
-        if (!@file_exists($source_conf)) {
-            if (!@file_exists($source_template)) {
-                $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
-                return "Projects config template file $source_template does not exist - please contact reportico.org";
-            }
-        }
-
-        $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
-
-        if (@file_exists($target_conf)) {
-            $txt = file_get_contents($target_conf);
-        } else {
-            $txt = file_get_contents($source_template);
-        }
-
-        $proj_language = ReporticoUtility::findBestLocationInIncludePath("language");
-        $lang_dir = $proj_language . "/" . $language;
-        if (!is_dir($lang_dir)) {
-            return "Language directory $language does not exist within the language folder";
-        }
-
-        $txt = preg_replace("/(define.*?SW_ADMIN_PASSWORD',).*\);/", "$1'$password1');", $txt);
-        $txt = preg_replace("/(ReporticoApp::setConfig\(.admin_password.,).*PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP/", "$1'$password1');", $txt);
-        $txt = preg_replace("/(ReporticoApp::setConfig\(.language.,).*PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP/", "$1'$language');", $txt);
-
-        $sessionClass::unsetReporticoSessionParam('admin_password');
-        $retval = file_put_contents($target_conf, $txt);
-
-        // Password is saved so use it so user can login
-        if (!ReporticoApp::isSetConfig('admin_password')) {
-            ReporticoApp::setConfig("admin_password", $password1);
-        } else {
-            ReporticoApp::setConfig("admin_password_reset", $password1);
-        }
-
-        return;
-
-    }
-    */
 
     /**
      * Function setProjectEnvironment
