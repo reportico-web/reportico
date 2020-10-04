@@ -170,7 +170,6 @@ class CriteriaLookup extends Widget
             // If this is first time into screen and we have defaults then
             // use these instead
             if (!$hidden_params && $sessionClass::getReporticoSessionParam("firstTimeIn")) {
-                $hidden_params = $this->criteria->defaults;
                 $manual_params = $this->criteria->defaults;
             }
 
@@ -220,86 +219,86 @@ class CriteriaLookup extends Widget
             $selectall = true;
         }
 
-        if ( !isset($this->criteria->lookup_query->targets[0]) )
-            return;
-        $res = &$this->criteria->lookup_query->targets[0]->results;
-        if (!$res) {
-            $res = array();
-            $k = 0;
-        } else {
-            reset($res);
-            $k = key($res);
-            for ($i = 0; $i < count($res[$k]); $i++) {
-                $line = &$res[$i];
-                $ret = false;
-                $abb = false;
-                $lab = false;
-                foreach ($this->criteria->lookup_query->columns as $ky => $col) {
-
-                    if ($col->lookup_display_flag) {
-                        $lab = $res[$col->query_name][$i];
+        if ( isset($this->criteria->lookup_query->targets[0]) ) {
+            $res = &$this->criteria->lookup_query->targets[0]->results;
+            if (!$res) {
+                $res = array();
+                $k = 0;
+            } else {
+                reset($res);
+                $k = key($res);
+                for ($i = 0; $i < count($res[$k]); $i++) {
+                    $line = &$res[$i];
+                    $ret = false;
+                    $abb = false;
+                    $lab = false;
+                    foreach ($this->criteria->lookup_query->columns as $ky => $col) {
+    
+                        if ($col->lookup_display_flag) {
+                            $lab = $res[$col->query_name][$i];
+                        }
+                        if ($col->lookup_return_flag) {
+                            $ret = $res[$col->query_name][$i];
+                        }
+    
+                        if ($col->lookup_abbrev_flag) {
+                            $abb = $res[$col->query_name][$i];
+                        }
+    
                     }
-                    if ($col->lookup_return_flag) {
-                        $ret = $res[$col->query_name][$i];
+    
+                    $checked = "";
+                    $isselected = false;
+    
+                    // If MANUAL option provided look for it display column
+                    if ( $manual_override ) {
+                        if (!$clearall && in_array($abb, $params)) {
+                            $isselected = true;
+                            $checked = $check_text;
+                        }
                     }
-
-                    if ($col->lookup_abbrev_flag) {
-                        $abb = $res[$col->query_name][$i];
-                    }
-
-                }
-
-                $checked = "";
-                $isselected = false;
-
-                // If MANUAL option provided look for it display column
-                if ( $manual_override ) {
-                    if (!$clearall && in_array($abb, $params)) {
+    
+    
+                    if (!$clearall && in_array($ret, $params)) {
+                        //echo "added $abb";
                         $isselected = true;
                         $checked = $check_text;
                     }
-                }
-
-
-                if (!$clearall && in_array($ret, $params)) {
-                    //echo "added $abb";
-                    $isselected = true;
-                    $checked = $check_text;
-                }
-
-                if (!$clearall && in_array($ret, $hidden_params) && !$manual_override) {
-                    //echo "added 2 $abb";
-                    $isselected = true;
-                    $checked = $check_text;
-                }
-
-                if (!$clearall && !$selectall && !$leavealone && in_array($ret, $expanded_params)) {
-                    //echo "added 3 $abb";
-                    $isselected = true;
-                    $checked = $check_text;
-                }
-
-                if (!$clearall && in_array($abb, $hidden_params) && !$manual_override) {
-                    //echo "added 4 $abb";
-                    $isselected = true;
-                    $checked = $check_text;
-                }
-
-                if ($selectall) {
-                    $isselected = true;
-                    $checked = $check_text;
-                }
-
-                if ($checked != "") {
-                    if (!$value_string && $value_string != "0") {
-                        $value_string = $abb;
-                    } else {
-                        $value_string .= "," . $abb;
+    
+                    if (!$clearall && in_array($ret, $hidden_params) && !$manual_override) {
+                        //echo "added 2 $abb";
+                        $isselected = true;
+                        $checked = $check_text;
                     }
+    
+                    if (!$clearall && !$selectall && !$leavealone && in_array($ret, $expanded_params)) {
+                        //echo "added 3 $abb";
+                        $isselected = true;
+                        $checked = $check_text;
+                    }
+    
+                    if (!$clearall && in_array($abb, $hidden_params) && !$manual_override) {
+                        //echo "added 4 $abb";
+                        $isselected = true;
+                        $checked = $check_text;
+                    }
+    
+                    if ($selectall) {
+                        $isselected = true;
+                        $checked = $check_text;
+                    }
+    
+                    if ($checked != "") {
+                        if (!$value_string && $value_string != "0") {
+                            $value_string = $abb;
+                        } else {
+                            $value_string .= "," . $abb;
+                        }
+                    }
+
+                    $text .= $this->renderWidgetItem($lab, $ret, $isselected);
+
                 }
-
-                $text .= $this->renderWidgetItem($lab, $ret, $isselected);
-
             }
         }
 

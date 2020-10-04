@@ -333,19 +333,24 @@ class Widget
                 // so dont perform a lookup mapping to the return column .. also dont do this if the return
                 // column is the summary column as specified by the indivisual widget
 
+                /* Is this required???? 
                 if ( $lq->widget->selection_match_element == "return" )
                     $post_match_column = $ret->query_name;
                 else
                     $post_match_column = $abb->query_name;
+                */
+                $post_match_column = $abb->query_name;
 
                 if ($abb && $ret && $post_match_column != $ret->query_name && isset($_REQUEST["MANUAL_$name"])) {
+
                     if (!$identified_criteria) {
                        $lq->executeCriteriaLookup();
                     }
 
-                    if ( !isset($this->lookup_query->targets[0]) ){
+                    if ( !isset($lq->lookup_query->targets[0]) ){
                         return;
                     }
+                    
                     $res = &$lq->lookup_query->targets[0]->results;
 
                     //echo "<PRE> $col->query_name ";var_dump($res); //die;
@@ -361,17 +366,14 @@ class Widget
                     foreach ($choices as $k => $v) {
                         if (isset($res[$post_match_column])) {
                             foreach ($res[$post_match_column] as $k1 => $v1) {
-                                echo "$post_match_column $v1 / $ret->query_name $v<br>";
                                 if ($v1 == $v) {
                                     $target_choices[] = $res[$ret->query_name][$k1];
-                                    echo "$k -> ".$choices[$k]."<BR>";
                                 }
                             }
                         }
                     }
                     $choices = $target_choices;
                     $lq->column_value = implode(",", $choices);
-                    echo "=> $lq->column_value<BR>";
 
                     if (!$choices) {
                         // Need to set the column value to a arbitrary value when no data found
