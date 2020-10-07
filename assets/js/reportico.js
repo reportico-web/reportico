@@ -662,6 +662,11 @@ function splitPage() {
 function horizontalPageSplit(newpage, thispage, datawidth) {
 
         remaining = 1
+
+        //Freeze the set number of columns for when splitting horizontally
+        if (  reportico_jquery.type(reportico_page_freeze_columns) === 'undefined' )
+            reportico_page_freeze_columns = 0;
+
         while ( remaining > 0 ) {
             contained = true;
             spreadpage = newpage.clone();
@@ -675,9 +680,14 @@ function horizontalPageSplit(newpage, thispage, datawidth) {
                     colwidth = reportico_jquery(this).find("tbody tr td:eq(" + colptr + ")").outerWidth();
                     //contained = spreadpage.find(".reportico-page:first").outerWidth();
                     contained += colwidth;
-                    if (colptr == 0 || contained < datawidth) {
+                    if (colptr<reportico_page_freeze_columns){
+                        colptr++
+                        continue;
+                    }
+                    if (colptr == 0 || contained < datawidth ) {
                         //spreadpage.find("tr td.eq(" + colptr + "),tr th.eq(" + colptr + ")").remove();
-                        spreadpage.find("tr").find("td:eq(0),th:eq(0)").remove();
+                        removecol = reportico_page_freeze_columns + colptr;
+                        spreadpage.find("tr").find("td:eq("+reportico_page_freeze_columns+"),th:eq("+reportico_page_freeze_columns+")").remove();
                         //spreadpage.find("tbody tr td:eq(" + colptr + "),thead th:eq(" + colptr + ")").remove();
                     }
                     else
@@ -690,6 +700,7 @@ function horizontalPageSplit(newpage, thispage, datawidth) {
                 //remaining = remaining - contained;
                 contained = 0;
                 var colremoveptr = colptr;
+                ptr=0;
                 while ( colremoveptr < cols ) {
                     colwidth = reportico_jquery(this).find("tbody tr td:eq(" + colptr + ")").outerWidth();
                     //if ( contained + colwidth < datawidth) {
@@ -700,6 +711,7 @@ function horizontalPageSplit(newpage, thispage, datawidth) {
                     //break;
                     colremoveptr++;
                     //contained += colwidth;
+                    ptr++;
                 }
                 spreadcols = spreadpage.find("tbody tr td:first-child").length;
                 newcols = newpage.find("tbody tr td:first-child").length;
@@ -711,8 +723,9 @@ function horizontalPageSplit(newpage, thispage, datawidth) {
                 //reportico_jquery(thispage).before(spreadpage);
                 //reportico_jquery(thispage).before(newpage);
             })
-            contained = newpage.find(".reportico-page:first").outerWidth();
+            contained = spreadpage.find(".reportico-page:first").outerWidth();
             remaining = contained - datawidth;
+            newpage = spreadpage;
         }
 
 }

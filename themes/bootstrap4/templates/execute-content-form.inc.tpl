@@ -5,6 +5,7 @@
     var reportico_page_size = "{{ PAGE_SIZE }}";
     var reportico_page_orientation = "{{ PAGE_ORIENTATION }}";
     var reportico_page_title_display = "{{ PAGE_TITLE_DISPLAY }}";
+    var reportico_page_freeze_columns = "{{ PAGE_FREEZE_COLUMNS }}";
 </script>
 
 <style>

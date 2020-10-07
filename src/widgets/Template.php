@@ -106,7 +106,7 @@ class Template extends Widget
             reportico_jquery('#saveTemplate').val(templatename) ;
             //if ( id == 'submitLoadTemplate' )
             {
-                reportico_jquery(fillPoint).html(data);
+                reportico_jquery(fillPoint).replaceWith(data);
                 setupWidgets();
                 setupTooltips();
                 setupDropMenu();
@@ -265,8 +265,10 @@ class Template extends Widget
         $templatefolder = $projpath."/".$user."/".$this->engine->xmloutfile;
         $templatefolder = preg_replace("/\.xml/", "", $templatefolder);
         if ( !is_dir($templatefolder)) {
-            $this->engine->template_files = array();
-            return $this->engine->template_files;
+            mkdir($templatefolder,0755, true );
+        }
+        if ( !is_dir($templatefolder)) {
+            echo "Cannot create $templatefolder - check permissions";
             die;
         }
         $this->engine->template_files = array();

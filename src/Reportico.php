@@ -70,7 +70,7 @@ class Reportico extends ReporticoObject
     public $delete_project_url;
     public $create_report_url;
 
-    public $version = "7.1.24-beta";
+    public $version = "7.1.25-beta";
     public $doc_version = "6.0.0";
 
     public $name;
@@ -173,6 +173,7 @@ class Reportico extends ReporticoObject
         "ReportDescription" => false,
         "PageSize" => ".DEFAULT",
         "PageOrientation" => ".DEFAULT",
+        "PageFreezeColumns" => false,
         "TopMargin" => "",
         "BottomMargin" => "",
         "RightMargin" => "",
