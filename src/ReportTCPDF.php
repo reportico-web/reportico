@@ -183,6 +183,11 @@ class ReportTCPDF extends Report
             $this->query->output_header_styles["border-style"] = "solid";
             $this->query->output_header_styles["border-width"] = "0 0 1 0";
             $this->query->output_header_styles["border-color"] = array(0, 0, 0);
+            $this->query->output_header_styles["padding"] = "0 10px 0 0";
+            $this->query->output_header_styles["font-weight"] = "bold";
+        }
+        if (!isset($this->query->output_header_styles["padding"])) {
+            $this->query->output_header_styles["padding"] = "0px 10px 0px 0px";
         }
 
         if (!$this->query->output_before_form_row_styles) {
@@ -208,6 +213,10 @@ class ReportTCPDF extends Report
 
         if (!$this->query->output_group_header_styles) {
             $this->query->output_group_header_styles["requires-before"] = "0";
+        }
+
+        if (!isset($this->query->output_allcell_styles["padding"])) {
+            $this->query->output_allcell_styles["padding"] = "0px 10px 0px 0px";
         }
 
         if (!$this->query->output_group_trailer_styles) {
@@ -237,7 +246,7 @@ class ReportTCPDF extends Report
         $this->fontName = $this->query->getAttribute("pdfFont");
         $this->fontSize = $this->query->getAttribute("pdfFontSize", "6pt");
         $this->vsize = $this->fontSize + $this->vspace;
-        $this->orientation = $this->query->getAttribute("PageOrientation", "Landscape");
+        $this->orientation = $this->query->getAttribute("PageOrientation", "Portrait");
         $this->page_type = $this->query->getAttribute("PageSize", "A4");
 
         if ($this->orientation == "Portrait") {
@@ -249,9 +258,9 @@ class ReportTCPDF extends Report
         }
         $this->abs_top_margin = $this->absPagingHeight($this->query->getAttribute("TopMargin", "1cm"));
         $this->abs_bottom_margin = $this->abs_page_height -
-        $this->absPagingHeight($this->query->getAttribute("BottomMargin", "1cm"));
+          $this->absPagingHeight($this->query->getAttribute("BottomMargin", "1cm"));
         $this->abs_right_margin = $this->abs_page_width -
-        $this->absPagingWidth($this->query->getAttribute("RightMargin", "1cm"));
+          $this->absPagingWidth($this->query->getAttribute("RightMargin", "1cm"));
         $this->abs_left_margin = $this->absPagingWidth($this->query->getAttribute("LeftMargin", "1cm"));
         $this->abs_print_width = $this->abs_right_margin - $this->abs_left_margin;
         $this->abs_row_left_margin = $this->abs_left_margin;
@@ -2225,7 +2234,6 @@ class ReportTCPDF extends Report
     }
 
     public function formatColumnHeader(&$column_item) //PDF column headers
-
     {
         $sessionClass = ReporticoSession();
 
@@ -3638,19 +3646,22 @@ class ReportTCPDF extends Report
             $tw = $this->abs_left_margin;
         }
 
+        $tw = 0;
+
         $inhtml = $header->getAttribute("ShowInHTML");
         $inpdf = $header->getAttribute("ShowInPDF");
 
         $wd = $header->getAttribute("ColumnWidthPDF");
         if (!$wd) {
             if ($this->abs_right_margin > $tw) {
-                $wd = $this->abs_right_margin - $tw;
+                $wd = $this->abs_right_margin - $this->abs_left_margin;
             } else {
                 $wd = "100%";
             }
         }
 
-        $wd = $this->absPagingWidth($wd);
+        //$wd = $this->absPagingWidth($wd);
+
 
         $just = $this->justifys[$header->deriveAttribute("justify", "left")];
 
@@ -3727,6 +3738,10 @@ class ReportTCPDF extends Report
                 break;
 
             case "newpage":
+                //Page will already be thrown if this is page 1 line 1
+                if ( $this->page_count == 1 && $this->page_line_count == 0 ) {
+                    break;
+                }
                 $this->finishPage();
                 $this->beginPage();
                 break;
@@ -3740,6 +3755,8 @@ class ReportTCPDF extends Report
 
     public function debugFile($txt)
     {
+        return;
+        //echo $txt."\n";
         if (!$this->debugFp) {
             $this->debugFp = fopen("/tmp/debug.out", "w");
         }

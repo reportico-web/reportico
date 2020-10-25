@@ -24,6 +24,8 @@ class ReporticoPage extends ReporticoObject
                         "options" => array(
                             "Portrait" => "Portrait",
                             "Landscape" => "Landscape",
+                            "portrait" => "portrait",
+                            "landscape" => "landscape",
                         )
                     )
                 )
@@ -124,7 +126,7 @@ class ReporticoPage extends ReporticoObject
                 break;
 
             case "orientation":
-                $this->builder->engine->setAttribute("PageOrientation", $args[0]);
+                $this->builder->engine->setAttribute("PageOrientation", ucwords($args[0]));
                 break;
 
             case "leftmargin":
