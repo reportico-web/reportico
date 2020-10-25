@@ -238,7 +238,8 @@ class Template extends Widget
                 $templatefolder = preg_replace("/\.xml/", "", $templatefolder);
                 if (!is_dir($templatefolder)) {
                     if (!mkdir($templatefolder, 0755, true)) {
-                        echo "{ Error: false, Message: \"Can't make template folder $templatefolder\" }";
+                        header("HTTP/1.0 404 Not Found", true);
+                        echo "<div class=\"reportico-error-box\">Cannot make template folder $templatefolder - check permissions</div>";
                         die;
                     }
 
@@ -247,7 +248,8 @@ class Template extends Widget
 
                 $file = $templatefolder . "/" . $saveto;
                 if (!file_put_contents($file, json_encode($_REQUEST))) {
-                    echo "{ Error: false, Message: \"Can't save template file $save to in $templatefolder\" }";
+                    header("HTTP/1.0 404 Not Found", true);
+                    echo "<div class=\"reportico-error-box\">Cannot save template dile $saveto folder in $templatefolder - check permissions</div>";
                     die;
                 }
                 //die;
@@ -264,30 +266,37 @@ class Template extends Widget
         $projpath = ReporticoApp::get("projpath");
         $templatefolder = $projpath."/".$user."/".$this->engine->xmloutfile;
         $templatefolder = preg_replace("/\.xml/", "", $templatefolder);
-        if ( !is_dir($templatefolder)) {
-            mkdir($templatefolder,0755, true );
-        }
-        if ( !is_dir($templatefolder)) {
-            echo "Cannot create $templatefolder - check permissions";
-            die;
-        }
-        $this->engine->template_files = array();
+
+        //if ( !is_dir($templatefolder)) {
+            //mkdir($templatefolder,0755, true );
+        //}
+
+        $this->engine->template_files = [];
+
+        if ( is_dir($templatefolder)) {
+
+            if ( !is_dir($templatefolder)) {
+                echo "Cannot create $templatefolder - check permissions";
+                die;
+            }
+            $this->engine->template_files = array();
 
 
-        if ( is_dir($templatefolder) )
-        {
-            if ($dh = opendir($templatefolder))
+            if ( is_dir($templatefolder) )
             {
-                while (($file = readdir($dh)) !== false)
+                if ($dh = opendir($templatefolder))
                 {
-                    if ( substr($file, 0,1) == "." )
-                        continue;
-                    if ( is_file ( $templatefolder."/".$file ) )
+                    while (($file = readdir($dh)) !== false)
                     {
-                        $this->engine->template_files[] = $file;
+                        if ( substr($file, 0,1) == "." )
+                            continue;
+                        if ( is_file ( $templatefolder."/".$file ) )
+                        {
+                            $this->engine->template_files[] = $file;
+                        }
                     }
+                    closedir($dh);
                 }
-                closedir($dh);
             }
         }
 
