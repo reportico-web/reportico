@@ -107,7 +107,7 @@ class ReportChromium extends Report
         // we must close current sessions so they can be subsequently opened within the web call
         $sessionClass::closeReporticoSession();
 
-        //try {
+        try {
         $x = Browsershot::url($url)
             //->save($outputfile);
             ->setExtraHttpHeaders($newHeaders)
@@ -121,7 +121,6 @@ class ReportChromium extends Report
             ->setDelay(1000)
             ->save("$outputfile")
             ;
-        /*
         } catch ( \Exception $ex ) {
             header("HTTP/1.0 500 Server Error", true);
             echo '<div class="reportico-error-box">Unable to generate PDF report. The pdf engine is configured within Reportico as \'chromium\' and it is likely that either of the node/npm or puppeteers packages are not installed. This functionality may not be available if Reportico is installed on a public hosting service as some hosting providers do not allow third party executables to be installed. 
@@ -132,7 +131,6 @@ class ReportChromium extends Report
             </div>';
             die;
         }
-        */
 
         $this->reporttitle = $engine->deriveAttribute("ReportTitle", "Set Report Title");
         if (isset($engine->user_parameters["custom_title"])) {
