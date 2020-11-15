@@ -3207,10 +3207,11 @@ class Reportico extends ReporticoObject
         $this->loadPlugins();
 
         // Fetch project config
-        $this->setProjectEnvironment($this->initial_project, $this->projects_folder, $this->admin_projects_folder);
-
         $this->admin_projects_folder = $sessionClass::registerSessionParam("admin_projects_folder", $this->admin_projects_folder);
         $this->projects_folder = $sessionClass::registerSessionParam("projects_folder", $this->projects_folder);
+
+        $this->setProjectEnvironment($this->initial_project, $this->projects_folder, $this->admin_projects_folder);
+
         $this->external_user = $sessionClass::registerSessionParam("external_user", $this->external_user);
         $this->external_param1 = $sessionClass::registerSessionParam("external_param1", $this->external_param1);
         $this->external_param2 = $sessionClass::registerSessionParam("external_param2", $this->external_param2);

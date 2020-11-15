@@ -18,6 +18,8 @@
               ->throwPageBefore()
               ->trailer("total_stock")->below("in_stock")->label("Total")
               ->customTrailer("Total in stock for category {category} is {total_stock}", "border: solid 4px #22D; background-color: #222; color: #fff;  right: 0px; margin-left: auto;  width: 50%; padding: 10px;")
+              ->customHeader("Total in stock for category {category} is {total_stock}", "border: solid 4px #22D; background-color: #222; color: #fff;  right: 0px; margin-left: auto;  width: 50%; padding: 10px;")
+              ->customHeader("Tjjjjj", "border: solid 4px #ff0; background-color: #444; color: #fff;  margin-left: 20px;  width: 50%; padding: 10px;")
               ->header("category")
           ->column("in_stock")->justify("right")
           ->column("on_order")->justify("right")
