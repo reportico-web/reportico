@@ -173,7 +173,9 @@
 
 <?php
 require_once(__DIR__ .'/../vendor/autoload.php');
-$code = file_get_contents(__DIR__."/$example_file");
+$code = "";
+if ( file_exists(__DIR__."/$example_file"))
+    $code = file_get_contents(__DIR__."/$example_file");
 $code = preg_replace("/->datasource.*\)/", "->datasource()->database(\"mysql:host=localhost; dbname=DATABASE NAME\")->user(\"USER\")->password(\"PASSWORD\")", $code);
 $code =  highlight_string($code, true);
 
