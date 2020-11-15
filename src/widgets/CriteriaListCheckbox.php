@@ -64,7 +64,7 @@ class CriteriaListCheckbox extends CriteriaList
     public function renderWidgetItem($label, $value, $selected )
     {
         $selectedFlag = $selected ? "checked" : "";
-        $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : "MANUAL_". $this->criteria->query_name;
+        $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : "DIRECT_". $this->criteria->query_name;
         return '<INPUT type="checkbox" name="'.$name.'[]" value="' . $value . '" ' . $selectedFlag . '>' . ReporticoLang::translate($label) . '<BR>';
     }
 

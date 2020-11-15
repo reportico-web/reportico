@@ -288,7 +288,15 @@ class Widget
                 $engine->lookup_queries[$col->query_name]->column_value =
                     $_REQUEST[$name];
             }
+        }
 
+        if (array_key_exists("DIRECT_" . $name, $_REQUEST)) {
+            // Since using Select2, we find unselected list boxes still send an empty array with a single character which we dont want to include
+            // as a criteria selection
+            if (!(is_array($_REQUEST["DIRECT_" . $name]) && $_REQUEST["DIRECT_" . $name][0] == "")) {
+                $engine->lookup_queries[$col->query_name]->column_value =
+                    $_REQUEST["DIRECT_" . $name];
+            }
         }
 
         if (array_key_exists("MANUAL_" . $name, $_REQUEST)) {

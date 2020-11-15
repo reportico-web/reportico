@@ -57,7 +57,7 @@ class CriteriaLookupDropdown extends CriteriaLookup
 
     public function renderWidgetStart()
     {
-        $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : "MANUAL_" . $this->criteria->query_name;
+        $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : "DIRECT_" . $this->criteria->query_name;
         $text = '<SELECT class="' . $this->criteria->lookup_query->getBootstrapStyle('design_dropdown') . 'reportico-drop-select-regular" name="' . $name . '">';
         return $text;
     }

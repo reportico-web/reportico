@@ -3585,7 +3585,7 @@ class Reportico extends ReporticoObject
                 // Dont interpret XML input if report is not related to a project.
                 // In this case the reprt has already been built
                 if ( !Authenticator::allowed("non-project-operation"))
-                $this->handleXmlQueryInput($mode);
+                    $this->handleXmlQueryInput($mode);
 
                 ReporticoLang::loadModeLanguagePack("execute", $this->output_charset);
                 ReporticoLang::localiseTemplateStrings($this->template);

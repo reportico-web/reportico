@@ -70,7 +70,7 @@ class CriteriaListMultiDropdown extends CriteriaList
             }
         }
 
-        $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : "MANUAL_". $this->criteria->query_name;
+        $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : "DIRECT_". $this->criteria->query_name;
         $text = '<SELECT class="' . $this->criteria->parent_reportico->getBootstrapStyle('design_dropdown') . 'reportico-prepare-drop-select" name="'.$name.'[]" size="' . $multisize . '" multiple>';
         return $text;
     }

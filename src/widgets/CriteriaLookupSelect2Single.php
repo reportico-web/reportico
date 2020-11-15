@@ -215,7 +215,7 @@ reportico_jquery('#select2_dropdown_' + jtag + ',#select2_dropdown_expanded_' + 
             $name = "EXPANDED_". $name;
         }
 
-        $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : "MANUAL_". $this->criteria->query_name;
+        $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : "DIRECT_". $this->criteria->query_name;
         $text = '<SELECT id="'.$tag.'" class="' . $this->criteria->parent_reportico->getBootstrapStyle('design_dropdown') . 'reportico-prepare-drop-select2" name="' . $name .  '[]" size="' . $multisize . '" multiple >';
         $text .= '<OPTION></OPTION>';
         return $text;

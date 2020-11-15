@@ -65,7 +65,7 @@ class CriteriaListRadio extends CriteriaList
     public function renderWidgetItem($label, $value, $selected )
     {
         $selectedFlag = $selected ? "checked" : "";
-        $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : "MANUAL_". $this->criteria->query_name;
+        $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : "DIRECT_". $this->criteria->query_name;
         return '<INPUT type="radio" name="'.$name.'" value="' . $value . '" ' . $selected . '>' . ReporticoLang::translate($label) . '<BR>';
     }
 
