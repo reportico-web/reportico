@@ -1,3 +1,10 @@
+<HTML>
+    <BODY style="background-color:#ddd">
+
+            <DIV style="text-align: center;width:50%; margin-left:25%;background-color:#fff">
+        <H3>Example Report Embedded in a Page </H3>
+                <p>
+                   <h3>Start of Page Content</h3>
 <?php
 
     require_once(__DIR__ .'/../vendor/autoload.php');
@@ -13,3 +20,8 @@
                 ")
           ->execute();
 ?>
+                <p>
+                   <h3>End of Page Content</h3>
+        </DIV>
+    </BODY>
+</HTML>
