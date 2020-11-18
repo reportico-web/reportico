@@ -325,14 +325,14 @@
 {# After running inline HTML criteria block hides, this widget allows unhiding of it after running report #}
 
       {# Toggle criteria switch #}
-      <div class='reportico-show-criteria non-printable' style='display:none'>
-          <a href='#'>
-              <i class="fa fa-chevron-down fa-lg"></i>
+      <div class='reportico-show-criteria non-printable' style='display:none; margin:1px'>
+          <a href='#' title='Show Criteria'>
+              <i class="fa fa-chevron-down fa-lg btn btn-success" ></i>
           </a>
       </div>
-      <div class='reportico-hide-criteria non-printable' style='display:none'>
-          <a href='#'>
-              <i class="fa fa-chevron-up fa-lg"></i>
+      <div class='reportico-hide-criteria non-printable' style='display:none; margin:1px'>
+          <a href='#' title='Hide Criteria'>
+              <i class="fa fa-chevron-up fa-lg  btn btn-success"></i>
           </a>
       </div>
       <div id='reportico-report-output'>

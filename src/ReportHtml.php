@@ -361,7 +361,7 @@ class ReportHtml extends Report
         {
             $style = "";
             $attr = array();
-            $this->extractStylesAndTextFromString ( $custom, $styles, $attr );
+            $this->extractStylesAndTextFromString ( $custom, $styles, $attr, false );
 
             $this->currentGroup["headers"][] = [ "styles" => $styles, "content" => $custom ];
             return;
@@ -506,7 +506,7 @@ class ReportHtml extends Report
 
         $style = "";
         $attr = array();
-        $this->extractStylesAndTextFromString ( $custom, $styles, $attr );
+        $this->extractStylesAndTextFromString ( $custom, $styles, $attr, false );
         $this->currentGroup["customheaders"][] = [ "content" => $custom, "styles" => $styles, "attr" => $attr];
         $styles .= "position: absolute;";
         return;
@@ -539,7 +539,7 @@ class ReportHtml extends Report
         $style = "";
         $attr = array();
         $custom = $value_col["GroupTrailerCustom"];
-        $this->extractStylesAndTextFromString ( $custom, $styles, $attr );
+        $this->extractStylesAndTextFromString ( $custom, $styles, $attr, true );
         $styles .= "position: absolute";
 
         $this->currentGroup["customtrailers"][] = [
@@ -730,7 +730,7 @@ class ReportHtml extends Report
         $styles = "";
         $text = $header->text;
 
-        $this->extractStylesAndTextFromString($text, $styles, $header->attributes, $parent_styleset = false, $grandparent_styleset = false);
+        $this->extractStylesAndTextFromString($text, $styles, $header->attributes, false, $parent_styleset = false, $grandparent_styleset = false);
         $just = strtolower($header->getAttribute("justify"));
 
         //var_dump($header->attributes);
@@ -774,7 +774,7 @@ class ReportHtml extends Report
         $styles = "";
         $text = $footer->text;
 
-        $this->extractStylesAndTextFromString($text, $styles, $footer->attributes, $parent_styleset = false, $grandparent_styleset = false);
+        $this->extractStylesAndTextFromString($text, $styles, $footer->attributes, true, $parent_styleset = false, $grandparent_styleset = false);
         $just = strtolower($footer->getAttribute("justify"));
 
         $img = false;
@@ -878,10 +878,10 @@ class ReportHtml extends Report
 
         return "<div style='$styles'>$text</div>";
     }
-    public function extractStylesAndTextFromString(&$text, &$styles, &$attributes, $parent_styleset = false, $grandparent_styleset = false)
+    public function extractStylesAndTextFromString(&$text, &$styles, &$attributes, $refersToPriorLine = false, $parent_styleset = false, $grandparent_styleset = false)
     {
         $outtext = "";
-        $style_arr = $this->fetchCellStyles($text);
+        $style_arr = $this->fetchCellStyles($text, $refersToPriorLine);
 
         $widthset = false;
 
@@ -987,13 +987,11 @@ class ReportHtml extends Report
         }
 //echo "<BR>";
 
-        //$tx = $this->reporticoStringToPhp($tx);
-        //$tx = Assignment::reporticoMetaSqlCriteria($this->query, $tx);
         $tx = preg_replace("/<\/*u>/", "", $tx);
 
         return $styles;
     }
-    public function fetchCellStyles(&$tx)
+    public function fetchCellStyles(&$tx, $refersToPriorLine = false)
     {
         $styles = false;
         $matches = array();
@@ -1031,7 +1029,7 @@ class ReportHtml extends Report
 //echo "<BR>";
 
         $tx = $this->reporticoStringToPhp($tx);
-        $tx = Assignment::reporticoMetaSqlCriteria($this->query, $tx, true, true);
+        $tx = Assignment::reporticoMetaSqlCriteria($this->query, $tx, $refersToPriorLine, true);
         $tx = preg_replace("/<\/*u>/", "", $tx);
 
         return $styles;
