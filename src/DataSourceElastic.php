@@ -116,14 +116,23 @@ class DataSourceElastic
         
         $sql = preg_replace("/wy\-1/", $this->index, $sql);
         $sql = preg_replace("/{index}/i", $this->index, $sql);
-       
+
+        //echo $sql."<BR>";
+
+        $sql = preg_replace("/\\\n/", " ", $sql);
+        $sql = preg_replace("/\\\"/", "'", $sql);
+        $sql = array("query" => $sql);
+        $sql = json_encode($sql);
+
+	    $endpoint = $this->endpoint;
+	    $endpoint = preg_replace("/{user}/i", $this->user, $this->endpoint);
+	    $endpoint = preg_replace("/{password}/i", $this->password, $this->endpoint);
+	    $endpoint = $endpoint."/_sql";
+        //echo $endpoint." $this->user/$this->password<BR>";
+        $ch = curl_init($endpoint);
+
         $len = strlen($sql);
 
-	$endpoint = $this->endpoint;
-	$endpoint = preg_replace("/{user}/i", $this->user, $this->endpoint);
-	$endpoint = preg_replace("/{password}/i", $this->password, $this->endpoint);
-	$endpoint = $endpoint."/_sql";
-        $ch = curl_init($endpoint);
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',
@@ -142,192 +151,23 @@ class DataSourceElastic
         curl_close($ch);
 
         $x = json_decode($result, true);
-        //die;
 
         $this->results = array();
 
-        if ( isset ( $x["hits"]["hits"] ) )
-        foreach ( $x["hits"]["hits"] as $row )
-        {
-            $line = array();
-            foreach ( $row["_source"] as $k => $v )
-            {
-                $line[$k] = $v;
+
+        $columns = [];
+        if ( isset($x["columns"] )) {
+            foreach ($x["columns"] as $kcol => $column) {
+                $columns[$kcol] = $column["name"];
             }
-            $this->results[] = $line;
-            
-        }
-        if ( isset ( $x["aggregations"] ) )
-        foreach ( $x["aggregations"] as $k => $row )
-        {
-            //echo "AGG<BR>";
-            //var_dump($row);
-            //die;
-            $lastptr = false;
-            $line = array();
-            $ptr = &$row;
-            $levels = array();
-            $levelptrs = array();
-            $leveltots = array();
-            $levelkeys = array();
-            $levelct = 0;
-
-            $leveltots[$levelct] = count($ptr["buckets"]);
-            $levelptrs[$levelct] = 0;
-            $levelkeys[$levelct] = $k;
-            $levels[$levelct] = $ptr;
-            $ct = 0;
-            //echo "<BR>";
-            //echo "<PRE>"; var_dump($ptr); echo "</PRE>";
-            while ( $ptr && isset ( $ptr["buckets"] )&& $ptr["buckets"] )
-            {
-                $k2 = $levelptrs[$levelct];
-                $v2 = $ptr["buckets"][$levelptrs[$levelct]];
-//if ( $ct++ > 455 ) { echo "OUTTTT<BR>";break;}
-                //echo "<PRE>";var_dump($ptr["buckets"]); die;
-                //foreach ( $ptr["buckets"] as $k2 => $v2 )
-                {
-                    $k = $levelkeys[$levelct];
-
-//if ( $ct >  0 ) {echo "<PRE>";var_dump($ptr); echo "<PRE>";};
-//if ( $ct ==  15 ) die;
-                    if ( !isset($v2["key"]) ) break;
-                    $line[$k] = $v2["key"];
-//echo "<BR>====== $levelct: {$levelptrs[$levelct]}/{$leveltots[$levelct]} SET $k => {$v2["key"]}<BR>";
-                            //echo "<BR><PRE>LEVEL $levelct <BR>";var_dump($levelptrs); var_dump($leveltots); echo "</PRE>"; 
-                                //if ( $ct == 56 ) { var_dump($this->result); var_dump($ptr); die;}
-//if ( $ct == 19 )
-//{var_dump($ptr); }
-                    $found = false;
-                    foreach ( $v2 as $k3 => $v3 )
-                    {
-                        if ( isset ( $v3["buckets"] )  )
-                        {
-                        //var_dump($v2);
-                            //echo "FOUND "; 
-                            //echo "NEW LEVEL $ct lev $levelct<BR><PRE>$levelct<BR>";/*var_dump($ptr);*/  echo "</PRE>";
-                            //echo "<BR><PRE> $levelct CT  $k3";var_dump($levelptrs);var_dump($leveltots); echo "</PRE>"; 
-                            $k = $k3;
-                            if ( $levelptrs[$levelct] < $leveltots[$levelct] )
-                                $levelptrs[$levelct] ++;
-                            $levelct++;
-                            $levelptrs[$levelct] = -1;
-                            $levels[$levelct] = $ptr["buckets"][$levelptrs[$levelct-1] - 1][$k3];
-                            //var_dump($levelptrs); echo "<BR><BR>";
-                            //var_dump($ptr["buckets"][$levelptrs[$levelct - 1] - 1]);
-                            //echo "NEW LEVEL<BR><PRE>$levelct<BR>";var_dump($levels[$levelct]);  echo "</PRE>";
-                            //echo "TRY $levelct ".count($ptr["buckets"])." VS ".count($v3["buckets"])."<BR>";
-                            $leveltots[$levelct] = count($v3["buckets"]);
-                            $levelkeys[$levelct] = $k3;
-                            //echo "POINTING REALLY AT  ".$levelptrs[$levelct - 1]." + 1<BR>";
-                            $ptr = &$ptr["buckets"][$levelptrs[$levelct - 1]][$k3];
-                            $ptr = &$levels[$levelct];
-                            //echo "$ct NEW LEVEL<BR><PRE>$levelct<BR>";var_dump($levels[$levelct]); 
-                            $found = true;
-
-                            //echo "<BR><PRE> $ct REALLY  $k3";var_dump($levels[$levelct]["buckets"]); var_dump($levelptrs);var_dump($leveltots); echo "</PRE>"; 
-                        }
-                        else
-                        {
-                            if ( isset($v3["value"] ))
-                            {
-                               $line[$k3] = $v3["value"];
-                            }
-                        }
-                    }   
-                    if ( !$found )
-                    {
-                        
-                            //echo "<BR><PRE>PRE BREAK ";var_dump($levelptrs); var_dump($leveltots); echo "</PRE>"; 
-                        //echo "BREAK BACK FROM $levelct! ";
-                                    //echo "<PRE>";var_dump($levels[1]); echo"</PRE>";
-                        $this->results[] = $line;
-                        //if ( $levelct > 0 )
-                        //{
-                            if ( $levelptrs[$levelct] < $leveltots[$levelct] )
-                                $levelptrs[$levelct] ++;
-                            //echo "<BR><PRE>";var_dump($levelptrs); var_dump($leveltots); echo "</PRE>";
-                            //var_dump($levels[$levelct]);
-                            //var_dump($ptr[$levelptrs[$levelct]]);
-                                //echo "<BR><PRE>BREAK FROM $levelct:<BR>";var_dump($levelptrs); var_dump($leveltots); echo "</PRE>";
-                            if ( $levelptrs[$levelct] >= $leveltots[$levelct] )
-                            {
-                                //echo $levelct; die;
-                                $ptr = false;
-                                //echo "<BR><PRE>REACHED END $levelct:<BR>";var_dump($levelptrs); var_dump($leveltots); echo "</PRE>";
-                                if ( $levelct >= 0 )
-                                {
-                                    //$ptr = &$levels[$levelct];
-                                    //echo "point at $levelct {$levelptrs[$levelct]}<BR>";
-                                    //$ptr = &$levels[$levelct - 1]["buckets"][$levelptrs[$levelct]][$k];
-                                    $ptr = &$levels[$levelct - 1];
-                                }
-                                $levelct--;
-
-                                //echo "<PRE>END LEVEL {$levelkeys[$levelct]} $levelct: ".count($ptr["buckets"][0])." ";var_dump($ptr["buckets"][0]);echo "</PRE>";
-
-                                //echo "<BR><PRE>BREAK FROM $levelct:<BR>";var_dump($levelptrs); var_dump($leveltots); echo "</PRE>";
-                            }
-                            else
-                            {
-                                if ( $levelct > 0 )
-                                {
-
-                                    //echo "<PRE>$ct move $levelct $k {$levelptrs[$levelct]} / {$leveltots[$levelct]}<BR></PRE>";
-                                    //var_dump($levels[1]);echo "</PRE>";
-                                    //var_dump($levels[$levelct-1]["buckets"][$levelptrs[$levelct-1]]);
-                                    //echo "COUNT for $levelct = {$levelptrs[$levelct]} / {$leveltots[$levelct]}<BR>";
-                                    //echo "<PRE>";var_dump($levels[0]["buckets"][$levelptrs[$levelct-1] - 1][$k]);echo "</PRE>";
-                                    $ptr = &$levels[$levelct-1]["buckets"][$levelptrs[$levelct - 1] - 1][$k];
-                                    //var_dump($ptr);
-                                    //if ( $ct > 8 )
-                                    //{
-                                    //var_dump($ptr); die;
-                                    //}
-
-                                //echo "<PRE>MOVE LEVEL $ct {$levelkeys[$levelct]} $level_ct: ".count($ptr["buckets"])." ";var_dump($ptr["buckets"]);echo "</PRE>";
-                                //echo "<BR><PRE>BREAK FROM $levelct:<BR>";var_dump($levelptrs); var_dump($leveltots); echo "</PRE>";
-                                }
-                                else
-                                {
-                                    //echo "Break back from end<BR>";
-                                }
-
-                            }
-                                    //if ( $ct == 5 )
-                                    //{
-                                    //echo "<PRE>";
-                                    //var_dump($ptr);
-                                    //var_dump($levels); 
-                                    //echo "</PRE>";
-                                    //}
-                        //}
-
-                    }
-                    else
-                    {
-                        //echo "break $levelct";
-                            if ( $levelptrs[$levelct] < $leveltots[$levelct] )
-                                $levelptrs[$levelct] ++;
-                            //$levelct++;
-                            //echo " $ct <BR><PRE>";var_dump($levelptrs); var_dump($leveltots); echo "</PRE>"; 
-                            //var_dump($ptr); 
-                            //echo "<BR><PRE>";var_dump($levelptrs); var_dump($leveltots); echo "</PRE>";
-                        //echo "<PRE>";var_dump($ptr);
-                            //echo "<BR><PRE>";var_dump($levelptrs); var_dump($leveltots); echo "</PRE>";
-                        //var_dump($ptr);
-                        //break;
-                    }
-
-
+            $result = [];
+            foreach ($x["rows"] as $krow => $row) {
+                foreach($row as $kcol => $col) {
+                    $result[$columns[$kcol]] = $col;
                 }
-                //var_dump($ptr);
+                $this->results[] = $result;
             }
-        //unset($this->results[count($this->results) - 1]);
-        //echo "done";
-        //echo "<PRE>"; var_dump($this->results ); echo "</PRE>";
-            
-        }
+        } 
     
         return $this;
     }
