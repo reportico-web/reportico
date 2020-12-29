@@ -221,8 +221,9 @@ class ReportTCPDF extends Report
 
         if (!$this->query->output_group_trailer_styles) {
             $this->query->output_group_trailer_styles["border-style"] = "solid";
-            $this->query->output_group_trailer_styles["border-width"] = "1 0 1 0";
+            $this->query->output_group_trailer_styles["border-width"] = "1 0 0 0";
             $this->query->output_group_trailer_styles["border-color"] = array(0, 0, 0);
+            $this->query->output_group_trailer_styles["padding"] = "0px 10px 0px 0px";
         }
 
         // Turn off page header and body background as its too complicated for now
@@ -982,6 +983,7 @@ class ReportTCPDF extends Report
         }
 
         $this->applyStyleTags("EACHHEADMID", $this->mid_cell_reportbody_styles);
+        $this->applyStyleTags("GROUPTRAILER", $this->query->output_group_trailer_styles);
         if ($value_col) {
 
             $y = $this->document->GetY();
@@ -1041,6 +1043,7 @@ class ReportTCPDF extends Report
             $padstring = $group_label;
             $just = $this->justifys[$trailer_col->deriveAttribute("justify", "left")];
         }
+        $this->unapplyStyleTags("GROUPTRAILER", $this->query->output_group_trailer_styles);
         $this->unapplyStyleTags("EACHHEADMID", $this->mid_cell_reportbody_styles);
 
     }
@@ -2346,6 +2349,10 @@ class ReportTCPDF extends Report
     public function drawImage($file, $x, $y, $w, $h, $hidden = false, $halign = "")
     {
         if ($this->pdfDriver == "tcpdf") {
+            if ( !file_exists($file) ){
+                return 0;
+            }
+
             $imagehalign = "L";
             $imagevalign = "T";
             if ($halign) {
@@ -3612,7 +3619,7 @@ class ReportTCPDF extends Report
 
     public function finishPage()
     {
-        $this->debug("Finish Page");
+        //$this->debug("Finish Page");
 
         $this->current_line_height = 0;
         $this->max_line_height = 0;
@@ -3658,6 +3665,7 @@ class ReportTCPDF extends Report
             } else {
                 $wd = "100%";
             }
+            $tw = round($this->abs_left_margin);
         }
 
         //$wd = $this->absPagingWidth($wd);

@@ -368,7 +368,7 @@ ReporticoApp::setConfig('output_sections_tcpdf', array (
         'page-header-block' => array (
                 array ( 
                         'content' => '{REPORT_TITLE}', 
-                        'styles' => 'border-width: 0px 0px 1px 0px; margin: 50px 0px 0px 0px; border-color: #000000; font-size: 18; border-style: solid;padding:0px 0px 0px 0px; back1ground-color: #f00; color: #000; margin-left: 0%;margin-bottom: 0px;text-align:center' 
+                        'styles' => 'border-width: 0px 0px 1px 0px; margin: 50px 0px 0px 0px; border-color: #000000; font-size: 18; border-style: solid;padding:0px 0px 0px 0px; color: #000; margin-bottom: 0px;text-align:center' 
                       ),
                 array ( 
                         'content' => '', 
