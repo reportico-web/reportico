@@ -2017,7 +2017,7 @@ class ReportTCPDF extends Report
         return;
     }
 
-    public function fetchCellStyles(&$tx)
+    public function fetchCellStyles(&$tx, $refersToPriorLine = false)
     {
         $styles = false;
         $matches = array();
@@ -2044,7 +2044,7 @@ class ReportTCPDF extends Report
         }
 
         $tx = $this->reporticoStringToPhp($tx);
-        $tx = Assignment::reporticoMetaSqlCriteria($this->query, $tx);
+        $tx = Assignment::reporticoMetaSqlCriteria($this->query, $tx, $refersToPriorLine);
         $tx = preg_replace("/<\/*u>/", "", $tx);
 
         return $styles;
@@ -2350,6 +2350,7 @@ class ReportTCPDF extends Report
     {
         if ($this->pdfDriver == "tcpdf") {
             if ( !file_exists($file) ){
+                $this->debugFile("Not found $file");
                 return 0;
             }
 
@@ -3615,6 +3616,8 @@ class ReportTCPDF extends Report
         // Move top margin down if headers too high
         if ( $this->document->GetY() && $this->abs_top_margin > $this->document->GetY() ) 
             $this->setPosition(false, $this->abs_top_margin);
+        $this->group_header_start = $this->document->GetY();
+        $this->group_header_end = $this->document->GetY();
     }
 
     public function finishPage()
@@ -3724,7 +3727,7 @@ class ReportTCPDF extends Report
         $this->page_footer_start_y -= $this->page_footer_wrapper_offset - 2;
 
         $tx = $footer->text;
-        $styles = $this->fetchCellStyles($tx);
+        $styles = $this->fetchCellStyles($tx, true);
         $this->applyStyleTags("PAGEFOOTER", $styles);
         $this->drawCell($wd, $this->vsize, $tx, "PBF", 0, $just);
         $this->unapplyStyleTags("PAGEFOOTER", $styles);
@@ -3764,7 +3767,7 @@ class ReportTCPDF extends Report
     public function debugFile($txt)
     {
         return;
-        //echo $txt."\n";
+        //echo $txt."<BR>";
         if (!$this->debugFp) {
             $this->debugFp = fopen("/tmp/debug.out", "w");
         }
