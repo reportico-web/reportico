@@ -3606,6 +3606,7 @@ class Reportico extends ReporticoObject
                 }
 
                 // For PDF output via phantom report will have already been executed so dont rerun it here
+                $text = false;
                 if ($_REQUEST["target_format"] == "PDF" && ( $this->pdf_engine == "phantomjs" || $this->pdf_engine == "chromium")) {
                     $target = &$this->targets[0];
                     $target->start($this);

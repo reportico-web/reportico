@@ -523,7 +523,7 @@ class XmlReader
         //var_dump($this->data);
     }
 
-    public function startElement($p, $element, &$attributes)
+    public function startElement($p, $element, $attributes)
     {
         //$element = strtolower($element);
 
