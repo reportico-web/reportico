@@ -156,8 +156,6 @@ class Widget
         // Parameters for criteria with names containing space will come in with underscores
         $name = preg_replace("/ /", "_", $col->query_name);
 
-        //echo "Handle URL $col->query_name<BR>";
-
         // If an initial set of parameter values has been set then parameters are being
         // set probably from a framework. Use these for setting criteria
         if ($engine->initial_execution_parameters) {
@@ -269,7 +267,7 @@ class Widget
         // the criteria entry summary at top of report
         if ($execute_mode && $execute_mode != "MAINTAIN" && $engine->target_show_criteria &&
             ((array_key_exists($name, $_REQUEST) && !(is_array($_REQUEST[$name]) && $_REQUEST[$name][0] == ""))
-                || array_key_exists("MANUAL_" . $name, $_REQUEST)
+                || ( array_key_exists("MANUAL_" . $name, $_REQUEST) && $_REQUEST["MANUAL_$name"] )
                 || $thereishidden
             )) {
             $lq = &$engine->lookup_queries[$col->query_name];
@@ -406,8 +404,8 @@ class Widget
         // the criteria entry summary at top of report
         if ($execute_mode && $execute_mode != "MAINTAIN" && $engine->target_show_criteria &&
             ((array_key_exists($col->query_name, $_REQUEST) && !(is_array($_REQUEST[$col->query_name]) && $_REQUEST[$col->query_name][0] == ""))
-                || array_key_exists("MANUAL_" . $col->query_name, $_REQUEST)
-                || array_key_exists("HIDDEN_" . $col->query_name, $_REQUEST)
+                || ( array_key_exists("MANUAL_" . $col->query_name, $_REQUEST) && $_REQUEST["MANUAL_" . $col->query_name] )
+                || $thereishidden
             )) {
             $lq = &$engine->lookup_queries[$col->query_name];
             if ($lq->criteria_type == "LOOKUP") {
