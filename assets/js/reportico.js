@@ -761,6 +761,7 @@ function resizeHeaders()
   reportico_jquery(".reportico-custom-header-block,.reportico-custom-trailer-block").each(function() {
     var parenty = reportico_jquery(this).position().top;
     var maxheight = 0;
+    var divcount = 0;
     reportico_jquery(this).find("div").each(function() {
         var headerheight  = reportico_jquery(this).outerHeight();
         reportico_jquery(this).find("img").each(function() {
@@ -773,7 +774,9 @@ function resizeHeaders()
         headerheight += margintop + marginbottom;
         if ( headerheight > maxheight )
             maxheight = headerheight;
+        divcount++;
    });
+   if ( divcount > 0 )
    reportico_jquery(this).css("height", maxheight + "px");
   });
 

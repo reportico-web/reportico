@@ -462,6 +462,10 @@ class Widget
                 $_REQUEST["EXPANDED_" . $name];
         }
 
+        if (array_key_exists("DIRECT_" . $name, $_REQUEST)) {
+            $_REQUEST["MANUAL_".$name] = $_REQUEST["DIRECT_".$name];
+        }
+
 
     }
 

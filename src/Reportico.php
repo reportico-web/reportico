@@ -1775,7 +1775,8 @@ class Reportico extends ReporticoObject
                 $str = ' AND ' . $this->match_column . ' LIKE "%' . $expval . '%"';
             }
         } else if ($expval = ReporticoUtility::getRequestItem("reportico_criteria_match", false)) {
-            if ( $this->match_column )
+            $criteria_match_column = ReporticoUtility::getRequestItem("reportico_criteria", false);
+            if ( $criteria_match_column && $criteria_match_column == $criteria_name && $this->match_column )
                 $str = ' AND ' . $this->match_column . ' LIKE "%' . $expval . '%"';
         }
 
@@ -3453,6 +3454,7 @@ class Reportico extends ReporticoObject
                 $this->initializePanels($mode);
                 $this->handleXmlQueryInput($mode);
                 $this->setRequestColumns();
+                $this->loadWidgets("core");
                 if (!isset($_REQUEST['reportico_criteria'])) {
                     echo "{ Success: false, Message: \"You must specify a criteria\" }";
                 } else if (!$criteria = $this->getCriteriaByName($_REQUEST['reportico_criteria'])) {
@@ -5521,6 +5523,7 @@ class Reportico extends ReporticoObject
         foreach ( $this->lookup_queries as $v ) {
             $this->widgets["criteria-{$v->query_name}"] = new \Reportico\Widgets\Criteria($this, true, $v);
         }
+
         foreach ( $this->lookup_queries as $v ) {
             //$v->widget = $this->widgets["criteria-{$v->query_name}"];
             $this->widgets["criteria-{$v->query_name}"]->prehandleUrlParameters();

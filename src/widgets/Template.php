@@ -178,6 +178,12 @@ class Template extends Widget
             if ($loadFrom && $templateAction == "Delete") {
                 \Reportico\Engine\ReporticoSession::setReporticoSessionParam("templatefile", "$loadFrom");
                 $projpath = ReporticoApp::get("projpath");
+
+                // If templates folder exists then store reports there
+                if (is_dir($projpath."/templates") ){
+                    $projpath = $projpath."/templates";
+                }
+                
                 $templatefolder = $projpath . "/" . $user . "/" . $this->engine->xmloutfile;
                 $templatefolder = preg_replace("/\.xml/", "", $templatefolder);
                 if (!is_dir($templatefolder)) {
@@ -198,6 +204,12 @@ class Template extends Widget
                 if ($loadFrom) {
                     \Reportico\Engine\ReporticoSession::setReporticoSessionParam("templatefile", "$loadFrom");
                     $projpath = ReporticoApp::get("projpath");
+
+                    // If templates folder exists then store reports there
+                    if (is_dir($projpath."/templates") ){
+                        $projpath = $projpath."/templates";
+                    }
+                
                     $templatefolder = $projpath . "/" . $user . "/" . $this->engine->xmloutfile;
                     $templatefolder = preg_replace("/\.xml/", "", $templatefolder);
                     if (!is_dir($templatefolder)) {
@@ -213,6 +225,7 @@ class Template extends Widget
 
                     $params = json_decode($json, true);
                     $paramstring = "";
+                    $extra = [];
                     foreach ($params as $k => $v) {
                         if ($k == "r") continue;
                         if (is_array($v)) {
@@ -220,13 +233,33 @@ class Template extends Widget
                         } else
                             $val = $v;
 
-                        $paramstring .= "&$k=$val";
-                        $_REQUEST["$k"] = $val;
-                        $_REQUEST["MANUAL_$k"] = $val;
+                        
+                        if ( preg_match("/_FROMDATE/", $k) && preg_match("/[0-9][0-9]\/[0-9][0-9]\/[0-9][0-9][0-9][0-9]/", $val) ) {
+                            $val = substr($val, 6, 4)."-".substr($val,3,2)."-".substr($val,0,2);
+                        }
+                        if ( preg_match("/_TODATE/", $k) && preg_match("/[0-9][0-9]\/[0-9][0-9]\/[0-9][0-9][0-9][0-9]/", $val) ) {
+                            $val = substr($val, 6, 4)."-".substr($val,3,2)."-".substr($val,0,2);
+                        }
+                        
+                        //$paramstring .= "&$k=$val";
+                        $field = $k;
+                        if ( preg_match("/DIRECT_/", $k )) {
+                            $k = preg_replace("/DIRECT_/", "MANUAL_", $k);
+                        }
+                        if ( preg_match("/MANUAL_/", $k ))  {
+                            $_REQUEST["$k"] = $val;
+                        }
+                        else
+                            $_REQUEST["MANUAL_$k"] = $val;
+                        if ( preg_match("/DIRECT_/", $field )) {
+                            unset($_REQUEST[$field]);
+                        }
+
                     }
 
                     $this->engine->execute_mode = "PREPARE";
                     $this->engine->setRequestColumns();
+                    //echo "AFT <PRE>"; var_dump($_REQUEST); echo "</PRE>";
                     $mode = "PREPARE";
 
                 }
@@ -234,6 +267,12 @@ class Template extends Widget
             if ($saveto) {
                 \Reportico\Engine\ReporticoSession::setReporticoSessionParam("templatefile", "$saveto");
                 $projpath = ReporticoApp::get("projpath");
+
+                // If templates folder exists then store reports there
+                if (is_dir($projpath."/templates") ){
+                    $projpath = $projpath."/templates";
+                }
+                
                 $templatefolder = $projpath . "/" . $user . "/" . $this->engine->xmloutfile;
                 $templatefolder = preg_replace("/\.xml/", "", $templatefolder);
                 if (!is_dir($templatefolder)) {
@@ -264,6 +303,10 @@ class Template extends Widget
             $user = "public";
 
         $projpath = ReporticoApp::get("projpath");
+        // If templates folder exists then store reports there
+        if (is_dir($projpath."/templates") ){
+            $projpath = $projpath."/templates";
+        }
         $templatefolder = $projpath."/".$user."/".$this->engine->xmloutfile;
         $templatefolder = preg_replace("/\.xml/", "", $templatefolder);
 

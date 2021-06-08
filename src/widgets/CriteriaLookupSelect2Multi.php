@@ -224,7 +224,6 @@ reportico_jquery('#select2_dropdown_' + jtag + ',#select2_dropdown_expanded_' + 
 
     public function renderWidgetItem($label, $value, $selected )
     {
-
         $selectedFlag = $selected ? "selected" : "";
         $name = $this->expanded ? "EXPANDED_" . $this->criteria->query_name : "DIRECT_". $this->criteria->query_name;
         return '<OPTION label="' . $label . '" value="' . $value . '" ' . $selectedFlag . '>' . $label . '</OPTION>';

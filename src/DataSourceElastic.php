@@ -114,13 +114,14 @@ class DataSourceElastic
         $this->pointer = 0;
         $this->EOF = false;
         
-        $sql = preg_replace("/wy\-1/", $this->index, $sql);
-        $sql = preg_replace("/{index}/i", $this->index, $sql);
-
-        //echo $sql."<BR>";
+        $index = $this->index;
+        $index = '{QUOTE}'.$this->index.'{QUOTE}';
+        $sql = preg_replace("/wy\-1/", $index, $sql);
+        $sql = preg_replace("/{index}/i", $index, $sql);
 
         $sql = preg_replace("/\\\n/", " ", $sql);
         $sql = preg_replace("/\\\"/", "'", $sql);
+        $sql = preg_replace("/{QUOTE}/", "\"", $sql);
         $sql = array("query" => $sql);
         $sql = json_encode($sql);
 
@@ -128,7 +129,7 @@ class DataSourceElastic
 	    $endpoint = preg_replace("/{user}/i", $this->user, $this->endpoint);
 	    $endpoint = preg_replace("/{password}/i", $this->password, $this->endpoint);
 	    $endpoint = $endpoint."/_sql";
-        //echo $endpoint." $this->user/$this->password<BR>";
+        //$sql = preg_replace("/\-\*/", "-%2A", $sql);
         $ch = curl_init($endpoint);
 
         $len = strlen($sql);
@@ -146,6 +147,8 @@ class DataSourceElastic
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $sql);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
+	    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $result = curl_exec($ch);
         curl_close($ch);

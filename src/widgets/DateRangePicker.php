@@ -41,7 +41,7 @@ class DateRangePicker extends Widget
             ],
            "Last 7 Days" => [
                 "widgetEvaluate" => "[moment().subtract(6, 'days'), moment()]",
-                "phpEvaluate" => [ "-7 day", "today" ]
+                "phpEvaluate" => [ "-6 day", "today" ]
             ],
            "Last 30 Days" => [
                 "widgetEvaluate" => "[moment().subtract(29, 'days'), moment()]",
@@ -49,7 +49,7 @@ class DateRangePicker extends Widget
             ],
            "This Month" => [
                 "widgetEvaluate" => "[moment().startOf('month'), moment().endOf('month')]",
-                "phpEvaluate" => [ "first day of this month", "last day of last month" ]
+                "phpEvaluate" => [ "first day of this month", "last day of this month" ]
             ],
            "Last Month" => [
                 "widgetEvaluate" => "[moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]",
