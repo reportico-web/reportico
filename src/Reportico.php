@@ -70,7 +70,7 @@ class Reportico extends ReporticoObject
     public $delete_project_url;
     public $create_report_url;
 
-    public $version = "7.1.39-beta";
+    public $version = "7.1.40-beta";
     public $doc_version = "6.0.0";
 
     public $name;
@@ -3170,6 +3170,9 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function execute($mode = false, $draw = true)
     {
+        global $gcalled;
+        $gcalled = false;
+
         $sessionClass = ReporticoSession();
         $this->initialize();
 
