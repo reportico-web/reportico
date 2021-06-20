@@ -507,6 +507,7 @@ class Authenticator extends ReporticoObject
         }
 
         $instance = self::getInstance();
+        $instance->engine = $engine;
 
         Authenticator::resumeFromSession($instance->_defaultPermissions, $instance->_defaultRevokes);
 

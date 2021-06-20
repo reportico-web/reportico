@@ -75,7 +75,6 @@ class AssetManager
         $files = glob("{$this->engine->theme_dir}/{$this->engine->theme}/widgets/*");
         foreach ( $files as $file) {
 
-            //echo "Load $file<BR>";
             $base = substr(basename($file), 0, -4);
             $load = true;
             if ( $base == "DynamicGrid" ) $load = false;
@@ -84,7 +83,7 @@ class AssetManager
             }
 
             $class = "\\Reportico\\Themes\\Widgets\\".substr(basename($file), 0, -4);
-            include($file);
+            include_once($file);
 
             if ( $base == "SubmitExecute" ) continue;
             $widget = new $class($this->engine, $load);

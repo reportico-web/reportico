@@ -3600,7 +3600,6 @@ class Reportico extends ReporticoObject
                 $this->buildQuery(false, "");
                 ReporticoApp::set("code_area", false);
 
-
                 if ( Authenticator::allowed("admin-report-selected")) {
                     // If configuring project then use project language strings from admin project
                     // found in projects/admin/lang.php
