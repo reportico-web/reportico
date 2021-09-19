@@ -195,12 +195,16 @@ class AuthenticatorStandalone extends Authenticator
             // or design password or project password is set to blank. Allow access to Design mode if design password is entered
             // or design mode password is blank
             //echo "try proj password with mode {$this->engine->access_mode} pw {$this->engine->initial_project_password} <BR>";
-            if (isset($_REQUEST['project_password']) || $this->engine->initial_project_password) {
+            if (isset($_REQUEST['project_password']) || $this->engine->initial_project_password || $sessionClass::getReporticoSessionParam('project_password')) {
 //echo "password etered ".$_REQUEST['project_password']."<BR>";
                 // Password may have come from external call
                 if ($this->engine->initial_project_password) {
                     $testpassword = $this->engine->initial_project_password;
-                } else {
+                } 
+                if ( $sessionClass::getReporticoSessionParam('project_password') ) {
+                    $testpassword = $sessionClass::getReporticoSessionParam('project_password');
+                }
+                if ( isset($_REQUEST['project_password'])) {
                     $testpassword = $_REQUEST['project_password'];
                 }
 
@@ -209,6 +213,7 @@ class AuthenticatorStandalone extends Authenticator
                         self::_grant("project");
                     }
                     self::_grant("access");
+                    $sessionClass::setReporticoSessionParam('project_password', $testpassword);
                     //self::_grant("admin-page");
                 } else {
                     self::_reset("guest");
@@ -217,11 +222,12 @@ class AuthenticatorStandalone extends Authenticator
                 }
             } else {
 
-//echo "password not entered<BR>";
-                //self::_revoke("access");
-                //self::show();
-                if (isset($_REQUEST["login"])) {
-                    self::_flag("project-password-error");
+                if (!self::_allowed("admin")) {
+                    self::_revoke("access");
+                    //self::show();
+                    if (isset($_REQUEST["login"])) {
+                        self::_flag("project-password-error");
+                    }
                 }
 
             }
@@ -299,6 +305,7 @@ class AuthenticatorStandalone extends Authenticator
                     // User has supplied an admin password and pressed login
                     if ($_REQUEST['admin_password'] == ReporticoApp::getConfig("admin_password")) {
                         //$sessionClass::setReporticoSessionParam('admin_password', "1");
+                        self::_grant("access");
                         self::_grant("admin");
                         $loggedon = true;
                     } else {
