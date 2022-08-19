@@ -18,7 +18,7 @@
         "twig/twig": "^3.0",
         "tecnickcom/tcpdf": "^6.2",
         "szymach/c-pchart": "^3.0",
-        "reportico/assetter": "^1",
+        "reportico/assetter": "^8",
         "spatie/browsershot": "^3.29"
     },
      "autoload": {
