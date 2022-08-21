@@ -4364,6 +4364,9 @@ class Reportico extends ReporticoObject
         $ret = "NONE";
         foreach ($arr as $val) {
             if ($val->query_name == $name) {
+                if ( $val->column_value === false || $val->column_value === null ) {
+                    return "";
+                }
                 return $val->column_value;
             }
         }
@@ -4396,6 +4399,9 @@ class Reportico extends ReporticoObject
                 }
 
                 $x = $this->lookup_queries[$bits[0]]->getCriteriaValue($bits[1], $bits[2]);
+                if ( $x === false || $x === null ) {
+                    return "";
+                }
                 return $x;
             }
         }

@@ -12,15 +12,12 @@ class ReporticoUtility
         $ret = "NONE";
         foreach ($arr as $val) {
             if ($val->query_name == $name) {
+                if ( $val->query_name === false || $val->query_name === null ) {
+                    return "";
+                }
                 return $val->column_value;
             }
         }
-
-        //foreach($arr as $val)
-        //{
-        //return $val->column_value;
-        //}
-        //return $name;
     }
 
     static function getFirstColumn(&$arr)
