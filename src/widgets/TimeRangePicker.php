@@ -64,7 +64,7 @@ class TimeRangePicker extends Widget
 
     public function getConfig() {
 
-        $format = strtoupper(ReporticoApp::getConfig("prep_timeformat"));
+        $format = strtoupper(ReporticoApp::getConfig("prep_timeformat", ""));
         $format = preg_replace("/Y/i", "YYYY", $format);
         $format = preg_replace("/M/i", "MM", $format);
         $format = preg_replace("/D/i", "DD", $format);

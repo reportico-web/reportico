@@ -2019,7 +2019,7 @@ class ReportTCPDF extends Report
 
     public function fetchCellStyles(&$tx, $refersToPriorLine = false)
     {
-        $styles = false;
+        $styles = [];
         $matches = array();
         if (preg_match("/{STYLE[ ,]*([^}].*)}/", $tx, $matches)) {
             if (isset($matches[1])) {
@@ -2920,8 +2920,6 @@ class ReportTCPDF extends Report
                 }
             }
         }
-        //echo "&nbsp;&nbsp;APPLY: $type<BR> ";
-        //var_dump($this->stylestack["type"]);
     }
 
     public function applyStyleTags($type, $styleset, $parent_styleset = false, $grandparent_styleset = false, $apply_type = false, $applyto = false)
@@ -3140,10 +3138,6 @@ class ReportTCPDF extends Report
                 }
             }
         }
-        //echo "APPLY: $type ";
-        //echo "&nbsp;&nbsp;APPLY: $type ";
-        //var_dump($this->stylestack["type"]);
-        //var_dump($this->stylestack["background-color"]);
     }
 
     public function unapplyStyleTags($type1, $styleset, $parent_styleset = false, $grandparent_styleset = false, $type = "", $applyto = false)

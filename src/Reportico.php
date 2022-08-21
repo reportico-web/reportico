@@ -1074,7 +1074,7 @@ class Reportico extends ReporticoObject
 
                 $this->columns[$k]->column_value = $colval;
             } else {
-                $this->columns[$k]->column_value = $col->query_name;
+                $this->columns[$k]->column_value = false;
             }
 
             $ct++;
@@ -4296,7 +4296,7 @@ class Reportico extends ReporticoObject
         // Clear any styles or instructions left over from previous rows
         foreach ($this->columns as $col) {
 
-            $col->output_cell_styles = false;
+            $col->output_cell_styles = [];
             $col->output_images = false;
             $col->output_hyperlinks = false;
         }
@@ -4399,6 +4399,8 @@ class Reportico extends ReporticoObject
                 return $x;
             }
         }
+
+        return "";
     }
 
     // -----------------------------------------------------------------------------

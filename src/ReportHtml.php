@@ -958,7 +958,7 @@ class ReportHtml extends Report
 
     public static function fetchCellStylesStandalone(&$tx)
     {
-        $styles = false;
+        $styles = [];
         $matches = array();
         if (preg_match("/{STYLE[ ,]*([^}].*)}/", $tx, $matches)) {
             if (isset($matches[1])) {
@@ -993,7 +993,7 @@ class ReportHtml extends Report
     }
     public function fetchCellStyles(&$tx, $refersToPriorLine = false)
     {
-        $styles = false;
+        $styles = [];
         $matches = array();
         if (preg_match("/{STYLE[ ,]*([^}].*)}/", $tx, $matches)) {
 

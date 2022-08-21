@@ -51,7 +51,7 @@ class QueryColumn extends ReporticoObject
     public $avgsum = 0;
     public $median = false;
     public $value_list = array();
-    public $output_cell_styles = false;
+    public $output_cell_styles = [];
     public $output_hyperlinks = false;
     public $output_images = false;
 
