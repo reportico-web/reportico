@@ -70,7 +70,7 @@ class Reportico extends ReporticoObject
     public $delete_project_url;
     public $create_report_url;
 
-    public $version = "7.1.41-beta";
+    public $version = "8.0.1";
     public $doc_version = "6.0.0";
 
     public $name;
@@ -208,7 +208,7 @@ class Reportico extends ReporticoObject
     public $output_header_styles = false;
     public $output_hyperlinks = false;
     public $output_images = false;
-    public $output_row_styles = false;
+    public $output_row_styles = [];
     public $output_page_styles = false;
     public $output_before_form_row_styles = false;
     public $output_after_form_row_styles = false;

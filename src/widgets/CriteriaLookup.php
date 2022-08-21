@@ -230,7 +230,7 @@ class CriteriaLookup extends Widget
                 for ($i = 0; $i < count($res[$k]); $i++) {
                     $line = &$res[$i];
                     $ret = false;
-                    $abb = false;
+                    $abb = "";
                     $lab = false;
                     foreach ($this->criteria->lookup_query->columns as $ky => $col) {
     
@@ -243,6 +243,9 @@ class CriteriaLookup extends Widget
     
                         if ($col->lookup_abbrev_flag) {
                             $abb = $res[$col->query_name][$i];
+                            if ( !$abb )  {
+                                $abb = "";
+                            }
                         }
     
                     }
@@ -278,7 +281,6 @@ class CriteriaLookup extends Widget
                     }
     
                     if (!$clearall && in_array($abb, $hidden_params) && !$manual_override) {
-                        //echo "added 4 $abb";
                         $isselected = true;
                         $checked = $check_text;
                     }

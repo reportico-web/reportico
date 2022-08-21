@@ -38,6 +38,10 @@ class DataSourceArray
     function FetchRow()
     {
         $this->ct++;
+        if ( $this->numrows == 0 ) {
+            $this->EOF = true;
+            return false;
+        }
         if ( $this->ct == $this->numrows )
         {
             $this->EOF = true;

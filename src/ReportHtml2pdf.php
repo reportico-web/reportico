@@ -319,14 +319,18 @@ class ReportHtml2pdf extends Report
         $groupct = count($this->jar["groups"]);
 
         if ( $this->currentGroup )
-            if ( !isset($this->jar["pages"][$this->page_count]["rows"][$this->line_count+1])) 
+            if ( !isset($this->jar["pages"][$this->page_count]["rows"][$this->line_count+1])) {
                 $this->jar["pages"][$this->page_count]["rows"][$this->line_count+1] =
                     [ "data" => [],
                         "groupstarts" => [ &$this->jar["groups"][$groupct - 1] ],
-                        "groupends" => false
+                        "groupends" => []
                         ];
-            else
+            } else {
                 $this->jar["pages"][$this->page_count]["rows"][$this->line_count+1]["groupstarts"][]  = &$this->jar["groups"][$groupct - 1];
+                if (!isset($this->jar["pages"][$this->page_count]["rows"][$this->line_count+1]["groupends"]) ) { 
+                    $this->jar["pages"][$this->page_count]["rows"][$this->line_count+1]["groupends"] = [];
+                }
+            }
         $this->jar["pages"][$this->page_count]["rows"][$this->line_count+1]["openrowsection"] = true;
 
         $this->currentGroup = &$this->jar["groups"][$groupct - 1];
