@@ -2629,6 +2629,11 @@ class Reportico extends ReporticoObject
             $this->url_path_to_assets = $this->reportico_url_path . "assets";
         }
 
+        if ($this->target_format == "HTML2PDF") {
+            $schema = $this->pdf_http_schema;
+            $this->url_path_to_assets = preg_replace("/http[s]*/", $schema, $this->url_path_to_assets);
+        }
+
         //Define the template dir where we could find specific template css js and template files
         // if not already provided
         if ( !$this->theme_dir ) {
@@ -2662,7 +2667,6 @@ class Reportico extends ReporticoObject
             }
 
         }
-
 
         // Set charting engine
         $template->assign('REPORTICO_CHARTING_ENGINE', $this->charting_engine_html);
@@ -3177,9 +3181,21 @@ class Reportico extends ReporticoObject
         $this->initialize();
 
 
-        if (method_exists($sessionClass, "switchToRequestedNamespace"))
+        if (method_exists($sessionClass, "switchToRequestedNamespace")) {
+            // Fetch any parameters from previous session that need using in switched to session , eg user parameters
+            $transfer = [];
+            $param = $sessionClass::getReporticoSessionParam("user_parameters", "reportico_reportico");
+            if ( $param ) {
+                $transfer["user_parameters"] = $param;
+            } else {
+                $transfer["user_parameters"] = $this->user_parameters;
+            }
             $this->session_namespace = $sessionClass::switchToRequestedNamespace($this->session_namespace);
-
+            foreach ( $transfer as $k => $v ) {
+                $sessionClass::setReporticoSessionParam("$k", $v);
+            }
+            $this->user_parameters = $sessionClass::getReporticoSessionParam("user_parameters");
+        }
         if ($this->session_namespace) {
             ReporticoApp::set("session_namespace", $this->session_namespace);
         }
@@ -3195,6 +3211,8 @@ class Reportico extends ReporticoObject
             ReporticoApp::set("session_namespace_key", "reportico_" . ReporticoApp::get("session_namespace"));
             $sessionClass::initializeReporticoNamespace(ReporticoApp::get("session_namespace_key"));
         }
+
+        $this->user_parameters = $sessionClass::registerSessionParam("user_parameters", $this->user_parameters);
 
         // Work out the mode (ADMIN, PREPARE, MENU, EXECUTE, MAINTAIN based on all parameters )
         if (!$mode) {
@@ -3423,6 +3441,11 @@ class Reportico extends ReporticoObject
                         if ($k == 'loadTemplate') { $_REQUEST[$k] = $v; }
                         if ($k == 'saveTemplate') { $_REQUEST[$k] = $v; }
                         if ($k == 'templateAction') { $_REQUEST[$k] = $v; }
+                        if ($k == 'reportico_criteria') { $_REQUEST[$k] = $v; }
+                        if ($k == 'reportico_criteria_match') { $_REQUEST[$k] = $v; }
+                        if (preg_match("/^MANUAL_/", $k)) {
+                            $_REQUEST[$k] = $v;
+                        }
 
                         if ($k == 'partial_template') {
                             $_REQUEST[$k] = $v;
@@ -3696,7 +3719,7 @@ class Reportico extends ReporticoObject
                                 $this->template->assign('AUTOPAGINATE', "autopaginate");
                             else
                                 $this->template->assign('AUTOPAGINATE', "");
-                            $this->template->assign('ZOOM_FACTOR', strtolower($this->getAttribute("PdfZoomFactor"), "100%"));
+                            $this->template->assign('ZOOM_FACTOR', strtolower($this->getAttribute("PdfZoomFactor")));
                         } else {
                             $this->template->assign('PRINT_FORMAT', "reportico-print-html");
 

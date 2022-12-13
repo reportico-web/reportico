@@ -19,8 +19,8 @@
 {{ASSETS_INIT}}
 {{ASSETS_RUNTIME}}
 {% if REPORTICO_CSRF_TOKEN %}
-<script type="text/javascript">var reportico_csrf_token = "{{ REPORTICO_CSRF_TOKEN }}";</script>
-<script type="text/javascript">var ajax_event_handler = "{{ REPORTICO_AJAX_HANDLER }}";</script>
+<script nonce=""  type="text/javascript">var reportico_csrf_token = "{{ REPORTICO_CSRF_TOKEN }}";</script>
+<script nonce=""  type="text/javascript">var ajax_event_handler = "{{ REPORTICO_AJAX_HANDLER }}";</script>
 
 
 {% endif %}

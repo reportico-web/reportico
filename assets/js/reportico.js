@@ -420,6 +420,10 @@ function splitPage() {
 
         var child = children.shift();
         var childheight = reportico_jquery(child).outerHeight();
+        var childvisible = reportico_jquery(child).is(":visible");
+        if ( !childvisible ) {
+            childheight = 0;
+        }
         var childclass = reportico_jquery(child).prop("className");
 
         if ( !reportico_jquery(child).hasClass("reportico-page-header-block") )

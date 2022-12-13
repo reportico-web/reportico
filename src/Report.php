@@ -384,7 +384,16 @@ class Report extends ReporticoObject
                 $label = "";
                 $value = "";
 
-                if ( $crit->hidden == "yes" )
+                $excluded_by_parameters = false;
+                if ( isset($this->query->user_parameters["criteria_no_summary"]) ) {
+                    foreach ( $this->query->user_parameters["criteria_no_summary"] as $match ) {
+                        if ( preg_match("/$match/", $name) ){
+                            $excluded_by_parameters = true;
+                            break;;
+                        }
+                    }
+                }
+                if ( $crit->hidden == "yes" || $excluded_by_parameters )
                     continue;
 
                 if (isset($crit->criteria_summary) && $crit->criteria_summary) {

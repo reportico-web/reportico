@@ -50,7 +50,7 @@ background-color: #900;
 
 <div style="{{ CONTENT.styles.body }}" class="reportico-output {{ PRINT_FORMAT }}">
 
-    <script>
+    <script nonce="" >
         reportico_criteria_items = [];
 {% if CRITERIA_ITEMS is defined %}
 {% for critno in CRITERIA_ITEMS %}
@@ -64,7 +64,7 @@ background-color: #900;
                 {{ ERRORMSG|raw }}
             </div>
 
-            <script>
+            <script nonce="" >
                 reportico_jquery(document).ready(function()
                 {
                     showParentNoticeModal(reportico_jquery("#reporticoEmbeddedError").html());

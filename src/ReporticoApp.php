@@ -258,6 +258,7 @@ class ReporticoApp
             $out_val = ReporticoApp::getConfig($in_code);
         } else if (ReporticoApp::isSetConfig("pdf_" . $in_code)) {
             $out_val = ReporticoApp::getConfig("pdf_" . $in_code);
+            return $out_val;
         } else if (ReporticoApp::isSetConfig("chart_" . $in_code)) {
             $out_val = ReporticoApp::getConfig("chart_" . $in_code);
         } else if (ReporticoApp::isSetConfig("DEFAULT_" . $in_code)) {

@@ -1,7 +1,7 @@
 {% autoescape false %}
 
 
-<script type="text/javascript">
+<script nonce=""  type="text/javascript">
     var reportico_page_size = "{{ PAGE_SIZE }}";
     var reportico_page_orientation = "{{ PAGE_ORIENTATION }}";
     var reportico_page_title_display = "{{ PAGE_TITLE_DISPLAY }}";

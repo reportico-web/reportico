@@ -407,7 +407,7 @@ class ReportHtml2pdf extends Report
             $this->page_started = false;
         }
         $this->graph_sessionPlaceholder++;
-        $graph->width_actual = ReporticoApp::getDefaultConfig("GraphWidth", $graph->width_pdf);
+        $graph->width_actual = ReporticoApp::getDefaultConfig("GraphWidthPDF", $graph->width_pdf);
         $graph->height_actual = ReporticoApp::getDefaultConfig("GraphHeight", $graph->height_pdf);
         $graph->title_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->title, true);
         $graph->xtitle_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->xtitle, true);

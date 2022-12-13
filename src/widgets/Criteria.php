@@ -138,6 +138,7 @@ $criteria
         }
 
         $sections["hidden"] = $this->engineCriteria->hidden == "yes";
+	    $nevertoshow = $sections["hidden"];
         $sections["required"] = $this->engineCriteria->required == "yes";
         $sections["title"] = ReporticoLang::translate($this->engineCriteria->deriveAttribute("column_title"));
         $sections["tooltip"] = ReporticoLang::translate($this->engineCriteria->criteria_help);
@@ -154,6 +155,7 @@ $criteria
         //$sections["open"] = false;
         if ( $tabgroup ) {
             $sections["tabclass"] = "displayGroup{$sections["id"]}";
+	    if ( $nevertoshow ) 
             $sections["hidden"] = true;
             if ($openfilters) {
                 if (in_array(preg_replace("/ /", "_", $tabgroup), $openfilters)) {

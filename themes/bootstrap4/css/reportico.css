@@ -1265,6 +1265,10 @@ input.reportico-admin-button2
         margin: 0px !important;
     }
 
+    .reportico-container * {
+        font-size: 8pt !important;
+    }
+
     .reportico-report-form
     {
         /*border: solid 1px #AAAAAA;*/
@@ -1293,10 +1297,17 @@ input.reportico-admin-button2
 
     .reportico-new-pageHeaderBlock { display: block; } 
 
+    td, th, div { 
+        font-size: 8pt !important;
+    }
+    .reportico-row td { 
+        font-size: 8pt !important;;
+    }
+
     .reportico-row td a
     {
         text-decoration: underline;
-        color: #ff0000;
+        color: #3333ff;
     }
 
     a[href]:after {
@@ -1307,9 +1318,10 @@ input.reportico-admin-button2
         page-break-inside: avoid;
     }
 
-    /*.reportico-paginated {
+    .reportico-paginated {
        page-break-after: always;
-    }*/
+    }
+
 
 }
 

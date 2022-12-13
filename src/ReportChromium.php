@@ -24,6 +24,7 @@ use Spatie\Browsershot\Browsershot;
 class ReportChromium extends Report
 {
     private $client = false;
+    public $schema = false;
 
 
     private $pageSizes = [ 
@@ -68,13 +69,40 @@ class ReportChromium extends Report
             if ( substr($script_url, 0, 1) != "/" )
                 $script_url = "/$script_url";
 
-            $url = "${_SERVER["REQUEST_SCHEME"]}://${_SERVER["HTTP_HOST"]}{$script_url}?execute_mode=EXECUTE&reportico_headless=1&target_format=HTML2PDF&reportico_session_name=" . $sessionClass::reporticoSessionName();
+            $url = "$schema://${_SERVER["HTTP_HOST"]}{$script_url}?execute_mode=EXECUTE&reportico_headless=1&target_format=HTML2PDF&reportico_session_name=" . $sessionClass::reporticoSessionName();
         }
+
+        $schema = $engine->pdf_http_schema;
+        $url = preg_replace("/http[s]*/", $schema, $url);
+        
 
         // Add in any extra forwarded URL parameters
         if ($engine->forward_url_get_parameters)
             $url .= "&".$engine->forward_url_get_parameters;
 
+        $post = [];
+        foreach ( $_POST as $k => $v ) {
+            if ( preg_match("/MANUAL_/", $k)) {
+                $post[$k] = $v;
+            }
+            else if ( preg_match("/HIDDEN_/", $k)) {
+                $post[$k] = $v;
+            }
+            else if ( preg_match("/DIRECT_/", $k)) {
+                $post[$k] = $v;
+            }
+            else if ( preg_match("/reportico_session_name/", $k)) {
+                //$post[$k] = $v;
+            }
+            else if ( preg_match("/template_selection/", $k)) {
+                //$post[$k] = $v;
+            }
+            else {
+                //echo "$k<BR>";
+                //$post[$k] = $v;
+            }
+        }
+        $url .= "&".http_build_query($post);
         // Add any CSRF tokens for when Reportico is called inside a framework
         // And retain any cookies too
         $newHeaders = [];
@@ -118,10 +146,13 @@ class ReportChromium extends Report
             ->setOption('args', ['--disable-web-security'])
             //->emulateMedia('print')
             ->noSandbox()
-            ->landscape()
+            //->landscape()
             ->showBackground()
             //->margins(0,0,0,0)
             ->setDelay(1000)
+            //->consoleMessages()
+            //->bodyHtml()
+            //->post($post)
             ->save("$outputfile")
             ;
         } catch ( \Exception $ex ) {

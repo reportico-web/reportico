@@ -198,7 +198,7 @@ reportico_jquery('#select2_dropdown_' + jtag + ',#select2_dropdown_expanded_' + 
         {
             if ( $this->lastgroup )
                 $text .= "</OPTGROUP>";
-            $text .= '<OPTGROUP LABEL="'.$ret.'">';
+            $text .= '<OPTGROUP LABEL="'.$value.'">';
             $this->lastgroup = $group;
         }
         else

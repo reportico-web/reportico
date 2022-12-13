@@ -58,8 +58,8 @@ class ChartNVD3
     public $height = ".DEFAULT";
     public $width_actual = 400;
     public $height_actual = 200;
-    public $width_pdf_actual = 400;
-    public $height_pdf_actual = 200;
+    public $width_pdf_actual = 1100;
+    public $height_pdf_actual = 600;
     public $xtickinterval_actual = 1;
     public $xticklabelinterval_actual = 1;
     public $xaxiscolor_actual = "black";
@@ -180,12 +180,18 @@ class ChartNVD3
 
     public function addXlabel($in_val)
     {
+	    if ( $in_val === null ) {
+		    $in_val = "";
+	    }
         $in_val = @preg_replace("/&/", "+", $in_val);
         $this->xlabels[] = $in_val;
     }
 
     public function addPlotValue($in_query, $plot_no, $in_val)
     {
+	    if ( $in_val === null ) {
+		    $in_val = "";
+	    }
         $in_val = trim($in_val);
         $in_val = str_replace(",", "", $in_val);
         if (!$in_val) {
@@ -197,6 +203,12 @@ class ChartNVD3
                 switch ($v["datatype"]) {
                     case "hhmmss":
                         $this->plot[$k]["data"][] = ReporticoUtility::hhmmssToSeconds($in_val);
+                        break;
+
+                    case "hhmm":
+                        $c = ReporticoUtility::hhmmssToSeconds($in_val);
+                        $c = round($c / 60,2);
+                        $this->plot[$k]["data"][] = $c;
                         break;
 
                     default:
@@ -675,7 +687,7 @@ class ChartNVD3
 
             d3reportico.selectAll(\"rect.nv-bar\")
                 .style(\"fill-opacity\", function (d, i) { //d is the data bound to the svg element
-                    return .5 ;
+                    return 1 ;
                 })
 
             nv.utils.windowResize(chart" . $sessionPlaceholder . ".update);

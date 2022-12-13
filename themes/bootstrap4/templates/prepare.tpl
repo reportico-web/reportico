@@ -228,7 +228,7 @@
 
               {# Criteria entry selection #}
               {% if criterion.hidden %}
-              <div class='d-flex {{ criterion.tabclass }}' style="padding: 3px 0px; display: inline">
+              <div class='d-flex {{ criterion.tabclass }}' style="padding: 3px 0px; display: none !important">
               {% else %}
               <div class='d-flex {{ criterion.tabclass }}' style="padding: 3px 0px">
               {% endif %}

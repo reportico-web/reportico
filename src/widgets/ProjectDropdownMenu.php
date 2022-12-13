@@ -104,8 +104,13 @@ class ProjectDropdownMenu extends Widget
                         }
                         if (!isset($subitem["reportname"]))
                             continue;
+	                    $reporturl = $prepare_url;
+                        if ( isset($subitem["reportfile"]) ) {
+                            $reportsessionname = preg_replace("/\.xml/", "", $subitem["reportfile"]);
+                            $reporturl = preg_replace("/reportico_session_name=NS_.*/", "reportico_session_name=NS_reportico". $reportsessionname, $reporturl);
+                        }
                         $menuarr["items"][] = [
-                            "url" => "$prepare_url&project={$subitem["project"]}&xmlin={$subitem["reportfile"]}",
+                            "url" => "$reporturl&project={$subitem["project"]}&xmlin={$subitem["reportfile"]}",
                             "report-file" => "{$subitem["reportfile"]}",
                             "label" => "{$subitem["reportname"]}"
                         ];

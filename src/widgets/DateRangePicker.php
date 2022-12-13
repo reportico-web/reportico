@@ -253,6 +253,7 @@ reportico_jquery(\'.reportico-daterange-field\').daterangepicker({
                 $this->range_start = (new \DateTime($dateRange[0]))->format("Y-m-d");
                 $this->range_end = (new \DateTime($dateRange[1]))->format("Y-m-d");
             } else {
+                $this->range_raw = $this->range_name;
                 //echo "<PRE>"; var_dump($_REQUEST); echo "</PRE>";
                 if (isset($_REQUEST["MANUAL_derived_".$criteriaName])){
                     //echo "try ".$this->criteria->column_value."<BR>";
