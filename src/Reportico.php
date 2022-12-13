@@ -3180,7 +3180,6 @@ class Reportico extends ReporticoObject
         $sessionClass = ReporticoSession();
         $this->initialize();
 
-
         if (method_exists($sessionClass, "switchToRequestedNamespace")) {
             // Fetch any parameters from previous session that need using in switched to session , eg user parameters
             $transfer = [];
@@ -3190,11 +3189,13 @@ class Reportico extends ReporticoObject
             } else {
                 $transfer["user_parameters"] = $this->user_parameters;
             }
+            $transfer["pdf_engine"] = $sessionClass::getReporticoSessionParam("pdf_engine", "reportico_reportico");
             $this->session_namespace = $sessionClass::switchToRequestedNamespace($this->session_namespace);
             foreach ( $transfer as $k => $v ) {
                 $sessionClass::setReporticoSessionParam("$k", $v);
             }
             $this->user_parameters = $sessionClass::getReporticoSessionParam("user_parameters");
+            $this->pdf_engine = $sessionClass::getReporticoSessionParam("pdf_engine");
         }
         if ($this->session_namespace) {
             ReporticoApp::set("session_namespace", $this->session_namespace);
