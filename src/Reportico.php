@@ -3195,7 +3195,7 @@ class Reportico extends ReporticoObject
             } 
             $transfer["output_template_parameters"] = $sessionClass::getReporticoSessionParam("output_template_parameters", "reportico_reportico");
             if ( !$transfer["output_template_parameters"] ) {
-                $transfer["output_template_parameters"]  = $this->pdf_engine;
+                $transfer["output_template_parameters"]  = $this->output_template_parameters;
             } 
             $this->session_namespace = $sessionClass::switchToRequestedNamespace($this->session_namespace);
             foreach ( $transfer as $k => $v ) {
