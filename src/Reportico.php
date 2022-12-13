@@ -3190,6 +3190,9 @@ class Reportico extends ReporticoObject
                 $transfer["user_parameters"] = $this->user_parameters;
             }
             $transfer["pdf_engine"] = $sessionClass::getReporticoSessionParam("pdf_engine", "reportico_reportico");
+            if ( !$transfer["pdf_engine"] ) {
+                $transfer["pdf_engine"]  = $this->pdf_engine;
+            } 
             $this->session_namespace = $sessionClass::switchToRequestedNamespace($this->session_namespace);
             foreach ( $transfer as $k => $v ) {
                 $sessionClass::setReporticoSessionParam("$k", $v);
