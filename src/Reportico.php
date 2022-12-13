@@ -3193,12 +3193,17 @@ class Reportico extends ReporticoObject
             if ( !$transfer["pdf_engine"] ) {
                 $transfer["pdf_engine"]  = $this->pdf_engine;
             } 
+            $transfer["output_template_parameters"] = $sessionClass::getReporticoSessionParam("output_template_parameters", "reportico_reportico");
+            if ( !$transfer["output_template_parameters"] ) {
+                $transfer["output_template_parameters"]  = $this->pdf_engine;
+            } 
             $this->session_namespace = $sessionClass::switchToRequestedNamespace($this->session_namespace);
             foreach ( $transfer as $k => $v ) {
                 $sessionClass::setReporticoSessionParam("$k", $v);
             }
             $this->user_parameters = $sessionClass::getReporticoSessionParam("user_parameters");
             $this->pdf_engine = $sessionClass::getReporticoSessionParam("pdf_engine");
+            $this->output_template_parameters = $sessionClass::getReporticoSessionParam("output_template_parameters");
         }
         if ($this->session_namespace) {
             ReporticoApp::set("session_namespace", $this->session_namespace);
