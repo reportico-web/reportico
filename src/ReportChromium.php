@@ -144,7 +144,7 @@ class ReportChromium extends Report
             ->ignoreHttpsErrors()
             ->paperSize($this->pageWidth($engine->getAttribute("PageSize")), $this->pageHeight($engine->getAttribute("PageSize")), "mm")
             ->setOption('args', ['--disable-web-security'])
-            //->emulateMedia('print')
+            ->emulateMedia('print')
             ->noSandbox()
             //->landscape()
             ->showBackground()

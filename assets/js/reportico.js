@@ -416,18 +416,27 @@ function splitPage() {
       var bodyitems=0;
       var maxrowwidth = 0;
 
+      //console.log("SPLIT " + long + " > " + pageheight + "!" );
       while (long > 0 && children.length > 1) {
 
         var child = children.shift();
-        var childheight = reportico_jquery(child).outerHeight();
+        var childheight = reportico_jquery(child).outerHeight(true);
         var childvisible = reportico_jquery(child).is(":visible");
         if ( !childvisible ) {
             childheight = 0;
         }
         var childclass = reportico_jquery(child).prop("className");
 
-        if ( !reportico_jquery(child).hasClass("reportico-page-header-block") )
+        // page header block already included in margin so dont count it
+        if ( reportico_jquery(child).hasClass("reportico-page-header-block") ) {
+                childheight = 0;
+        }
+
+        if ( !reportico_jquery(child).hasClass("reportico-page-header-block") ) {
                 bodyitems++;
+        }
+
+        //console.log("ELEM " + childclass , childheight, "  => " + endpoint + " > " + pageheight + "!" );
 
         // Clone page title
         if ( reportico_jquery(child).hasClass("reportico-title") ) {
@@ -455,7 +464,7 @@ function splitPage() {
 
         var newpage = false;
         if ( nextlong > pageheight ) {
-            //console.log("ALERT " + childclass + " " + nextlong + " > " + pageheight + "!" );
+            //console.log("NEW PAGE " + childclass + " " + nextlong + " > " + pageheight + "!" );
 
             var newtable = false;
             //if ( reportico_jquery(child).hasClass("reportico-page-header-block") ) {
@@ -469,6 +478,11 @@ function splitPage() {
             if ( reportico_jquery(child).hasClass("reportico-page") ) {
 
                 maxrowwidth = reportico_jquery(child).width();
+
+                reportico_jquery(child).find("th").each(function() {
+                    wd = reportico_jquery(this).width();
+                    reportico_jquery(this).css("width", wd + "px" )
+                })
 
                 var th = reportico_jquery(child).find("thead");
                 var hf = reportico_jquery(child).find("thead").first();
@@ -503,13 +517,13 @@ function splitPage() {
                         return;
                     rheight = reportico_jquery(this).outerHeight();
                     rlong += rheight;
+                    //console.log(" ALERT IN " + rheight, "=>", rlong + " > " + pageheight );
                     if ( rlong + rheight > pageheight ) {
 
                         newtable = reportico_jquery('<TABLE class="table table-striped table-condensed  reportico-page"><TBODY></TBODY></TABLE>');
                         reportico_jquery(newtable).find("tbody").append(reportico_jquery(child).find("tbody tr,tfoot tr").slice(0,sliceAt));
                         reportico_jquery(newtable).prepend(headers);
-                        /*reportico_jquery(thispage).after(newpage); */
-                        //console.log(" ALERT IN " + rlong + " > " + pageheight );
+                        //console.log(" ALERT IN " + rheight, "=>", rlong + " > " + pageheight );
                         looping = false;
                         long = topMargin + bottomMargin;
                     }
