@@ -3,6 +3,7 @@
 
 <div id="reportico-container" class="flex-container">
 
+
 <!-- Widget Initialisation -->
 {{ASSETS_INIT}}
 

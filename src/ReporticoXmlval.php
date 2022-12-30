@@ -24,8 +24,9 @@ class ReporticoXmlval
         $this->attributes = $attributes;
     }
 
-    public function &add_xmlval($name, $value = false, $attributes = false)
+    public function &add_xmlval($name, $value = "", $attributes = false)
     {
+        if ( !$value ) $value = "";
         $element = new ReporticoXmlval($name, htmlspecialchars($value), $attributes);
         $this->elements[] = &$element;
         return $element;

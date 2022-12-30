@@ -104,10 +104,23 @@ class ProjectDropdownMenu extends Widget
                         }
                         if (!isset($subitem["reportname"]))
                             continue;
-	                    $reporturl = $prepare_url;
+                        $reporturl = $prepare_url;
+                        // For a given report set a dedicated namespace
                         if ( isset($subitem["reportfile"]) ) {
                             $reportsessionname = preg_replace("/\.xml/", "", $subitem["reportfile"]);
-                            $reporturl = preg_replace("/reportico_session_name=NS_.*/", "reportico_session_name=NS_reportico". $reportsessionname, $reporturl);
+                            if ( preg_match("/reportico_session_name=NS_/", $reporturl )) {
+                                $reporturl = preg_replace("/reportico_session_name=NS_.*/", "reportico_session_name=NS_reportico". $reportsessionname, $reporturl);
+                            } else {
+                                $params = parse_url($reporturl);
+                                parse_str($params["query"],$params);
+                                if ( isset($params["reportico_session_name"])){
+                                    $reportname = preg_replace("/\.xml/", "", $subitem["reportfile"]);
+                                    $defaultspecificsession = $params["reportico_session_name"];
+                                    $reportspecificsession = $params["reportico_session_name"];
+                                    $reportspecificsession = preg_replace("/_.*/", "_".$reportname, $reportspecificsession);
+                                    $reporturl = preg_replace("/reportico_session_name=$defaultspecificsession/", "reportico_session_name=$reportspecificsession", $reporturl);
+                                }
+                            }
                         }
                         $menuarr["items"][] = [
                             "url" => "$reporturl&project={$subitem["project"]}&xmlin={$subitem["reportfile"]}",

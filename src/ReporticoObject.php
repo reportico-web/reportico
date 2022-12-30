@@ -227,6 +227,9 @@ class ReporticoObject
         $parsed = $to_parse;
         if (preg_match("/{constant,SW_PROJECT}/", $parsed)) {
             $parsed = ReporticoApp::getConfig("project");
+            if ( $parsed == null ) {
+                $parsed = "";
+            }
             return $parsed;
         } else
         if (preg_match("/{constant,SW_DB_DRIVER}/", $parsed)) {
@@ -246,6 +249,9 @@ class ReporticoObject
                         $parsed = ReporticoApp::getConfig("SW_DB_DRIVER");
                 }
 
+            }
+            if ( $parsed == null ) {
+                $parsed = "";
             }
             return $parsed;
         } else
@@ -269,6 +275,9 @@ class ReporticoObject
                 }
 
             }
+            if ( $parsed == null ) {
+                $parsed = "";
+            }
             return $parsed;
         } else
         if (preg_match("/{constant,.*}/", $parsed)) {
@@ -281,8 +290,14 @@ class ReporticoObject
                 $parsed = ReporticoApp::getConfig($parsed);
             }
 
+            if ( $parsed == null ) {
+                $parsed = "";
+            }
             return $parsed;
         } else {
+            if ( $parsed == null ) {
+                $parsed = "";
+            }
             return $parsed;
         }
 

@@ -203,20 +203,20 @@ class Reportico extends ReporticoObject
 
     // Output control
     public $output_skipline = false;
-    public $output_allcell_styles = false;
-    public $output_criteria_styles = false;
-    public $output_header_styles = false;
+    public $output_allcell_styles = [];
+    public $output_criteria_styles = [];
+    public $output_header_styles = [];
     public $output_hyperlinks = false;
     public $output_images = false;
     public $output_row_styles = [];
-    public $output_page_styles = false;
-    public $output_before_form_row_styles = false;
-    public $output_after_form_row_styles = false;
-    public $output_group_header_styles = false;
-    public $output_group_header_label_styles = false;
-    public $output_group_header_value_styles = false;
-    public $output_group_trailer_styles = false;
-    public $output_reportbody_styles = false;
+    public $output_page_styles = [];
+    public $output_before_form_row_styles = [];
+    public $output_after_form_row_styles = [];
+    public $output_group_header_styles = [];
+    public $output_group_header_label_styles = [];
+    public $output_group_header_value_styles = [];
+    public $output_group_trailer_styles = [];
+    public $output_reportbody_styles = [];
     public $admin_accessible = true;
 
     // Template Parameters
@@ -1458,7 +1458,6 @@ class Reportico extends ReporticoObject
             $_REQUEST["target_format"] = "HTML";
         }
 
-
         if (array_key_exists("target_format", $_REQUEST) && $execute_mode == "EXECUTE" && count($this->targets) == 0) {
             $tf = $_REQUEST["target_format"];
             if (isset($_GET["target_format"])) {
@@ -1753,7 +1752,7 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     // Function : build_where_extra_list
     // -----------------------------------------------------------------------------
-    public function &buildWhereExtraList($in_is_expanding = false, $criteria_name)
+    public function &buildWhereExtraList($in_is_expanding = false, $criteria_name = false)
     {
         $str = "";
         $expval = false;
@@ -2014,8 +2013,8 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function &createPageHeader(
         $page_header_name = "",
-        $line,
-        $page_header_text
+        $line = 0,
+        $page_header_text = ""
     )
     {
         if (!$page_header_name) {
@@ -2031,8 +2030,8 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function createPageFooter(
         $page_footer_name = "",
-        $line,
-        $page_footer_text
+        $line = 0,
+        $page_footer_text = ""
     )
     {
         if (!$page_footer_name) {
@@ -2104,7 +2103,7 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     // Function : set_group_trailer_by_number
     // -----------------------------------------------------------------------------
-    public function setGroupTrailerByNumber($query_name, $trailer_number, $trailer_column, $value_column, $trailer_custom = false, $show_in_html, $show_in_pdf)
+    public function setGroupTrailerByNumber($query_name, $trailer_number, $trailer_column, $value_column, $trailer_custom = false, $show_in_html = false, $show_in_pdf = false)
     {
         $tn = (int)$trailer_number;
         if (!$this->checkGroupNameR("createGroupTrailer", $query_name)) {
@@ -2452,7 +2451,7 @@ class Reportico extends ReporticoObject
     // -----------------------------------------------------------------------------
     public function setColumnOrder(
         $query_name = "",
-        $order,
+        $order = 0,
         $insert_before = true
     )
     {
@@ -3181,30 +3180,9 @@ class Reportico extends ReporticoObject
         $this->initialize();
 
         if (method_exists($sessionClass, "switchToRequestedNamespace")) {
-            // Fetch any parameters from previous session that need using in switched to session , eg user parameters
-            $transfer = [];
-            $param = $sessionClass::getReporticoSessionParam("user_parameters", "reportico_reportico");
-            if ( $param ) {
-                $transfer["user_parameters"] = $param;
-            } else {
-                $transfer["user_parameters"] = $this->user_parameters;
-            }
-            $transfer["pdf_engine"] = $sessionClass::getReporticoSessionParam("pdf_engine", "reportico_reportico");
-            if ( !$transfer["pdf_engine"] ) {
-                $transfer["pdf_engine"]  = $this->pdf_engine;
-            } 
-            $transfer["output_template_parameters"] = $sessionClass::getReporticoSessionParam("output_template_parameters", "reportico_reportico");
-            if ( !$transfer["output_template_parameters"] ) {
-                $transfer["output_template_parameters"]  = $this->output_template_parameters;
-            } 
             $this->session_namespace = $sessionClass::switchToRequestedNamespace($this->session_namespace);
-            foreach ( $transfer as $k => $v ) {
-                $sessionClass::setReporticoSessionParam("$k", $v);
-            }
-            $this->user_parameters = $sessionClass::getReporticoSessionParam("user_parameters");
-            $this->pdf_engine = $sessionClass::getReporticoSessionParam("pdf_engine");
-            $this->output_template_parameters = $sessionClass::getReporticoSessionParam("output_template_parameters");
         }
+
         if ($this->session_namespace) {
             ReporticoApp::set("session_namespace", $this->session_namespace);
         }
@@ -3482,7 +3460,6 @@ class Reportico extends ReporticoObject
 
         // Work out we are in AJAX mode
         $this->deriveAjaxOperation();
-
         switch ($mode) {
             case "CRITERIA":
                 ReporticoLang::loadModeLanguagePack("languages", $this->output_charset);
@@ -3995,6 +3972,7 @@ class Reportico extends ReporticoObject
                 }
                 ReporticoApp::set("code_area", "");
             }
+
             if (!$in_criteria_name) {
                 // Execute Any Pre Execute Code, if not specified then
                 // attempt to pick up code automatically from a file "projects/project/report.xml.php"
@@ -4093,7 +4071,6 @@ class Reportico extends ReporticoObject
             $recordSet = false;
             $errorCode = false;
             $errorMessage = false;
-
             // If the source is an array then dont try to run SQL
             if (is_object($conn) && preg_match("/DataSourceArray/", get_class($conn)) ) {
                 $recordSet = $conn;
@@ -4134,7 +4111,6 @@ class Reportico extends ReporticoObject
             // Main Query Result Fetching
             $this->query_count = 0;
             while (!$recordSet->EOF) {
-
                 $line = $recordSet->FetchRow();
                 if ($line == null) {
                     $recordSet->EOF = true;
@@ -5571,15 +5547,18 @@ class Reportico extends ReporticoObject
             $this->widgets["criteria-{$v->query_name}"]->prehandleUrlParameters();
             $this->widgets["criteria-{$v->query_name}"]->handleUrlParameters();
         }
-        foreach ( $this->lookup_queries as $v ) {
-            $criteriaRenders[] = $this->widgets["criteria-{$v->query_name}"]->render();
-            if ( $this->widgets["criteria-{$v->query_name}"]->engineCriteria->widget == false ) {
-                continue;
-            }
-            $config = $this->widgets["criteria-{$v->query_name}"]->engineCriteria->widget->getRenderConfig();
-            if ( $config ) {
-                $this->assetManager->manager->appendToCollection($config);
-                $this->assetManager->manager->load($config["name"]);
+
+        if ( $this->execute_mode != "MAINTAIN" ) {
+            foreach ( $this->lookup_queries as $v ) {
+                $criteriaRenders[] = $this->widgets["criteria-{$v->query_name}"]->render();
+                if ( $this->widgets["criteria-{$v->query_name}"]->engineCriteria->widget == false ) {
+                    continue;
+                }
+                $config = $this->widgets["criteria-{$v->query_name}"]->engineCriteria->widget->getRenderConfig();
+                if ( $config ) {
+                    $this->assetManager->manager->appendToCollection($config);
+                    $this->assetManager->manager->load($config["name"]);
+                }
             }
         }
 
@@ -5595,7 +5574,7 @@ class Reportico extends ReporticoObject
 
         $this->widgets["status-message-block"] = new \Reportico\Widgets\StatusMessageBlock($this, true);
         $this->widgetRenders["status-message-block"] = $this->widgets["status-message-block"]->render();
-        
+
 
         $this->assetManager->reload($group);
 
@@ -5605,7 +5584,9 @@ class Reportico extends ReporticoObject
         $this->template->assign('ASSETS_INIT', $this->assetManager->event("init"));
         $this->template->assign('ASSETS_RUNTIME', $this->assetManager->event("runtime"));
 
-        Authenticator::flag("run-mode-".strtolower($this->execute_mode));
+        if ( $this->execute_mode ) {
+            Authenticator::flag("run-mode-".strtolower($this->execute_mode));
+        }
 
         $this->template->assign('ASSETS_MODALS', $this->assetManager->render("modal"));
         $this->template->assign('CRITERIA_BLOCK', $criteriaRenders);

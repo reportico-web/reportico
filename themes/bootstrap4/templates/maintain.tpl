@@ -28,7 +28,7 @@
 			    {{ WIDGETS["save-report"] }}
 			{% endif %}
             <input type='submit'
-                class='flex-widget btn btn-sm btn-outline-secondary reportico-edit-link'
+                class='flex-widget btn btn-sm btn-outline-secondary reportico-edit-linkSubmit'
                 title='{{ WIDGETS["run-report"]["title"] }}'
                 id='{{ WIDGETS["run-report"]["id"] }}'
                 name='{{ WIDGETS["run-report"]["name"] }}'
@@ -36,14 +36,14 @@
             >
 			{% if PERMISSIONS["save"] %}
             <input type='submit'
-                class='flex-widget btn btn-sm btn-outline-secondary reportico-edit-link'
+                class='flex-widget btn btn-sm btn-outline-secondary reportico-edit-linkSubmit'
                 title='{{ WIDGETS["new-report"]["title"] }}'
                 id='{{ WIDGETS["new-report"]["id"] }}'
                 name='{{ WIDGETS["new-report"]["name"] }}'
                 value='{{ WIDGETS["new-report"]["label"] }}'
             >
             <input type='submit'
-                class='flex-widget btn btn-sm btn-outline-danger reportico-edit-link'
+                class='flex-widget btn btn-sm btn-outline-danger reportico-edit-linkSubmit'
                 title='{{ WIDGETS["delete-report"]["title"] }}'
                 id='{{ WIDGETS["delete-report"]["id"] }}'
                 name='{{ WIDGETS["delete-report"]["name"] }}'

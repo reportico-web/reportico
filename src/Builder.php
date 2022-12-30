@@ -17,7 +17,7 @@ function reporticoPipe($value) {
 $old_error_handler = set_error_handler("Reportico\Engine\ReporticoApp::ErrorHandler");
 
 
-class Builder extends ReporticoObject implements \ArrayAccess, \Iterator, \Serializable
+class Builder extends ReporticoObject implements \ArrayAccess, \Iterator
 {
     public $value;
     public $engine;
@@ -612,7 +612,7 @@ class Builder extends ReporticoObject implements \ArrayAccess, \Iterator, \Seria
         return $this;
     }
     
-    public function offsetSet($offset, $value) {
+    public function offsetSet($offset, $value): void {
         if (is_null($offset)) {
             $this->value[] = $value;
         } else {
@@ -620,35 +620,35 @@ class Builder extends ReporticoObject implements \ArrayAccess, \Iterator, \Seria
         }
     }
     
-    public function offsetExists($offset) {
+    public function offsetExists($offset): bool {
         return isset($this->value[$offset]);
     }
     
-    public function offsetUnset($offset) {
+    public function offsetUnset($offset): void {
         unset($this->value[$offset]);
     }
     
-    public function offsetGet($offset) {
+    public function offsetGet($offset): mixed {
         return isset($this->value[$offset]) ? $this->value[$offset] : null;
     }
     
-    public function rewind() {
+    public function rewind(): void {
         $this->position = 0;
     }
     
-    public function current() {
+    public function current(): mixed {
         return $this->value[$this->position];
     }
     
-    public function key() {
+    public function key(): mixed {
         return $this->position;
     }
     
-    public function next() {
+    public function next(): void {
         ++$this->position;
     }
     
-    public function valid() {
+    public function valid(): bool {
         return isset($this->value[$this->position]);
     }
     
@@ -657,6 +657,14 @@ class Builder extends ReporticoObject implements \ArrayAccess, \Iterator, \Seria
     }
     
     public function unserialize($value) {
+        $this->value = unserialize($value);
+    }
+    
+    public function __serialize() {
+        return serialize($this->value);
+    }
+    
+    public function __unserialize($value) {
         $this->value = unserialize($value);
     }
 }

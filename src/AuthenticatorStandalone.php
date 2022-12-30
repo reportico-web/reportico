@@ -278,7 +278,6 @@ class AuthenticatorStandalone extends Authenticator
         $loggedon = false;
 
         //echo "<BR><BR>";
-        //var_dump($_SESSION["reportico_reportico"]["permissions"]);
         $sessionClass = ReporticoSession();
         if ( ReporticoApp::getConfig("project") == "admin" ) {
 
