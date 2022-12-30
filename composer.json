@@ -13,29 +13,22 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0",
+        "php": ">=8.0",
         "adodb/adodb-php": "^5.20",
-        "monolog/monolog": "^2.0",
-        "twig/twig": "~1.16",
-        "reportico/php-phantomjs": "^4.6",
+        "twig/twig": "^3.0",
         "tecnickcom/tcpdf": "^6.2",
-        "szymach/c-pchart": "^3.0"
+        "szymach/c-pchart": "^3.0",
+        "reportico/assetter": "^8",
+        "spatie/browsershot": "^3.29"
     },
      "autoload": {
         "psr-4": {
             "Reportico\\Engine\\": "src",
+            "Reportico\\Widgets\\": "src/widgets",
             "pChart\\": "pChart/"
         }
     },
     "config": {
         "bin-dir": "bin"
-    },
-    "scripts": {
-        "post-install-cmd": [
-            "PhantomInstaller\\Installer::installPhantomJS"
-        ],
-        "post-update-cmd": [
-            "PhantomInstaller\\Installer::installPhantomJS"
-        ]
-    }
+     }
 }

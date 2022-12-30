@@ -2,7 +2,8 @@
 SQLyog Community v8.7 RC
 MySQL - 5.1.52-community : Database - northwind
 *********************************************************************
-*/
+*/
+
 
 /*!40101 SET NAMES utf8 */;
 

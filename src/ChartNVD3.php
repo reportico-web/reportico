@@ -1,7 +1,7 @@
 <?php
 /*
 
- * File:        swgraph_nvd3.php
+ * File:        swgraph_nvd3reportico.php
  *
  * Contains functionality for generating inline report
  * graphs. The Reportico engine will either - depending
@@ -13,7 +13,7 @@
  * @copyright 2010-2014 Peter Deed
  * @author Peter Deed <info@reportico.org>
  * @package Reportico
- * @version $Id: swgraph_nvd3.php,v 1.3 2014/05/17 15:12:31 peter Exp $
+ * @version $Id: swgraph_nvd3reportico.php,v 1.3 2014/05/17 15:12:31 peter Exp $
  */
 
 namespace Reportico\Engine;
@@ -58,8 +58,8 @@ class ChartNVD3
     public $height = ".DEFAULT";
     public $width_actual = 400;
     public $height_actual = 200;
-    public $width_pdf_actual = 400;
-    public $height_pdf_actual = 200;
+    public $width_pdf_actual = 1100;
+    public $height_pdf_actual = 600;
     public $xtickinterval_actual = 1;
     public $xticklabelinterval_actual = 1;
     public $xaxiscolor_actual = "black";
@@ -180,12 +180,18 @@ class ChartNVD3
 
     public function addXlabel($in_val)
     {
+	    if ( $in_val === null ) {
+		    $in_val = "";
+	    }
         $in_val = @preg_replace("/&/", "+", $in_val);
         $this->xlabels[] = $in_val;
     }
 
     public function addPlotValue($in_query, $plot_no, $in_val)
     {
+	    if ( $in_val === null ) {
+		    $in_val = "";
+	    }
         $in_val = trim($in_val);
         $in_val = str_replace(",", "", $in_val);
         if (!$in_val) {
@@ -197,6 +203,12 @@ class ChartNVD3
                 switch ($v["datatype"]) {
                     case "hhmmss":
                         $this->plot[$k]["data"][] = ReporticoUtility::hhmmssToSeconds($in_val);
+                        break;
+
+                    case "hhmm":
+                        $c = ReporticoUtility::hhmmssToSeconds($in_val);
+                        $c = round($c / 60,2);
+                        $this->plot[$k]["data"][] = $c;
                         break;
 
                     default:
@@ -335,13 +347,15 @@ class ChartNVD3
                     $js .= ",";
                 }
 
+
                 $xlabel = $this->xlabels[$k1];
                 $key = $k1;
                 if ($v["type"] == "SCATTER" && $k < count($this->plot) - 1) {
                     $yvalue = $this->plot[$k + 1]["data"][$k1];
                     $js .= "{index: $k1, series: 0, x: $v1, y: $yvalue, label: \"$xlabel\", value: $v1}";
                 } else {
-                    $js .= "{index: $k1, series: 0, x: $key, y: $v1, label: \"$xlabel\", value: $v1}";
+                    $yval = is_numeric($v1) ? $v1 : 0;
+                    $js .= "{index: $k1, series: 0, x: $key, y: $yval, label: \"$xlabel\", value: $yval}";
                 }
 
                 $plotct1++;
@@ -436,9 +450,12 @@ class ChartNVD3
         $js .= "
     function reporticoChart_$sessionPlaceholder()
     {
-        var colorrange = d3.scale.category10().range();
+        var colorrange = d3reportico.scale.category10().range();
         ";
 
+        if ( !$this->plot ) {
+            return;
+        }
         $labct = count($this->plot[0]["data"]);
         if ($this->xticklabelinterval_actual) {
             if ($this->xticklabelinterval_actual == "AUTO") {
@@ -505,18 +522,18 @@ class ChartNVD3
                 ;
 
 
-            d3.select(\"#reportico_chart" . $sessionPlaceholder . " svg\")
+            d3reportico.select(\"#reportico_chart" . $sessionPlaceholder . " svg\")
             .datum(reportico_datasets" . $sessionPlaceholder . "[0].values)
             .transition().duration(0)
             .call(chart" . $sessionPlaceholder . ");
 
-            d3.selectAll(\"rect.nv-bar\")
+            d3reportico.selectAll(\"rect.nv-bar\")
                 .style(\"fill-opacity\", function (d, i) { //d is the data bound to the svg element
                     return .5 ;
                 })
 
             nv.utils.windowResize(chart" . $sessionPlaceholder . ".update);
-            //d3.selectAll(\"nv-legend\")
+            //d3reportico.selectAll(\"nv-legend\")
                 //.style(\"display\", function (d, i) { //d is the data bound to the svg element
                     //return \"none\" ;
                 //});
@@ -559,14 +576,14 @@ class ChartNVD3
 
             chart" . $sessionPlaceholder . ".yAxis
                 .axisLabel('" . $this->ytitle . "')
-                .tickFormat(d3.format(',.1f'));
+                .tickFormat(d3reportico.format(',.1f'));
 
-            d3.select(\"#reportico_chart" . $sessionPlaceholder . " svg\")
+            d3reportico.select(\"#reportico_chart" . $sessionPlaceholder . " svg\")
             .datum(reportico_datasets" . $sessionPlaceholder . ")
             .transition().duration(0)
             .call(chart" . $sessionPlaceholder . ");
 
-            d3.selectAll(\"rect.nv-bar\")
+            d3reportico.selectAll(\"rect.nv-bar\")
                 .style(\"fill-opacity\", function (d, i) { //d is the data bound to the svg element
                     return .5 ;
                 })
@@ -589,7 +606,7 @@ class ChartNVD3
                 .showDistX(false)    //showDist, when true, will display those little distribution lines on the axis.
                 .showDistY(false)
                 .transitionDuration(350)
-                .color(d3.scale.category10().range())
+                .color(d3reportico.scale.category10().range())
                 .margin({top: " . $this->margintop_actual . ", right: " . $this->marginright_actual . ", bottom: " . $this->marginbottom_actual . ", left: " . $this->marginleft_actual . " + 10})
                 .color(colorrange)
                 ;
@@ -601,18 +618,18 @@ class ChartNVD3
             });
 
             //Axis settings
-            chart" . $sessionPlaceholder . ".xAxis.tickFormat(d3.format('.02f'));
-            chart" . $sessionPlaceholder . ".yAxis.tickFormat(d3.format('.02f'));
+            chart" . $sessionPlaceholder . ".xAxis.tickFormat(d3reportico.format('.02f'));
+            chart" . $sessionPlaceholder . ".yAxis.tickFormat(d3reportico.format('.02f'));
 
             //We want to show shapes other than circles.
             chart" . $sessionPlaceholder . ".scatter.onlyCircles(false);
 
-            d3.select(\"#reportico_chart" . $sessionPlaceholder . " svg\")
+            d3reportico.select(\"#reportico_chart" . $sessionPlaceholder . " svg\")
             .datum(reportico_datasets" . $sessionPlaceholder . ")
             .transition().duration(0)
             .call(chart" . $sessionPlaceholder . ");
 
-            d3.selectAll(\"rect.nv-bar\")
+            d3reportico.selectAll(\"rect.nv-bar\")
                 .style(\"fill-opacity\", function (d, i) { //d is the data bound to the svg element
                     return .5 ;
                 })
@@ -661,16 +678,16 @@ class ChartNVD3
 
             chart" . $sessionPlaceholder . ".yAxis
                 .axisLabel('" . $this->ytitle . "')
-                .tickFormat(d3.format(',.1f'));
+                .tickFormat(d3reportico.format(',.1f'));
 
-            d3.select(\"#reportico_chart" . $sessionPlaceholder . " svg\")
+            d3reportico.select(\"#reportico_chart" . $sessionPlaceholder . " svg\")
             .datum(reportico_datasets" . $sessionPlaceholder . ")
             .transition().duration(0)
             .call(chart" . $sessionPlaceholder . ");
 
-            d3.selectAll(\"rect.nv-bar\")
+            d3reportico.selectAll(\"rect.nv-bar\")
                 .style(\"fill-opacity\", function (d, i) { //d is the data bound to the svg element
-                    return .5 ;
+                    return 1 ;
                 })
 
             nv.utils.windowResize(chart" . $sessionPlaceholder . ".update);
@@ -714,14 +731,14 @@ class ChartNVD3
 
             chart" . $sessionPlaceholder . ".yAxis
                 .axisLabel('" . $this->ytitle . "')
-                .tickFormat(d3.format(',.1f'));
+                .tickFormat(d3reportico.format(',.1f'));
 
-            d3.select(\"#reportico_chart" . $sessionPlaceholder . " svg\")
+            d3reportico.select(\"#reportico_chart" . $sessionPlaceholder . " svg\")
             .datum(reportico_datasets" . $sessionPlaceholder . ")
             .transition().duration(0)
             .call(chart" . $sessionPlaceholder . ");
 
-            d3.selectAll(\"rect.nv-bar\")
+            d3reportico.selectAll(\"rect.nv-bar\")
                 .style(\"fill-opacity\", function (d, i) { //d is the data bound to the svg element
                     return .5 ;
                 })
@@ -768,14 +785,14 @@ class ChartNVD3
 
             chart" . $sessionPlaceholder . ".yAxis
                 .axisLabel('" . $this->ytitle . "')
-                .tickFormat(d3.format(',.1f'));
+                .tickFormat(d3reportico.format(',.1f'));
 
-            d3.select(\"#reportico_chart" . $sessionPlaceholder . " svg\")
+            d3reportico.select(\"#reportico_chart" . $sessionPlaceholder . " svg\")
             .datum(reportico_datasets" . $sessionPlaceholder . ")
             .transition().duration(0)
             .call(chart" . $sessionPlaceholder . ");
 
-            d3.selectAll(\"rect.nv-bar\")
+            d3reportico.selectAll(\"rect.nv-bar\")
                 .style(\"fill-opacity\", function (d, i) { //d is the data bound to the svg element
                     return .5 ;
                 })
@@ -827,19 +844,19 @@ class ChartNVD3
 
             chart" . $sessionPlaceholder . ".yAxis1
                 .axisLabel('" . $this->ytitle . "')
-                .tickFormat(d3.format(',.1f'));
+                .tickFormat(d3reportico.format(',.1f'));
 
-            d3.select(\"#reportico_chart" . $sessionPlaceholder . " svg\")
+            d3reportico.select(\"#reportico_chart" . $sessionPlaceholder . " svg\")
             .datum(reportico_datasets" . $sessionPlaceholder . ")
             .transition().duration(0)
             .call(chart" . $sessionPlaceholder . ");
 
-            d3.selectAll(\"rect.nv-bar\")
+            d3reportico.selectAll(\"rect.nv-bar\")
                 .style(\"fill-opacity\", function (d, i) { //d is the data bound to the svg element
                     return .5 ;
                 })
 
-            d3.selectAll(\".tick line\")
+            d3reportico.selectAll(\".tick line\")
                 .style(\"opacity\", function (d, i) { //d is the data bound to the svg element
                     return .2 ;
                 })

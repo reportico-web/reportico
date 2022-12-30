@@ -10,6 +10,11 @@
       <BottomMargin/>
       <RightMargin/>
       <LeftMargin/>
+      <AutoPaginate/>
+      <PdfZoomFactor/>
+      <HtmlZoomFactor/>
+      <PageTitleDisplay/>
+      <PageLayout/>
       <pdfFont/>
       <pdfFontSize/>
       <PreExecuteCode>
@@ -20,19 +25,16 @@ $_configure_mode = "CREATE";
 $path = $this-&gt;admin_projects_folder.'/admin/configureproject.xml.php';
 include($path);
 </PreExecuteCode>
-      <bodyDisplay>show</bodyDisplay>
-      <graphDisplay>show</graphDisplay>
+      <formBetweenRows>solidline</formBetweenRows>
+      <gridDisplay>.DEFAULT</gridDisplay>
+      <gridSortable>.DEFAULT</gridSortable>
+      <gridSearchable>.DEFAULT</gridSearchable>
+      <gridPageable>.DEFAULT</gridPageable>
+      <gridPageSize>.DEFAULT</gridPageSize>
     </Format>
     <Datasource>
       <SourceType>database</SourceType>
-      <SourceConnection>
-        <DatabaseType/>
-        <DatabaseName/>
-        <HostName>localhost</HostName>
-        <ServiceName/>
-        <UserName/>
-        <Password/>
-      </SourceConnection>
+      <SourceConnection/>
     </Datasource>
     <EntryForm>
       <Query>
@@ -42,6 +44,7 @@ include($path);
         <RowSelection>all</RowSelection>
         <SQL>
           <QuerySql/>
+          <SQLRaw/>
         </SQL>
         <QueryColumns/>
         <OrderColumns/>
@@ -58,6 +61,9 @@ include($path);
           <CriteriaType>TEXTFIELD</CriteriaType>
           <CriteriaDisplay>NOINPUT</CriteriaDisplay>
           <ExpandDisplay>NOINPUT</ExpandDisplay>
+          <CriteriaRequired/>
+          <CriteriaHidden/>
+          <CriteriaDisplayGroup/>
           <ReturnColumn/>
           <DisplayColumn/>
           <OverviewColumn/>
@@ -69,6 +75,7 @@ include($path);
             <WhereSql/>
             <GroupSql/>
             <RowSelection/>
+            <SQLRaw/>
             <SQL>
               <QuerySql/>
             </SQL>
@@ -87,6 +94,9 @@ include($path);
           <CriteriaType>TEXTFIELD</CriteriaType>
           <CriteriaDisplay>NOINPUT</CriteriaDisplay>
           <ExpandDisplay>NOINPUT</ExpandDisplay>
+          <CriteriaRequired/>
+          <CriteriaHidden/>
+          <CriteriaDisplayGroup/>
           <ReturnColumn/>
           <DisplayColumn/>
           <OverviewColumn/>
@@ -98,6 +108,7 @@ include($path);
             <WhereSql/>
             <GroupSql/>
             <RowSelection/>
+            <SQLRaw/>
             <SQL>
               <QuerySql/>
             </SQL>
@@ -116,6 +127,9 @@ include($path);
           <CriteriaType>LIST</CriteriaType>
           <CriteriaDisplay>DROPDOWN</CriteriaDisplay>
           <ExpandDisplay>NOINPUT</ExpandDisplay>
+          <CriteriaRequired/>
+          <CriteriaHidden/>
+          <CriteriaDisplayGroup/>
           <ReturnColumn/>
           <DisplayColumn/>
           <OverviewColumn/>
@@ -127,6 +141,7 @@ include($path);
             <WhereSql/>
             <GroupSql/>
             <RowSelection/>
+            <SQLRaw/>
             <SQL>
               <QuerySql/>
             </SQL>
@@ -141,10 +156,13 @@ include($path);
           <Title>Host Name</Title>
           <QueryTableName/>
           <QueryColumnName/>
-          <CriteriaHelp>HELP_DATABASE_HOST</CriteriaHelp>
           <CriteriaType>TEXTFIELD</CriteriaType>
+          <CriteriaHelp>HELP_DATABASE_HOST</CriteriaHelp>
           <CriteriaDisplay>NOINPUT</CriteriaDisplay>
           <ExpandDisplay>NOINPUT</ExpandDisplay>
+          <CriteriaRequired/>
+          <CriteriaHidden/>
+          <CriteriaDisplayGroup/>
           <ReturnColumn/>
           <DisplayColumn/>
           <OverviewColumn/>
@@ -156,6 +174,7 @@ include($path);
             <WhereSql/>
             <GroupSql/>
             <RowSelection/>
+            <SQLRaw/>
             <SQL>
               <QuerySql/>
             </SQL>
@@ -174,6 +193,9 @@ include($path);
           <CriteriaType>TEXTFIELD</CriteriaType>
           <CriteriaDisplay>NOINPUT</CriteriaDisplay>
           <ExpandDisplay>NOINPUT</ExpandDisplay>
+          <CriteriaRequired/>
+          <CriteriaHidden/>
+          <CriteriaDisplayGroup/>
           <ReturnColumn/>
           <DisplayColumn/>
           <OverviewColumn/>
@@ -185,6 +207,7 @@ include($path);
             <WhereSql/>
             <GroupSql/>
             <RowSelection/>
+            <SQLRaw/>
             <SQL>
               <QuerySql/>
             </SQL>
@@ -196,13 +219,16 @@ include($path);
         </CriteriaItem>
         <CriteriaItem>
           <Name>user</Name>
-          <Title>User Name</Title>
+          <Title>Database User Name</Title>
           <QueryTableName/>
           <QueryColumnName/>
           <CriteriaHelp>HELP_DATABASE_USER</CriteriaHelp>
           <CriteriaType>TEXTFIELD</CriteriaType>
           <CriteriaDisplay>NOINPUT</CriteriaDisplay>
           <ExpandDisplay>NOINPUT</ExpandDisplay>
+          <CriteriaRequired>.DEFAULT</CriteriaRequired>
+          <CriteriaHidden>.DEFAULT</CriteriaHidden>
+          <CriteriaDisplayGroup/>
           <ReturnColumn/>
           <DisplayColumn/>
           <OverviewColumn/>
@@ -214,65 +240,7 @@ include($path);
             <WhereSql/>
             <GroupSql/>
             <RowSelection/>
-            <SQL>
-              <QuerySql/>
-            </SQL>
-            <QueryColumns/>
-            <OrderColumns/>
-            <Assignments/>
-          </Query>
-          <CriteriaLinks/>
-        </CriteriaItem>
-        <CriteriaItem>
-          <Name>password</Name>
-          <Title>Password</Title>
-          <QueryTableName/>
-          <QueryColumnName/>
-          <CriteriaHelp>HELP_DATABASE_PASSWORD</CriteriaHelp>
-          <CriteriaType>TEXTFIELD</CriteriaType>
-          <CriteriaDisplay>NOINPUT</CriteriaDisplay>
-          <ExpandDisplay>NOINPUT</ExpandDisplay>
-          <ReturnColumn/>
-          <DisplayColumn/>
-          <OverviewColumn/>
-          <MatchColumn/>
-          <CriteriaDefaults/>
-          <CriteriaList/>
-          <Query>
-            <TableSql/>
-            <WhereSql/>
-            <GroupSql/>
-            <RowSelection/>
-            <SQL>
-              <QuerySql/>
-            </SQL>
-            <QueryColumns/>
-            <OrderColumns/>
-            <Assignments/>
-          </Query>
-          <CriteriaLinks/>
-        </CriteriaItem>
-        <CriteriaItem>
-          <Name>baseurl</Name>
-          <Title>Base URL</Title>
-          <QueryTableName/>
-          <QueryColumnName/>
-          <CriteriaHelp>HELP_DATABASE_BASE_URL</CriteriaHelp>
-          <CriteriaHidden>yes</CriteriaHidden>
-          <CriteriaType>TEXTFIELD</CriteriaType>
-          <CriteriaDisplay>NOINPUT</CriteriaDisplay>
-          <ExpandDisplay>NOINPUT</ExpandDisplay>
-          <ReturnColumn/>
-          <DisplayColumn/>
-          <OverviewColumn/>
-          <MatchColumn/>
-          <CriteriaDefaults>./</CriteriaDefaults>
-          <CriteriaList/>
-          <Query>
-            <TableSql/>
-            <WhereSql/>
-            <GroupSql/>
-            <RowSelection/>
+            <SQLRaw/>
             <SQL>
               <QuerySql/>
             </SQL>
@@ -289,9 +257,11 @@ include($path);
           <QueryColumnName/>
           <CriteriaHelp>HELP_DATABASE_INFORMIX_SERVER</CriteriaHelp>
           <CriteriaType>TEXTFIELD</CriteriaType>
-          <CriteriaHidden>yes</CriteriaHidden>
           <CriteriaDisplay>NOINPUT</CriteriaDisplay>
           <ExpandDisplay>NOINPUT</ExpandDisplay>
+          <CriteriaRequired/>
+          <CriteriaHidden>yes</CriteriaHidden>
+          <CriteriaDisplayGroup/>
           <ReturnColumn/>
           <DisplayColumn/>
           <OverviewColumn/>
@@ -303,6 +273,7 @@ include($path);
             <WhereSql/>
             <GroupSql/>
             <RowSelection/>
+            <SQLRaw/>
             <SQL>
               <QuerySql/>
             </SQL>
@@ -318,10 +289,12 @@ include($path);
           <QueryTableName/>
           <QueryColumnName/>
           <CriteriaHelp>HELP_DATABASE_INFORMIX_PROTOCOL</CriteriaHelp>
-          <CriteriaHidden>yes</CriteriaHidden>
           <CriteriaType>TEXTFIELD</CriteriaType>
           <CriteriaDisplay>NOINPUT</CriteriaDisplay>
           <ExpandDisplay>NOINPUT</ExpandDisplay>
+          <CriteriaRequired/>
+          <CriteriaHidden>yes</CriteriaHidden>
+          <CriteriaDisplayGroup/>
           <ReturnColumn/>
           <DisplayColumn/>
           <OverviewColumn/>
@@ -333,6 +306,7 @@ include($path);
             <WhereSql/>
             <GroupSql/>
             <RowSelection/>
+            <SQLRaw/>
             <SQL>
               <QuerySql/>
             </SQL>
@@ -343,188 +317,29 @@ include($path);
           <CriteriaLinks/>
         </CriteriaItem>
         <CriteriaItem>
-          <Name>dbencoding</Name>
-          <Title>Database&lt;br&gt;Character Encoding</Title>
+          <Name>password</Name>
+          <Title>Database Password</Title>
           <QueryTableName/>
           <QueryColumnName/>
-          <CriteriaHelp>HELP_DB_ENCODING</CriteriaHelp>
-          <CriteriaType>LIST</CriteriaType>
-          <CriteriaDisplay>DROPDOWN</CriteriaDisplay>
+          <CriteriaHelp>HELP_DATABASE_PASSWORD</CriteriaHelp>
+          <CriteriaType>TEXTFIELD</CriteriaType>
+          <CriteriaDisplay>NOINPUT</CriteriaDisplay>
           <ExpandDisplay>NOINPUT</ExpandDisplay>
+          <CriteriaRequired>.DEFAULT</CriteriaRequired>
+          <CriteriaHidden>.DEFAULT</CriteriaHidden>
+          <CriteriaDisplayGroup/>
           <ReturnColumn/>
           <DisplayColumn/>
           <OverviewColumn/>
           <MatchColumn/>
-          <CriteriaDefaults>{constant,SW_DB_ENCODING}</CriteriaDefaults>
-          <CriteriaList>
-No Encoding=None,
-UTF8=UTF8,
-LATIN1/ISO-8859-1/Western European=LATIN1,
-LATIN2/ISO-8859-2/Central European=LATIN2,
-LATIN3/ISO-8859-3/South European=LATIN3,
-LATIN4/ISO-8859-4/Baltic=LATIN4,
-ISO-8859-5/Cyrillic=ISO-8859-5,
-ISO-8859-6/Arabic=ISO-8859-6,
-ISO-8859-7/Greek=ISO-8859-7,
-ISO-8859-8/Hebrew=ISO-8859-8,
-LATIN5/ISO-8859-9/Turkish=LATIN5,
-LATIN6/ISO-8859-10/Nordic=LATIN6,
-LATIN7/ISO-8859-13/Baltic=LATIN7,
-LATIN8/ISO-8859-14/Celtic=LATIN8,
-LATIN9/ISO-8859-15/Western=LATIN9,
-LATIN10/ISO-8859-16/Romanian=LATIN10,
-GB2312=GB2312,
-GBK=GBK,
-Shift JIS=SJIS,
-BIG5=BIG5,
-Central European (Windows 1250)=WIN1250,
-Cyrillic (Windows 1251)=WIN1251,
-Western (Windows 1252)=WIN1252,
-Greek (Windows 1253)=WIN1253,
-Turkish (Windows 1254)=WIN1254,
-Hebrew (Windows 1255)=WIN1255,
-Arabic (Windows 1256)=WIN1256,
-Baltic (Windows 1257)=WIN1257,
-Vietnamese (Windows 1258)=WIN1258,
-Windows 866=WIN866,
-Windows 874=WIN874,
-EUC_CN=EUC_CN,
-EUC_JP=EUC_JP,
-EUC_KR=EUC_KR,
-EUC_TW=EUC_TW,
-GB18030=GB18030,
-TIS620=TIS620
-</CriteriaList>
+          <CriteriaDefaults/>
+          <CriteriaList/>
           <Query>
             <TableSql/>
             <WhereSql/>
             <GroupSql/>
             <RowSelection/>
-            <SQL>
-              <QuerySql/>
-            </SQL>
-            <QueryColumns/>
-            <OrderColumns/>
-            <Assignments/>
-          </Query>
-          <CriteriaLinks/>
-        </CriteriaItem>
-        <CriteriaItem>
-          <Name>outputencoding</Name>
-          <Title>Output&lt;br&gt;Character Encoding</Title>
-          <QueryTableName/>
-          <QueryColumnName/>
-          <CriteriaHelp>HELP_OUTPUT_ENCODING</CriteriaHelp>
-          <CriteriaType>LIST</CriteriaType>
-          <CriteriaDisplay>DROPDOWN</CriteriaDisplay>
-          <ExpandDisplay>NOINPUT</ExpandDisplay>
-          <ReturnColumn/>
-          <DisplayColumn/>
-          <OverviewColumn/>
-          <MatchColumn/>
-          <CriteriaDefaults>{constant,SW_OUTPUT_ENCODING}</CriteriaDefaults>
-          <CriteriaList>
-No Encoding=None,
-UTF8=UTF8,
-Western European (ISO-8859-1)=ISO-8859-1,
-Central European (ISO-8859-2)=ISO-8859-2,
-Southern European (ISO-8859-3)=ISO-8859-3,
-Baltic (ISO-8859-4)=ISO-8859-4,
-Cyrillic (ISO-8859-5)=ISO-8859-5,
-Arabic (ISO-8859-6)=ISO-8859-6,
-Greek (ISO-8859-7) ISO-8859-7,
-Hebrew Visual (ISO-8859-8-I)=ISO-8859-8-I,
-Hebrew Logical (ISO-8859-8)=ISO-8859-8,
-Turkish (ISO-8859-9)=ISO-8859-9,
-Nordic (ISO-8859-10)=ISO-8859-10,
-Estonian (ISO-8859-11)=ISO-8859-11,
-Estonian (ISO-8859-12)=ISO-8859-12,
-Estonian (ISO-8859-13)=ISO-8859-13,
-Celtic (ISO-8859-14)=ISO-8859-14,
-Western (ISO-8859-15)=ISO-8859-15,
-Romanian (ISO-8859-16)=ISO-8859-16,
-Chinese Simplified (GB2312)=GB2312,
-GBK=GBK,
-Japanese (Shift-JIS)=Shift_JIS,
-Central European (Windows-1250)=Windows-1250,
-Cyrillic (Windows-1251)=Windows-1251,
-Western European (Windows-1252)=Windows-1252
-Greek (Windows-1253)=Windows-1253,
-Turkish (Windows-1254)=Windows-1254,
-Hebrew (Windows-1255)=Windows-1255,
-Arabic (Windows-1256)=Windows-1256,
-Baltic (Windows-1257)=Windows-1257,
-Vietnamese (Windows-1258)=Windows-1258,
-Chinese Traditional (Big5)=Big5,
-Chinese Simplified (GB18030)=GB18030,
-Chinese Simplified (HZ)=HZ,
-Japanese (EUC)=EUC-JP,
-Korean=EUC-KR,
-Thai (Windows TIS-620)=TIS-620
-</CriteriaList>
-          <Query>
-            <TableSql/>
-            <WhereSql/>
-            <GroupSql/>
-            <RowSelection/>
-            <SQL>
-              <QuerySql/>
-            </SQL>
-            <QueryColumns/>
-            <OrderColumns/>
-            <Assignments/>
-          </Query>
-          <CriteriaLinks/>
-        </CriteriaItem>
-        <CriteriaItem>
-          <Name>language</Name>
-          <Title>Project Language</Title>
-          <QueryTableName/>
-          <QueryColumnName/>
-          <CriteriaHelp>HELP_LANGUAGE</CriteriaHelp>
-          <CriteriaType>LIST</CriteriaType>
-          <CriteriaDisplay>DROPDOWN</CriteriaDisplay>
-          <ExpandDisplay>NOINPUT</ExpandDisplay>
-          <ReturnColumn/>
-          <DisplayColumn/>
-          <OverviewColumn/>
-          <MatchColumn/>
-          <CriteriaDefaults>{constant,SW_LANGUAGE}</CriteriaDefaults>
-          <CriteriaList>{languages}</CriteriaList>
-          <Query>
-            <TableSql/>
-            <WhereSql/>
-            <GroupSql/>
-            <RowSelection/>
-            <SQL>
-              <QuerySql/>
-            </SQL>
-            <QueryColumns/>
-            <OrderColumns/>
-            <Assignments/>
-          </Query>
-          <CriteriaLinks/>
-        </CriteriaItem>
-        <CriteriaItem>
-          <Name>displaydateformat</Name>
-          <Title>Display Date Format</Title>
-          <QueryTableName/>
-          <QueryColumnName/>
-          <CriteriaHelp>HELP_DATE_FORMAT</CriteriaHelp>
-          <CriteriaType>LIST</CriteriaType>
-          <CriteriaDisplay>DROPDOWN</CriteriaDisplay>
-          <ExpandDisplay>NOINPUT</ExpandDisplay>
-          <ReturnColumn/>
-          <DisplayColumn/>
-          <OverviewColumn/>
-          <MatchColumn/>
-          <CriteriaDefaults>{constant,SW_PREP_DATEFORMAT}</CriteriaDefaults>
-          <CriteriaList>DD/MM/YYYY=d/m/Y,DD-MM-YYYY=d-m-Y,MM/DD/YYYY=m/d/Y,MM-DD-YYYY=m-d-Y,YYYY/MM/DD=Y/m/d,YYYY-MM-DD=Y-m-d</CriteriaList>
-          <Query>
-            <TableSql/>
-            <WhereSql/>
-            <GroupSql/>
-            <RowSelection/>
+            <SQLRaw/>
             <SQL>
               <QuerySql/>
             </SQL>
@@ -543,6 +358,9 @@ Thai (Windows TIS-620)=TIS-620
           <CriteriaType>TEXTFIELD</CriteriaType>
           <CriteriaDisplay>NOINPUT</CriteriaDisplay>
           <ExpandDisplay>NOINPUT</ExpandDisplay>
+          <CriteriaRequired>.DEFAULT</CriteriaRequired>
+          <CriteriaHidden>.DEFAULT</CriteriaHidden>
+          <CriteriaDisplayGroup>Project Settings</CriteriaDisplayGroup>
           <ReturnColumn/>
           <DisplayColumn/>
           <OverviewColumn/>
@@ -554,6 +372,172 @@ Thai (Windows TIS-620)=TIS-620
             <WhereSql/>
             <GroupSql/>
             <RowSelection/>
+            <SQLRaw/>
+            <SQL>
+              <QuerySql/>
+            </SQL>
+            <QueryColumns/>
+            <OrderColumns/>
+            <Assignments/>
+          </Query>
+          <CriteriaLinks/>
+        </CriteriaItem>
+        <CriteriaItem>
+          <Name>language</Name>
+          <Title>Project Language</Title>
+          <QueryTableName/>
+          <QueryColumnName/>
+          <CriteriaHelp>HELP_LANGUAGE</CriteriaHelp>
+          <CriteriaType>LIST</CriteriaType>
+          <CriteriaDisplay>DROPDOWN</CriteriaDisplay>
+          <ExpandDisplay>NOINPUT</ExpandDisplay>
+          <CriteriaRequired>.DEFAULT</CriteriaRequired>
+          <CriteriaHidden>.DEFAULT</CriteriaHidden>
+          <CriteriaDisplayGroup>Project Settings</CriteriaDisplayGroup>
+          <ReturnColumn/>
+          <DisplayColumn/>
+          <OverviewColumn/>
+          <MatchColumn/>
+          <CriteriaDefaults>{constant,SW_LANGUAGE}</CriteriaDefaults>
+          <CriteriaList>{languages}</CriteriaList>
+          <Query>
+            <TableSql/>
+            <WhereSql/>
+            <GroupSql/>
+            <RowSelection/>
+            <SQLRaw/>
+            <SQL>
+              <QuerySql/>
+            </SQL>
+            <QueryColumns/>
+            <OrderColumns/>
+            <Assignments/>
+          </Query>
+          <CriteriaLinks/>
+        </CriteriaItem>
+        <CriteriaItem>
+          <Name>baseurl</Name>
+          <Title>Base URL</Title>
+          <QueryTableName/>
+          <QueryColumnName/>
+          <CriteriaType>TEXTFIELD</CriteriaType>
+          <CriteriaHelp>HELP_DATABASE_BASE_URL</CriteriaHelp>
+          <CriteriaDisplay>NOINPUT</CriteriaDisplay>
+          <ExpandDisplay>NOINPUT</ExpandDisplay>
+          <CriteriaRequired>.DEFAULT</CriteriaRequired>
+          <CriteriaHidden>yes</CriteriaHidden>
+          <CriteriaDisplayGroup/>
+          <ReturnColumn/>
+          <DisplayColumn/>
+          <OverviewColumn/>
+          <MatchColumn/>
+          <CriteriaDefaults>./</CriteriaDefaults>
+          <CriteriaList/>
+          <Query>
+            <TableSql/>
+            <WhereSql/>
+            <GroupSql/>
+            <RowSelection/>
+            <SQLRaw/>
+            <SQL>
+              <QuerySql/>
+            </SQL>
+            <QueryColumns/>
+            <OrderColumns/>
+            <Assignments/>
+          </Query>
+          <CriteriaLinks/>
+        </CriteriaItem>
+        <CriteriaItem>
+          <Name>dbencoding</Name>
+          <Title>Database&lt;br&gt;Character Encoding</Title>
+          <QueryTableName/>
+          <QueryColumnName/>
+          <CriteriaType>LIST</CriteriaType>
+          <CriteriaHelp>HELP_DB_ENCODING</CriteriaHelp>
+          <CriteriaDisplay>DROPDOWN</CriteriaDisplay>
+          <ExpandDisplay>NOINPUT</ExpandDisplay>
+          <CriteriaRequired>.DEFAULT</CriteriaRequired>
+          <CriteriaHidden>.DEFAULT</CriteriaHidden>
+          <CriteriaDisplayGroup>Advanced</CriteriaDisplayGroup>
+          <ReturnColumn/>
+          <DisplayColumn/>
+          <OverviewColumn/>
+          <MatchColumn/>
+          <CriteriaDefaults>{constant,SW_DB_ENCODING}</CriteriaDefaults>
+          <CriteriaList>No Encoding=None,UTF8=UTF8,LATIN1/ISO-8859-1/Western European=LATIN1,LATIN2/ISO-8859-2/Central European=LATIN2,LATIN3/ISO-8859-3/South European=LATIN3,LATIN4/ISO-8859-4/Baltic=LATIN4,ISO-8859-5/Cyrillic=ISO-8859-5,ISO-8859-6/Arabic=ISO-8859-6,ISO-8859-7/Greek=ISO-8859-7,ISO-8859-8/Hebrew=ISO-8859-8,LATIN5/ISO-8859-9/Turkish=LATIN5,LATIN6/ISO-8859-10/Nordic=LATIN6,LATIN7/ISO-8859-13/Baltic=LATIN7,LATIN8/ISO-8859-14/Celtic=LATIN8,LATIN9/ISO-8859-15/Western=LATIN9,LATIN10/ISO-8859-16/Romanian=LATIN10,GB2312=GB2312,GBK=GBK,Shift JIS=SJIS,BIG5=BIG5,Central European (Windows 1250)=WIN1250,Cyrillic (Windows 1251)=WIN1251,Western (Windows 1252)=WIN1252,Greek (Windows 1253)=WIN1253,Turkish (Windows 1254)=WIN1254,Hebrew (Windows 1255)=WIN1255,Arabic (Windows 1256)=WIN1256,Baltic (Windows 1257)=WIN1257,Vietnamese (Windows 1258)=WIN1258,Windows 866=WIN866,Windows 874=WIN874,EUC_CN=EUC_CN,EUC_JP=EUC_JP,EUC_KR=EUC_KR,EUC_TW=EUC_TW,GB18030=GB18030,TIS620=TIS620</CriteriaList>
+          <Query>
+            <TableSql/>
+            <WhereSql/>
+            <GroupSql/>
+            <RowSelection/>
+            <SQLRaw/>
+            <SQL>
+              <QuerySql/>
+            </SQL>
+            <QueryColumns/>
+            <OrderColumns/>
+            <Assignments/>
+          </Query>
+          <CriteriaLinks/>
+        </CriteriaItem>
+        <CriteriaItem>
+          <Name>outputencoding</Name>
+          <Title>Output&lt;br&gt;Character Encoding</Title>
+          <QueryTableName/>
+          <QueryColumnName/>
+          <CriteriaType>LIST</CriteriaType>
+          <CriteriaHelp>HELP_OUTPUT_ENCODING</CriteriaHelp>
+          <CriteriaDisplay>DROPDOWN</CriteriaDisplay>
+          <ExpandDisplay>NOINPUT</ExpandDisplay>
+          <CriteriaRequired>.DEFAULT</CriteriaRequired>
+          <CriteriaHidden>.DEFAULT</CriteriaHidden>
+          <CriteriaDisplayGroup>Advanced</CriteriaDisplayGroup>
+          <ReturnColumn/>
+          <DisplayColumn/>
+          <OverviewColumn/>
+          <MatchColumn/>
+          <CriteriaDefaults>{constant,SW_OUTPUT_ENCODING}</CriteriaDefaults>
+          <CriteriaList>No Encoding=None,UTF8=UTF8,Western European (ISO-8859-1)=ISO-8859-1,Central European (ISO-8859-2)=ISO-8859-2,Southern European (ISO-8859-3)=ISO-8859-3,Baltic (ISO-8859-4)=ISO-8859-4,Cyrillic (ISO-8859-5)=ISO-8859-5,Arabic (ISO-8859-6)=ISO-8859-6,Greek (ISO-8859-7) ISO-8859-7,Hebrew Visual (ISO-8859-8-I)=ISO-8859-8-I,Hebrew Logical (ISO-8859-8)=ISO-8859-8,Turkish (ISO-8859-9)=ISO-8859-9,Nordic (ISO-8859-10)=ISO-8859-10,Estonian (ISO-8859-11)=ISO-8859-11,Estonian (ISO-8859-12)=ISO-8859-12,Estonian (ISO-8859-13)=ISO-8859-13,Celtic (ISO-8859-14)=ISO-8859-14,Western (ISO-8859-15)=ISO-8859-15,Romanian (ISO-8859-16)=ISO-8859-16,Chinese Simplified (GB2312)=GB2312,GBK=GBK,Japanese (Shift-JIS)=Shift_JIS,Central European (Windows-1250)=Windows-1250,Cyrillic (Windows-1251)=Windows-1251,Western European (Windows-1252)=Windows-1252Greek (Windows-1253)=Windows-1253,Turkish (Windows-1254)=Windows-1254,Hebrew (Windows-1255)=Windows-1255,Arabic (Windows-1256)=Windows-1256,Baltic (Windows-1257)=Windows-1257,Vietnamese (Windows-1258)=Windows-1258,Chinese Traditional (Big5)=Big5,Chinese Simplified (GB18030)=GB18030,Chinese Simplified (HZ)=HZ,Japanese (EUC)=EUC-JP,Korean=EUC-KR,Thai (Windows TIS-620)=TIS-620</CriteriaList>
+          <Query>
+            <TableSql/>
+            <WhereSql/>
+            <GroupSql/>
+            <RowSelection/>
+            <SQLRaw/>
+            <SQL>
+              <QuerySql/>
+            </SQL>
+            <QueryColumns/>
+            <OrderColumns/>
+            <Assignments/>
+          </Query>
+          <CriteriaLinks/>
+        </CriteriaItem>
+        <CriteriaItem>
+          <Name>displaydateformat</Name>
+          <Title>Display Date Format</Title>
+          <QueryTableName/>
+          <QueryColumnName/>
+          <CriteriaHelp>HELP_DATE_FORMAT</CriteriaHelp>
+          <CriteriaType>LIST</CriteriaType>
+          <CriteriaDisplay>DROPDOWN</CriteriaDisplay>
+          <ExpandDisplay>NOINPUT</ExpandDisplay>
+          <CriteriaRequired>.DEFAULT</CriteriaRequired>
+          <CriteriaHidden>.DEFAULT</CriteriaHidden>
+          <CriteriaDisplayGroup>Advanced</CriteriaDisplayGroup>
+          <ReturnColumn/>
+          <DisplayColumn/>
+          <OverviewColumn/>
+          <MatchColumn/>
+          <CriteriaDefaults>{constant,SW_PREP_DATEFORMAT}</CriteriaDefaults>
+          <CriteriaList>DD/MM/YYYY=d/m/Y,DD-MM-YYYY=d-m-Y,MM/DD/YYYY=m/d/Y,MM-DD-YYYY=m-d-Y,YYYY/MM/DD=Y/m/d,YYYY-MM-DD=Y-m-d</CriteriaList>
+          <Query>
+            <TableSql/>
+            <WhereSql/>
+            <GroupSql/>
+            <RowSelection/>
+            <SQLRaw/>
             <SQL>
               <QuerySql/>
             </SQL>
@@ -572,6 +556,9 @@ Thai (Windows TIS-620)=TIS-620
           <CriteriaType>LIST</CriteriaType>
           <CriteriaDisplay>DROPDOWN</CriteriaDisplay>
           <ExpandDisplay>NOINPUT</ExpandDisplay>
+          <CriteriaRequired>.DEFAULT</CriteriaRequired>
+          <CriteriaHidden>.DEFAULT</CriteriaHidden>
+          <CriteriaDisplayGroup>Advanced</CriteriaDisplayGroup>
           <ReturnColumn/>
           <DisplayColumn/>
           <OverviewColumn/>
@@ -583,6 +570,7 @@ Thai (Windows TIS-620)=TIS-620
             <WhereSql/>
             <GroupSql/>
             <RowSelection/>
+            <SQLRaw/>
             <SQL>
               <QuerySql/>
             </SQL>

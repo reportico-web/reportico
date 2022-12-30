@@ -206,7 +206,7 @@ class Report extends ReporticoObject
         $this->columns = &$columns;
     }
 
-    public function start()
+    public function start($engine = false)
     {
         $this->body_display = "show";
         if (ReporticoUtility::getRequestItem("hide_output_text")) {
@@ -264,18 +264,18 @@ class Report extends ReporticoObject
     // For each line reset styles to default values
     public function setDefaultStyles()
     {
-        $this->query->output_allcell_styles = false;
-        $this->query->output_row_styles = false;
-        $this->query->output_before_form_row_styles = false;
-        $this->query->output_after_form_row_styles = false;
-        $this->query->output_page_styles = false;
-        $this->query->output_header_styles = false;
-        $this->query->output_reportbody_styles = false;
-        $this->query->output_group_header_label_styles = false;
-        $this->query->output_group_header_value_styles = false;
-        $this->query->output_group_trailer_styles = false;
-        $this->query->output_hyperlinks = false;
-        $this->query->output_images = false;
+        $this->query->output_allcell_styles = [];
+        $this->query->output_row_styles = [];
+        $this->query->output_before_form_row_styles = [];
+        $this->query->output_after_form_row_styles = [];
+        $this->query->output_page_styles = [];
+        $this->query->output_header_styles = [];
+        $this->query->output_reportbody_styles = [];
+        $this->query->output_group_header_label_styles = [];
+        $this->query->output_group_header_value_styles = [];
+        $this->query->output_group_trailer_styles = [];
+        $this->query->output_hyperlinks = [];
+        $this->query->output_images = [];
     }
 
     public function beforeFormatCriteriaSelection()
@@ -351,11 +351,25 @@ class Report extends ReporticoObject
                 } else if (ReporticoUtility::getRequestItem("EXPANDED_" . $name, "")) {
                     $label = $crit->deriveAttribute("column_title", $crit->query_name);
                     $label = ReporticoLang::translate($label);
-                    $value .= implode(ReporticoUtility::getRequestItem("EXPANDED_" . $name, ""), ",");
+                    if ( is_array (ReporticoUtility::getRequestItem("EXPANDED_" . $name, "")))
+                        $value .= implode(",", ReporticoUtility::getRequestItem("EXPANDED_" . $name, ""));
+                    else
+                        $value .= ReporticoUtility::getRequestItem("EXPANDED_" . $name, "");
                 } else if (ReporticoUtility::getRequestItem("MANUAL_" . $name, "")) {
                     $label = $crit->deriveAttribute("column_title", $crit->query_name);
                     $label = ReporticoLang::translate($label);
-                    $value .= ReporticoUtility::getRequestItem("MANUAL_" . $name, "");
+                    if ( is_array(  ReporticoUtility::getRequestItem("MANUAL_" . $name, "") ))
+                        $value .= implode( ",", ReporticoUtility::getRequestItem("MANUAL_" . $name, ""));
+                    else
+                        $value .= ReporticoUtility::getRequestItem("MANUAL_" . $name, "");
+
+                } else if (ReporticoUtility::getRequestItem($name)) {
+                    $label = $crit->deriveAttribute("column_title", $crit->query_name);
+                    $label = ReporticoLang::translate($label);
+                    if ( is_array(  ReporticoUtility::getRequestItem($name, "") ))
+                        $value .= implode( ",", ReporticoUtility::getRequestItem( $name, ""));
+                    else
+                        $value .= ReporticoUtility::getRequestItem($name, "");
 
                 }
             }
@@ -369,6 +383,18 @@ class Report extends ReporticoObject
             foreach ($this->query->lookup_queries as $name => $crit) {
                 $label = "";
                 $value = "";
+
+                $excluded_by_parameters = false;
+                if ( isset($this->query->user_parameters["criteria_no_summary"]) ) {
+                    foreach ( $this->query->user_parameters["criteria_no_summary"] as $match ) {
+                        if ( preg_match("/$match/", $name) ){
+                            $excluded_by_parameters = true;
+                            break;;
+                        }
+                    }
+                }
+                if ( $crit->hidden == "yes" || $excluded_by_parameters )
+                    continue;
 
                 if (isset($crit->criteria_summary) && $crit->criteria_summary) {
                     $label = $crit->deriveAttribute("column_title", $crit->query_name);
@@ -409,12 +435,28 @@ class Report extends ReporticoObject
                     } else if (ReporticoUtility::getRequestItem("EXPANDED_" . $name, "")) {
                         $label = $crit->deriveAttribute("column_title", $crit->query_name);
                         $label = ReporticoLang::translate($label);
-                        $value .= implode(ReporticoUtility::getRequestItem("EXPANDED_" . $name, ""), ",");
+                        if ( is_array (ReporticoUtility::getRequestItem("EXPANDED_" . $name, "")))
+                            $value .= implode(",", ReporticoUtility::getRequestItem("EXPANDED_" . $name, ""));
+                        else
+                            $value .= ReporticoUtility::getRequestItem("EXPANDED_" . $name, "");
                     } else if (ReporticoUtility::getRequestItem("MANUAL_" . $name, "")) {
                         $label = $crit->deriveAttribute("column_title", $crit->query_name);
                         $label = ReporticoLang::translate($label);
-                        $value .= ReporticoUtility::getRequestItem("MANUAL_" . $name, "");
-
+                        if ( is_array(  ReporticoUtility::getRequestItem("MANUAL_" . $name, "") ))
+                            $value .= implode( ",", ReporticoUtility::getRequestItem("MANUAL_" . $name, ""));
+                        else {
+                            if ( $crit->criteria_type == "DATE" || $crit->criteria_type == "DATERANGE" ) 
+                                $value .= $crit->column_value_derived;
+                            else
+                                $value .= ReporticoUtility::getRequestItem("MANUAL_" . $name, "");
+                        }
+                    } else if (ReporticoUtility::getRequestItem($name, "")) {
+                        $label = $crit->deriveAttribute("column_title", $crit->query_name);
+                        $label = ReporticoLang::translate($label);
+                        if ( is_array(  ReporticoUtility::getRequestItem($name, "") ))
+                            $value .= implode( ",", ReporticoUtility::getRequestItem($name, ""));
+                        else
+                            $value .= ReporticoUtility::getRequestItem($name, "");
                     }
                 }
                 if ($label || $value) {
@@ -435,6 +477,7 @@ class Report extends ReporticoObject
         $this->formatPageHeaderStart();
 
         foreach ($this->query->pageHeaders as $ph) {
+
             // If one of the headers is {NOMORE} then ignore any subsequenct ones problably the default ones form the
             // reporticoDefaults file
             if ($ph->text == "{NOMORE}") {

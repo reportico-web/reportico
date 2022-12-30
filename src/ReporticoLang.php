@@ -10,10 +10,10 @@ class ReporticoLang
     static function &translate($in_string)
     {
         $out_string = &$in_string;
-        
+
         $langage = ReporticoApp::getConfig("language");
         $translations = ReporticoApp::get("translations");
-        
+
         if ($translations) {
             if (array_key_exists($langage, $translations)) {
                 $langset = &$translations[$langage];
@@ -146,10 +146,10 @@ class ReporticoLang
         }
 
         $out_string = "T_" . $in_string;
-        $local = ReporticoApp::get("locale");
-        if ($local) {
-            if (array_key_exists($out_string, $local["template"])) {
-                $out_string = $local["template"][$out_string];
+        $locale = ReporticoApp::get("locale");
+        if ($locale) {
+            if (array_key_exists($out_string, $locale["template"])) {
+                $out_string = $locale["template"][$out_string];
             }
             else
                 $out_string = $in_string;

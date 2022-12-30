@@ -28,11 +28,6 @@ class XmlWriter
         $this->visible = $in_visibility;
     }
 
-    public function addPanel(&$in_panel)
-    {
-        $this->panels[] = &$in_panel;
-    }
-
     public function prepareXmlData()
     {
         $xmlval = new ReporticoXmlval("Report");
@@ -59,12 +54,14 @@ class XmlWriter
             case "mysql":
             case "sqlite-2":
             case "sqlite-3":
-                $el = &$cn->add_xmlval("DatabaseType", $this->query->datasource->driver);
-                $el = &$cn->add_xmlval("DatabaseName", $this->query->datasource->database);
-                $el = &$cn->add_xmlval("HostName", $this->query->datasource->host_name);
-                $el = &$cn->add_xmlval("ServiceName", $this->query->datasource->service_name);
-                $el = &$cn->add_xmlval("UserName", $this->query->datasource->user_name);
-                $el = &$cn->add_xmlval("Password", $this->query->datasource->password);
+                if ( false && $this->query->datasource ) {
+                    $el = &$cn->add_xmlval("DatabaseType", $this->query->datasource->driver);
+                    $el = &$cn->add_xmlval("DatabaseName", $this->query->datasource->database);
+                    $el = &$cn->add_xmlval("HostName", $this->query->datasource->host_name);
+                    $el = &$cn->add_xmlval("ServiceName", $this->query->datasource->service_name);
+                    $el = &$cn->add_xmlval("UserName", $this->query->datasource->user_name);
+                    $el = &$cn->add_xmlval("Password", $this->query->datasource->password);
+                }
                 break;
 
             default:
@@ -293,10 +290,18 @@ class XmlWriter
                         $val2["GroupHeaderCustom"] = false;
                     }
 
+                    if ( !is_object($val2["GroupHeaderColumn"])  ) {
+                        trigger_error("Unable to generate group header for unknown column ".$val->group_name, E_USER_ERROR) ;
+                        $el = &$gphi->add_xmlval("GroupHeaderColumn", false );
+                    }
+                    else
+                    {
                     $el = &$gphi->add_xmlval("GroupHeaderColumn", $val2["GroupHeaderColumn"]->query_name);
+                    }
                     $el = &$gphi->add_xmlval("GroupHeaderCustom", $val2["GroupHeaderCustom"]);
                     $el = &$gphi->add_xmlval("ShowInHTML", $val2["ShowInHTML"]);
                     $el = &$gphi->add_xmlval("ShowInPDF", $val2["ShowInPDF"]);
+                    
                 }
 
                 $gpt = &$gpi->add_xmlval("GroupTrailers");
@@ -431,7 +436,7 @@ class XmlWriter
     {
 
         if (!$filename) {
-            trigger_error(ReporticoLang::templateXlate("UNABLE_TO_REMOVE") . templateXlate("SPECIFYXML"), E_USER_ERROR);
+            trigger_error(ReporticoLang::templateXlate("UNABLE_TO_REMOVE") . ReporticoLang::templateXlate("SPECIFYXML"), E_USER_ERROR);
             return false;
         }
 
@@ -447,14 +452,14 @@ class XmlWriter
         if ($projdir && is_dir($projdir)) {
             $fn = $projdir . "/" . $filename;
             if (!is_file($fn)) {
-                trigger_error(ReporticoLang::templateXlate("UNABLE_TO_REMOVE") . " $filename  - " . templateXlate("NOFILE"), E_USER_ERROR);
+                trigger_error(ReporticoLang::templateXlate("UNABLE_TO_REMOVE") . " $filename  - " . ReporticoLang::templateXlate("NOFILE"), E_USER_ERROR);
             } else if (!is_writeable($fn)) {
-                trigger_error(ReporticoLang::templateXlate("UNABLE_TO_REMOVE") . " $filename  - " . templateXlate("NOWRITE"), E_USER_ERROR);
+                trigger_error(ReporticoLang::templateXlate("UNABLE_TO_REMOVE") . " $filename  - " . ReporticoLang::templateXlate("NOWRITE"), E_USER_ERROR);
             } else {
                 if (!unlink($fn)) {
-                    trigger_error(ReporticoLang::templateXlate("UNABLE_TO_REMOVE") . " $filename  - " . templateXlate("NOWRITE"), E_USER_ERROR);
+                    trigger_error(ReporticoLang::templateXlate("UNABLE_TO_REMOVE") . " $filename  - " . ReporticoLang::templateXlate("NOWRITE"), E_USER_ERROR);
                 } else {
-                    ReporticoApp::handleDebug(ReporticoLang::templateXlate("REPORTFILE") . " $filename " . templateXlate("DELETEOKACT"), 0);
+                    ReporticoApp::handleDebug(ReporticoLang::templateXlate("REPORTFILE") . " $filename " . ReporticoLang::templateXlate("DELETEOKACT"), 0);
                 }
 
             }
@@ -470,7 +475,7 @@ class XmlWriter
     {
 
         if (!$filename) {
-            trigger_error(ReporticoLang::templateXlate("UNABLE_TO_SAVE") . templateXlate("SPECIFYXML"), E_USER_ERROR);
+            trigger_error(ReporticoLang::templateXlate("UNABLE_TO_SAVE") . ReporticoLang::templateXlate("SPECIFYXML"), E_USER_ERROR);
             return false;
         }
 
@@ -484,7 +489,6 @@ class XmlWriter
         }
 
         if ($projdir && is_dir($projdir)) {
-
             $fn = $projdir . "/" . $filename;
             if (!($fd = @fopen($fn, "w"))) {
 

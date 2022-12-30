@@ -2,7 +2,8 @@
 
 namespace Reportico\Engine;
 
-//Class to store global var
+global $gLastTrace;
+$gLastTrace = false;
 
 class ReporticoUtility
 {
@@ -11,15 +12,20 @@ class ReporticoUtility
         $ret = "NONE";
         foreach ($arr as $val) {
             if ($val->query_name == $name) {
+                if ( $val->query_name === false || $val->query_name === null ) {
+                    return "";
+                }
                 return $val->column_value;
             }
         }
+    }
 
-        //foreach($arr as $val)
-        //{
-        //return $val->column_value;
-        //}
-        //return $name;
+    static function getFirstColumn(&$arr)
+    {
+        foreach ($arr as $k => $val) {
+            return $arr[$k];
+        }
+        return false;
     }
 
     static function getQueryColumn($name, &$arr)
@@ -33,7 +39,7 @@ class ReporticoUtility
         return false;
     }
 
-    static function getGroupColumn($name, &$arr)
+    static function &getGroupColumn($name, &$arr)
     {
         foreach ($arr as $k => $val) {
             if ($val->group_name == $name) {
@@ -145,7 +151,9 @@ class ReporticoUtility
 
     static function backtrace()
     {
+        echo "<PRE>";
         debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+        echo "</PRE>";
     }
 
     // Look for a file in the include path, or the path of the current source file
@@ -291,7 +299,6 @@ class ReporticoUtility
     {
         $sessionClass = ReporticoSession();
 
-        //$found = ReporticoUtility::findFileToInclude($newpath, $newpath, $reltoinclude);
         $newpath = __DIR__;
         $newpath = ReporticoUtility::getRelativePath(str_replace("/", "\\", realpath($newpath)), dirname(realpath($_SERVER["SCRIPT_FILENAME"])));
         $above = dirname($_SERVER["SCRIPT_NAME"]);
@@ -299,7 +306,7 @@ class ReporticoUtility
             $above = "";
         }
 
-        $url_path = $above . "/" . $sessionClass::sessionRequestItem('reporticourl', dirname($newpath));
+        $url_path = $above . "/" . dirname($newpath);
 
         // If reportico source files are installed in root directory or in some other
         // scenarios such as an invalid linkbaseurl parameter the dirname of the
@@ -464,9 +471,26 @@ class ReporticoUtility
         if (!function_exists("mb_strtolower")) {
             $retstring = ucwords(strtolower($retstring));
         } else {
-            $retstring = ucwords(mb_strtolower($retstring, ReporticoLocale::outputCharsetToPhpCharset(ReporticoApp::getConfig("output_encoding"))));
+            $charset = ReporticoLocale::outputCharsetToPhpCharset(ReporticoApp::getConfig("output_encoding"));
+            if ( $charset && $charset != "None" )
+                $retstring = ucwords(mb_strtolower($retstring, ReporticoLocale::outputCharsetToPhpCharset(ReporticoApp::getConfig("output_encoding"))));
         }
 
         return $retstring;
+    }
+
+    static function trace($txt){
+
+        $f = microtime();
+        $arr = preg_split("/ /", $f);
+        $ms = $arr[0];
+        $secs = $arr[1];
+        $millis = $ms + $secs;
+        global $gLastTrace;
+        $dur = $millis - $gLastTrace;
+        $gLastTrace = false;
+        if ( $txt != "RESET" )
+            echo("$txt " . $dur . "<BR>");
+        $gLastTrace = $millis;
     }
 }

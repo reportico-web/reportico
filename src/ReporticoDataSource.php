@@ -31,6 +31,7 @@ use \PDO;
 class ReporticoDataSource extends ReporticoObject
 {
 
+    public $type = false;
     public $driver = "mysql";
     public $host_name;
     public $service_name;
@@ -40,6 +41,7 @@ class ReporticoDataSource extends ReporticoObject
     public $server;
     public $protocol;
     public $connection;
+    public $connection_string;
     public $connected = false;
     public $ado_connection;
 
@@ -54,6 +56,32 @@ class ReporticoDataSource extends ReporticoObject
     public $external_connection = false;
     public $available_connections = false;
 
+    public $usage = array(
+        "description" => "Select data source",
+        "methods" => array(
+            "datasource" => array(
+                "description" => "Select source database",
+            ),
+            "database" => array(
+                "description" => "Connection String",
+                "parameters" => array(
+                    "connection string" => "PDO connection stringmysql:host=localhost; dbname=mydb",
+                ),
+            ),
+            "user" => array(
+                "description" => "Database user",
+                "parameters" => array(
+                    "username" => "Username for the connection",
+                ),
+            ),
+            "password" => array(
+                "description" => "Database pasword",
+                "parameters" => array(
+                    "password" => "Password for the connection",
+                )
+            )
+        ));
+
     public function __construct(&$pdo = false, $connections = false)
     {
         $this->_conn_host_name = ReporticoApp::getConfig("db_host");
@@ -67,6 +95,93 @@ class ReporticoDataSource extends ReporticoObject
         $this->external_connection = &$pdo;
         $this->available_connections = &$connections;
     }
+
+    /*
+     * Magic method to set Reportico instance properties and call methods through
+     * scaffolding calls
+     */
+    public static function __callStatic($method, $args)
+    {
+        switch ( $method ) {
+
+            case "build":
+                $builder = $args[0];
+                $builder->store = [];
+
+                $datasource = $builder->engine->datasource = new ReporticoDataSource();
+                $builder->engine->datasource->builder = $builder;
+
+                $builder->stepInto("datasource", $datasource, "\Reportico\Engine\ReporticoDataSource");
+                return $builder;
+                break;
+
+        }
+    }
+
+    /*
+     * Magic method to set Reportico instance properties and call methods through
+     * scaffolding calls
+     */
+    public function __call($method, $args)
+    {
+        $exitLevel = false;
+        switch ( $method ) {
+
+            case "usage":
+                echo $this->builderUsage("datasource");
+                break;
+
+            case "array":
+                $this->builder->engine->datasource->driver = "array";
+                $this->builder->engine->datasource->database = $args[0];
+                //$this->builder->engine->datasource->connect(true);
+
+                $invalid = false;
+                if ( !is_array($args[0]) )
+                    $invalid = true;
+                else
+                    $ct = 0;
+                    foreach ( $args[0] as $k => $columns ){
+                        if (!is_array($columns))
+                            $invalid = true;
+                        else{
+                            if ( $ct == 0 )
+                            foreach ($columns as $columnkey => $column) {
+                                $this->builder->engine->createQueryColumn($columnkey, "", "", "", "", '####.###', true);
+                            }
+                        }
+                        break;
+                    }
+
+                if ($invalid)
+                    trigger_error("Array datasource requires array parameter in form [ [ 'col1' => 'val1', 'col2' => 'val2' ], [ 'col1' => 'val3', 'col2' => 'val4'  ], ", E_USER_ERROR);
+                break;
+
+            case "database":
+                $this->builder->engine->datasource->connection_string = $args[0];
+                break;
+
+            case "user":
+                $this->builder->engine->datasource->user_name = $args[0];
+                break;
+
+            case "password":
+                $this->builder->engine->datasource->password = $args[0];
+                break;
+
+            case "end":
+            default:
+                $exitLevel = true;
+                break;
+        }
+
+        if (!$exitLevel) {
+            return $this;
+        }
+
+        return false;
+    }
+
 
     public function setDetails($driver = "mysql", $host_name = "localhost",
         $service_name = "?Unknown?",
@@ -308,6 +423,9 @@ class ReporticoDataSource extends ReporticoObject
             $this->disconnect();
         }
 
+        if ( $this->driver == "array" )
+            $ignore_config = true;
+
         if ($ignore_config) {
             $this->_conn_driver = $this->driver;
             $this->_conn_user_name = $this->user_name;
@@ -345,6 +463,38 @@ class ReporticoDataSource extends ReporticoObject
         if ($this->_conn_driver == "none") {
             $connected = true;
         }
+
+	// Plugin specified look in config.php for plugin details in "Plugins->Datasources"
+	// then instantite the class mentioned and pass in the credentials
+        $dbtype = ReporticoApp::getConfig("db_type", false);
+        if ($dbtype && $dbtype == "plugin" ) {
+
+            $db_driver = ReporticoApp::getConfig("db_driver", false);
+	    include_once(__DIR__."/adodb_elasticsearch.php");
+
+	    $sources = ReporticoApp::get("plugins");
+	    if ( !$sources ) {
+		    die ("Plugin $db_driver specified but no plugin section exists in the project config.php");
+	    }
+
+	    if ( !isset($sources["Datasources"]["$db_driver"]) ) {
+		    die ("Plugin $db_driver is not an element of the [\"plugins\"][\"Datasources\"] array in the project config.php");
+	    }
+	    	
+	    $datasource = $sources["Datasources"][$db_driver];
+	    if ( !isset($datasource["class"] ) ){
+		    die ("Plugin $db_driver in the project config.php does not specify a class");
+	    }
+
+	    $x = new \Reportico\Engine\DataSourceElastic($datasource);
+
+	    $class = $sources["Datasources"][$db_driver]["class"];
+            $this->ado_connection = new $class($datasource);
+	    $connected = $this->ado_connection->Connect();
+
+            return $this->connected;
+        }
+
 
         if ($this->external_connection) {
             $this->ado_connection = NewADOConnection("pdo");
@@ -444,6 +594,30 @@ class ReporticoDataSource extends ReporticoObject
             if (isset($useConnection["password"])) {
                 $this->_conn_password = $useConnection["password"];
             }
+
+        }
+
+        $sessionClass = ReporticoSession();
+        $this->connection_string = $sessionClass::registerSessionParam("passedDatabaseConnectionString", $this->connection_string);
+        if ( $this->connection_string ) {
+            $this->user_name = $sessionClass::registerSessionParam("passedDatabaseUserName", $this->user_name);
+            $this->password = $sessionClass::registerSessionParam("passedDatabasePassword", $this->password);
+
+            $connected = false;
+            if (class_exists('PDO', false)) {
+                if (!$this->pdoDriverExists("mysql")) {
+                    trigger_error("PDO driver \"mysql\" not found. Available drivers are " . $this->pdoDriversAsString(), E_USER_NOTICE);
+                } else {
+                    $this->ado_connection = NewADOConnection("pdo");
+
+                    $connected = $this->ado_connection->Connect($this->connection_string, $this->user_name, $this->password);
+                }
+            } else {
+                ReporticoApp::handleError("Attempt to connect to MySQL Database Failed. PDO Support does not seem to be Available");
+            }
+            $this->connected = $connected;
+
+            return $this->connected;
 
         }
 

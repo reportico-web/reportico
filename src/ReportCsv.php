@@ -27,7 +27,7 @@ class ReportCsv extends Report
     {
     }
 
-    public function start()
+    public function start($engine = false)
     {
         Report::start();
 
@@ -107,7 +107,11 @@ class ReportCsv extends Report
 
         // Handle double quotes by changing " to ""
         $output = str_replace("\"", "\"\"", $output);
-        $this->text .= "=\"" . $output . "\",";
+        if ( is_numeric($output) ){
+            $this->text .= $output.",";
+        } else {
+            $this->text .= "=\"" . $output . "\",";
+        }
 
     }
 

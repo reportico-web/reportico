@@ -37,7 +37,7 @@ class ReportJQueryGrid extends Report
         $this->column_spacing = "2%";
     }
 
-    public function start()
+    public function start($engine = false)
     {
         Report::start();
         $title = $this->reporttitle;

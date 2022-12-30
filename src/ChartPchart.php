@@ -17,6 +17,7 @@
  */
 namespace Reportico\Engine;
 
+
 use CpChart\Data;
 use CpChart\Image;
 
@@ -605,7 +606,7 @@ class ChartPchart
             $url .= "&plotlinecolor$k=" . $v["linecolor"];
         }
 
-        $scale_drawing_mode = SCALE_ADDALL_START0;
+        $scale_drawing_mode = SCALE_MODE_ADDALL_START0;
 
         // For stacked charts fix up the Max and Min values;
         if ($stackedexists) {

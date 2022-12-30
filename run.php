@@ -11,7 +11,12 @@
  * @package Reportico
  * @version $Id: run.php,v 1.25 2014/05/17 15:12:31 peter Exp $
  */
-require_once(__DIR__ .'/vendor/autoload.php');
+if ( file_exists(__DIR__ .'/vendor/autoload.php') )
+    require_once(__DIR__ .'/vendor/autoload.php');
+else
+    require_once(__DIR__ .'/../../../vendor/autoload.php');
+
+
 
 // set error reporting level
 error_reporting(E_ALL);

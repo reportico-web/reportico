@@ -1,6 +1,6 @@
 <?php
 
- 
+
 namespace Reportico\Engine;
 
 use Twig;
@@ -8,16 +8,16 @@ use Twig\Loader;
 
 /**
  * Class used to store Global var
- * 
- * This class is based on the singloton architecture. 
+ *
+ * This class is based on the singloton architecture.
  * Global variable can be set or get by Get and Set functions.
- * 
+ *
  * By default variables are stored in the general variables array.
- * The config variables are stored in the specific config array witch is 
+ * The config variables are stored in the specific config array witch is
  * a subdivision of the variable array
- * 
+ *
  * COnfig variable could be constant prefixed by SW_
- * 
+ *
  */
 class ReporticoTemplateTwig
 {
@@ -28,7 +28,7 @@ class ReporticoTemplateTwig
     private $viewDir = false;
 
     public function __construct($viewDir = false, $cacheDir = false, $theme = false, $disableThemeCaching = false) {
-        
+
         $this->viewDir = $viewDir ? $viewDir : ReporticoUtility::findBestLocationInIncludePath("themes");
 
 
@@ -55,8 +55,8 @@ class ReporticoTemplateTwig
             }
         }
 
-        $loader = new \Twig_Loader_Filesystem($this->viewDir);
-        $this->twig = new \Twig_Environment($loader, array(
+        $loader = new \Twig\Loader\FilesystemLoader($this->viewDir);
+        $this->twig = new \Twig\Environment($loader, array(
             'cache' => $this->cacheDir
             ));
     }
@@ -64,6 +64,17 @@ class ReporticoTemplateTwig
     public function __clone()
     {}
 
+
+    /**
+     * Get a template variable
+     *
+     * @param $keyord
+     *
+     * @return value
+     */
+    function get($keyword, $default = false) {
+        return isset( $this->twig_vars[$keyword] ) ? $this->twig_vars[$keyword] : $default;
+    }
 
     /**
      * Assign a template variable
@@ -84,6 +95,7 @@ class ReporticoTemplateTwig
      * @return void
      */
     function fetch($template_file) {
+        echo "load $template_file<BR>";
         $template = $this->twig->load($template_file);
         return $template->render($this->twig_vars);
     }

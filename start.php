@@ -67,7 +67,13 @@ $reportico->clear_reportico_session = true;
 // Specify whether user is started in administration page, project menu, report criteria entry, 
 // report output or report design mode, use respectively ( "ADMIN", "MENU", "PREPARE", "EXECUTE", "MAINTAIN")
 // default is "ADMIN"
-//$reportico->initial_execute_mode = "<MODE>";
+//$reportico->initial_execute_mode = "ADMIN";
+
+// Specify the class responsible for authenticating access to Reportico
+//$reportico->authenticator = "\Reportico\Engine\StandaloneAuthenticator";
+
+// Specify a role to go straight in with ( roles are specified in the relevant Authenticator class )
+//$reportico->initial_role = "design-fiddle";
 
 // When only executing a report, indicates what format it should be showed in .. HTML(the default), PDF or CSV
 //$reportico->initial_output_format = "HTML";
@@ -78,7 +84,7 @@ $reportico->clear_reportico_session = true;
 //$reportico->initial_show_graph = "show";
 //$reportico->initial_show_group_headers = "show";
 //$reportico->initial_show_group_trailers = "show";
-//$reportico->initial_showColumnHeaders = "show";
+//$reportico->initial_show_column_headers = "show";
 //$reportico->initial_show_criteria = "show";
 
 // Set source SQL to generate report from, without requirement for report , requires an initial_project to be defined for connection details
@@ -94,6 +100,8 @@ $reportico->clear_reportico_session = true;
 // ONEREPORT - limits user to single report, crtieria entry and report execution ( requires initial project/report )
 // REPORTOUTPUT - executes a report and allows to "Return" button to crtieria entry ( requires initial project/report )
 //$reportico->access_mode = "<MODE>";
+$reportico->access_mode = "ALLPROJECTS";
+
 //
 // Default initial execute mode to single report output if REPORTOUTPUT mode specified
 if ( $reportico->access_mode == "REPORTOUTPUT" )
@@ -212,13 +220,15 @@ if ( $reportico->access_mode == "REPORTOUTPUT" )
 //$reportico->output_template_parameters["show_hide_prepare_print_html_button"] = "show";
 //$reportico->output_template_parameters["show_hide_prepare_csv_button"] = "show";
 //$reportico->output_template_parameters["show_hide_prepare_page_style"] = "show";
-//$reportico->output_template_parameters["show_hide_prepare_go_buttons"] = "hide";
+$reportico->output_template_parameters["show_hide_prepare_go_buttons"] = "show";
 //$reportico->output_template_parameters["show_hide_prepare_reset_buttons"] = "hide";
 
 // Set a theme
 // ======================
 // Use the specified folder under the themes folder to identify which templates, stylesheets and js to use for the instance
 //$reportico->theme = "default";
+$reportico->theme = "bootstrap4";
+$reportico->url_path_to_templates = "themes";
 
 // Set this to true to allow changes to edits to theme templates to be reflected immediately, otherwise
 // you will need to clear out the themes/cache folder to register any changes
@@ -253,11 +263,12 @@ if ( $reportico->access_mode == "REPORTOUTPUT" )
 // To hide the static report menu
 //$reportico->static_menu = array ();
 
-// Required PDF Engine set -- to phantomjs or tcpdf
-$reportico->pdf_engine = "phantomjs";
+// Required PDF Engine set -- to phantomjs, chromium or tcpdf
+//$reportico->pdf_engine = "tcpdf";
+$reportico->pdf_engine = "chromium";
 
 // Path to Phantom js executable relative to root
-$reportico->pdf_phantomjs_path = "bin/phantomjs";
+//$reportico->pdf_phantomjs_path = "bin/phantomjs";
 
 // How CSV, PDF out is delivered to the browser
 // either as

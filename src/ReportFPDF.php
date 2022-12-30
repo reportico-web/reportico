@@ -133,7 +133,7 @@ class ReportFPDF extends Report
 
     }
 
-    public function start()
+    public function start($engine = false)
     {
         Report::start();
         $this->debug("PDF Start **");
@@ -901,7 +901,7 @@ class ReportFPDF extends Report
                 $this->setPosition($group_data_xpos, $y);
 
                 $tx = $custom;
-                $styles = false;
+                $styles = [];
                 $matches = array();
                 if (preg_match("/{STYLE[ ,]*([^}].*)}/", $tx, $matches)) {
                     if (isset($matches[1])) {
@@ -1795,7 +1795,7 @@ class ReportFPDF extends Report
 
         // Decode page header
         $tx = $header->text;
-        $styles = false;
+        $styles = [];
         $matches = array();
         if (preg_match("/{STYLE[ ,]*([^}].*)}/", $tx, $matches)) {
             if (isset($matches[1])) {
@@ -1855,7 +1855,7 @@ class ReportFPDF extends Report
 
         // Decode page header
         $tx = $footer->text;
-        $styles = false;
+        $styles = [];
         $matches = array();
         if (preg_match("/{STYLE[ ,]*([^}].*)}/", $tx, $matches)) {
             if (isset($matches[1])) {

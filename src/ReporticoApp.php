@@ -237,9 +237,9 @@ class ReporticoApp
     public static function show()
     {
         $instance = self::getInstance();
-        echo "<PRE>";
-        var_dump($instance->variables);
-        echo "</PRE>";
+        //echo "<PRE>";
+        //var_dump($instance->variables);
+        //echo "</PRE>";
     }
 
 // error handler function
@@ -258,6 +258,7 @@ class ReporticoApp
             $out_val = ReporticoApp::getConfig($in_code);
         } else if (ReporticoApp::isSetConfig("pdf_" . $in_code)) {
             $out_val = ReporticoApp::getConfig("pdf_" . $in_code);
+            return $out_val;
         } else if (ReporticoApp::isSetConfig("chart_" . $in_code)) {
             $out_val = ReporticoApp::getConfig("chart_" . $in_code);
         } else if (ReporticoApp::isSetConfig("DEFAULT_" . $in_code)) {
@@ -281,7 +282,6 @@ class ReporticoApp
     public static function checkForDefaultConfig($in_code, $in_val)
     {
         $out_val = $in_val;
-        echo "try $in_code, $in_val<BR>";
         if (!$in_val) {
             $out_val = $in_val;
             if (ReporticoApp::isSetConfig($in_code)) {
@@ -335,10 +335,18 @@ class ReporticoApp
     // exception handler function
     static function ExceptionHandler($exception)
     {
-        echo "<PRE>";
-        echo $exception->getMessage();
-        echo $exception->getTraceAsString();
-        echo "</PRE>";
+        self::ErrorHandler(E_USER_ERROR, $exception, false, false);
+        //echo "<PRE>";
+        //echo $exception->getMessage();
+        //echo $exception->getTraceAsString();
+        //echo "</PRE>";
+    }
+
+    // error handler function
+    static function ErrorLogger($errno, $errstr, $errfile = false, $errline = false)
+    {
+        self::ErrorHandler($errno, $errstr, $errfile, $errline);
+        return true;
     }
 
     // error handler function
@@ -412,7 +420,9 @@ class ReporticoApp
 
     static function backtrace()
     {
+        echo "<PRE>";
         debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+        echo "</PRE>";
     }
 
 

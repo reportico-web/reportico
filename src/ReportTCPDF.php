@@ -183,6 +183,11 @@ class ReportTCPDF extends Report
             $this->query->output_header_styles["border-style"] = "solid";
             $this->query->output_header_styles["border-width"] = "0 0 1 0";
             $this->query->output_header_styles["border-color"] = array(0, 0, 0);
+            $this->query->output_header_styles["padding"] = "0 10px 0 0";
+            $this->query->output_header_styles["font-weight"] = "bold";
+        }
+        if (!isset($this->query->output_header_styles["padding"])) {
+            $this->query->output_header_styles["padding"] = "0px 10px 0px 0px";
         }
 
         if (!$this->query->output_before_form_row_styles) {
@@ -210,10 +215,15 @@ class ReportTCPDF extends Report
             $this->query->output_group_header_styles["requires-before"] = "0";
         }
 
+        if (!isset($this->query->output_allcell_styles["padding"])) {
+            $this->query->output_allcell_styles["padding"] = "0px 10px 0px 0px";
+        }
+
         if (!$this->query->output_group_trailer_styles) {
             $this->query->output_group_trailer_styles["border-style"] = "solid";
-            $this->query->output_group_trailer_styles["border-width"] = "1 0 1 0";
+            $this->query->output_group_trailer_styles["border-width"] = "1 0 0 0";
             $this->query->output_group_trailer_styles["border-color"] = array(0, 0, 0);
+            $this->query->output_group_trailer_styles["padding"] = "0px 10px 0px 0px";
         }
 
         // Turn off page header and body background as its too complicated for now
@@ -227,7 +237,7 @@ class ReportTCPDF extends Report
 
     }
 
-    public function start()
+    public function start($engine = false)
     {
         Report::start();
         $this->debug("PDF Start **");
@@ -235,10 +245,10 @@ class ReportTCPDF extends Report
         // Set default page size, margins, fonts etc
         $this->page_line_count = 0;
         $this->fontName = $this->query->getAttribute("pdfFont");
-        $this->fontSize = $this->query->getAttribute("pdfFontSize");
+        $this->fontSize = $this->query->getAttribute("pdfFontSize", "6pt");
         $this->vsize = $this->fontSize + $this->vspace;
-        $this->orientation = $this->query->getAttribute("PageOrientation");
-        $this->page_type = $this->query->getAttribute("PageSize");
+        $this->orientation = $this->query->getAttribute("PageOrientation", "Portrait");
+        $this->page_type = $this->query->getAttribute("PageSize", "A4");
 
         if ($this->orientation == "Portrait") {
             $this->abs_page_width = $this->page_types[$this->page_type]["width"];
@@ -247,12 +257,12 @@ class ReportTCPDF extends Report
             $this->abs_page_width = $this->page_types[$this->page_type]["height"];
             $this->abs_page_height = $this->page_types[$this->page_type]["width"];
         }
-        $this->abs_top_margin = $this->absPagingHeight($this->query->getAttribute("TopMargin"));
+        $this->abs_top_margin = $this->absPagingHeight($this->query->getAttribute("TopMargin", "1cm"));
         $this->abs_bottom_margin = $this->abs_page_height -
-        $this->absPagingHeight($this->query->getAttribute("BottomMargin"));
+          $this->absPagingHeight($this->query->getAttribute("BottomMargin", "1cm"));
         $this->abs_right_margin = $this->abs_page_width -
-        $this->absPagingWidth($this->query->getAttribute("RightMargin"));
-        $this->abs_left_margin = $this->absPagingWidth($this->query->getAttribute("LeftMargin"));
+          $this->absPagingWidth($this->query->getAttribute("RightMargin", "1cm"));
+        $this->abs_left_margin = $this->absPagingWidth($this->query->getAttribute("LeftMargin", "1cm"));
         $this->abs_print_width = $this->abs_right_margin - $this->abs_left_margin;
         $this->abs_row_left_margin = $this->abs_left_margin;
         $this->abs_col_left_margin = $this->abs_left_margin;
@@ -973,6 +983,7 @@ class ReportTCPDF extends Report
         }
 
         $this->applyStyleTags("EACHHEADMID", $this->mid_cell_reportbody_styles);
+        $this->applyStyleTags("GROUPTRAILER", $this->query->output_group_trailer_styles);
         if ($value_col) {
 
             $y = $this->document->GetY();
@@ -1032,6 +1043,7 @@ class ReportTCPDF extends Report
             $padstring = $group_label;
             $just = $this->justifys[$trailer_col->deriveAttribute("justify", "left")];
         }
+        $this->unapplyStyleTags("GROUPTRAILER", $this->query->output_group_trailer_styles);
         $this->unapplyStyleTags("EACHHEADMID", $this->mid_cell_reportbody_styles);
 
     }
@@ -2005,9 +2017,9 @@ class ReportTCPDF extends Report
         return;
     }
 
-    public function fetchCellStyles(&$tx)
+    public function fetchCellStyles(&$tx, $refersToPriorLine = false)
     {
-        $styles = false;
+        $styles = [];
         $matches = array();
         if (preg_match("/{STYLE[ ,]*([^}].*)}/", $tx, $matches)) {
             if (isset($matches[1])) {
@@ -2032,7 +2044,7 @@ class ReportTCPDF extends Report
         }
 
         $tx = $this->reporticoStringToPhp($tx);
-        $tx = Assignment::reporticoMetaSqlCriteria($this->query, $tx);
+        $tx = Assignment::reporticoMetaSqlCriteria($this->query, $tx, $refersToPriorLine);
         $tx = preg_replace("/<\/*u>/", "", $tx);
 
         return $styles;
@@ -2225,7 +2237,6 @@ class ReportTCPDF extends Report
     }
 
     public function formatColumnHeader(&$column_item) //PDF column headers
-
     {
         $sessionClass = ReporticoSession();
 
@@ -2271,12 +2282,12 @@ class ReportTCPDF extends Report
 
         $tmpnam = tempnam(ReporticoApp::getConfig("tmp_dir"), "gph");
 
-        if (ReporticoApp::getConfig("graph_engine") == "PCHART") {
+        if (ReporticoApp::getConfig("graph_engine", "PCHART") == "PCHART") {
             unlink($tmpnam);
             $img = $graph->generateGraphImage($tmpnam . ".png");
         } else /* If jpgraph */
         {
-            $handle = $graph->generateGraphImage();
+            $handle = $graph->generateGraphImage($tmpnam . ".png");
             unlink($tmpnam);
             $img = imagepng($handle, $tmpnam . ".png");
         }
@@ -2338,6 +2349,11 @@ class ReportTCPDF extends Report
     public function drawImage($file, $x, $y, $w, $h, $hidden = false, $halign = "")
     {
         if ($this->pdfDriver == "tcpdf") {
+            if ( !file_exists($file) ){
+                $this->debugFile("Not found $file");
+                return 0;
+            }
+
             $imagehalign = "L";
             $imagevalign = "T";
             if ($halign) {
@@ -2904,8 +2920,6 @@ class ReportTCPDF extends Report
                 }
             }
         }
-        //echo "&nbsp;&nbsp;APPLY: $type<BR> ";
-        //var_dump($this->stylestack["type"]);
     }
 
     public function applyStyleTags($type, $styleset, $parent_styleset = false, $grandparent_styleset = false, $apply_type = false, $applyto = false)
@@ -3124,10 +3138,6 @@ class ReportTCPDF extends Report
                 }
             }
         }
-        //echo "APPLY: $type ";
-        //echo "&nbsp;&nbsp;APPLY: $type ";
-        //var_dump($this->stylestack["type"]);
-        //var_dump($this->stylestack["background-color"]);
     }
 
     public function unapplyStyleTags($type1, $styleset, $parent_styleset = false, $grandparent_styleset = false, $type = "", $applyto = false)
@@ -3600,11 +3610,13 @@ class ReportTCPDF extends Report
         // Move top margin down if headers too high
         if ( $this->document->GetY() && $this->abs_top_margin > $this->document->GetY() ) 
             $this->setPosition(false, $this->abs_top_margin);
+        $this->group_header_start = $this->document->GetY();
+        $this->group_header_end = $this->document->GetY();
     }
 
     public function finishPage()
     {
-        $this->debug("Finish Page");
+        //$this->debug("Finish Page");
 
         $this->current_line_height = 0;
         $this->max_line_height = 0;
@@ -3638,19 +3650,23 @@ class ReportTCPDF extends Report
             $tw = $this->abs_left_margin;
         }
 
+        $tw = 0;
+
         $inhtml = $header->getAttribute("ShowInHTML");
         $inpdf = $header->getAttribute("ShowInPDF");
 
         $wd = $header->getAttribute("ColumnWidthPDF");
         if (!$wd) {
             if ($this->abs_right_margin > $tw) {
-                $wd = $this->abs_right_margin - $tw;
+                $wd = $this->abs_right_margin - $this->abs_left_margin;
             } else {
                 $wd = "100%";
             }
+            $tw = round($this->abs_left_margin);
         }
 
-        $wd = $this->absPagingWidth($wd);
+        //$wd = $this->absPagingWidth($wd);
+
 
         $just = $this->justifys[$header->deriveAttribute("justify", "left")];
 
@@ -3705,7 +3721,7 @@ class ReportTCPDF extends Report
         $this->page_footer_start_y -= $this->page_footer_wrapper_offset - 2;
 
         $tx = $footer->text;
-        $styles = $this->fetchCellStyles($tx);
+        $styles = $this->fetchCellStyles($tx, true);
         $this->applyStyleTags("PAGEFOOTER", $styles);
         $this->drawCell($wd, $this->vsize, $tx, "PBF", 0, $just);
         $this->unapplyStyleTags("PAGEFOOTER", $styles);
@@ -3727,6 +3743,10 @@ class ReportTCPDF extends Report
                 break;
 
             case "newpage":
+                //Page will already be thrown if this is page 1 line 1
+                if ( $this->page_count == 1 && $this->page_line_count == 0 ) {
+                    break;
+                }
                 $this->finishPage();
                 $this->beginPage();
                 break;
@@ -3740,6 +3760,8 @@ class ReportTCPDF extends Report
 
     public function debugFile($txt)
     {
+        return;
+        //echo $txt."<BR>";
         if (!$this->debugFp) {
             $this->debugFp = fopen("/tmp/debug.out", "w");
         }

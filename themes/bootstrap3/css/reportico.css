@@ -1,0 +1,1481 @@
+/* ------------------------------------------------------------------------------------*/
+/* ----------------------         Styles for Reportico         ------------------------*/
+/* ------------------------------------------------------------------------------------*/
+
+/*form,table,input,a,div	
+{ 
+    font: 10pt Ariel,Arial,Verdana;
+}*/
+
+
+#reportico-container
+{
+    background-color: #ffffff;
+    position: relative;
+}
+
+#reportico-container * {
+/*-webkit-box-sizing: border-box;*/
+-moz-box-sizing: border-box;
+/*box-sizing: border-box; */
+}
+
+.reportico-custom-header-block,
+.reportico-custom-trailer-block
+{
+    display: block;
+    position: relative;
+}
+
+.reportico-custom-header,
+.reportico-custom-trailer
+{
+    display: inline;
+    position: absolute;
+}
+
+
+
+
+
+.reportico-run-report
+{
+    float: right;
+    font-weight: 700;
+    margin: 0px 5px 0px 0px;
+    border: 0px solid #888888;
+    text-decoration: none;
+    background-color: #ffffff;
+    height: 42px !important;
+    cursor: pointer;
+}
+
+.reportico-display-group-line td
+{
+    background-color: #eeeeff;
+    padding-left: 20px;
+    font-weight: normal;
+}
+
+#reportico-prepare-save-file
+{
+    display: inline !important;
+}
+
+.reportico_bootstrap2_checkbox
+{
+    margin:0px 0px 0px 5px !important;
+}
+
+/*
+#reportico-prepare-submitPane input
+{
+    margin: 5px 5px 5px 0px;
+}
+*/
+
+.icon-48-reportico
+{
+    background: url('../images/icon-reportico-48.png') no-repeat left;
+}
+
+.reportico-prepare-crit-sel select
+{
+    margin: 0px;
+    padding: 2px 2px 2px 2px;
+    background-color: #ffffff;
+    border: 1px solid #d0ccc9;
+    border-width: 1px 1px 1px 1px;
+    position: relative;
+    color: #505050;
+    cursor: pointer;
+}
+
+.reportico-prepare-crit-expand-button
+{
+    float: left;
+    margin: 3px 2px 0px 20px !important;
+    padding: 5px 2px 2px 2px !important;
+    border: 5px solid #d0ccc9;
+    border-width: 1px 1px 1px 1px;
+    position: relative;
+    color: #505050;
+    cursor: pointer;
+    background: url('../images/search.png') no-repeat;   
+    background-color: #ffffff;
+    height: 22px; 
+    width: 22px !important;
+}
+
+.reportico-prepare-top-menuCell input {
+    width: auto;
+}
+
+.reportico-prepare-crit-sel input[type=text]
+{
+    font-weight: normal;
+    height: 30px;
+    display: inline !important;
+    margin: 0px 0px 0px 0px;
+    padding: 2px 2px 2px 2px;
+    background: #ffffff;
+    border: 1px solid #d0ccc9;
+    border-width: 1px 1px 1px 1px;
+    position: relative;
+    color: #505050;
+    background-color: #ffffff;
+    cursor: pointer;
+}
+.reportico-date-field { width: 100px !important; z-index: 1040; font-weight: normal; }
+.reportico-daterange-field { z-index: 1040; }
+
+/* Why double {} ? */
+.reportico-prepare-text-field { width: 100%; }
+{
+    margin: 0px 0px 0px 0px;
+    padding: 2px 2px 2px 2px;
+    border: 1px solid #d0ccc9;
+    border-width: 1px 1px 1px 1px;
+    position: relative;
+    color: #505050;
+    cursor: pointer;
+    width: 20px;
+}
+
+.reportico-prepare-crit-sel input[type=radio]
+{
+    margin: 0px 0px 0px 0px;
+    padding: 2px 2px 2px 2px;
+    color: #505050;
+    width: 20px;
+}
+
+
+.reportico-prepare-crit-sel input[type=hidden]
+{
+    display: none;
+}
+
+
+.reportico-prepare-crit-sel input[type=checkbox]
+{
+    margin: 0px 0px 0px 0px;
+    padding: 2px 2px 2px 2px;
+    background: #ffffff;
+    border: 1px solid #d0ccc9;
+    border-width: 1px 1px 1px 1px;
+    position: relative;
+    color: #505050;
+    cursor: pointer;
+    width: 1em;
+}
+
+#prepareAjaxExecute
+{
+    float: right;
+    background-position: 0px 0px !important;
+}
+
+/* Apply the custom-colored gradients */
+/* Note: you'll need to include all the appropriate gradients for various browsers and standards. */
+.btn-ttc {
+  background-repeat: repeat-x;
+  background-image: linear-gradient(top, #009ED2 0%, #007DA7 100%);
+}
+
+
+td.loading, div.loading {
+    background-image: url('../images/loading.gif');
+    background-position:  top center;
+    background-repeat: no-repeat;
+    opacity: 1;
+}
+
+td.loading *, div.loading * {
+    opacity: .9;
+}
+
+div.modal-loading {
+    background-image: url('../images/loading.gif');
+    background-position:  center;
+    background-repeat: no-repeat;
+}
+
+
+.reportico-admin-banner
+{
+}
+
+/* Table Container for Menu Selections */
+.reportico-menuBody 
+{ 
+    background-color: #ffffff;
+}
+
+.reportico-menu
+{
+    width: 80% !important;
+    text-align: center;
+    font-weight: normal;
+    color: #222244;
+    border: none !important;
+    border-width: 1px;
+    padding: 5px 5px 5px 5px;
+    border-color : #DDFFDD;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 10%;
+}
+
+.reportico-menu td
+{
+    border: none !important;
+    padding: 2px !important;
+}
+
+a:link {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:visited
+{
+    /*color: #303030;*/
+    color: inherit;
+}
+
+/* Style for Menu Header */
+.reportico-menuItemHeader
+{
+    border: solid 1px;
+    background-color: #DDEEFF;
+    border-color: #000000;
+    font-size: 14pt;
+    padding: 0;
+    text-align: center;
+    color: #000000;
+}
+
+/* Style for Menu Items Header
+.reportico-menuItem
+{
+    text-align: center;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    border: none;
+}
+*/
+
+/* Style for Menu Header */
+/*
+.reportico-menu-item-link
+{
+    color: #000000 !important;
+    color: inherit;
+    font-size: 12pt;
+    border: none;
+    font-weight: 200;
+    text-decoration: none;
+}
+*/
+
+.reportico-menu-item-link:hover 
+{
+    background-color: inherit !important;
+    color: #7070CC !important;
+}
+
+.reportico-toggle, .reportico-toggle:link, .reportico-toggle:visited
+{ 
+    padding-right: 5px;
+    padding-left: 5px;
+    margin-right: 5px;
+    text-align: center;
+    background-color: #000000;
+    color: #ffffff;
+    font-size: larger;
+    font-weight: bold;
+    border: none;
+    text-decoration: none;
+}
+
+.reportico-toggleCriteriaDiv td
+{ 
+    font-weight: bold;
+}
+
+.reportico-toggleCriteria, .reportico-toggleCriteria:link, .reportico-toggleCriteria:visited
+{ 
+    padding-right: 5px;
+    padding-left: 5px;
+    margin-right: 5px;
+    text-align: center;
+    background-color: #337ab7;
+    color: #ffffff;
+    font-size: larger;
+    font-weight: bold;
+    border: none;
+    text-decoration: none;
+}
+
+.reportico-admin-button2
+{ 
+    line-height: inherit !important;
+    border: none;
+}
+
+input.reportico-admin-button2
+{ 
+    margin-top: 8px;
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+.reportico-admin-button 
+{ 
+    padding-right: 10px;
+    padding-left: 10px;
+    text-align: center;
+    height:  32px;
+    margin: 0px !important;
+    color: #000000;
+    text-decoration: none;
+    border: 1px solid #D0CCC9;
+    background-color: #EFEFEF;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+
+/* ------------------ Main Screen Form Box --------------*/
+.reportico-prepare-form 
+{ 
+    text-align: left;
+    margin-left: 0%;
+    width: 100%;
+    border: solid 1px #AAAAAA;
+}
+
+/*
+.reportico-prepare-top-menu
+{
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.reportico-prepare-top-menuCell
+{
+}
+*/
+
+/* Report/Module Title Header */
+.swDescTitle 
+{ 
+    font-size: 16pt;
+    text-align: left;
+    width: 100%;
+    margin-top: 0px;
+    padding-top: 5px;
+    padding-left: 0px;
+}
+
+.reportico-title-bar 
+{ 
+    font-size: 18pt;
+    text-align: center;
+    border-bottom: 1px solid #d0ccc9;
+    margin: 0px !important;
+    padding-bottom: 2px;
+    padding-top: 10px;
+}
+
+/*
+.reportico-prepare-crit-output-options,
+.reportico-prepare-crit-box
+{
+    width: 100%;
+    border: none;
+    border-width: 0px;
+    border-color : #FFFFDD;
+}
+*/
+
+.reportico-prepare-crit-entry
+{
+    width: 50%;
+    vertical-align: top;
+    padding: 5px 5px 5px 5px;
+    border-top: 1px solid;
+    border-right: 1px solid;
+    border-color: #d0ccc9;
+}
+
+.reportico-prepare-crit-entryBox
+{
+    width: 100%;
+}
+
+.reportico-prepare-crit-line
+{
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/*
+.reportico-prepare-crit-title
+{
+    border: none;
+    font-weight: bold;
+    padding: 0;
+    margin: 5px 5px 5px 5px;
+    padding: 2px 2px 2px 2px;
+    width: 25%;
+}
+*/
+
+.reportico-prepare-crit-sel
+{
+    font-weight: bold;
+    padding: 3px 0px;
+}
+
+.reportico-prepare-crit-expand-sel
+{
+    border: none;
+    border-color : #DDFFDD;
+    text-align : right;
+    padding: 0;
+    margin-top: 0;
+    width: 10%;
+}
+
+.reportico-prepare-crit-expand-button
+{
+}
+
+.reportico-prepare-expand
+{
+    width: 50%;
+    vertical-align: top;
+    padding: 5px 5px 5px 5px;
+/*    background-color: #f8f8f8;*/
+    border-top: 1px solid;
+    border-color: #d0ccc9;
+
+}
+
+.reportico-prepare-expandBox
+{
+    width:          100%;
+}
+
+.reportico-prepare-expandRow
+{
+}
+
+#reportico-prepare-expand-cell
+{
+    border: none;
+    border-color : #DDFFDD;
+    text-align : left;
+    padding: 0;
+    margin-top: 0;
+    min-height: 100px;
+}
+
+.swRunMode
+{ 
+    background-color: #EEEEEE;
+    border-color: #56A6E4;
+    width: 50%;
+}
+
+.reportico-prepare-drop-select
+{ 
+    width: 100%;
+    text-align: left;
+    background-color: #FFFFFF;
+    font-size: 10pt;
+}
+
+.reportico-drop-select-regular
+{
+    text-align: left;
+    background-color: #FFFFFF;
+    font-size: 10pt;
+    width: 200px !important;
+    display: inline !important;
+}
+
+/* Style for Criteria Entry Screen Buttons */
+.reportico-prepare-submit
+{ 
+    background-color: #EFEFEF;
+    border: 1px solid #d0ccc9;
+    color: #000000;
+    border-size: 0;
+    text-align: center;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+/* ------------------------------------------------------------------------------------*/
+/* -----------------------------Styles for EXECUTE Execute Mode -----------------------*/
+/* ----------------------------- i.e for the HTML Report Output -----------------------*/
+/* Report Title Header */
+.reportico-title 
+{ 
+    font-size: 18pt;
+    text-align: center;
+    margin: 0px !important;
+    padding: 2px 0px 2px 0px;
+    border-bottom: 1px solid #d0ccc9;
+    padding-left: 20px;
+}
+
+/* Table container for whole Report */
+.reportico-body 
+{ 
+    margin-top: 0px;
+}
+
+/* ------------------ Report Output Main Box --------------*/
+.reportico-report-form
+{
+    /*border: solid 1px #AAAAAA;*/
+    background-color: #999;
+    overflow: scroll;
+    /*min-width: 100vw;*/
+}
+
+#reportico-bootstrap-collapse-navmenu,
+#reportico-bootstrap-collapse {
+    height: auto;
+}
+
+
+/* Table container for each Page of Output */
+.reportico-page
+{
+    width:          99%;
+    background-color: #FFFFFF;
+    font-size: 10pt;
+    margin-top: 5px;
+    margin-right: 0.5%;
+    border-collapse: collapse;
+}
+
+.reportico-pageFormPage { border-bottom: solid thin #AAAAAA; }
+.reportico-pageFormLine { border-bottom: solid thin #AAAAAA; }
+.reportico-pageFormBlank { margin-bottom: 20px; }
+
+/* No Rows Information Message */
+.reportico-output-no-rows
+{
+    width:          96%;
+    border: groove thin;
+    background-color : #FFFFBB;
+    margin-top: 60px;
+    margin-left: 2%;
+    font-size: 14pt ;
+}
+
+/* Row of Column Header Labels  */
+.reportico-output-col-hdr-row
+{
+}
+
+/* Column Header Label  */
+.reportico-output-col-hdr-row td, .reportico-output-col-hdr-row div,
+.reportico-output-col-hdr-row th
+{
+    border-bottom: dotted;
+    border-width: 1px;
+    border-color : #000000;
+    background-color : inherit;
+}
+
+/* Container for Group Headers  */
+.reportico-row td, .reportico-row div
+{
+    padding: 2px 2px 1px 2px;
+}
+
+/*.reportico-row:nth-child(even) { background-color: inherit; }
+.reportico-row:nth-child(odd) { background-color: inherit; }*/
+
+.reportico-row td a, .reportico-row div a
+{
+    text-decoration: underline;
+}
+
+/* Container for Group Headers  */
+.reportico-group-header-box
+{
+    font-weight: bold;
+    font-size: 10pt;
+    width: 99%;
+    padding-top: 5px;
+    padding-left: 1px;
+    margin-right: 0.5%;
+    padding-bottom: 5px;
+}
+
+.reportico-criteria
+{
+    border: solid 1px #cccccc;
+    font-weight: bold;
+    font-size: 10pt;
+    width: 99%;
+    padding-top: 5px;
+    padding: 0px 5px 0px 5px;
+    margin-right: 0.5%;
+    padding-bottom: 5px;
+    border-width: 1px !important;
+    background-color: #eee !important;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+/* Line for Group Header Data  */
+.reportico-output-graph
+{
+    display: block;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.reportico-chart
+{
+    margin: 0px 5px 0px 5px;
+}
+
+/* Line for Group Header Data  */
+.reportico-group-header-row
+{
+}
+
+/* Group Header Label  */
+.reportico-group-header-label
+{
+    text-align: left;
+    width: 150px;
+    padding-right: 20px;
+}
+
+/* Group Header Value  */
+.reportico-group-header-value
+{
+    text-align: left;
+    border: none;
+    border-color : #FFFFFF;
+    padding-left: 5px;
+}
+
+
+/* Style for First Line of Group Trailer/Summary Values  */
+.reportico-output-group-tlr-row1st
+{
+}
+
+/* Style for Subsequent Lines of Group Trailer/Summary Values  */
+.reportico-output-group-tlr-row
+{
+}
+
+/* Style for Group Trailer/Summary Labels  */
+.swRepGrpTlrLbl
+{
+    border-color: #FFC71B;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Style for Group Summary Values on First Line of Group Trailer/Summary  */
+.reportico-output-group-tlr-dat1st
+{
+    border-top: dotted;
+    border-width: 1px;
+    border-color : #000000;
+}
+
+/* Style for Group Summary Values on subsequent Lines of Group Trailer/Summary  */
+.reportico-output-group-tlr-dat
+{
+}
+
+.reportico-csv-box, .reportico-html-box, .reportico-printhtml-box, .reportico-pdf-box, .reportico-print-box, .reportico-xml-box, .reportico-json-box
+{
+    width: 42px !important;
+    height: 42px !important;
+    text-align: left;
+    padding: 0px;
+    margin-bottom: 5px !important;
+    background-repeat: no-repeat;
+    text-decoration: none;
+    float: left;
+}
+
+.reportico-html-box { background-image: url(../images/printhtml.png) !important; }
+.reportico-csv-box { background-image: url(../images/printcsv.png) !important; }
+.reportico-pdf-box { background-image: url(../images/printpdf.png) !important; }
+.reportico-json-box { background-image: url(../images/printjson.png) !important; }
+.reportico-xml-box { background-image: url(../images/printxml.png) !important; }
+.reportico-print-box { margin-right: 30px; background-image: url(../images/printablehtml.png) !important; }
+.reportico-printhtml-box { background-image: url(../images/printablehtml.png) !important; }
+
+.reportico-edit-link-form
+{
+    background-color : #f4f4f4;
+    border-color : #BBCCFF;
+    padding: 1px 1px 1px 1px;
+    font-size: 10pt;
+}
+
+.reportico-edit-link
+{
+    /*height: 30px !important;*/
+    text-align: left;
+    margin: 4px;
+    padding: 6px 8px 6px 8px;
+    margin-bottom: 5px !important;
+    background-repeat: no-repeat;
+    background-color: #ffffff !important;
+    text-decoration: none;
+    //border:none !important;
+    background-position: 0px 0px !important;
+    background-repeat: no-repeat !important;
+}
+
+/* Design Button in a button group no left right margin */
+.reportico-edit-linkDropDown
+{
+    /*height: 30px !important;*/
+    width:100%;
+}
+
+.reportico-edit-linkGroup
+{
+    /*height: 30px !important;*/
+    margin: 4px 0px 4px 0px !important;
+}
+
+.reportico-edit-linkGroupWithDropDown
+{
+    /*height: 30px !important;*/
+    padding: 0px !important;
+    margin: 4px 0px 4px 0px !important;
+}
+
+.reportico-edit-linkGroupDropDown {
+
+    border: none !important;
+    padding: 6px 12px;
+    width: 100%;
+    text-decoration: none;
+}
+
+.reportico-edit-linkGroupDropDown:hover {
+    text-decoration: none;
+}
+
+
+.reportico-output-buttons
+{
+    width: 100%;
+    height: 38px;
+    margin: 0px 0px 0px 0px;
+}
+
+.reportico-output-button-block {
+    width: 100%;
+    height: 36px;
+}
+
+.reportico-paginate-button a,
+.reportico-print-button .reportico-ajax-link,
+.reportico-output-refresh-box .reportico-ajax-link,
+.reportico-back-button .reportico-ajax-link
+{
+    width: 32px;
+    text-align: left;
+    padding: 0px;
+    margin: 2px 5px 2px 5px;
+    text-decoration: none;
+    float: left;
+    z-index: 1001;
+}
+
+.reportico-paginate-button a { height: 32px !important; border: none; background-image: url(../images/paginate.png); background-color: #ffffff;}
+.reportico-print-button .reportico-ajax-link { height: 32px !important; border: none; background-image: url(../images/printer.png); background-color: #ffffff;}
+.reportico-output-refresh-box .reportico-ajax-link { height: 32px !important; border: none; background-image: url(../images/refreshbutton.png); }
+.reportico-back-button .reportico-ajax-link { height: 32px !important; border: none; background-image: url(../images/backbutton.png); }
+
+.reportico-back-button:hover 
+{
+    background: #e5ecf9;
+}
+
+
+.swRepDatRow
+{
+}
+
+.reportico-output-dat-val
+{
+}
+
+/* ------------------------------------------------------------------------------------*/
+/* -----------------------------Styles for MAINTAIN Execute Mode ----------------------*/
+/* ----------------------------- i.e for the HTML Report Output -----------------------*/
+.reportico-maintain-body 
+{ 
+}
+
+/* ------------------ Main Screen Form Box --------------*/
+.reportico-maintain-form 
+{ 
+    text-align: left;
+    margin-left: 0%;
+    background-color: #ffffff;
+    width: 100%;
+    border: solid 1px #AAAAAA;
+}
+
+/* ------------------ Top Menu Box with Main Menu, Admin Menu options  --------------*/
+.reportico-maintain-top-menu
+{
+    width: 100%;
+    margin-top: 2px;
+    padding-bottom: 6px;
+    border-bottom: solid 1px #d0ccc9;
+}
+
+/* ------------------ 2nd Menu with Report Name, Project Name etc  --------------*/
+.reportico-maintain-main-box
+{
+    width: 100%;
+    border: solid;
+    border-color : #BBCCFF;
+    margin: 0px !important;
+    border-width : 0px;
+    background-color: #EEEEFF;
+    color: #121212;
+}
+
+.reportico-maintain-inner-right-box
+{
+    width: 100%;
+}
+
+.swMntInnerMainBox
+{
+    width: 100%;
+    border: solid;
+    background-color : #FF0000;
+    border-color : #BBCCFF;
+    border-width : 0px;
+    color: #000000;
+}
+
+.reportico-maintain-button
+{ 
+    background-color: #EFEFEF;
+    border-style: ridge;
+    border-color: #666666;
+    border-width: 1px;
+    font-size: 10pt;
+    color: #000000;
+    border-size: 0;
+    text-align: center;
+    margin-left: 2px;
+}
+
+.reportico-maintain-button:hover
+{
+    border: solid thin #000000;	
+}
+
+.reportico-maintain-mid-section
+{
+   width: 216px;
+   padding-right: 10px;
+}
+
+.reportico-maintain-up-down-button-cell
+{ 
+    padding: 0px;
+    margin: 0px;
+}
+
+.reportico-maintain-move-up-button
+{ 
+    background-image: url(../images/moveup.gif);
+    background-repeat: no-repeat;
+    border: none;
+    width: 14px;
+    height: 22px;
+    border-width: 1px;
+    border-size: 0;
+    font-size: 8pt;
+    text-align: center;
+    margin-left: 1px;
+    margin-right: 1px;
+    float: right;
+}
+
+.reportico-maintain-move-down-button
+{ 
+    background-image: url(../images/movedown.gif);
+    background-repeat: no-repeat;
+    border: none;
+    width: 14px;
+    height: 22px;
+    border-width: 1px;
+    border-size: 0;
+    font-size: 8pt;
+    text-align: center;
+    margin-left: 1px;
+    margin-right: 1px;
+    float: right;
+}
+
+.reportico-maintain-delete-button
+{ 
+    background-image: url(../images/delete.gif);
+    background-repeat: no-repeat;
+    border: none;
+    width: 14px;
+    height: 22px;
+    border-width: 1px;
+    border-size: 0;
+    font-size: 8pt;
+    text-align: center;
+    margin-left: 1px;
+    margin-right: 1px;
+    float: right;
+}
+
+/* ----------------------------- Horizontal Menu Box ---------------*/
+.reportico-maintain-inner-box
+{
+    width: 100%;
+    /*border: 2px solid #CCCCFF;*/
+    /*background-color : #000000;*/
+    padding: 5px 5px 5px 5px;
+    margin: 0px 0px 0px 0px;
+}
+
+/* -------------- Horizontal Menu Buttons ---------------------- */
+.reportico-maintain-tab-menu-but-sel
+{ 
+    border-style: none;
+    padding: 5px;
+    background-color: inherit;
+    color: #555;
+    width: 100% !important;
+}
+
+.reportico-maintain-tab-menu-but-unsel
+{ 
+    border-style: none;
+    padding: 5px;
+    background-color: inherit;
+    color: #555;
+    width: 100% !important;
+}
+
+.reportico-maintain-tab-menu-cell-sel
+{ 
+}
+
+.reportico-maintain-tab-menu-cell-unsel
+{ 
+    background-color: #e0e0ff;
+    border: 1px solid #bbb;
+}
+/* -------------- End Horizontal Menu Buttons ---------------------- */
+
+/* -------------- Verical Menu Buttons ---------------------- */
+.reportico-maintain-verttab-menu-but-sel
+{ 
+    border-style: none;
+    padding: 5px;
+    background-color: inherit;
+    color: #555;
+    width: 160px !important;
+    text-align: left;
+    
+}
+
+.reportico-maintain-verttab-menu-but-unsel
+{ 
+    background-color: #F5F5F5;
+    border-style: none;
+    padding: 5px;
+    background-color: inherit;
+    color: #555;
+    width: 160px !important;
+    text-align: left;
+}
+
+.reportico-maintain-verttab-menu-cell-sel
+{ 
+    width: 215px !important;
+}
+
+.reportico-maintain-verttab-menu-cell-unsel
+{ 
+    border: 1px solid #bbb;
+    width: 215px !important;
+}
+
+.reportico-maintain-verttab-menu-cell-sel a
+{
+    padding: 0px !important;
+}
+.reportico-maintain-verttab-menu-cell-unsel a
+{
+    padding: 0px !important;
+}
+/* -------------- End Verical Menu Buttons ---------------------- */
+
+.swMntExpandTextButton
+{ 
+    background-color: #9DE6F4;
+    background-repeat: no-repeat;
+    border-style: groove;
+    border-color: #4BBA5E;
+    border-width: 0px;
+    border-size: 0;
+    padding-right: 10;
+    padding-left: 10;
+    font-size: 8pt;
+    text-align: center;
+    vertical-align=text-bottom;
+}
+
+.swMntUnexpandTextButton
+{ 
+    background-color: #FDF6DF;
+    border-style: groove;
+    border-color: #4BBA5E;
+    border-width: 1px;
+    border-size: 0;
+    padding-right: 10;
+    padding-left: 10;
+    font-size: 8pt;
+    text-align: center;
+}
+
+.reportico-maintain-row-block
+{
+    border-bottom: solid 1px #ccc;
+    vertical-align: text-top;
+    font-style: bold;
+    font-size: 10pt;
+    margin-left: 2%
+}
+
+.reportico-maintain-set-field
+{
+    /*background-color : #f4f4f4;*/
+    border-color : #BBCCFF;
+    padding: 1px 1px 1px 1px;
+    font-size: 10pt;
+}
+
+.reportico-maintain-set-field textarea
+{
+    font-size: 10pt;
+    /*width: auto !important;
+    max-width:380px;*/
+}
+
+.swMntHelpLink
+{ 
+    color: #0000FF;
+    text-decoration: none;
+    border-style: none;
+    padding: 0px 0px 0px 0px;
+}
+
+.reportico-maintain-help-image
+{ 
+    border-style: none;
+    display: inline !important;
+}
+
+.swMntHelp
+{ 
+    background-color : #DDFFDD;
+    padding: 0px 0px 0px 0px;
+    font-size: 10pt;
+    width: 14px;
+}
+
+#deltripbtn
+{
+    background-image: url(../images/delete.png);
+    background-repeat: no-repeat;
+}
+
+/* ----------------------------- Other Styles -----------------------------------------*/
+.reportico-status-block
+{
+    width:          98%;
+    border: none;
+    border-color : #DDFFDD;
+    font-style:	    bold;
+    margin-left: 1%;
+}
+
+.reportico-error-box
+{
+    width:          100%;
+    background-color : inherit;
+    color : #BB0000;
+    border-color : #DDFFDD;
+    font-style:	    bold;
+}
+
+.smallbanner {
+    color:#888888;
+    font-weight:normal;
+    font-size: 8pt;
+    text-align: center;
+}
+
+/* -------------------------- Printed Output Styles ----------------------------------*/
+.reportico-custom-trailer-block { display: block; width: 100%; position: relative; }
+.reportico-new-pageHeaderBlock { display: none; }
+.reportico-page-header-block { display: block; width: 100%; left: 0px; position: relative; top: 0;}
+.reportico-page-footer-block { display: block; width: 100%; left: 0px; position: absolute; bottom: 0 !important;}
+.reportico-page-headerBody { position: relative; }
+.reportico-page-footerBody { position: relative; }
+.reportico-page-footer { position: absolute; }
+.reportico-page-header { position: absolute; }
+.reportico-custom-trailer { position: absolute; }
+
+.reportico-hide-criteria,
+.reportico-show-criteria {
+    width: 100%;
+    display: block;
+    text-align: center;
+    width: 100%;
+}
+
+#reportico-report-output {
+    width: 100%;
+}
+
+@page {
+    size: A4;
+}
+
+#pageHeader {
+    background-color: #ff3333;
+    position: running(pageHeader);
+}
+
+
+/*@media screen {
+    .reportico-page-header-block { display: none; }
+}*/
+
+.reportico-paginated.autopaginate {
+  margin-bottom: 0.5cm;
+}
+
+.reportico-paginated {
+  background: white;
+  display: block;
+  margin: 0 auto;
+  padding: 0px 0px;
+  overflow-y: hidden;
+  box-sizing: border-box;
+  font-size: 12pt;
+  position: relative;
+  /*zoom: 0.68;*/
+  /*height: 100vh !important;*/
+}
+
+.reportico-paginated.autopaginate{
+  box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
+}
+
+.page-size-A3.page-orientation-portrait.autopaginate { width: 29.7; height: 42.0cm; }
+.page-size-A3.page-orientation-landscape.autopaginate { width: 42.0cm; height: 29.7cm; }
+.page-size-A4.page-orientation-portrait.autopaginate { width: 21cm; height: 29.7cm; }
+.page-size-A4.page-orientation-landscape.autopaginate { width: 29.7cm; height: 21cm; }
+.page-size-A5.page-orientation-portrait.autopaginate { width: 14.8cm; height: 15.0cm; }
+.page-size-A5.page-orientation-landscape.autopaginate { width: 21.0cm; height: 14.8cm; }
+.page-size-US-Letter.page-orientation-portrait.autopaginate { width: 216mm; height: 279mm; }
+.page-size-US-Letter.page-orientation-landscape.autopaginate { width: 279mm; height: 216mm; }
+.page-size-US-Legal.page-orientation-portrait.autopaginate { width: 216mm; height: 356mm; }
+.page-size-US-Legal.page-orientation-landscape.autopaginate { width: 356mm; height: 216mm; }
+.page-size-US-Ledger.page-orientation-portrait.autopaginate { width: 279mm; height: 432mm; }
+.page-size-US-Ledger.page-orientation-landscape.autopaginate { width: 432mm; height: 279mm; }
+
+
+
+@media print {
+
+    .reportico-paginated {
+        overflow:hidden !important;
+    }
+
+    .reportico-report-form
+    {
+        /*border: solid 1px #AAAAAA;*/
+        background-color: #999;
+        overflow: visible;
+        /*min-width: 100vw;*/
+    }
+
+
+    .non-printable { display: none; }
+    .reportico-page-header { display: block; }
+    .reportico-ajax-link { display: none; }
+    .reportico-back-button { display: none; }
+    
+    .reportico-output-button-block { display: none; }
+    .reportico-output-buttons { display: none; }
+    .reportico-report-form { border: none; }
+    .reportico-body { width: 100%; margin: 0px; border: none; }
+
+    .reportico-new-pageHeaderBlock { display: block; } 
+
+    .reportico-row td a
+    {
+        text-decoration: underline;
+        color: #ff0000;
+    }
+
+    a[href]:after {
+          content: none !important;
+    }
+
+    .reportico-chart {
+        page-break-inside: avoid;
+    }
+
+    .reportico-paginated {
+       page-break-after: always;
+    }
+
+}
+
+
+.reportico-chart-container {
+    box-sizing: border-box;
+    text-align: center;
+    display: block;
+    max-width: 100%;
+    padding: 20px 15px 15px 15px;
+    margin: 15px auto 30px auto;
+    /*border: 1px solid #ddd;*/
+    background: #fff;
+    /*background: linear-gradient(#f6f6f6 0, #fff 50px);
+    background: -o-linear-gradient(#f6f6f6 0, #fff 50px);
+    background: -ms-linear-gradient(#f6f6f6 0, #fff 50px);
+    background: -moz-linear-gradient(#f6f6f6 0, #fff 50px);
+    background: -webkit-linear-gradient(#f6f6f6 0, #fff 50px);*/
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    -o-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    -ms-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    -moz-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    -webkit-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.reportico-chart-placeholder {
+    width: 100%;
+    height: 100%;
+    font-size: 14px;
+    line-height: 1.2em;
+}
+
+#reportico-form .navbar,
+{
+    margin-bottom: 0px;
+}
+
+.reportico-modal-title
+{
+    margin: 0;
+    line-height: 1.42857143;
+    font-size: 18px;
+    display: block;
+}
+
+.reportico-notice-modal-close,
+.reportico-modal-close
+{
+padding: 0;
+cursor: pointer;
+background: transparent;
+border: 0;
+-webkit-appearance: none;
+float: right;
+font-size: 21px;
+font-weight: bold;
+line-height: 1;
+color: #000;
+text-shadow: 0 1px 0 #fff;
+opacity: .2;
+}
+
+.reportico-modal, .reportico-notice-modal
+{
+display: none;
+overflow: auto;
+overflow-y: scroll;
+position: fixed;
+top: 0;
+right: 0;
+bottom: 0;
+left: 0;
+z-index: 1050;
+outline: 0;
+display: none;
+}
+
+.reportico-modal-header, .reportico-notice-modal-header
+{
+padding: 15px;
+border-bottom: 1px solid #e5e5e5;
+min-height: 16.42857143px;
+font-size: 14px;
+line-height: 1.42857143;
+color: #333;
+}
+
+.reportico-modal-dialog, .reportico-notice-modal-dialog 
+{
+margin: 30px auto;
+position: relative;
+width: 900px;
+}
+
+.reportico-modal-body, .reportico-notice-modal-body
+{
+    position: relative;
+    padding: 20px;
+}
+
+.reportico-modal-content, .reportico-notice-modal-content
+{
+position: relative;
+background-color: #fff;
+border: 1px solid #999;
+border: 1px solid rgba(0,0,0,0.2);
+border-radius: 6px;
+-webkit-box-shadow: 0 3px 9px rgba(0,0,0,0.5);
+box-shadow: 0 3px 9px rgba(0,0,0,0.5);
+background-clip: padding-box;
+outline: none;
+}
+
+.reportico-modal-footer, .reportico-notice-modal-footer
+{
+margin-top: 15px;
+padding: 19px 20px 20px;
+text-align: right;
+border-top: 1px solid #e5e5e5;
+}
+
+#reporticoNoticeModalBody
+{
+    padding: 15px !important;
+}
+
+
+.unbreakable {
+    display:inline-block;
+}
+.unbreakable:after {
+    content: '';
+    display:block;
+    height:0px;
+    visibility: hidden;
+}
+
+/* Styles for NVD3 charts */
+
+/* Chart Title */
+.reportico-chart-title {
+  font: normal 12pt sans-serif !important;
+}
+
+.reportico-dropdown {
+  z-index: 1001 !important;
+}
+
+.reportico-prepare-drop-select2 {
+  width: 300px;
+}
+
+
+/* ---------- STYLES FOR PDF CHARTS ----------*/
+/* Chart Default Text */
+.nvd3 text {
+  font: normal 8pt sans-serif !important;
+}
+
+/* Axis Tick Styles */
+.nvd3 .axis .tick text,
+.nvd3 .axis .nv-axisMaxMin text
+{
+  font: normal 8pt sans-serif !important;
+}
+
+/* Axis Title Styles */
+.nvd3 .nv-axislabel {
+  font: normal 8pt sans-serif !important;
+}
+
+/* Legend Styles */
+.nvd3 .nv-series text {
+  font: normal 8pt sans-serif !important;
+}
+/* Title Styles */
+.nvd3 .title {
+  font: normal 8pt sans-serif !important;
+}
+.nvtooltip {
+  font-family: sans-serif !important;
+}
+/* -------- END STYLES FOR HTML CHARTS --------*/
+
+/* ---------- STYLES FOR PDF CHARTS ----------*/
+/* Chart Default Text */
+.reportico-print-pdf * .nvd3 text {
+  font: normal 8pt sans-serif !important;
+}
+
+/* Axis Tick Styles */
+.reportico-print-pdf * .nvd3 .axis .tick text,
+.reportico-print-pdf * .nvd3 .axis .nv-axisMaxMin text
+{
+  font: normal 6pt sans-serif !important;
+}
+
+/* Axis Title Styles */
+.reportico-print-pdf * .nvd3 .nv-axislabel {
+  font: normal 6pt sans-serif !important;
+}
+
+/* Legend Styles */
+.reportico-print-pdf * .nvd3 .nv-series text {
+  font: normal 6pt sans-serif !important;
+}
+/* Title Styles */
+.reportico-print-pdf * .nvd3 .title {
+  font: normal 8pt sans-serif !important;
+}
+.nvtooltip {
+  font-family: sans-serif !important;
+}
+/* -------- END STYLES FOR PDF CHARTS --------*/

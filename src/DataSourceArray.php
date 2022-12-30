@@ -17,27 +17,50 @@ class DataSourceArray
     public $ct = 0;
     public $numrows = 0;
 
-    public function __construct()
+    function __construct($source = false)
     {
+        if ( $source )
+            $this->Connect($source);
     }
+
 
     public function Connect(&$in_array)
     {
-        $this->array_set = &$in_array;
+        $this->array_set =& $in_array;
         reset($this->array_set);
         $k = key($this->array_set);
-        $this->numrows = count($this->array_set[$k]);
+        //$this->numrows = count($this->array_set[$k]);
+        $this->numrows = count($this->array_set);
+        $ct = 0;
+
     }
 
-    public function FetchRow()
+    function FetchRow()
+    {
+        $this->ct++;
+        if ( $this->numrows == 0 ) {
+            $this->EOF = true;
+            return false;
+        }
+        if ( $this->ct == $this->numrows )
+        {
+            $this->EOF = true;
+            return($this->array_set[$this->ct - 1]);
+        }
+        return($this->array_set[$this->ct - 1]);
+    }
+
+    public function FetchRow1()
     {
         $rs = array();
 
         reset($this->array_set);
-        while ($d = &key($this->array_set)) {
+        while ($d = key($this->array_set)) {
             $rs[$d] = $this->array_set[$d][$this->ct];
             next($this->array_set);
         }
+        echo "<BR>";
+        var_dump($this->array_set); die;
         $this->ct++;
 
         if ($this->ct == $this->numrows) {
@@ -50,6 +73,11 @@ class DataSourceArray
     public function &ErrorMsg()
     {
         return "Array dummy Message";
+    }
+
+    public function ErrorNo()
+    {
+        return -1;
     }
 
     public function Close()

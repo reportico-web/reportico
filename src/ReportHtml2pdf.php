@@ -62,7 +62,7 @@ class ReportHtml2pdf extends Report
         return;
     }
 
-    public function start()
+    public function start($engine = false)
     {
         Report::start();
 
@@ -319,14 +319,18 @@ class ReportHtml2pdf extends Report
         $groupct = count($this->jar["groups"]);
 
         if ( $this->currentGroup )
-            if ( !isset($this->jar["pages"][$this->page_count]["rows"][$this->line_count+1])) 
+            if ( !isset($this->jar["pages"][$this->page_count]["rows"][$this->line_count+1])) {
                 $this->jar["pages"][$this->page_count]["rows"][$this->line_count+1] =
                     [ "data" => [],
                         "groupstarts" => [ &$this->jar["groups"][$groupct - 1] ],
-                        "groupends" => false
+                        "groupends" => []
                         ];
-            else
+            } else {
                 $this->jar["pages"][$this->page_count]["rows"][$this->line_count+1]["groupstarts"][]  = &$this->jar["groups"][$groupct - 1];
+                if (!isset($this->jar["pages"][$this->page_count]["rows"][$this->line_count+1]["groupends"]) ) { 
+                    $this->jar["pages"][$this->page_count]["rows"][$this->line_count+1]["groupends"] = [];
+                }
+            }
         $this->jar["pages"][$this->page_count]["rows"][$this->line_count+1]["openrowsection"] = true;
 
         $this->currentGroup = &$this->jar["groups"][$groupct - 1];
@@ -403,7 +407,7 @@ class ReportHtml2pdf extends Report
             $this->page_started = false;
         }
         $this->graph_sessionPlaceholder++;
-        $graph->width_actual = ReporticoApp::getDefaultConfig("GraphWidth", $graph->width_pdf);
+        $graph->width_actual = ReporticoApp::getDefaultConfig("GraphWidthPDF", $graph->width_pdf);
         $graph->height_actual = ReporticoApp::getDefaultConfig("GraphHeight", $graph->height_pdf);
         $graph->title_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->title, true);
         $graph->xtitle_actual = Assignment::reporticoMetaSqlCriteria($this->query, $graph->xtitle, true);
@@ -966,7 +970,7 @@ class ReportHtml2pdf extends Report
 
     public static function fetchCellStylesStandalone(&$tx)
     {
-        $styles = false;
+        $styles = [];
         $matches = array();
         if (preg_match("/{STYLE[ ,]*([^}].*)}/", $tx, $matches)) {
             if (isset($matches[1])) {
@@ -1003,7 +1007,7 @@ class ReportHtml2pdf extends Report
     }
     public function fetchCellStyles(&$tx)
     {
-        $styles = false;
+        $styles = [];
         $matches = array();
         if (preg_match("/{STYLE[ ,]*([^}].*)}/", $tx, $matches)) {
 

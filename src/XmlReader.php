@@ -46,7 +46,7 @@ class XmlReader
     public $wizard_linked_to = false;
     public $partial_apply_drawn = false;
 
-    public function __construct(&$query, $filename, $xmlstring = false, $search_tag = false)
+    public function __construct(&$query, $filename, $xmlstring = false, $search_tag = false, $debug = false, $no_authentication = false)
     {
         $this->query = &$query;
 
@@ -308,14 +308,17 @@ class XmlReader
             "Title" => array("Title" => "TITLE", "DocId" => "title"),
             "CriteriaDefaults" => array("Title" => "CRITERIADEFAULTS", "HelpPage" => "criteria", "DocId" => "defaults"),
             "CriteriaList" => array("Title" => "CRITERIALIST", "HelpPage" => "criteria", "DocId" => "list_values"),
-            "CriteriaType" => array("Title" => "CRITERIATYPE", "HelpPage" => "criteria", "Type" => "DROPDOWN",
-                "Values" => array("TEXTFIELD", "LOOKUP", "DATE", "DATERANGE", "LIST", "SQLCOMMAND"), "XlateOptions" => true, "DocId" => "criteria_type"),
+            "CriteriaType" => array("Title" => "CRITERIATYPE", "HelpPage" => "criteria", "Type" => "CRITERIARENDERS",
+                //"Values" => array("TEXTFIELD", "LOOKUP", "DATE", "DATERANGE", "LIST", "SQLCOMMAND"),
+                "XlateOptions" => true, "DocId" => "criteria_type"),
             "Use" => array("Title" => "USE", "HelpPage" => "criteria", "Type" => "DROPDOWN",
                 "Values" => array("DATA-FILTER", "SHOW/HIDE", "SHOW/HIDE-and-GROUPBY")),
             "LinkToReport" => array("Type" => "TEXTFIELDREADONLY", "Title" => "LINKTOREPORT"),
             "LinkToReportItem" => array("Type" => "TEXTFIELDREADONLY", "Title" => "LINKTOREPORTITEM"),
-            "CriteriaDisplay" => array("Title" => "CRITERIADISPLAY", "Type" => "DROPDOWN", "HelpPage" => "criteria", "XlateOptions" => true,
-                "Values" => array("NOINPUT", "TEXTFIELD", "DROPDOWN", "MULTI", "SELECT2SINGLE", "SELECT2MULTIPLE", "CHECKBOX", "RADIO"), "DocId" => "criteria_display"),
+            "CriteriaDisplay" => array("Title" => "CRITERIADISPLAY", "Type" => "CRITERIAWIDGETS", "HelpPage" => "criteria",
+                "XlateOptions" => true,
+                //"Values" => array("NOINPUT", "TEXTFIELD", "DROPDOWN", "MULTI", "SELECT2SINGLE", "SELECT2MULTIPLE", "CHECKBOX", "RADIO"), "DocId" => "criteria_display"),
+                "DocId" => "criteria_display"),
             "ExpandDisplay" => array("Title" => "EXPANDDISPLAY", "Type" => "DROPDOWN", "HelpPage" => "criteria", "XlateOptions" => true,
                 "Values" => array("NOINPUT", "TEXTFIELD", "DROPDOWN", "MULTI", "SELECT2SINGLE", "SELECT2MULTIPLE", "CHECKBOX", "RADIO"), "DocId" => "expand_display"),
             "DatabaseType" => array("Title" => "DATABASETYPE", "Type" => "DROPDOWN",
@@ -440,10 +443,26 @@ class XmlReader
         $this->ends_record = array('book' => true);
 
         $x = false;
+        if ( $debug ) {
+            echo "LOAD FILE $filename STRING ".strlen($xmlstring)."<BR>";
+        }
         if ($xmlstring) {
+            if ( $debug ) {
+                echo "STRING " . strlen($xmlstring) . "<BR> " . htmlspecialchars($xmlstring);
+            }
             $x = &$xmlstring;
         } else {
             if ($filename) {
+                if (!preg_match("/\.xml$/", $filename)) {
+                    $filename = $filename . ".xml";
+                }
+                if ( $debug ) {
+                    echo "LOAD $filename<BR>";
+                    echo "<PRE>";
+                    debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+                    echo "</PRE>";
+                    echo "XML $filename<BR>";
+                }
                 if ($this->query) {
                     $readfile = $this->query->projects_folder . "/" . ReporticoApp::getConfig("project") . "/" . $filename;
                     $adminfile = $this->query->admin_projects_folder . "/admin/" . $filename;
@@ -452,12 +471,12 @@ class XmlReader
                     $adminfile = false;
                 }
 
+                if ( !$no_authentication )
                 if ($query) {
-                    if ($query->login_type != "ADMIN" && $query->login_type != "DESIGN") {
+                    if (!Authenticator::allowed("admin")) {
                         if (ReporticoApp::getConfig("project") == "admin") {
                             $readfile = false;
                         }
-
                         $adminfile = false;
                     }
                 }
@@ -466,6 +485,7 @@ class XmlReader
                     ReporticoUtility::findFileToInclude($readfile, $readfile);
                 }
 
+                $use_admin_xml = false;
                 if ($readfile && is_file($readfile)) {
                     $readfile = $readfile;
                 } else {
@@ -476,11 +496,17 @@ class XmlReader
                         }
 
                     } else {
+                        $use_admin_xml = true;
                         $readfile = $adminfile;
                     }
-
                 }
+
                 if ($readfile) {
+                    //if ( $use_admin_xml )
+                        //Authenticator::flag("admin-report-selected");
+                    if ( !file_exists($readfile) ) {
+                        ReporticoApp::backtrace();
+                    }
                     $x = join("", file($readfile));
                 } else {
                     trigger_error("Report Definition File  " . $this->query->reports_path . "/" . $filename . " Not Found", E_USER_ERROR);
@@ -497,7 +523,7 @@ class XmlReader
         //var_dump($this->data);
     }
 
-    public function startElement($p, $element, &$attributes)
+    public function startElement($p, $element, $attributes)
     {
         //$element = strtolower($element);
 
@@ -915,7 +941,7 @@ class XmlReader
 
             case "clnk":
                 $cr = &$anal["crit"];
-                $this->query->set_criteria_link(
+                $this->query->setCriteriaLink(
                     $cr->query_name, $cr->query_name,
                     ReporticoLang::templateXlate("ENTERCLAUSE"));
                 break;
@@ -941,6 +967,7 @@ class XmlReader
                     if ($this->query->reportlink_report_item == "ALLITEMS" ||
                         $this->query->reportlink_report_item == $v->query_name) {
                         $qu = new Reportico();
+                        $qu->manager = $this->query->manager;
 
                         $this->query->setCriteriaLookup($v->query_name, $qu, "", "");
                         $lastitem = count($this->query->lookup_queries) - 1;
@@ -1035,7 +1062,7 @@ class XmlReader
 
             case "clnk":
                 $cr = &$anal["crit"];
-                $this->query->set_criteria_link(
+                $this->query->setCriteriaLink(
                     $cr->query_name, $cr->query_name,
                     ReporticoLang::templateXlate("ENTERCLAUSE"));
                 break;
@@ -1477,18 +1504,10 @@ class XmlReader
         foreach ($_REQUEST as $k => $v) {
             if (preg_match($match_key, $k, $matches)) {
                 if ($k == "set_mainquerform_PreExecuteCode") {
-                    if (get_magic_quotes_gpc()) {
-                        $updates[$matches[1]] = stripslashes($v);
-                    } else {
-                        $updates[$matches[1]] = $v;
-                    }
+                    $updates[$matches[1]] = $v;
 
                 } else {
-                    if (get_magic_quotes_gpc()) {
-                        $updates[$matches[1]] = stripslashes($v);
-                    } else {
-                        $updates[$matches[1]] = $v;
-                    }
+                    $updates[$matches[1]] = $v;
 
                 }
             }
@@ -1506,7 +1525,7 @@ class XmlReader
                 $qr = &$anal["quer"];
                 $maintain_sql = $updates["QuerySql"];
                 $sql = $updates["QuerySql"];
-                if ($qr->loginCheck(false)) {
+                if (Authenticator::login()) {
                     $p = new SqlParser($sql);
                     if ($p->parse()) {
                         $p->importIntoQuery($qr);
@@ -1781,7 +1800,7 @@ class XmlReader
 
             case "clnk":
                 $qr = &$anal["crit"]->lookup_query;
-                $this->query->set_criteria_link(
+                $this->query->setCriteriaLink(
                     $updates["LinkFrom"], $updates["LinkTo"],
                     $updates["LinkClause"], $anal["number"]);
                 break;
@@ -1988,7 +2007,7 @@ class XmlReader
                 break;
 
             case "pghd":
-                //$updates["HeaderText"] = $this->applyPdfStyles ( "PageHeader", $updates, $updates["HeaderText"] );
+                //$updates["HeaderTxt"] = $this->applyPdfStyles ( "PageHeader", $updates, $updates["HeaderText"] );
                 if (isset($updates["HeaderText_shadow"]) && $updates["HeaderText_shadow"] != $updates["HeaderText"]) {
                     $updates["HeaderText"] = $updates["HeaderText"];
                 } else {
@@ -2155,7 +2174,7 @@ class XmlReader
                         $sql = stripslashes($_REQUEST["mainquerqury_SQL"]);
 
                         $maintain_sql = $sql;
-                        if ($this->query->loginCheck()) {
+                        if (Authenticator::login()) {
                             $p = new SqlParser($sql);
                             if ($p->parse()) {
                                 $p->importIntoQuery($qr);
@@ -2255,10 +2274,7 @@ class XmlReader
         }
 
         $xml = $xmlout->getXmldata();
-
-        if ($this->query->top_level_query) {
-            $this->query->xmlintext = $xml;
-        }
+        $this->query->xmlintext = $xml;
 
         $this->query->xmlin = new XmlReader($this->query, false, $xml);
         $this->query->xmlin->show_area = $show_area;
@@ -2760,7 +2776,8 @@ class XmlReader
                             break;
                         }
 
-                        $text .= '<TR>';
+                        /*
+                         * $text .= '<TR>';
                         $text .= '<TD colspan="2">';
                         $text .= '&nbsp;&nbsp;' . ReporticoLang::templateXlate('PROJECT') . ReporticoApp::getConfig("project") . '&nbsp;&nbsp;&nbsp;&nbsp;';
                         if ($this->query->xmloutfile == "configureproject") {
@@ -2775,6 +2792,7 @@ class XmlReader
                         $text .= '</TD>';
                         $text .= '</TR>';
                         //$text .= '<TR>';
+                        */
                         break;
 
                     case "CogQuery":
@@ -3989,6 +4007,41 @@ class XmlReader
                 $text .= $this->drawArrayDropdown("set_" . $this->id . "_" . $showtag . $shadow, $keys, $val, false, $translateoptions);
                 break;
 
+            case "CRITERIAWIDGETS":
+
+                $keys = array();
+                foreach ( $this->query->assetManager->availableAssets as $k => $widget){
+                    $config = $widget->getConfig();
+
+                    $order = isset($config["order"]) ? str_pad($config["order"],5, "0" ) : "99999";
+                    if ( isset($config["renderType"]) && !in_array($config["renderType"], $keys)){
+                        $keys[$order."-".$config["name"]] = $config["renderType"];
+                    }
+                }
+
+                ksort($keys);
+
+                $text .= $this->drawArrayDropdown("set_" . $this->id . "_" . $showtag . $shadow, $keys, $val, false, $translateoptions);
+                break;
+
+            case "CRITERIARENDERS":
+
+                $keys = array();
+                foreach ( $this->query->assetManager->availableAssets as $k => $widget){
+                    $config = $widget->getConfig();
+
+                    $order = isset($config["order"]) ? str_pad($config["order"],5, "0" ) : "99999";
+                    if ( isset($config["sourceType"]) && !in_array($config["sourceType"], $keys)){
+                        $keys[$order."-".$config["name"]] = $config["sourceType"];
+                    }
+                }
+
+                ksort($keys);
+
+                $text .= $this->drawArrayDropdown("set_" . $this->id . "_" . $showtag . $shadow, $keys, $val, false, $translateoptions);
+                break;
+
+
             case "REPORTLIST":
                 $keys = array();
                 $keys[] = "";
@@ -4024,6 +4077,9 @@ class XmlReader
                     //$fontdir = "src/fpdf/font";
                     $fontdir = "vendor/setasign/fpdf/font";
                 } else if ($this->query->pdf_engine == "phantomjs"){
+                    //$fontdir = "src/tcpdf/fonts";
+                    $fontdir = false;
+                } else if ($this->query->pdf_engine == "chromium"){
                     //$fontdir = "src/tcpdf/fonts";
                     $fontdir = false;
                 } else {
@@ -5066,6 +5122,8 @@ return $text;
                                 $in_query = false;
                             }
 
+                            if ( !$crit_lookup_display ) $crit_lookup_display = $ccol["Name"];
+                            if ( !$crit_lookup_return ) $crit_lookup_return = $ccol["Name"];
                             $critquery->createCriteriaColumn
                             (
                                 $ccol["Name"],
@@ -5126,7 +5184,7 @@ return $text;
                     $this->query->setCriteriaLookup($critnm, $critquery, $crittb, $critcl);
                     $this->query->setCriteriaInput($critnm, $crittp, $critds, $critexp, $crituse);
                     $this->query->setCriteriaLinkReport($critnm, $linked_report, $linked_report_item);
-//echo "SET $critnm $crit_required<BR>";
+
                     $this->query->setCriteriaDefaults($critnm, $critdefault);
                     $this->query->setCriteriaList($critnm, $critlt);
                     //var_dump($crit_required);
@@ -5142,7 +5200,7 @@ return $text;
 
                 // Set up any Criteria Links
                 foreach ($criteria_links as $cl) {
-                    $this->query->set_criteria_link($cl["LinkFrom"], $cl["LinkTo"], $cl["LinkClause"]);
+                    $this->query->setCriteriaLink($cl["LinkFrom"], $cl["LinkTo"], $cl["LinkClause"]);
                 }
             }
         }
@@ -5150,106 +5208,4 @@ return $text;
     }
 }
 
-/**
- * Class ReporticoXmlval
- *
- * Stores the definition of a single tag within an XML report definition
- */
-class ReporticoXmlval
-{
-    public $name;
-    public $value;
-    public $attributes;
-    public $ns;
-    public $xmltext = "";
-    public $elements = array();
 
-    public function __construct($name, $value = false, $attributes = array())
-    {
-        $this->name = $name;
-        $this->value = $value;
-        $this->attributes = $attributes;
-    }
-
-    public function &add_xmlval($name, $value = false, $attributes = false)
-    {
-        $element = new ReporticoXmlval($name, htmlspecialchars($value), $attributes);
-        $this->elements[] = &$element;
-        return $element;
-    }
-
-    public function unserialize()
-    {
-        $this->xmltext = "<";
-        $this->xmltext .= $this->name;
-
-        if ($this->attributes) {
-            $infor = true;
-            foreach ($this->attributes as $k => $v) {
-                if ($v) {
-                    if ($infor) {
-                        $this->xmltext .= " ";
-                    } else {
-                        $infor = true;
-                    }
-
-                    $this->xmltext .= $k . '="' . $v . '"';
-                }
-
-            }
-        }
-
-        $this->xmltext .= ">";
-
-        if ($this->value || $this->value === "0") {
-            $this->xmltext .= $this->value;
-        } else {
-            foreach ($this->elements as $el) {
-                $this->xmltext .= $el->unserialize();
-            }
-        }
-
-        $this->xmltext .= "</";
-        $this->xmltext .= $this->name;
-        $this->xmltext .= ">";
-
-        return $this->xmltext;
-    }
-
-    public function write()
-    {
-        echo "<";
-        echo $this->name;
-
-        if ($this->attributes) {
-            $infor = true;
-            foreach ($this->attributes as $k => $v) {
-                if ($v) {
-                    if ($infor) {
-                        echo " ";
-                    } else {
-                        $infor = true;
-                    }
-
-                    echo $k . '="' . $v . '"';
-                }
-
-            }
-        }
-
-        echo ">";
-
-        if ($this->value) {
-            echo $this->value;
-        } else {
-            foreach ($this->elements as $el) {
-                $el->write();
-            }
-        }
-
-        echo "</";
-        echo $this->name;
-        echo ">";
-    }
-
-}
