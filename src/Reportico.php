@@ -70,7 +70,7 @@ class Reportico extends ReporticoObject
     public $delete_project_url;
     public $create_report_url;
 
-    public $version = "8.0.3";
+    public $version = "8.1.0";
     public $doc_version = "6.0.0";
 
     public $name;
@@ -391,6 +391,11 @@ class Reportico extends ReporticoObject
     public $theme_dir = false;
 
     public $css_framework = false;
+
+    public $reports_path = false;
+    public $widgetRenders = [];
+    public $manager = false;
+    public $template_files = false;
 
     public function __construct()
     {
@@ -2845,7 +2850,6 @@ class Reportico extends ReporticoObject
 
         // See if XML needs to be read in
         $this->xmlinput = false;
-        $this->sqlinout = false;
 
         if ($sessionClass::issetReporticoSessionParam("xmlin")) //if ( array_key_exists("xmlin", $_SESSION[$sessionClass::reporticoNamespace()]) )
         {
@@ -5101,13 +5105,15 @@ class Reportico extends ReporticoObject
 
         if ($configfile) {
             if (!is_file($configfile)) {
-                ReporticoApp::handleError("Config file $configfile not found in project $project", E_USER_WARNING);
+                ReporticoApp::handleError("Project \"$project\" not present in projects folder. Config file $configfile does not exist", E_USER_WARNING);
             }
 
             if (ReporticoApp::get("included_config") && ReporticoApp::get("included_config") != $configfile) {
                 ReporticoApp::handleError("Cannot load two different instances on a single page from different projects.", E_USER_ERROR);
             } else {
-                include_once $configfile;
+                if (is_file($configfile)) {
+                    include_once $configfile;
+                }
                 ReporticoApp::set("included_config", $configfile);
             }
 
