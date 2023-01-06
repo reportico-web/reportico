@@ -27,6 +27,7 @@ class Widget
     public $name = "core";
     public $added = false;
     public $sourceType = false;
+    public $defaults = false;
 
     protected $options = [];
 

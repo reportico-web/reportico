@@ -29,6 +29,7 @@ class ReportHtml extends Report
     public $group_count = 0;
     public $currentTrailerRow = 0;
     public $currentGroup = false;
+    public $throw_page = false;
 
     public $jar = array(
         "attributes" => array(

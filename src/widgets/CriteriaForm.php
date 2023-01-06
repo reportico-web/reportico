@@ -26,6 +26,7 @@ class CriteriaForm extends Widget
 
     public $buttonType = false;
     public $buttonTypes = array();
+    public $formTypes = false;
 
     public function __construct($engine, $load = false, $type = false )
     {

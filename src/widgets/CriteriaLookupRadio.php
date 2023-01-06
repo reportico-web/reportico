@@ -22,6 +22,7 @@ class CriteriaLookupRadio extends CriteriaLookup
 {
     public $value = false;
     public $expanded = false;
+    public $post_match_column = false;
 
     public function __construct($engine, $criteria = false, $expanded = false)
     {
