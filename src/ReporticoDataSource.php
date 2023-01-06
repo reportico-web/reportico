@@ -888,6 +888,10 @@ class ReporticoDataSource extends ReporticoObject
                 break;
 
             default:
+                if ( !$this->_conn_driver ) {
+                    ReporticoApp::handleError("Error in connection to data - no database driver specified");
+                    break;
+                }
                 $this->ado_connection = NewADOConnection($this->_conn_driver);
                 if ($this->ado_connection) {
                     $this->ado_connection->SetFetchMode(ADODB_FETCH_ASSOC);

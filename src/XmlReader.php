@@ -45,6 +45,9 @@ class XmlReader
     public $element_counts = array();
     public $wizard_linked_to = false;
     public $partial_apply_drawn = false;
+    public $field_display = false;
+    public $gotdata = false;
+    public $ErrorMsg = "No QueryColumns tag within Query";
 
     public function __construct(&$query, $filename, $xmlstring = false, $search_tag = false, $debug = false, $no_authentication = false)
     {

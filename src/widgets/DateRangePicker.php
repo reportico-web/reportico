@@ -29,6 +29,7 @@ class DateRangePicker extends Widget
     public $range_end = false;
     public $range_raw = false;
     public $derived = false;
+    public $range_name = false;
 
     public $options = [
            "Today" => [
@@ -64,7 +65,7 @@ class DateRangePicker extends Widget
 
     public function getConfig() {
 
-        $format = strtoupper(ReporticoApp::getConfig("prep_dateformat"));
+        $format = strtoupper(ReporticoApp::getConfig("prep_dateformat") ?: "");
         $format = preg_replace("/Y/i", "YYYY", $format);
         $format = preg_replace("/M/i", "MM", $format);
         $format = preg_replace("/D/i", "DD", $format);

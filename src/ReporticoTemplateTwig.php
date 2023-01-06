@@ -26,6 +26,7 @@ class ReporticoTemplateTwig
 
     private $cacheDir = false;
     private $viewDir = false;
+    public $engine = false;
 
     public function __construct($viewDir = false, $cacheDir = false, $theme = false, $disableThemeCaching = false) {
 

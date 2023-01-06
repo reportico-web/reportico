@@ -40,7 +40,8 @@ class ReporticoSession
                         if ( isset( $_SESSION["reportico_reportico"] ) ) {
                             foreach ( $_SESSION["reportico_reportico"] as $key => $value){
                                 if ( !self::issetReporticoSessionParam($key) || $key == "permissions" || $key == "awaiting_initial_defaults") {
-                                    //echo "TRANS $key<BR>";
+                                    if ( $key == "xmlintext" )
+                                        continue;
                                     self::setReporticoSessionParam($key, $value);
                                 }
                             }
