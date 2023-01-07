@@ -255,7 +255,7 @@ class ReporticoGroup extends ReporticoObject
 
     }
 
-    public function addHeader(&$in_value_column, $in_value_custom = false, $show_in_html, $show_in_pdf)
+    public function addHeader(&$in_value_column, $in_value_custom = false, $show_in_html = false, $show_in_pdf = false)
     {
         $header = array();
         $header["GroupHeaderColumn"] = $in_value_column;

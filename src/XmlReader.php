@@ -3616,35 +3616,35 @@ class XmlReader
             }
         }
 
-        $text .= $parent->display_maintain_field("${type}StyleFgColor", $styles["color"], $tagct, true, false, $blocktype);
+        $text .= $parent->display_maintain_field("{$type}StyleFgColor", $styles["color"], $tagct, true, false, $blocktype);
         $tagct++;
-        $text .= $parent->display_maintain_field("${type}StyleBgColor", $styles["background-color"], $tagct, true, false, $blocktype);
+        $text .= $parent->display_maintain_field("{$type}StyleBgColor", $styles["background-color"], $tagct, true, false, $blocktype);
         $tagct++;
-        $text .= $parent->display_maintain_field("${type}StyleBorderStyle", $styles["border-style"], $tagct, true, false, $blocktype);
+        $text .= $parent->display_maintain_field("{$type}StyleBorderStyle", $styles["border-style"], $tagct, true, false, $blocktype);
         $tagct++;
-        $text .= $parent->display_maintain_field("${type}StyleBorderSize", $styles["border-width"], $tagct, true, false, $blocktype);
+        $text .= $parent->display_maintain_field("{$type}StyleBorderSize", $styles["border-width"], $tagct, true, false, $blocktype);
         $tagct++;
-        $text .= $parent->display_maintain_field("${type}StyleBorderColor", $styles["border-color"], $tagct, true, false, $blocktype);
+        $text .= $parent->display_maintain_field("{$type}StyleBorderColor", $styles["border-color"], $tagct, true, false, $blocktype);
         $tagct++;
-        $text .= $parent->display_maintain_field("${type}StyleMargin", $styles["margin"], $tagct, true, false, $blocktype);
+        $text .= $parent->display_maintain_field("{$type}StyleMargin", $styles["margin"], $tagct, true, false, $blocktype);
         $tagct++;
-        $text .= $parent->display_maintain_field("${type}StylePadding", $styles["padding"], $tagct, true, false, $blocktype);
+        $text .= $parent->display_maintain_field("{$type}StylePadding", $styles["padding"], $tagct, true, false, $blocktype);
         $tagct++;
-        $text .= $parent->display_maintain_field("${type}StyleHeight", $styles["height"], $tagct, true, false, $blocktype);
+        $text .= $parent->display_maintain_field("{$type}StyleHeight", $styles["height"], $tagct, true, false, $blocktype);
         $tagct++;
-        $text .= $parent->display_maintain_field("${type}StyleWidth", $styles["width"], $tagct, true, false, $blocktype);
+        $text .= $parent->display_maintain_field("{$type}StyleWidth", $styles["width"], $tagct, true, false, $blocktype);
         $tagct++;
-        $text .= $parent->display_maintain_field("${type}StylePosition", $styles["position"], $tagct, true, false, $blocktype);
+        $text .= $parent->display_maintain_field("{$type}StylePosition", $styles["position"], $tagct, true, false, $blocktype);
         $tagct++;
-        $text .= $parent->display_maintain_field("${type}StyleFontName", $styles["font-family"], $tagct, true, false, $blocktype);
+        $text .= $parent->display_maintain_field("{$type}StyleFontName", $styles["font-family"], $tagct, true, false, $blocktype);
         $tagct++;
-        $text .= $parent->display_maintain_field("${type}StyleFontSize", $styles["font-size"], $tagct, true, false, $blocktype);
+        $text .= $parent->display_maintain_field("{$type}StyleFontSize", $styles["font-size"], $tagct, true, false, $blocktype);
         $tagct++;
-        $text .= $parent->display_maintain_field("${type}StyleFontStyle", $styles["font-style"], $tagct, true, false, $blocktype);
+        $text .= $parent->display_maintain_field("{$type}StyleFontStyle", $styles["font-style"], $tagct, true, false, $blocktype);
         $tagct++;
 
         if ($type == "PageHeader" || $type == "PageFooter" || $type == "GroupHeader" || $type == "GroupTrailer") {
-            $text .= $parent->display_maintain_field("${type}StyleBackgroundImage", $styles["background-image"], $tagct, true, false, $blocktype);
+            $text .= $parent->display_maintain_field("{$type}StyleBackgroundImage", $styles["background-image"], $tagct, true, false, $blocktype);
             $tagct++;
         }
 
@@ -3656,127 +3656,127 @@ class XmlReader
     public function applyUpdateStyles($type, &$updates, $applyto)
     {
         $styletxt = "";
-        if ($updates["${type}StyleFgColor"]) {
-            $styletxt .= "color: " . $updates["${type}StyleFgColor"] . ";";
+        if ($updates["{$type}StyleFgColor"]) {
+            $styletxt .= "color: " . $updates["{$type}StyleFgColor"] . ";";
         }
 
-        if ($updates["${type}StyleBgColor"]) {
-            $styletxt .= "background-color:" . $updates["${type}StyleBgColor"] . ";";
+        if ($updates["{$type}StyleBgColor"]) {
+            $styletxt .= "background-color:" . $updates["{$type}StyleBgColor"] . ";";
         }
 
-        if (isset($updates["${type}StyleFontName"]) && $updates["${type}StyleFontName"]) {
-            $styletxt .= "font-family:" . $updates["${type}StyleFontName"] . ";";
+        if (isset($updates["{$type}StyleFontName"]) && $updates["{$type}StyleFontName"]) {
+            $styletxt .= "font-family:" . $updates["{$type}StyleFontName"] . ";";
         }
 
-        if ($updates["${type}StyleFontSize"]) {
-            $styletxt .= "font-size:" . $updates["${type}StyleFontSize"] . ";";
+        if ($updates["{$type}StyleFontSize"]) {
+            $styletxt .= "font-size:" . $updates["{$type}StyleFontSize"] . ";";
         }
 
-        if ($updates["${type}StyleWidth"]) {
-            $styletxt .= "width:" . $updates["${type}StyleWidth"] . ";";
+        if ($updates["{$type}StyleWidth"]) {
+            $styletxt .= "width:" . $updates["{$type}StyleWidth"] . ";";
         }
 
-        if ($updates["${type}StyleHeight"]) {
-            $styletxt .= "height:" . $updates["${type}StyleHeight"] . ";";
+        if ($updates["{$type}StyleHeight"]) {
+            $styletxt .= "height:" . $updates["{$type}StyleHeight"] . ";";
         }
 
-        if ($updates["${type}StyleFontStyle"] && $updates["${type}StyleFontStyle"] != "NONE") {
+        if ($updates["{$type}StyleFontStyle"] && $updates["{$type}StyleFontStyle"] != "NONE") {
             $stylevalue = "none";
-            if ($updates["${type}StyleFontStyle"] == "BOLD" || $updates["${type}StyleFontStyle"] == "BOLDANDITALIC") {
-                if ($updates["${type}StyleFontStyle"]) {
+            if ($updates["{$type}StyleFontStyle"] == "BOLD" || $updates["{$type}StyleFontStyle"] == "BOLDANDITALIC") {
+                if ($updates["{$type}StyleFontStyle"]) {
                     $styletxt .= "font-weight:bold;";
                 }
             }
 
-            if ($updates["${type}StyleFontStyle"] == "ITALIC" || $updates["${type}StyleFontStyle"] == "BOLDANDITALIC") {
-                if ($updates["${type}StyleFontStyle"]) {
+            if ($updates["{$type}StyleFontStyle"] == "ITALIC" || $updates["{$type}StyleFontStyle"] == "BOLDANDITALIC") {
+                if ($updates["{$type}StyleFontStyle"]) {
                     $styletxt .= "font-style:italic;";
                 }
             }
 
-            if ($updates["${type}StyleFontStyle"] == "NORMAL") {
-                if ($updates["${type}StyleFontStyle"]) {
+            if ($updates["{$type}StyleFontStyle"] == "NORMAL") {
+                if ($updates["{$type}StyleFontStyle"]) {
                     $styletxt .= "font-style:normal;";
                 }
             }
 
-            if ($updates["${type}StyleFontStyle"] == "UNDERLINE") {
-                if ($updates["${type}StyleFontStyle"] == "UNDERLINE") {
-                    if ($updates["${type}StyleFontStyle"]) {
+            if ($updates["{$type}StyleFontStyle"] == "UNDERLINE") {
+                if ($updates["{$type}StyleFontStyle"] == "UNDERLINE") {
+                    if ($updates["{$type}StyleFontStyle"]) {
                         $styletxt .= "text-decoration:underline;";
                     }
                 }
             }
 
-            if ($updates["${type}StyleFontStyle"] == "OVERLINE") {
-                if ($updates["${type}StyleFontStyle"]) {
+            if ($updates["{$type}StyleFontStyle"] == "OVERLINE") {
+                if ($updates["{$type}StyleFontStyle"]) {
                     $styletxt .= "text-decoration:overline;";
                 }
             }
 
-            if ($updates["${type}StyleFontStyle"] == "BLINK") {
-                if ($updates["${type}StyleFontStyle"]) {
+            if ($updates["{$type}StyleFontStyle"] == "BLINK") {
+                if ($updates["{$type}StyleFontStyle"]) {
                     $styletxt .= "text-decoration:blink;";
                 }
             }
 
-            if ($updates["${type}StyleFontStyle"] == "STRIKETHROUGH") {
-                if ($updates["${type}StyleFontStyle"]) {
+            if ($updates["{$type}StyleFontStyle"] == "STRIKETHROUGH") {
+                if ($updates["{$type}StyleFontStyle"]) {
                     $styletxt .= "text-decoration:line-through;";
                 }
             }
 
         }
 
-        if ($updates["${type}StylePosition"]) {
+        if ($updates["{$type}StylePosition"]) {
             $stylevalue = "none";
-            //if ( $updates["${type}StylePosition"] == "RELATIVE" || $updates["${type}StylePosition"] == "relative" )
-            if ($updates["${type}StylePosition"] == "ABSOLUTE") {
+            //if ( $updates["{$type}StylePosition"] == "RELATIVE" || $updates["{$type}StylePosition"] == "relative" )
+            if ($updates["{$type}StylePosition"] == "ABSOLUTE") {
                 $styletxt .= "position: absolute;";
             }
 
         }
 
-        if (!$updates["${type}StyleBorderStyle"] || $updates["${type}StyleBorderStyle"] == "NOBORDER") {
-            if ($updates["${type}StyleBorderSize"] || $updates["${type}StyleBorderColor"]) {
+        if (!$updates["{$type}StyleBorderStyle"] || $updates["{$type}StyleBorderStyle"] == "NOBORDER") {
+            if ($updates["{$type}StyleBorderSize"] || $updates["{$type}StyleBorderColor"]) {
                 trigger_error(ReporticoLang::templateXlate("SETBORDERSTYLE"), E_USER_ERROR);
             }
 
         } else {
             $stylevalue = "none";
-            if ($updates["${type}StyleBorderStyle"] == "SOLIDLINE") {
+            if ($updates["{$type}StyleBorderStyle"] == "SOLIDLINE") {
                 $stylevalue = "solid";
             }
 
-            if ($updates["${type}StyleBorderStyle"] == "DASHED") {
+            if ($updates["{$type}StyleBorderStyle"] == "DASHED") {
                 $stylevalue = "dashed";
             }
 
-            if ($updates["${type}StyleBorderStyle"] == "DOTTED") {
+            if ($updates["{$type}StyleBorderStyle"] == "DOTTED") {
                 $stylevalue = "dotted";
             }
 
             $styletxt .= "border-style:$stylevalue;";
-            if ($updates["${type}StyleBorderSize"]) {
-                $styletxt .= "border-width:" . $updates["${type}StyleBorderSize"] . ";";
+            if ($updates["{$type}StyleBorderSize"]) {
+                $styletxt .= "border-width:" . $updates["{$type}StyleBorderSize"] . ";";
             }
 
-            if ($updates["${type}StyleBorderColor"]) {
-                $styletxt .= "border-color:" . $updates["${type}StyleBorderColor"] . ";";
+            if ($updates["{$type}StyleBorderColor"]) {
+                $styletxt .= "border-color:" . $updates["{$type}StyleBorderColor"] . ";";
             }
 
         }
 
-        if ($updates["${type}StylePadding"]) {
-            $styletxt .= "padding:" . $updates["${type}StylePadding"] . ";";
+        if ($updates["{$type}StylePadding"]) {
+            $styletxt .= "padding:" . $updates["{$type}StylePadding"] . ";";
         }
 
-        if ($updates["${type}StyleBackgroundImage"]) {
-            $styletxt .= "background-image:" . $updates["${type}StyleBackgroundImage"] . ";";
+        if ($updates["{$type}StyleBackgroundImage"]) {
+            $styletxt .= "background-image:" . $updates["{$type}StyleBackgroundImage"] . ";";
         }
 
-        if ($updates["${type}StyleMargin"]) {
-            $styletxt .= "margin:" . $updates["${type}StyleMargin"] . ";";
+        if ($updates["{$type}StyleMargin"]) {
+            $styletxt .= "margin:" . $updates["{$type}StyleMargin"] . ";";
         }
 
         if ($styletxt) {
@@ -4342,114 +4342,114 @@ class XmlReader
     public function applyPdfStyles($type, &$updates, $applyto)
     {
         $styletxt = "";
-        if ($updates["${type}StyleFgColor"]) {
-            $styletxt .= "color: " . $updates["${type}StyleFgColor"] . ";";
+        if ($updates["{$type}StyleFgColor"]) {
+            $styletxt .= "color: " . $updates["{$type}StyleFgColor"] . ";";
         }
 
-        if ($updates["${type}StyleBgColor"]) {
-            $styletxt .= "background-color:" . $updates["${type}StyleBgColor"] . ";";
+        if ($updates["{$type}StyleBgColor"]) {
+            $styletxt .= "background-color:" . $updates["{$type}StyleBgColor"] . ";";
         }
 
-        if ($updates["${type}StyleFontName"]) {
-            $styletxt .= "font-family:" . $updates["${type}StyleFontName"] . ";";
+        if ($updates["{$type}StyleFontName"]) {
+            $styletxt .= "font-family:" . $updates["{$type}StyleFontName"] . ";";
         }
 
-        if ($updates["${type}StyleFontSize"]) {
-            $styletxt .= "font-size:" . $updates["${type}StyleFontSize"] . ";";
+        if ($updates["{$type}StyleFontSize"]) {
+            $styletxt .= "font-size:" . $updates["{$type}StyleFontSize"] . ";";
         }
 
-        if ($updates["${type}StyleWidth"]) {
-            $styletxt .= "width:" . $updates["${type}StyleWidth"] . ";";
+        if ($updates["{$type}StyleWidth"]) {
+            $styletxt .= "width:" . $updates["{$type}StyleWidth"] . ";";
         }
 
-        if ($updates["${type}StyleFontStyle"] && $updates["${type}StyleFontStyle"] != "NONE") {
+        if ($updates["{$type}StyleFontStyle"] && $updates["{$type}StyleFontStyle"] != "NONE") {
             $stylevalue = "none";
-            if ($updates["${type}StyleFontStyle"] == "BOLD" || $updates["${type}StyleFontStyle"] == "BOLDANDITALIC") {
-                if ($updates["${type}StyleFontStyle"]) {
+            if ($updates["{$type}StyleFontStyle"] == "BOLD" || $updates["{$type}StyleFontStyle"] == "BOLDANDITALIC") {
+                if ($updates["{$type}StyleFontStyle"]) {
                     $styletxt .= "font-weight:bold;";
                 }
             }
 
-            if ($updates["${type}StyleFontStyle"] == "ITALIC" || $updates["${type}StyleFontStyle"] == "BOLDANDITALIC") {
-                if ($updates["${type}StyleFontStyle"]) {
+            if ($updates["{$type}StyleFontStyle"] == "ITALIC" || $updates["{$type}StyleFontStyle"] == "BOLDANDITALIC") {
+                if ($updates["{$type}StyleFontStyle"]) {
                     $styletxt .= "font-style:italic;";
                 }
             }
 
-            if ($updates["${type}StyleFontStyle"] == "NORMAL") {
-                if ($updates["${type}StyleFontStyle"]) {
+            if ($updates["{$type}StyleFontStyle"] == "NORMAL") {
+                if ($updates["{$type}StyleFontStyle"]) {
                     $styletxt .= "font-style:normal;";
                 }
             }
 
-            if ($updates["${type}StyleFontStyle"] == "UNDERLINE") {
-                if ($updates["${type}StyleFontStyle"] == "UNDERLINE") {
-                    if ($updates["${type}StyleFontStyle"]) {
+            if ($updates["{$type}StyleFontStyle"] == "UNDERLINE") {
+                if ($updates["{$type}StyleFontStyle"] == "UNDERLINE") {
+                    if ($updates["{$type}StyleFontStyle"]) {
                         $styletxt .= "text-decoration:underline;";
                     }
                 }
             }
 
-            if ($updates["${type}StyleFontStyle"] == "OVERLINE") {
-                if ($updates["${type}StyleFontStyle"]) {
+            if ($updates["{$type}StyleFontStyle"] == "OVERLINE") {
+                if ($updates["{$type}StyleFontStyle"]) {
                     $styletxt .= "text-decoration:overline;";
                 }
             }
 
-            if ($updates["${type}StyleFontStyle"] == "BLINK") {
-                if ($updates["${type}StyleFontStyle"]) {
+            if ($updates["{$type}StyleFontStyle"] == "BLINK") {
+                if ($updates["{$type}StyleFontStyle"]) {
                     $styletxt .= "text-decoration:blink;";
                 }
             }
 
-            if ($updates["${type}StyleFontStyle"] == "STRIKETHROUGH") {
-                if ($updates["${type}StyleFontStyle"]) {
+            if ($updates["{$type}StyleFontStyle"] == "STRIKETHROUGH") {
+                if ($updates["{$type}StyleFontStyle"]) {
                     $styletxt .= "text-decoration:line-through;";
                 }
             }
 
         }
 
-        if (!$updates["${type}StyleBorderStyle"] || $updates["${type}StyleBorderStyle"] == "NOBORDER") {
-            if ($updates["${type}StyleBorderSize"] || $updates["${type}StyleBorderColor"]) {
+        if (!$updates["{$type}StyleBorderStyle"] || $updates["{$type}StyleBorderStyle"] == "NOBORDER") {
+            if ($updates["{$type}StyleBorderSize"] || $updates["{$type}StyleBorderColor"]) {
                 trigger_error(ReporticoLang::templateXlate("SETBORDERSTYLE"), E_USER_ERROR);
             }
 
         } else {
             $stylevalue = "none";
-            if ($updates["${type}StyleBorderStyle"] == "SOLIDLINE") {
+            if ($updates["{$type}StyleBorderStyle"] == "SOLIDLINE") {
                 $stylevalue = "solid";
             }
 
-            if ($updates["${type}StyleBorderStyle"] == "DASHED") {
+            if ($updates["{$type}StyleBorderStyle"] == "DASHED") {
                 $stylevalue = "dashed";
             }
 
-            if ($updates["${type}StyleBorderStyle"] == "DOTTED") {
+            if ($updates["{$type}StyleBorderStyle"] == "DOTTED") {
                 $stylevalue = "dotted";
             }
 
             $styletxt .= "border-style:$stylevalue;";
-            if ($updates["${type}StyleBorderSize"]) {
-                $styletxt .= "border-width:" . $updates["${type}StyleBorderSize"] . ";";
+            if ($updates["{$type}StyleBorderSize"]) {
+                $styletxt .= "border-width:" . $updates["{$type}StyleBorderSize"] . ";";
             }
 
-            if ($updates["${type}StyleBorderColor"]) {
-                $styletxt .= "border-color:" . $updates["${type}StyleBorderColor"] . ";";
+            if ($updates["{$type}StyleBorderColor"]) {
+                $styletxt .= "border-color:" . $updates["{$type}StyleBorderColor"] . ";";
             }
 
         }
 
-        if ($updates["${type}StylePadding"]) {
-            $styletxt .= "padding:" . $updates["${type}StylePadding"] . ";";
+        if ($updates["{$type}StylePadding"]) {
+            $styletxt .= "padding:" . $updates["{$type}StylePadding"] . ";";
         }
 
-        if ($updates["${type}StyleBackgroundImage"]) {
-            $styletxt .= "background-image:" . $updates["${type}StyleBackgroundImage"] . ";";
+        if ($updates["{$type}StyleBackgroundImage"]) {
+            $styletxt .= "background-image:" . $updates["{$type}StyleBackgroundImage"] . ";";
         }
 
-        if ($updates["${type}StyleMargin"]) {
-            $styletxt .= "margin:" . $updates["${type}StyleMargin"] . ";";
+        if ($updates["{$type}StyleMargin"]) {
+            $styletxt .= "margin:" . $updates["{$type}StyleMargin"] . ";";
         }
 
         if ($styletxt) {
@@ -4517,21 +4517,21 @@ if ( $styles["font-style"] )
 if ( $styles["font-style"] == "noone" ) $styles["border-style"] = "NONE";
 }
 
-$text .= $this->display_maintain_field("${type}StyleFgColor", $styles["color"], $tagct, true, false, $blocktype); $tagct++;
-$text .= $this->display_maintain_field("${type}StyleBgColor", $styles["background-color"], $tagct, true, false, $blocktype); $tagct++;
-$text .= $this->display_maintain_field("${type}StyleBorderStyle", $styles["border-style"], $tagct, true, false, $blocktype); $tagct++;
-$text .= $this->display_maintain_field("${type}StyleBorderSize", $styles["border-width"], $tagct, true, false, $blocktype); $tagct++;
-$text .= $this->display_maintain_field("${type}StyleBorderColor", $styles["border-color"], $tagct, true, false, $blocktype); $tagct++;
-$text .= $this->display_maintain_field("${type}StyleMargin", $styles["margin"], $tagct, true, false, $blocktype); $tagct++;
-$text .= $this->display_maintain_field("${type}StylePadding", $styles["padding"], $tagct, true, false, $blocktype); $tagct++;
-$text .= $this->display_maintain_field("${type}StyleWidth", $styles["width"], $tagct, true, false, $blocktype); $tagct++;
-$text .= $this->display_maintain_field("${type}StyleFontName", $styles["font-family"], $tagct, true, false, $blocktype); $tagct++;
-$text .= $this->display_maintain_field("${type}StyleFontSize", $styles["font-size"], $tagct, true, false, $blocktype); $tagct++;
-$text .= $this->display_maintain_field("${type}StyleFontStyle", $styles["font-style"], $tagct, true, false, $blocktype); $tagct++;
+$text .= $this->display_maintain_field("{$type}StyleFgColor", $styles["color"], $tagct, true, false, $blocktype); $tagct++;
+$text .= $this->display_maintain_field("{$type}StyleBgColor", $styles["background-color"], $tagct, true, false, $blocktype); $tagct++;
+$text .= $this->display_maintain_field("{$type}StyleBorderStyle", $styles["border-style"], $tagct, true, false, $blocktype); $tagct++;
+$text .= $this->display_maintain_field("{$type}StyleBorderSize", $styles["border-width"], $tagct, true, false, $blocktype); $tagct++;
+$text .= $this->display_maintain_field("{$type}StyleBorderColor", $styles["border-color"], $tagct, true, false, $blocktype); $tagct++;
+$text .= $this->display_maintain_field("{$type}StyleMargin", $styles["margin"], $tagct, true, false, $blocktype); $tagct++;
+$text .= $this->display_maintain_field("{$type}StylePadding", $styles["padding"], $tagct, true, false, $blocktype); $tagct++;
+$text .= $this->display_maintain_field("{$type}StyleWidth", $styles["width"], $tagct, true, false, $blocktype); $tagct++;
+$text .= $this->display_maintain_field("{$type}StyleFontName", $styles["font-family"], $tagct, true, false, $blocktype); $tagct++;
+$text .= $this->display_maintain_field("{$type}StyleFontSize", $styles["font-size"], $tagct, true, false, $blocktype); $tagct++;
+$text .= $this->display_maintain_field("{$type}StyleFontStyle", $styles["font-style"], $tagct, true, false, $blocktype); $tagct++;
 
 if ( $type == "PageHeader" || $type == "PageFooter" || $type == "GroupHeader" || $type == "GroupTrailer" )
 {
-$text .= $this->display_maintain_field("${type}StyleBackgroundImage", $styles["background-image"], $tagct, true, false, $blocktype); $tagct++;
+$text .= $this->display_maintain_field("{$type}StyleBackgroundImage", $styles["background-image"], $tagct, true, false, $blocktype); $tagct++;
 }
 
 //$tagct = 1;
