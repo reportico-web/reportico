@@ -14,11 +14,11 @@
     ],
     "require": {
         "php": ">=8.0",
-        "adodb/adodb-php": "^5.20",
+        "reportico/adodb-php": "^8.1",
         "twig/twig": "^3.0",
         "tecnickcom/tcpdf": "^6.2",
         "szymach/c-pchart": "^3.0",
-        "reportico/assetter": "^8",
+        "reportico/assetter": "^8.1",
         "spatie/browsershot": "^3.29"
     },
      "autoload": {
