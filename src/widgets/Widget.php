@@ -22,12 +22,17 @@ class Widget
     // Define asset manager
     public $config = false;
     protected $engine = false;
+    protected $engineCriteria = false;
     protected $manager = false;
     public $criteria = false;
     public $name = "core";
     public $added = false;
     public $sourceType = false;
     public $defaults = false;
+    public $range_start;
+    public $range_name;
+    public $range_start_raw;
+    public $range_end_raw;
 
     protected $options = [];
 
