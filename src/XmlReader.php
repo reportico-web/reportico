@@ -397,9 +397,8 @@ class XmlReader
             $this->field_display["YTickLabelInterval"]["Type"] = "HIDE";
         }
 
-        xml_set_object($this->parser, $this);
-        xml_set_element_handler($this->parser, 'startElement', 'endElement');
-        xml_set_character_data_handler($this->parser, 'cdata');
+        xml_set_element_handler($this->parser, [$this, 'startElement'], [$this, 'endElement']);
+        xml_set_character_data_handler($this->parser, [$this, 'cdata']);
         xml_parser_set_option($this->parser, XML_OPTION_CASE_FOLDING, false);
 
         // 1 = single field, 2 = array field, 3 = record container
